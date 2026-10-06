@@ -1,0 +1,73 @@
+{
+  "asset": "buidl",
+  "sample": true,
+  "asOf": "2026-10-05T12:00:00Z",
+  "supply": [
+    { "chain": "ethereum", "totalSupply": 443200000, "priceUsd": 1, "source": "totalSupply() at block 23500000" }
+  ],
+  "aum": {
+    "usd": 2250000000,
+    "usd30dAgo": 2812500000,
+    "source": { "name": "DefiLlama", "url": "https://defillama.com/rwa" }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0x0ac1e00000000000000000000000000000000001",
+    "value": 1,
+    "updatedAt": "2026-10-05T08:48:00Z"
+  },
+  "defiMarkets": [
+    {
+      "marketId": "morpho-buidl-usdc",
+      "protocol": "morpho",
+      "name": "BUIDL / USDC",
+      "chain": "ethereum",
+      "loanAsset": "USDC",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x0ac1e00000000000000000000000000000000002",
+        "type": "fixed",
+        "description": "Fixed $1.00, no NAV check"
+      },
+      "collateralUsd": 28400000,
+      "borrowUsd": 19100000,
+      "supplyUsd": 24000000,
+      "url": "https://app.morpho.org"
+    },
+    {
+      "marketId": "morpho-buidl-usdt",
+      "protocol": "morpho",
+      "name": "BUIDL / USDT",
+      "chain": "ethereum",
+      "loanAsset": "USDT",
+      "lltv": 0.86,
+      "oracle": {
+        "address": "0x0ac1e00000000000000000000000000000000001",
+        "type": "nav-feed",
+        "description": "Chronicle BUIDL NAV feed"
+      },
+      "collateralUsd": 7600000,
+      "borrowUsd": 4200000,
+      "supplyUsd": 6000000,
+      "url": "https://app.morpho.org"
+    },
+    {
+      "marketId": "euler-buidl",
+      "protocol": "euler",
+      "name": "BUIDL collateral vault",
+      "chain": "ethereum",
+      "loanAsset": "USDC",
+      "lltv": 0.9,
+      "oracle": {
+        "address": "0x0ac1e00000000000000000000000000000000003",
+        "type": "fixed",
+        "description": "Fixed $1.00, no NAV check"
+      },
+      "collateralUsd": 5200000,
+      "borrowUsd": 2900000,
+      "supplyUsd": 4100000,
+      "url": "https://app.euler.finance"
+    }
+  ],
+  "defiSource": { "name": "Morpho API and Euler API", "url": "https://api.morpho.org/graphql" }
+}

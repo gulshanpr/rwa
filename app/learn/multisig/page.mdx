@@ -1,0 +1,23 @@
+export const metadata = { title: "What is a multisig?" };
+
+# What is a multisig?
+
+A **multisig** is a smart-contract wallet that only acts when enough of its owners sign. The most common one is [Safe](https://safe.global). A "3/5 Safe" has five owners and needs any three of them to approve each transaction.
+
+<Callout title="In plain English">
+It's a shared bank account that needs several people to sign every cheque. One stolen key is not enough.
+</Callout>
+
+## What we read
+
+For each Safe we read `getOwners()`, `getThreshold()` and its enabled modules. Modules can act without the owners' signatures, so any enabled module is flagged.
+
+## Strong vs. weak
+
+We call a Safe **strong** if it needs at least 3 signers and at least half of all owners (`m ≥ 3` and `m/n ≥ 0.5`). A 2/3 Safe or a 3/9 Safe is **weak**.
+
+## Why curators care
+
+<Callout title="Why curators care" tone="neutral">
+A multisig is only as good as its signers and threshold. Watch for threshold drops (3/5 → 2/5), new owners, and modules being enabled. RWABeat raises an alert for each.
+</Callout>

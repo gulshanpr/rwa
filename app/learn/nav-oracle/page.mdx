@@ -1,0 +1,25 @@
+export const metadata = { title: "What is a NAV oracle?" };
+
+# What is a NAV oracle?
+
+A fund's **net asset value** (NAV) is what its holdings are worth per share. A **NAV oracle** is a contract that publishes that number onchain so other contracts, such as lending markets, can use it.
+
+<Callout title="In plain English">
+It's the price tag smart contracts read. If the price tag is wrong or old, every contract that reads it is wrong too.
+</Callout>
+
+## What we check
+
+- **Who writes it:** a single key, the issuer's multisig, a single data provider, or an independent oracle network.
+- **Where the number comes from:** the issuer itself, or a fund administrator or custodian.
+- **How fresh it is:** the time since the last update compared with the expected cadence. Within cadence is on schedule, 1–3× is late, and more than 3× is stale.
+
+## Stable $1 tokens
+
+Some funds keep the token at $1 and pay yield as new tokens. Lending markets often hardcode $1 for these. That works until the fund's real value drops below $1, and then nothing onchain notices.
+
+## Why curators care
+
+<Callout title="Why curators care" tone="neutral">
+Your market is only as safe as its oracle. A hardcoded price removes the circuit breaker; a stale feed delays it.
+</Callout>

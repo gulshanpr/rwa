@@ -1,0 +1,116 @@
+export const metadata = { title: "Methodology" };
+
+# Methodology
+
+RWABeat shows what can go wrong with a tokenized real-world asset: who controls the token, what it depends on, and what is (and isn't) disclosed. This page is the full framework. It is versioned in Git; every change is listed in the [changelog](/changelog).
+
+<Callout title="In plain English">
+We only score things anyone can check: a contract call, a transaction, or a public document. Everything else is shown as unknown, and unknown is a finding.
+</Callout>
+
+## Principles
+
+1. **Facts over opinions.** Score only what can be checked. Mark everything else as unknown.
+2. **Every number has a source.** No source, no data.
+3. **Unknown is a finding.** "Offering memorandum not publicly available" is shown, not hidden.
+4. **Green doesn't mean safe.** Slices describe specific risks, not overall quality.
+5. **Independence.** No issuer payments for listings or scores. Issuers may submit corrections publicly.
+
+## Scope
+
+v1 covers the 20 largest tokenized Treasury and private-credit assets, the same sample as Chronicle Labs' October 2026 report, so results are comparable. Only EVM deployments are covered for now. Stablecoins, tokenized stocks and non-EVM chains come later.
+
+## Data
+
+There are three kinds of data, handled differently:
+
+| Kind | Examples | Where it lives |
+|---|---|---|
+| **Curated** | Issuer, custodian, documents, redemption terms | YAML files in Git, changed by pull request |
+| **Discovered** | Proxy admins, roles, Safe signers, timelock delays | JSON snapshots in Git, written by the discovery tool |
+| **Live** | Prices, oracle age, DeFi exposure, alerts | Database, refreshed by scheduled jobs |
+
+The risk assessment (curated + discovered) is fully reproducible from the Git repository. Asset value (AUM) comes from DefiLlama, with attribution, and is cross-checked against `totalSupply × price`.
+
+<Callout title="Preview status" tone="neutral">
+The site is in preview. BUIDL is the first profile. Its permissions, oracle readings, DeFi markets and alerts are seed data while the discovery tool and live worker are built. Pages that use seed data say so in a banner.
+</Callout>
+
+## The rosette
+
+Six slices. Five are scored green, yellow or red. The sixth, legal and insolvency, is grey ("not assessed") in v1.
+
+| Slice | Question it answers |
+|---|---|
+| Control | Who can upgrade, mint, pause, freeze, or force-transfer, and with what checks? |
+| Pricing | Where does the onchain price or NAV come from, how fresh is it, and who signs it? |
+| Verification | Is reserve data independent, asset-level, daily, verifiable and onchain? |
+| Exit | Can holders redeem or sell, how fast, and who is allowed? |
+| Disclosure | Are the key documents and service providers publicly named? |
+| Legal & insolvency | What happens to holders if the issuer fails? *Not assessed in v1.* |
+
+## Control
+
+We look at every **critical** and **high** power across all deployments and take the worst holder.
+
+| Power | Meaning | Criticality |
+|---|---|---|
+| `upgrade` | Change contract logic | Critical |
+| `mint` | Create new tokens | Critical |
+| `force-transfer` | Move tokens out of a holder's wallet | Critical |
+| `burn-from` | Destroy tokens in a holder's wallet | Critical |
+| `set-price` | Write the NAV or price used onchain | Critical |
+| `admin` | Grant or revoke other roles | Critical |
+| `freeze` | Block a specific address | High |
+| `pause` | Stop all transfers | High |
+| `set-compliance` | Change allowlist or compliance rules | High |
+
+Holders are classified as: a single key (**EOA**); a **Safe** multisig, "strong" if it needs at least 3 signers and at least half of all signers; a **timelock**, which takes the class of its proposer plus its delay; or an **unknown contract**, treated as a single key until labeled.
+
+- **Red:** any critical power held by a single key or unknown contract, or by a weak Safe with no timelock.
+- **Yellow:** critical powers held by strong Safes without a timelock, an upgrade delay under 7 days, or high powers held by a single key.
+- **Green:** upgrades are impossible or behind a 7-day+ timelock controlled by a strong Safe, other critical powers are held by strong Safes behind a timelock, and no single key holds a high power.
+
+Privileged functions that no handler recognizes are listed as **unclassified** for manual review, so nothing is silently ignored. They don't change the color.
+
+For regulated securities, freeze and force-transfer powers are often legally required. This slice scores who holds them and what checks exist, not whether they exist.
+
+## Pricing
+
+- **Red:** a single key writes the price, there is no onchain price or NAV, or the last update is older than 3× the expected cadence.
+- **Yellow:** an issuer-controlled multisig or a single provider relaying issuer-reported NAV writes the price, or the update is late (1–3× cadence).
+- **Green:** an independent oracle network publishes data from a fund administrator or custodian at least daily, with history onchain.
+
+For stable $1 tokens, we also check how DeFi markets price the token. If a lending market hardcodes $1, the slice gets a yellow flag: *DeFi markets assume $1 with no onchain NAV check.*
+
+## Verification
+
+For the best verification method we count five tests: **independent**, **asset-level**, **at least daily**, **cryptographically verifiable**, **onchain**. Green is 5 of 5, yellow is 3–4, red is 0–2 or self-reported only.
+
+Five tests adapted from Chronicle Labs, "The Transparency Gap in Onchain Finance" (Oct 2026).
+
+## Exit
+
+- **Green:** documented redemption at T+1 or faster for all eligible holders, plus an onchain instant-liquidity path (a redemption contract, or DEX liquidity of at least 2% of supply at ≤ 1% slippage).
+- **Yellow:** documented redemption at T+5 or faster but no instant path, or the documentation is incomplete. Unpublished suspension or gating terms count as incomplete.
+- **Red:** no documented redemption, redemption slower than T+5, or redemptions can be suspended at the issuer's discretion with no stated limits.
+
+## Disclosure
+
+Six checks, each public, not public, or unknown: legal entity and jurisdiction, custodian named, fund administrator named, auditor named, offering document public, audited financials public. Green is 5 or more public, yellow is 3–4, red is 2 or fewer. Unknown counts as not public.
+
+## Legal
+
+Always grey in v1. We don't yet evaluate bankruptcy remoteness or holder claims. The Disclosure tab shows which documents are public so you can read them yourself.
+
+## DeFi exposure
+
+For each asset we list the lending markets that accept it as collateral (Morpho first, then Aave including Horizon, then Euler) with loan asset, LLTV, the oracle used, collateral supplied and amount borrowed. Markets whose oracle hardcodes the price are flagged.
+
+## Alerts
+
+We watch every contract in the discovery snapshots. Upgrades, admin changes and critical role changes are **critical**. Safe signer or threshold changes, scheduled timelock calls, pauses and stale oracles are **high**. Freezes, seizures, and mints or burns above 5% of supply or $10M are **medium**. Every alert re-runs discovery for that asset.
+
+## Disclaimer
+
+RWABeat provides information for educational purposes only. It is not investment, legal, tax, or financial advice, and it is not a credit rating. Data may be incomplete or wrong; always verify with the linked primary sources. Risk slices describe specific, checkable properties and do not indicate overall safety.
