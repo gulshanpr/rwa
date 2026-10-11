@@ -1,14 +1,14 @@
-import { loadAlerts } from "@/lib/data";
+import { getAlerts } from "@/lib/live-store";
 import { getProfiles } from "@/lib/profile";
 import { SITE } from "@/lib/site";
 
 const escape = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-export function GET(request: Request) {
+export async function GET(request: Request) {
   const origin = new URL(request.url).origin;
-  const tickers = new Map(getProfiles().map((p) => [p.asset.slug, p.asset.ticker]));
-  const { alerts } = loadAlerts();
+  const tickers = new Map((await getProfiles()).map((p) => [p.asset.slug, p.asset.ticker]));
+  const { alerts } = (await getAlerts());
 
   const items = alerts
     .map((a) => {

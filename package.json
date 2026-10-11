@@ -5,7 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "validate": "bun scripts/validate.ts",
+    "discover": "bun discovery/cli.ts",
+    "worker": "bun worker/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun db/migrate.ts",
+    "db:local": "pglite-server --db=.data/pglite --port=5433"
   },
   "dependencies": {
     "@dagrejs/dagre": "^3.1.1",
@@ -20,19 +26,27 @@
     "@xyflow/react": "^12.12.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "drizzle-orm": "^0.45.4",
     "lucide-react": "^1.52.0",
     "next": "16.3.8",
+    "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "remark-gfm": "^4.0.1",
+    "viem": "^2.57.4",
     "yaml": "^2.9.1",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@electric-sql/pglite-socket": "^0.2.11",
     "@tailwindcss/postcss": "^4",
+    "@types/bun": "^1.4.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "drizzle-kit": "^0.31.11",
     "tailwindcss": "^4",
     "typescript": "^5"
   },

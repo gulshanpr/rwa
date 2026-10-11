@@ -12,7 +12,7 @@ export const generateMetadata = tabMetadata("History");
 
 export default async function HistoryPage({ params }: PageProps<"/assets/[slug]/history">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
 
   const items: TimelineItem[] = [
     ...profile.alerts.map((a) => ({
@@ -22,7 +22,12 @@ export default async function HistoryPage({ params }: PageProps<"/assets/[slug]/
       badge: a.severity,
       title: a.title,
       body: a.consequence,
-      links: [{ label: "Transaction", href: explorerTx(a.chain, a.txHash) }],
+      links:
+        a.chain && a.txHash
+          ? [{ label: "Transaction", href: explorerTx(a.chain, a.txHash) }]
+          : a.url
+            ? [{ label: "Source", href: a.url }]
+            : [],
     })),
     ...profile.snapshots.map((s) => ({
       id: `discovery-${s.discovered.chain}-${s.discovered.block}`,

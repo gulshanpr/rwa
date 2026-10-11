@@ -1,0 +1,59 @@
+name: Discover
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      asset:
+        description: "Asset slug (empty = all)"
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: discover
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RPC_URL_ETHEREUM: ${{ secrets.RPC_URL_ETHEREUM }}
+      ARCHIVE_RPC_URL_ETHEREUM: ${{ secrets.ARCHIVE_RPC_URL_ETHEREUM }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+
+      - uses: actions/cache@v4
+        with:
+          path: .cache
+          key: discovery-cache-${{ github.run_id }}
+          restore-keys: discovery-cache-
+
+      - name: Run discovery
+        run: |
+          if [ -n "${{ inputs.asset }}" ]; then
+            bun run discover "${{ inputs.asset }}"
+          else
+            bun run discover --all
+          fi
+
+      - run: bun run validate
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: discovery/auto
+          delete-branch: true
+          add-paths: discovered/**
+          commit-message: "discovery: update snapshots"
+          title: "Discovery: onchain permissions changed"
+          body-path: .cache/discovery-summary.md
+          labels: discovery

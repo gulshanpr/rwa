@@ -25,9 +25,15 @@ export function AlertCard({ alert, ticker, compact = false }: { alert: Alert; ti
       <p className="mt-0.5 text-small text-fg-muted">{alert.consequence}</p>
       {!compact && (
         <div className="mt-2 flex gap-4 text-label">
-          <a href={explorerTx(alert.chain, alert.txHash)} target="_blank" rel="noreferrer" className="text-accent hover:underline">
-            Transaction ↗
-          </a>
+          {alert.chain && alert.txHash ? (
+            <a href={explorerTx(alert.chain, alert.txHash)} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+              Transaction ↗
+            </a>
+          ) : alert.url ? (
+            <a href={alert.url} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+              Source ↗
+            </a>
+          ) : null}
           <Link href={`/assets/${alert.asset}/history`} className="text-accent hover:underline">
             View change
           </Link>

@@ -19,7 +19,7 @@ function renderValue(value: unknown): string {
 
 export default async function DisclosurePage({ params }: PageProps<"/assets/[slug]/disclosure">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score } = profile;
   const checks = disclosureChecks(asset);
   const slice = score.slices.disclosure;

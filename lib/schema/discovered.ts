@@ -50,6 +50,8 @@ const Holder = z.discriminatedUnion("kind", [
     executors: z.array(Address),
   }),
   z.object({ kind: z.literal("proxy-admin"), owner: Address }),
+  /** A tracked contract (e.g. a DS service) that holds a role. It acts when its own controllers call it. */
+  z.object({ kind: z.literal("contract"), name: z.string(), controllers: z.array(Address) }),
   z.object({ kind: z.literal("contract-unknown") }),
 ]);
 

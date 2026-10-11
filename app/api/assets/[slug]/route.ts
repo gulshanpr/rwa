@@ -5,8 +5,8 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 export const revalidate = 300;
 
-export function generateStaticParams() {
-  return getProfiles().flatMap((p) => [{ slug: p.asset.slug }, { slug: `${p.asset.slug}.csv` }]);
+export async function generateStaticParams() {
+  return (await getProfiles()).flatMap((p) => [{ slug: p.asset.slug }, { slug: `${p.asset.slug}.csv` }]);
 }
 
 function exportProfile(p: AssetProfile) {
@@ -38,7 +38,7 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/assets/[slug]">
   const { slug: raw } = await ctx.params;
   const csv = raw.endsWith(".csv");
   const slug = csv ? raw.slice(0, -4) : raw;
-  const profile = getProfile(slug);
+  const profile = (await getProfile(slug));
   if (!profile) return Response.json({ error: "Asset not found" }, { status: 404 });
 
   const data = exportProfile(profile);

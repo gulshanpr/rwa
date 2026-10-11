@@ -14,7 +14,7 @@ export interface OracleAge {
 
 export function oracleAge(asset: Asset, live: Live | undefined): OracleAge | undefined {
   const ref = asset.pricing.reference;
-  if (ref.type !== "oracle" || !live) return undefined;
+  if (ref.type !== "oracle" || !live?.oracle) return undefined;
   const ageSeconds = secondsBetween(live.oracle.updatedAt, live.asOf);
   const ratio = ageSeconds / ref.cadenceSeconds;
   const freshness: OracleFreshness = ratio > 3 ? "stale" : ratio > 1 ? "late" : "on-schedule";

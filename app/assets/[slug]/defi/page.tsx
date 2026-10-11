@@ -15,7 +15,7 @@ export const generateMetadata = tabMetadata("DeFi exposure");
 
 export default async function DefiPage({ params }: PageProps<"/assets/[slug]/defi">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, live, stats } = profile;
   const markets = live?.defiMarkets ?? [];
 

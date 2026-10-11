@@ -5,7 +5,7 @@ import { assetRows } from "@/lib/rows";
 export const metadata = { title: "Risk screener" };
 export const revalidate = 3600;
 
-export default function ScreenerPage() {
+export default async function ScreenerPage() {
   return (
     <>
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Screener" }]} />
@@ -15,7 +15,7 @@ export default function ScreenerPage() {
           Every tracked asset with its slice colors and key flags. Sort, filter, or download the data.
         </p>
       </div>
-      <Screener rows={assetRows()} />
+      <Screener rows={await assetRows()} />
     </>
   );
 }

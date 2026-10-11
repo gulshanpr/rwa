@@ -22,6 +22,12 @@ deployments:
         "0x3a68756d0335E75C909bA1e8fEFC1D4832C36c60": TrustService
         "0x0Dac900f26DE70336f2320F7CcEDeE70fF6A1a5B": RegistryService
         "0x07A1EBFb9a9A421249DDC71Bddb8860cc077E3a9": ComplianceService
+        "0x5072Ed40EBa6bE38C2370cAD1Cb1df0202924e53": ISSUER key (single wallet)
+        "0xB14A49978Cb3AD7903208F67a0bC9b9b93AC2fA1": ISSUER key (single wallet)
+        "0xA9994621F1c3EE59846Df756488229E8efDCB8bf": TRANSFER_AGENT key (single wallet)
+        "0xF3AAe1168fBF3a5cf1CB4B57C5C8C5e9401627D9": WalletRegistrar proxy owner
+        "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78": SecuritizeBridge owner
+        "0x9908d94b5Cf1a9e4F3c769AaF64f01a7630FB5f4": BulkOperator owner (unverified contract)
 
 access:
   investorType:
@@ -129,5 +135,6 @@ exit:
 
 externalIds:
   defillama: blackrock-buidl
+  defillamaStablecoin: "173"
   rwaxyz: BUIDL
   coingecko: blackrock-usd-institutional-digital-liquidity-fund

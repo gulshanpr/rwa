@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { types: { "application/rss+xml": "/api/alerts.rss" } },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
-        <AppShell footer={<Footer />} searchItems={searchIndex()}>
+        <AppShell footer={<Footer />} searchItems={await searchIndex()}>
           {children}
         </AppShell>
       </body>

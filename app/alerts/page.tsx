@@ -2,15 +2,15 @@ import { Rss } from "lucide-react";
 import { AlertsFeed } from "@/components/alerts/alerts-feed";
 import { SampleBanner } from "@/components/data/sample-banner";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { loadAlerts } from "@/lib/data";
+import { getAlerts } from "@/lib/live-store";
 import { getProfiles } from "@/lib/profile";
 
 export const metadata = { title: "Alerts" };
 export const revalidate = 300;
 
-export default function AlertsPage() {
-  const { alerts, sample } = loadAlerts();
-  const tickers = Object.fromEntries(getProfiles().map((p) => [p.asset.slug, p.asset.ticker]));
+export default async function AlertsPage() {
+  const { alerts, sample } = (await getAlerts());
+  const tickers = Object.fromEntries((await getProfiles()).map((p) => [p.asset.slug, p.asset.ticker]));
 
   return (
     <>

@@ -16,7 +16,7 @@ import { RISK_WORD } from "@/lib/ui";
 
 export default async function OverviewPage({ params }: PageProps<"/assets/[slug]">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score, powers, live } = profile;
   const { legal, serviceProviders: sp, access } = asset;
   const verification = asset.verification.methods[0];

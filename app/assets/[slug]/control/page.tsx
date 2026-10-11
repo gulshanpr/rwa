@@ -20,7 +20,7 @@ export const generateMetadata = tabMetadata("Control");
 
 export default async function ControlPage({ params }: PageProps<"/assets/[slug]/control">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, powers, score } = profile;
 
   return (

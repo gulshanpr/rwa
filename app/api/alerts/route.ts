@@ -1,12 +1,12 @@
 import type { NextRequest } from "next/server";
-import { loadAlerts } from "@/lib/data";
+import { getAlerts } from "@/lib/live-store";
 
-export function GET(request: NextRequest) {
+export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const asset = params.get("asset");
   const severity = params.get("severity");
   const since = params.get("since");
-  const { alerts, sample } = loadAlerts();
+  const { alerts, sample } = (await getAlerts());
 
   const filtered = alerts.filter(
     (a) =>

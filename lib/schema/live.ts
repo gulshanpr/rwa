@@ -37,12 +37,14 @@ export const LiveSchema = z.object({
     usd30dAgo: z.number().optional(),
     source: z.object({ name: z.string(), url: z.url() }),
   }),
-  oracle: z.object({
-    chain: Chain,
-    address: Address,
-    value: z.number(),
-    updatedAt: z.iso.datetime(),
-  }),
+  oracle: z
+    .object({
+      chain: Chain,
+      address: Address,
+      value: z.number(),
+      updatedAt: z.iso.datetime(),
+    })
+    .optional(),
   defiMarkets: z.array(DefiMarket),
   defiSource: z.object({ name: z.string(), url: z.url() }),
 });
@@ -61,14 +63,22 @@ export const AlertSchema = z.object({
     "safe-change",
     "mint",
     "burn",
+    "freeze",
+    "seize",
+    "service-change",
+    "timelock-scheduled",
     "oracle-stale",
+    "filing",
+    "lei-change",
   ]),
   title: z.string(),
   consequence: z.string(),
-  chain: Chain,
-  contract: Address,
-  txHash: z.string().regex(/^0x[0-9a-fA-F]{64}$/),
-  block: z.number().int(),
+  // Onchain alerts carry the transaction; offchain ones (filings, LEI, oracle age) carry a source URL.
+  chain: Chain.optional(),
+  contract: Address.optional(),
+  txHash: z.string().regex(/^0x[0-9a-fA-F]{64}$/).optional(),
+  block: z.number().int().optional(),
+  url: z.url().optional(),
   publishedAt: z.iso.datetime(),
 });
 

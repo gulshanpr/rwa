@@ -23,7 +23,7 @@ const TAB_TITLES: Record<TabId, string> = {
 
 export default async function SourcesPage({ params }: PageProps<"/assets/[slug]/sources">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const groups = collectSources(profile);
   const order = (Object.keys(TAB_TITLES) as TabId[]).filter((t) => groups[t]?.length);
   const total = order.reduce((n, t) => n + groups[t].length, 0);

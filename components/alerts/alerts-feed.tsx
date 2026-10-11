@@ -17,8 +17,16 @@ const KIND_LABELS: Record<Alert["kind"], string> = {
   "safe-change": "Safe change",
   mint: "Large mint",
   burn: "Large burn",
+  freeze: "Freeze",
+  seize: "Seize",
+  "service-change": "Service change",
+  "timelock-scheduled": "Timelock queued",
   "oracle-stale": "Oracle stale",
+  filing: "SEC filing",
+  "lei-change": "LEI change",
 };
+
+type AlertChain = NonNullable<Alert["chain"]>;
 
 function FilterGroup<T extends string>({
   title,
@@ -67,10 +75,10 @@ function useSet<T>() {
 export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Record<string, string> }) {
   const [severity, toggleSeverity] = useSet<Alert["severity"]>();
   const [asset, toggleAsset] = useSet<string>();
-  const [chain, toggleChain] = useSet<Alert["chain"]>();
+  const [chain, toggleChain] = useSet<AlertChain>();
   const [kind, toggleKind] = useSet<Alert["kind"]>();
 
-  const match = <T,>(set: Set<T>, v: T) => set.size === 0 || set.has(v);
+  const match = <T,>(set: Set<T>, v: T | undefined) => set.size === 0 || (v !== undefined && set.has(v));
   const shown = alerts.filter(
     (a) => match(severity, a.severity) && match(asset, a.asset) && match(chain, a.chain) && match(kind, a.kind),
   );
@@ -99,7 +107,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
         />
         <FilterGroup
           title="Chain"
-          options={uniq(alerts.map((a) => a.chain))}
+          options={uniq(alerts.flatMap((a) => (a.chain ? [a.chain] : [])))}
           selected={chain}
           onToggle={toggleChain}
           render={(c) => CHAINS[c].name}

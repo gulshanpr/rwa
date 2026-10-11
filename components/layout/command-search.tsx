@@ -53,7 +53,14 @@ export function CommandSearch({ items }: { items: SearchItem[] }) {
           <span className="sm:hidden">Search…</span>
           <span className="hidden sm:inline">Search asset, issuer, address…</span>
         </span>
-        <kbd className="hidden rounded border border-line bg-surface px-1.5 font-sans text-label text-fg-muted sm:inline">⌘K</kbd>
+        <kbd
+          aria-label="Command plus K"
+          className="hidden items-center gap-1 rounded border border-line bg-surface px-1.5 font-sans text-label text-fg-muted sm:inline-flex"
+        >
+          <span aria-hidden>⌘</span>
+          <span aria-hidden>+</span>
+          <span aria-hidden>K</span>
+        </kbd>
       </button>
 
       <Command.Dialog

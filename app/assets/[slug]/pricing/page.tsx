@@ -31,7 +31,7 @@ const ORIGIN_LABELS = {
 
 export default async function PricingPage({ params }: PageProps<"/assets/[slug]/pricing">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score, stats, live } = profile;
   const ref = asset.pricing.reference;
   const age = stats.oracle;
@@ -51,7 +51,7 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
               facts={[
                 {
                   label: "Current value",
-                  value: <span className="tnum text-h2">{live ? formatUsdFull(live.oracle.value) : "—"}</span>,
+                  value: <span className="tnum text-h2">{live?.oracle ? formatUsdFull(live.oracle.value) : "—"}</span>,
                 },
                 { label: "Price model", value: PRICE_MODEL_LABELS[asset.priceModel] },
                 { label: "Provider", value: entityName(ref.provider), source: ref.source },
@@ -73,7 +73,7 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
         </Card>
 
         <Card title="Oracle age" description="How long since the last onchain update, against the expected cadence.">
-          {age && live ? (
+          {age && live?.oracle ? (
             <div className="space-y-4">
               <div className="flex items-baseline gap-3">
                 <span className="tnum text-stat text-fg">{formatDuration(age.ageSeconds)}</span>

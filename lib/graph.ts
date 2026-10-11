@@ -77,6 +77,13 @@ export function buildControlGraph(profile: AssetProfile, chain: Chain) {
         edges.set(`${key}->${proposer}`, { id: `${key}->${proposer}`, source: key, target: proposer, label: "proposer", color: "grey", critical: false, rows: [] });
       }
     }
+    if (holder?.kind === "contract") {
+      for (const c of holder.controllers) {
+        if (c.toLowerCase() === address.toLowerCase()) continue;
+        const controller = ensureHolder(c);
+        edges.set(`${key}->${controller}`, { id: `${key}->${controller}`, source: key, target: controller, label: "controlled by", color: "grey", critical: false, rows: [] });
+      }
+    }
     return key;
   };
 

@@ -1,4 +1,6 @@
-import { loadAlerts, loadAssets, loadDiscovered, loadEntities, loadLive, type DiscoverySnapshot } from "./data";
+import { cache } from "react";
+import { loadAssets, loadDiscovered, loadEntities, type DiscoverySnapshot } from "./data";
+import { getAlerts, getLive } from "./live-store";
 import type { Asset, AssetClass } from "./schema/asset";
 import type { Power } from "./schema/discovered";
 import type { Entity } from "./schema/entity";
@@ -73,10 +75,9 @@ function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetSt
   return flags;
 }
 
-function buildProfile(asset: Asset): AssetProfile {
+function buildProfile(asset: Asset, live: Live | undefined, alerts: Alert[]): AssetProfile {
   const entities = loadEntities();
   const snapshots = loadDiscovered(asset);
-  const live = loadLive(asset.slug);
   const discovered = snapshots.map((s) => s.discovered);
   const powers = analyzePowers(discovered);
   const score = scoreAsset(asset, discovered, live);
@@ -107,20 +108,21 @@ function buildProfile(asset: Asset): AssetProfile {
     powers,
     stats,
     flags: computeFlags(powers, live, stats),
-    alerts: loadAlerts().alerts.filter((a) => a.asset === asset.slug),
+    alerts: alerts.filter((a) => a.asset === asset.slug),
   };
 }
 
-let profilesCache: AssetProfile[] | undefined;
-export function getProfiles(): AssetProfile[] {
-  profilesCache ??= loadAssets()
-    .map(buildProfile)
+// Deduplicated per request; live data and alerts may come from Postgres.
+export const getProfiles = cache(async (): Promise<AssetProfile[]> => {
+  const assets = loadAssets();
+  const [lives, { alerts }] = await Promise.all([Promise.all(assets.map(getLive)), getAlerts()]);
+  return assets
+    .map((asset, i) => buildProfile(asset, lives[i], alerts))
     .sort((a, b) => (b.stats.aumUsd ?? 0) - (a.stats.aumUsd ?? 0));
-  return profilesCache;
-}
+});
 
-export function getProfile(slug: string): AssetProfile | undefined {
-  return getProfiles().find((p) => p.asset.slug === slug);
+export async function getProfile(slug: string): Promise<AssetProfile | undefined> {
+  return (await getProfiles()).find((p) => p.asset.slug === slug);
 }
 
 export function addressLabel(profile: AssetProfile, address: string): string | undefined {
@@ -144,9 +146,9 @@ export interface SearchItem {
   keywords: string;
 }
 
-export function searchIndex(): SearchItem[] {
+export async function searchIndex(): Promise<SearchItem[]> {
   const items: SearchItem[] = [];
-  for (const p of getProfiles()) {
+  for (const p of await getProfiles()) {
     const { asset } = p;
     items.push({
       id: `asset-${asset.slug}`,

@@ -5,19 +5,19 @@ import { StatCard } from "@/components/data/stat-card";
 import { AssetsTable } from "@/components/home/assets-table";
 import { RiskOverview } from "@/components/home/risk-overview";
 import { Card } from "@/components/ui/card";
-import { loadAlerts } from "@/lib/data";
+import { getAlerts } from "@/lib/live-store";
 import { formatPct, formatUsd, formatUsdFull } from "@/lib/format";
 import { getProfiles } from "@/lib/profile";
 import { assetRows, sliceDistribution } from "@/lib/rows";
 import { bestMethod, passCount } from "@/lib/scoring/verification";
 import { SITE } from "@/lib/site";
 
-export const revalidate = 3600;
+export const revalidate = 300;
 
-export default function HomePage() {
-  const profiles = getProfiles();
-  const rows = assetRows();
-  const { alerts, sample: alertsSample } = loadAlerts();
+export default async function HomePage() {
+  const profiles = (await getProfiles());
+  const rows = await assetRows();
+  const { alerts, sample: alertsSample } = (await getAlerts());
   const tickers = new Map(profiles.map((p) => [p.asset.slug, p.asset.ticker]));
 
   const total = profiles.reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
@@ -94,7 +94,7 @@ export default function HomePage() {
             }
           >
             {alerts.length === 0 && (
-              <p className="text-small text-fg-muted">No alerts yet. The event watcher is not running.</p>
+              <p className="text-small text-fg-muted">No alerts yet. The event watcher checks every tracked contract for upgrades, role changes and pauses.</p>
             )}
             <ul className="divide-y divide-line">
               {alerts.slice(0, 5).map((a) => (

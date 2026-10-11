@@ -40,8 +40,8 @@ export function toRow(p: AssetProfile): AssetRow {
   };
 }
 
-export function assetRows(): AssetRow[] {
-  return getProfiles().map(toRow);
+export async function assetRows(): Promise<AssetRow[]> {
+  return (await getProfiles()).map(toRow);
 }
 
 export interface SliceDistribution {

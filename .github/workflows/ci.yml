@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - name: Validate data (schemas, sources, entity references, staleness)
+        run: bun run validate
+      - name: Typecheck
+        run: bunx tsc --noEmit
+      - name: Build
+        run: bun run build

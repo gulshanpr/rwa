@@ -10,6 +10,13 @@ Changes to the framework, scoring rules and data. Every entry links to the pull 
 - Exit: suspension or gating terms that are not public cap the slice at yellow.
 - Control: privileged functions no handler recognizes are listed as "unclassified" and don't change the color.
 
+## Data, 11 Oct 2026 (automation)
+
+- BUIDL: permissions now come from the discovery tool at block 26,168,531 (14 contracts, 240 permissions). It runs nightly and opens a pull request when anything changes.
+- BUIDL: role-holding DS Protocol services and owned contracts are scored through the keys that control them.
+- BUIDL: AUM now comes from DefiLlama (all chains). Supply, oracle age, Morpho and Aave exposure update on a schedule.
+- Alerts: the event watcher reports upgrades, owner and role changes, pauses, seizures, large mints and burns, new SEC filings and LEI changes.
+
 ## Data, 11 Oct 2026
 
 - BUIDL: replaced all seed data with the Phase 0 review. Profile facts are sourced from Securitize, SEC EDGAR, GLEIF and the BVI FSC.

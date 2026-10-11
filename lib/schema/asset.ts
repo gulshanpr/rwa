@@ -118,6 +118,7 @@ export const AssetSchema = z.object({
 
   externalIds: z.object({
     defillama: z.string().nullable().default(null),
+    defillamaStablecoin: z.string().nullable().default(null),
     rwaxyz: z.string().nullable().default(null),
     coingecko: z.string().nullable().default(null),
   }),

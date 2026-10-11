@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/asset-classes/[cl
 
 export default async function AssetClassPage({ params }: PageProps<"/asset-classes/[class]">) {
   const cls = assetClassFromPath((await params).class) ?? notFound();
-  const rows = assetRows();
+  const rows = await assetRows();
   const count = rows.filter((r) => r.assetClass === cls).length;
 
   return (

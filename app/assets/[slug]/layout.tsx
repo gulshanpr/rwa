@@ -13,14 +13,15 @@ import { POWER_LABELS } from "@/lib/scoring/control";
 import type { SliceColor } from "@/lib/scoring/types";
 
 export const dynamicParams = false;
+export const revalidate = 300;
 
-export function generateStaticParams() {
-  return getProfiles().map((p) => ({ slug: p.asset.slug }));
+export async function generateStaticParams() {
+  return (await getProfiles()).map((p) => ({ slug: p.asset.slug }));
 }
 
 export async function generateMetadata({ params }: LayoutProps<"/assets/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const p = getProfile(slug);
+  const p = (await getProfile(slug));
   if (!p) return {};
   return {
     title: `${p.asset.ticker} risk profile`,
@@ -36,7 +37,7 @@ const FRESHNESS: Record<string, { color: SliceColor; label: string }> = {
 
 export default async function AssetLayout({ children, params }: LayoutProps<"/assets/[slug]">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, stats, entities } = profile;
   const cls = ASSET_CLASSES[asset.assetClass];
 

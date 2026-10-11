@@ -89,6 +89,8 @@ export function holderLabel(holder: Holder | undefined): string {
       return `Timelock ${formatDuration(holder.minDelaySeconds)}`;
     case "proxy-admin":
       return "ProxyAdmin";
+    case "contract":
+      return holder.name;
     case "contract-unknown":
       return "Unknown contract";
   }
@@ -99,8 +101,9 @@ export function lookupHolder(discovered: Discovered, address: string): Holder | 
   return key ? discovered.holders[key] : undefined;
 }
 
-export function resolveHolder(discovered: Discovered, address: string, depth = 0): ResolvedHolder {
+export function resolveHolder(discovered: Discovered, address: string, depth = 0, visited = new Set<string>()): ResolvedHolder {
   const holder = lookupHolder(discovered, address);
+  visited.add(address.toLowerCase());
   const step: HolderStep = { address, kind: holder?.kind ?? "contract-unknown", label: holderLabel(holder) };
   const unknown: ResolvedHolder = {
     address,
@@ -126,12 +129,20 @@ export function resolveHolder(discovered: Discovered, address: string, depth = 0
         path: [step],
       };
     case "proxy-admin": {
-      const inner = resolveHolder(discovered, holder.owner, depth + 1);
+      const inner = resolveHolder(discovered, holder.owner, depth + 1, visited);
       return { ...inner, address, path: [step, ...inner.path] };
+    }
+    case "contract": {
+      const controllers = holder.controllers.filter((c) => !visited.has(c.toLowerCase()));
+      if (controllers.length === 0) return unknown;
+      const worst = controllers
+        .map((c) => resolveHolder(discovered, c, depth + 1, new Set(visited)))
+        .reduce((a, b) => (CLASS_RANK[b.holderClass] > CLASS_RANK[a.holderClass] ? b : a));
+      return { ...worst, address, path: [step, ...worst.path] };
     }
     case "timelock": {
       const worst = holder.proposers
-        .map((p) => resolveHolder(discovered, p, depth + 1))
+        .map((p) => resolveHolder(discovered, p, depth + 1, visited))
         .reduce((a, b) => (CLASS_RANK[b.holderClass] > CLASS_RANK[a.holderClass] ? b : a));
       return {
         ...worst,

@@ -1,0 +1,30 @@
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import * as schema from "./schema";
+
+export type Db = PostgresJsDatabase<typeof schema>;
+
+let instance: { db: Db; sql: postgres.Sql } | undefined;
+
+export function hasDatabase(): boolean {
+  return Boolean(process.env.DATABASE_URL);
+}
+
+export function getDb(): Db {
+  if (!instance) {
+    const url = process.env.DATABASE_URL;
+    if (!url) throw new Error("DATABASE_URL is not set. For local use run `bun run db:local` and set DATABASE_URL=postgres://postgres@localhost:5433/postgres");
+    // PGlite's socket server accepts one connection and no prepared statements.
+    const local = /localhost|127\.0\.0\.1/.test(url);
+    const sql = postgres(url, { max: local ? 1 : 5, prepare: !local, onnotice: () => {} });
+    instance = { db: drizzle(sql, { schema }), sql };
+  }
+  return instance.db;
+}
+
+export async function closeDb() {
+  await instance?.sql.end({ timeout: 5 });
+  instance = undefined;
+}
+
+export { schema };

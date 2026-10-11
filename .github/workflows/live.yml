@@ -1,0 +1,49 @@
+name: Live data
+
+# Runs every job that is due (each job keeps its own schedule in the database):
+# watcher and oracles every run, supply/morpho/aave hourly, aum 6-hourly, edgar daily, gleif weekly.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      jobs:
+        description: "Job names to force-run, space separated (empty = whatever is due)"
+        required: false
+
+permissions:
+  contents: read
+  actions: write # lets alerts dispatch discover.yml for the affected asset
+
+concurrency:
+  group: live
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      RPC_URL_ETHEREUM: ${{ secrets.RPC_URL_ETHEREUM }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+      SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      SITE_URL: ${{ vars.SITE_URL }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+
+      - uses: actions/cache@v4
+        with:
+          path: .cache/sources
+          key: sources-${{ hashFiles('discovered/**/*.json') }}
+          restore-keys: sources-
+
+      - run: bun run db:migrate
+      - run: bun run worker --once ${{ inputs.jobs }}

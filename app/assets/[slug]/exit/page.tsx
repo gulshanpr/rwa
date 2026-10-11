@@ -21,7 +21,7 @@ const GATE_LABELS = {
 
 export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exit">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score } = profile;
   const { redemption, instantLiquidity } = asset.exit;
 

@@ -13,7 +13,7 @@ export const generateMetadata = tabMetadata("Verification");
 
 export default async function VerificationPage({ params }: PageProps<"/assets/[slug]/verification">) {
   const { slug } = await params;
-  const profile = getProfile(slug) ?? notFound();
+  const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score } = profile;
   const slice = score.slices.verification;
   const best = bestMethod(asset);
