@@ -10,6 +10,12 @@ Changes to the framework, scoring rules and data. Every entry links to the pull 
 - Exit: suspension or gating terms that are not public cap the slice at yellow.
 - Control: privileged functions no handler recognizes are listed as "unclassified" and don't change the color.
 
+## Data, 11 Oct 2026
+
+- BUIDL: replaced all seed data with the Phase 0 review. Profile facts are sourced from Securitize, SEC EDGAR, GLEIF and the BVI FSC.
+- BUIDL: permissions are a manual onchain snapshot at block 26,168,303. One EOA can upgrade the token and its services, and holds the MASTER role.
+- BUIDL: the price source is the RedStone BUIDL_FUNDAMENTAL feed. Morpho has no funded BUIDL markets. Alerts are empty until the event watcher runs.
+
 ## Data, 6 Oct 2026
 
 - Added BUIDL (BlackRock USD Institutional Digital Liquidity Fund) as the first profile, Ethereum deployment only.

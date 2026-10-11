@@ -34,7 +34,7 @@ export const LiveSchema = z.object({
   ),
   aum: z.object({
     usd: z.number(),
-    usd30dAgo: z.number(),
+    usd30dAgo: z.number().optional(),
     source: z.object({ name: z.string(), url: z.url() }),
   }),
   oracle: z.object({

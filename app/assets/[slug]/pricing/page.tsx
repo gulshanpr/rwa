@@ -57,7 +57,11 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
                 { label: "Provider", value: entityName(ref.provider), source: ref.source },
                 {
                   label: "Feed contract",
-                  value: <AddressChip address={ref.address} chain={ref.chain} kind="contract" label={CHAINS[ref.chain].name} />,
+                  value: ref.address ? (
+                    <AddressChip address={ref.address} chain={ref.chain} kind="contract" label={CHAINS[ref.chain].name} />
+                  ) : (
+                    <span className="text-fg-muted">Not recorded yet</span>
+                  ),
                 },
                 { label: "Who writes it", value: WRITER_LABELS[ref.writer], source: ref.source },
                 { label: "Data comes from", value: ORIGIN_LABELS[ref.dataOrigin], source: ref.source },

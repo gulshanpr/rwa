@@ -1,73 +1,19 @@
 {
   "asset": "buidl",
-  "sample": true,
-  "asOf": "2026-10-05T12:00:00Z",
+  "asOf": "2026-10-11T09:48:23Z",
   "supply": [
-    { "chain": "ethereum", "totalSupply": 443200000, "priceUsd": 1, "source": "totalSupply() at block 23500000" }
+    { "chain": "ethereum", "totalSupply": 195722203.84, "priceUsd": 1, "source": "totalSupply() at block 26168366; price from RedStone BUIDL_FUNDAMENTAL" }
   ],
   "aum": {
-    "usd": 2250000000,
-    "usd30dAgo": 2812500000,
-    "source": { "name": "DefiLlama", "url": "https://defillama.com/rwa" }
+    "usd": 2218171956.83,
+    "source": { "name": "Securitize (all chains, as of 2026-10-10)", "url": "https://securitize.io/blackrock/buidl" }
   },
   "oracle": {
     "chain": "ethereum",
-    "address": "0x0ac1e00000000000000000000000000000000001",
+    "address": "0xb9BD795BB71012c0F3cd1D9c9A4c686F2d3524A4",
     "value": 1,
-    "updatedAt": "2026-10-05T08:48:00Z"
+    "updatedAt": "2026-10-10T14:25:35Z"
   },
-  "defiMarkets": [
-    {
-      "marketId": "morpho-buidl-usdc",
-      "protocol": "morpho",
-      "name": "BUIDL / USDC",
-      "chain": "ethereum",
-      "loanAsset": "USDC",
-      "lltv": 0.915,
-      "oracle": {
-        "address": "0x0ac1e00000000000000000000000000000000002",
-        "type": "fixed",
-        "description": "Fixed $1.00, no NAV check"
-      },
-      "collateralUsd": 28400000,
-      "borrowUsd": 19100000,
-      "supplyUsd": 24000000,
-      "url": "https://app.morpho.org"
-    },
-    {
-      "marketId": "morpho-buidl-usdt",
-      "protocol": "morpho",
-      "name": "BUIDL / USDT",
-      "chain": "ethereum",
-      "loanAsset": "USDT",
-      "lltv": 0.86,
-      "oracle": {
-        "address": "0x0ac1e00000000000000000000000000000000001",
-        "type": "nav-feed",
-        "description": "Chronicle BUIDL NAV feed"
-      },
-      "collateralUsd": 7600000,
-      "borrowUsd": 4200000,
-      "supplyUsd": 6000000,
-      "url": "https://app.morpho.org"
-    },
-    {
-      "marketId": "euler-buidl",
-      "protocol": "euler",
-      "name": "BUIDL collateral vault",
-      "chain": "ethereum",
-      "loanAsset": "USDC",
-      "lltv": 0.9,
-      "oracle": {
-        "address": "0x0ac1e00000000000000000000000000000000003",
-        "type": "fixed",
-        "description": "Fixed $1.00, no NAV check"
-      },
-      "collateralUsd": 5200000,
-      "borrowUsd": 2900000,
-      "supplyUsd": 4100000,
-      "url": "https://app.euler.finance"
-    }
-  ],
-  "defiSource": { "name": "Morpho API and Euler API", "url": "https://api.morpho.org/graphql" }
+  "defiMarkets": [],
+  "defiSource": { "name": "Morpho API (Aave and Euler not checked yet)", "url": "https://api.morpho.org/graphql" }
 }

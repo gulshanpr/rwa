@@ -23,9 +23,14 @@ export function scoreExit(asset: Asset): SliceResult {
     return sliceFromReasons("exit", reasons, "");
   }
 
-  const days = settlementDays(redemption.settlement.value);
-  if (days > 5) add("slow", "red", `Redemption takes ${redemption.settlement.value}, longer than T+5.`);
-  else if (days > 1) add("t5", "yellow", `Redemption settles at ${redemption.settlement.value}, slower than T+1.`);
+  const settlement = redemption.settlement;
+  if (settlement.status !== "public") {
+    add("settlement-unknown", "yellow", "The redemption settlement time is not public.");
+  } else {
+    const days = settlementDays(settlement.value);
+    if (days > 5) add("slow", "red", `Redemption takes ${settlement.value}, longer than T+5.`);
+    else if (days > 1) add("t5", "yellow", `Redemption settles at ${settlement.value}, slower than T+1.`);
+  }
 
   const gates = redemption.gatesOrSuspension;
   if (gates.status === "public" && gates.value === "issuer-discretion")
@@ -36,8 +41,8 @@ export function scoreExit(asset: Asset): SliceResult {
   if (redemption.whoCanRedeem.value === "issuer-approved")
     add("approval", "yellow", "Each redemption needs case-by-case approval from the issuer.");
 
-  const instant = instantLiquidity.filter(
-    (l) => l.type === "offramp-contract" || (l.depthPctOfSupply ?? 0) >= 2,
+  const instant = instantLiquidity.filter((l) =>
+    l.type === "offramp-contract" ? l.depthPctOfSupply !== 0 : (l.depthPctOfSupply ?? 0) >= 2,
   );
   if (instant.length === 0)
     add("no-instant", "yellow", "There's no onchain way to exit instantly; redemption goes through the issuer.");
@@ -45,6 +50,8 @@ export function scoreExit(asset: Asset): SliceResult {
   return sliceFromReasons(
     "exit",
     reasons,
-    `Redemption at ${redemption.settlement.value}, plus an onchain instant exit.`,
+    settlement.status === "public"
+      ? `Redemption at ${settlement.value}, plus an onchain instant exit.`
+      : "Redemption plus an onchain instant exit.",
   );
 }

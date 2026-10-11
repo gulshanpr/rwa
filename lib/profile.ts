@@ -83,7 +83,7 @@ function buildProfile(asset: Asset): AssetProfile {
 
   const stats: AssetStats = {
     aumUsd: live?.aum.usd,
-    aumDelta30d: live ? live.aum.usd / live.aum.usd30dAgo - 1 : undefined,
+    aumDelta30d: live?.aum.usd30dAgo ? live.aum.usd / live.aum.usd30dAgo - 1 : undefined,
     adminRoles: powers.filter((r) => r.criticality !== "unclassified").length,
     singleKeyPowers: powers.filter((r) => r.criticality === "critical" && isSingleKey(r)).length,
     singleKeyOther: powers.filter((r) => r.criticality === "high" && isSingleKey(r)).map((r) => r.power),

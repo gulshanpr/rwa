@@ -45,7 +45,7 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
                 value: WHO_CAN_REDEEM_LABELS[redemption.whoCanRedeem.value],
                 source: redemption.whoCanRedeem.source,
               },
-              { label: "Settlement", value: redemption.settlement.value, source: redemption.settlement.source },
+              disclosedFact("Settlement", redemption.settlement),
               ...(redemption.minimum
                 ? [
                     {

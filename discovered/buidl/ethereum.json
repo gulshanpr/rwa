@@ -1,110 +1,68 @@
 {
   "asset": "buidl",
   "chain": "ethereum",
-  "block": 23500000,
-  "timestamp": "2026-10-05T00:00:00Z",
+  "block": 26168303,
+  "timestamp": "2026-10-11T09:30:00Z",
   "contracts": {
     "0x7712c34205737192402172409a8F7ccef8aA2AEc": {
       "name": "DSToken",
       "role": "token",
       "proxy": {
-        "type": "eip1967",
-        "implementation": "0xc0de00000000000000000000000000000000f001",
-        "admin": "0xad1100000000000000000000000000000000a001"
+        "type": "custom",
+        "implementation": "0x603bb6909be14f83282e03632280d91be7fb83b2",
+        "admin": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e"
       },
       "verified": true,
       "permissions": [
-        { "power": "upgrade", "holder": "0xad1100000000000000000000000000000000a001", "via": "eip1967.admin" },
-        { "power": "mint", "holder": "0x5afe00000000000000000000000000000000b002", "via": "DSToken.issueTokens / role ISSUER" },
-        { "power": "force-transfer", "holder": "0x5afe00000000000000000000000000000000c003", "via": "DSToken.seize / role TRANSFER_AGENT" },
-        { "power": "burn-from", "holder": "0x5afe00000000000000000000000000000000c003", "via": "DSToken.burn / role TRANSFER_AGENT" },
-        { "power": "pause", "holder": "0xde1a00000000000000000000000000000000d001", "via": "DSToken.pause / role MASTER" },
-        { "power": "unclassified", "holder": "0x5afe00000000000000000000000000000000a001", "via": "DSToken.setDSService()" }
+        { "power": "upgrade", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "Proxy.setTarget / onlyOwner" },
+        { "power": "admin", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "Proxy.setOwner / onlyOwner" },
+        { "power": "mint", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "DSToken.issueTokens / role MASTER (ISSUER holders not enumerated)" },
+        { "power": "force-transfer", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "DSToken.seize / role MASTER (TRANSFER_AGENT holders not enumerated)" },
+        { "power": "burn-from", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "DSToken.burn / role MASTER (ISSUER, TRANSFER_AGENT holders not enumerated)" },
+        { "power": "pause", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "DSToken.pause / role MASTER (TRANSFER_AGENT holders not enumerated)" },
+        { "power": "set-compliance", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "DSToken.setDSService / onlyMaster" }
       ]
     },
-    "0xad1100000000000000000000000000000000a001": {
-      "name": "ProxyAdmin",
-      "role": "proxy-admin",
-      "verified": true,
-      "permissions": []
-    },
-    "0xc0de00000000000000000000000000000000e001": {
+    "0x3a68756d0335E75C909bA1e8fEFC1D4832C36c60": {
       "name": "TrustService",
       "role": "service",
+      "proxy": { "type": "custom", "implementation": "0x7de4c180238d31fc8bc9223c14cc71713b4fd336", "admin": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e" },
       "verified": true,
       "permissions": [
-        { "power": "admin", "holder": "0x5afe00000000000000000000000000000000a001", "via": "TrustService.setRole / role MASTER" }
+        { "power": "upgrade", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "Proxy.setTarget / onlyOwner" },
+        { "power": "admin", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "TrustService.setRole / role MASTER" }
       ]
     },
-    "0xc0de00000000000000000000000000000000e002": {
+    "0x0Dac900f26DE70336f2320F7CcEDeE70fF6A1a5B": {
       "name": "RegistryService",
       "role": "service",
+      "proxy": { "type": "custom", "implementation": "0x21381ee923a4555b1244bdd63adcab15c668ae10", "admin": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e" },
       "verified": true,
       "permissions": [
-        { "power": "set-compliance", "holder": "0x5afe00000000000000000000000000000000b002", "via": "RegistryService.registerInvestor / role ISSUER" }
+        { "power": "upgrade", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "Proxy.setTarget / onlyOwner" },
+        { "power": "set-compliance", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "RegistryService.registerInvestor / role MASTER (EXCHANGE holders not enumerated)" }
       ]
     },
-    "0xc0de00000000000000000000000000000000e003": {
+    "0x07A1EBFb9a9A421249DDC71Bddb8860cc077E3a9": {
       "name": "ComplianceService",
+      "role": "service",
+      "proxy": { "type": "custom", "implementation": "0x53a8a0532592992533323ab9a45a591ac3b56076", "admin": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e" },
+      "verified": true,
+      "permissions": [
+        { "power": "upgrade", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "Proxy.setTarget / onlyOwner" },
+        { "power": "set-compliance", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "ComplianceService rules / role MASTER" }
+      ]
+    },
+    "0x0A65a40a4B2F64D3445A628aBcFC8128625483A4": {
+      "name": "LockManager (service id 64, name unconfirmed)",
       "role": "service",
       "verified": true,
       "permissions": [
-        { "power": "freeze", "holder": "0xe0a0000000000000000000000000000000000001", "via": "ComplianceService.lockTokens / role EXCHANGE" },
-        { "power": "set-compliance", "holder": "0x5afe00000000000000000000000000000000b002", "via": "ComplianceConfigurationService.setAll / role ISSUER" }
+        { "power": "freeze", "holder": "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e", "via": "LockManager.addManualLockRecord / role MASTER (EXCHANGE holders not enumerated)" }
       ]
     }
   },
   "holders": {
-    "0xad1100000000000000000000000000000000a001": {
-      "kind": "proxy-admin",
-      "owner": "0x5afe00000000000000000000000000000000a001"
-    },
-    "0x5afe00000000000000000000000000000000a001": {
-      "kind": "safe",
-      "threshold": 4,
-      "owners": [
-        "0x51e00000000000000000000000000000000a0001",
-        "0x51e00000000000000000000000000000000a0002",
-        "0x51e00000000000000000000000000000000a0003",
-        "0x51e00000000000000000000000000000000a0004",
-        "0x51e00000000000000000000000000000000a0005",
-        "0x51e00000000000000000000000000000000a0006",
-        "0x51e00000000000000000000000000000000a0007"
-      ],
-      "modules": []
-    },
-    "0x5afe00000000000000000000000000000000b002": {
-      "kind": "safe",
-      "threshold": 3,
-      "owners": [
-        "0x51e00000000000000000000000000000000b0001",
-        "0x51e00000000000000000000000000000000b0002",
-        "0x51e00000000000000000000000000000000b0003",
-        "0x51e00000000000000000000000000000000b0004",
-        "0x51e00000000000000000000000000000000b0005"
-      ],
-      "modules": []
-    },
-    "0x5afe00000000000000000000000000000000c003": {
-      "kind": "safe",
-      "threshold": 3,
-      "owners": [
-        "0x51e00000000000000000000000000000000c0001",
-        "0x51e00000000000000000000000000000000c0002",
-        "0x51e00000000000000000000000000000000c0003",
-        "0x51e00000000000000000000000000000000c0004",
-        "0x51e00000000000000000000000000000000c0005"
-      ],
-      "modules": []
-    },
-    "0xde1a00000000000000000000000000000000d001": {
-      "kind": "timelock",
-      "minDelaySeconds": 172800,
-      "proposers": ["0x5afe00000000000000000000000000000000a001"],
-      "executors": ["0x0000000000000000000000000000000000000000"]
-    },
-    "0xe0a0000000000000000000000000000000000001": {
-      "kind": "eoa"
-    }
+    "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e": { "kind": "eoa" }
   }
 }

@@ -29,7 +29,7 @@ const PriceReference = z.discriminatedUnion("type", [
     type: z.literal("oracle"),
     provider: z.string(),
     chain: Chain,
-    address: Address,
+    address: Address.optional(),
     writer: z.enum(["eoa", "issuer-multisig", "single-provider", "oracle-network"]),
     dataOrigin: z.enum(["issuer", "fund-administrator", "custodian"]),
     cadenceSeconds: z.number().int().positive(),
@@ -109,7 +109,7 @@ export const AssetSchema = z.object({
     redemption: z.object({
       available: Sourced(z.boolean()),
       whoCanRedeem: Sourced(z.enum(["all-holders", "whitelisted-holders", "issuer-approved"])),
-      settlement: Sourced(z.string().regex(/^T\+\d+$/)),
+      settlement: Disclosed(z.string().regex(/^T\+\d+$/)),
       minimum: Sourced(z.number()).optional(),
       gatesOrSuspension: Disclosed(z.enum(["none", "stated-limits", "issuer-discretion"])),
     }),

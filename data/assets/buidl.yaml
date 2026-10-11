@@ -1,12 +1,11 @@
-# Seed profile for the frontend preview. Values follow docs/TECH_SPEC.md §4.2 and
-# must be re-verified against primary sources (Phase 0 review) before launch.
+# Phase 0 review: research/buidl.md (2026-10-11).
 slug: buidl
-sample: true
 name: BlackRock USD Institutional Digital Liquidity Fund
 ticker: BUIDL
 assetClass: us-treasuries
 description: >
-  Tokenized money market fund investing in cash, US Treasury bills and repo.
+  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash,
+  US Treasury bills, notes and repurchase agreements. Yield is paid monthly as new tokens.
 issuer: blackrock-buidl-fund-ltd
 manager: blackrock
 platform: securitize
@@ -19,78 +18,78 @@ deployments:
     discovery:
       ignoreMethods: []
       labels:
-        "0x5afe00000000000000000000000000000000a001": Securitize upgrade Safe
-        "0x5afe00000000000000000000000000000000b002": Issuer operations Safe
-        "0x5afe00000000000000000000000000000000c003": Transfer agent Safe
-        "0xe0a0000000000000000000000000000000000001": Compliance operator key
+        "0xe01605f6b6dc593b7d2917f4a0940db2a625b09e": DS Protocol master key
+        "0x3a68756d0335E75C909bA1e8fEFC1D4832C36c60": TrustService
+        "0x0Dac900f26DE70336f2320F7CcEDeE70fF6A1a5B": RegistryService
+        "0x07A1EBFb9a9A421249DDC71Bddb8860cc077E3a9": ComplianceService
 
 access:
   investorType:
     value: qualified-purchaser
-    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+    source: { url: "https://cranedata.com/archives/all-articles/10236/", note: "ICA 3(c)(7), Reg D 506(c)", checkedAt: 2026-10-11 }
   minimumInvestment:
     value: 5000000
-    source: { url: "https://securitize.io/blackrock/buidl", note: "Fund overview", checkedAt: 2026-10-05 }
+    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-11 }
   transferRestricted:
     value: true
-    source: { url: "https://etherscan.io/token/0x7712c34205737192402172409a8F7ccef8aA2AEc", note: "DS Protocol compliance service checks every transfer", checkedAt: 2026-10-05 }
+    source: { url: "https://securitize.io/blackrock/buidl", note: "Disclaimer: transfer of shares is subject to limitations in the fund's Articles", checkedAt: 2026-10-11 }
 
 serviceProviders:
   custodian:
     status: public
     value: bny
-    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+    source: { url: "https://securitize.io/blackrock/buidl", note: "Fund Service Providers: Fund Administrator & Custodian", checkedAt: 2026-10-11 }
   fundAdministrator:
     status: public
-    value: securitize
-    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+    value: bny
+    source: { url: "https://securitize.io/blackrock/buidl", note: "Fund Service Providers: Fund Administrator & Custodian", checkedAt: 2026-10-11 }
   auditor:
     status: public
     value: pwc
-    source: { url: "https://securitize.io/blackrock/buidl", note: "Fund fact sheet", checkedAt: 2026-10-05 }
+    source: { url: "https://securitize.io/blackrock/buidl", note: "Fund Service Providers: Fund Auditor", checkedAt: 2026-10-11 }
   transferAgent:
     status: public
     value: securitize
-    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-11 }
 
 legal:
   vehicleType:
     status: public
-    value: BVI business company (fund)
-    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002013810", note: "Form D, Item 3", checkedAt: 2026-10-05 }
+    value: BVI professional fund (company limited by shares)
+    source: { url: "https://www.bvifsc.vg/regulated-entities/blackrock-usd-institutional-digital-liquidity-fund-ltd", checkedAt: 2026-10-11 }
   jurisdiction:
     status: public
     value: British Virgin Islands
-    source: { url: "https://search.gleif.org/#/record/529900P1LBVZISCTYK24", checkedAt: 2026-10-05 }
+    source: { url: "https://securitize.io/blackrock/buidl", note: "Key facts: Domicile", checkedAt: 2026-10-11 }
   lei:
     status: public
     value: 529900P1LBVZISCTYK24
-    source: { url: "https://search.gleif.org/#/record/529900P1LBVZISCTYK24", checkedAt: 2026-10-05 }
+    source: { url: "https://search.gleif.org/#/record/529900P1LBVZISCTYK24", checkedAt: 2026-10-11 }
   secFilings:
     status: public
-    value: { cik: "0002013810", forms: [D] }
-    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002013810", checkedAt: 2026-10-05 }
+    value: { cik: "0002013810", forms: [D, D/A] }
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002013810", checkedAt: 2026-10-11 }
   offeringDocument:
     status: not_public
-    searchedAt: 2026-10-05
-    note: Available to onboarded investors only
+    searchedAt: 2026-10-11
+    note: The Confidential Private Offering Memorandum is available to eligible investors only
   auditedFinancials:
     status: not_public
-    searchedAt: 2026-10-05
+    searchedAt: 2026-10-11
   insolvency:
     status: unknown
 
 pricing:
   reference:
     type: oracle
-    provider: chronicle
+    provider: redstone
     chain: ethereum
-    address: "0x0ac1e00000000000000000000000000000000001"
-    writer: oracle-network
-    dataOrigin: fund-administrator
+    address: "0xb9BD795BB71012c0F3cd1D9c9A4c686F2d3524A4"
+    writer: single-provider
+    dataOrigin: issuer
     cadenceSeconds: 86400
-    historyOnchain: true
-    source: { url: "https://chroniclelabs.org/dashboard/proof-of-asset", checkedAt: 2026-10-05 }
+    historyOnchain: false
+    source: { url: "https://etherscan.io/address/0xb9BD795BB71012c0F3cd1D9c9A4c686F2d3524A4#code", note: "RedStone BUIDL_FUNDAMENTAL, linked from the Securitize page. PriceFeedWithoutRounds keeps only the latest value. NAV data from Securitize. 24h heartbeat.", checkedAt: 2026-10-11 }
 
 verification:
   methods:
@@ -101,34 +100,34 @@ verification:
       frequency: daily
       cryptographicallyVerifiable: true
       onchain: true
-      feed: { chain: ethereum, address: "0x0ac1e00000000000000000000000000000000001" }
-      source: { url: "https://chroniclelabs.org/dashboard/proof-of-asset", checkedAt: 2026-10-05 }
+      feed: { chain: ethereum, address: "0x8c68E0CacB61a065b99E2104457aCC829d61cbB0" }
+      source: { url: "https://chroniclelabs.org/blog/buidl-tokenized-by-securitize-is-now-verified-onchain-by-chronicle-proof-of-asset", note: "Router reads are whitelisted; cadence is Chronicle's own claim", checkedAt: 2026-10-11 }
 
 exit:
   redemption:
     available:
       value: true
-      source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+      source: { url: "https://securitize.io/blackrock/buidl", note: "Redemption deadline 3:00 PM ET, business days", checkedAt: 2026-10-11 }
     whoCanRedeem:
       value: whitelisted-holders
-      source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+      source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-11 }
     settlement:
-      value: T+0
-      source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
-    minimum:
-      value: 250000
-      source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+      status: not_public
+      searchedAt: 2026-10-11
+      note: Only daily dealing is published; no T+N settlement time
     gatesOrSuspension:
-      status: unknown
-      note: Suspension terms are expected in the offering memorandum, which is not public
+      status: not_public
+      searchedAt: 2026-10-11
+      note: Expected in the offering memorandum, which is not public
   instantLiquidity:
     - type: offramp-contract
-      label: USDC redemption facility
+      label: Circle USDC redemption facility
       chain: ethereum
-      address: "0x0ff0000000000000000000000000000000000001"
-      source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-05 }
+      address: "0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53"
+      depthPctOfSupply: 0
+      source: { url: "https://etherscan.io/address/0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53", note: "availableLiquidity() = 0 at block 26,168,303", checkedAt: 2026-10-11 }
 
 externalIds:
   defillama: blackrock-buidl
   rwaxyz: BUIDL
-  coingecko: null
+  coingecko: blackrock-usd-institutional-digital-liquidity-fund

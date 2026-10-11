@@ -21,6 +21,7 @@ export default function HomePage() {
   const tickers = new Map(profiles.map((p) => [p.asset.slug, p.asset.ticker]));
 
   const total = profiles.reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
+  const has30d = profiles.length > 0 && profiles.every((p) => p.live?.aum.usd30dAgo !== undefined);
   const total30d = profiles.reduce((s, p) => s + (p.live?.aum.usd30dAgo ?? 0), 0);
   const eoaValue = profiles.filter((p) => p.stats.singleKeyPowers > 0).reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
   const verifiedValue = profiles
@@ -52,11 +53,11 @@ export default function HomePage() {
         />
         <StatCard
           label="Value covered"
-          info="Combined assets under management of tracked assets, from DefiLlama (attributed)."
+          info="Combined assets under management of tracked assets, as published by each asset's AUM source."
           infoHref="/methodology#data"
           value={formatUsd(total)}
           valueTitle={formatUsdFull(total)}
-          delta={{ value: formatPct(Math.abs(delta), 1), direction: delta >= 0 ? "up" : "down", suffix: "30d" }}
+          delta={has30d ? { value: formatPct(Math.abs(delta), 1), direction: delta >= 0 ? "up" : "down", suffix: "30d" } : undefined}
         />
         <StatCard
           label="Value with single-key critical powers"
@@ -92,6 +93,9 @@ export default function HomePage() {
               </Link>
             }
           >
+            {alerts.length === 0 && (
+              <p className="text-small text-fg-muted">No alerts yet. The event watcher is not running.</p>
+            )}
             <ul className="divide-y divide-line">
               {alerts.slice(0, 5).map((a) => (
                 <li key={a.id} className="py-3 first:pt-0 last:pb-0">

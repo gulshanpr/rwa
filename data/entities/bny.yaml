@@ -1,5 +1,5 @@
 slug: bny
-name: BNY
-type: [custodian]
+name: The Bank of New York Mellon
+type: [custodian, fund-administrator]
 jurisdiction: US
 website: https://www.bny.com
