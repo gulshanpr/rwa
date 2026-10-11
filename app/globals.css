@@ -77,8 +77,8 @@
   --color-up: var(--up);
   --color-down: var(--down);
 
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-paper-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: var(--font-paper-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --text-display: 32px;
   --text-display--line-height: 40px;
