@@ -56,15 +56,17 @@ export function clientsFor(chain: Chain): ChainClients {
   if (hit) return hit;
   const key = chain.toUpperCase();
   const viemChain = VIEM_CHAINS[chain];
-  const urls = envList(`RPC_URL_${key}`) ?? DEFAULT_RPCS[chain];
+  const urls = [...new Set([...(envList(`RPC_URL_${key}`) ?? []), ...DEFAULT_RPCS[chain]])];
   const archiveUrl = process.env[`ARCHIVE_RPC_URL_${key}`] ?? DEFAULT_ARCHIVE_RPCS[chain];
-  const transport = (u: string, batch: boolean) =>
-    http(u, { retryCount: 4, retryDelay: 500, timeout: 30_000, ...(batch ? { batch: { batchSize: 20 } } : {}) });
+  // No JSON-RPC batching: Infura answers rate-limited batches with a bare error object
+  // that viem reads as an empty result instead of an error, so fallback never triggers.
+  const transport = (u: string) => http(u, { retryCount: 4, retryDelay: 500, timeout: 30_000 });
+  const client = createPublicClient({ chain: viemChain, transport: fallback(urls.map(transport)) }) as PublicClient;
   const result: ChainClients = {
     chain,
     chainId: viemChain.id,
-    client: createPublicClient({ chain: viemChain, transport: fallback(urls.map((u) => transport(u, true))) }) as PublicClient,
-    archive: createPublicClient({ chain: viemChain, transport: transport(archiveUrl, false) }) as PublicClient,
+    client,
+    archive: createPublicClient({ chain: viemChain, transport: transport(archiveUrl) }) as PublicClient,
     logChunk: BigInt(process.env[`LOG_CHUNK_${key}`] ?? 9_000),
   };
   cache.set(chain, result);

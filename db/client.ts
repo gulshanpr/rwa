@@ -16,7 +16,9 @@ export function getDb(): Db {
     if (!url) throw new Error("DATABASE_URL is not set. For local use run `bun run db:local` and set DATABASE_URL=postgres://postgres@localhost:5433/postgres");
     // PGlite's socket server accepts one connection and no prepared statements.
     const local = /localhost|127\.0\.0\.1/.test(url);
-    const sql = postgres(url, { max: local ? 1 : 5, prepare: !local, onnotice: () => {} });
+    // Neon's pooler (PgBouncer, transaction mode) does not support prepared statements.
+    const pooled = /-pooler\./.test(url);
+    const sql = postgres(url, { max: local ? 1 : 5, prepare: !local && !pooled, onnotice: () => {} });
     instance = { db: drizzle(sql, { schema }), sql };
   }
   return instance.db;
