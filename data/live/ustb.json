@@ -1,0 +1,49 @@
+{
+  "asset": "ustb",
+  "sample": false,
+  "asOf": "2026-10-13T17:36:48.183Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 54781043.156558,
+      "priceUsd": 11.244259,
+      "source": "totalSupply() · superstate feed"
+    }
+  ],
+  "aum": {
+    "usd": 615972237.5425156,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0xE4fA682f94610cCd170680cc3B045d77D9E528a8",
+    "value": 11.244258,
+    "updatedAt": "2026-10-13T13:14:54.000Z"
+  },
+  "defiMarkets": [
+    {
+      "marketId": "0xAe05Cd22df81871bc7cC2a04BeCfb516bFe332C8:0x43415eB6ff9DB7E26A15b704e7A3eDCe97d31C4e",
+      "protocol": "aave",
+      "name": "Aave Horizon · USTB",
+      "chain": "ethereum",
+      "loanAsset": "pool",
+      "lltv": 0.9,
+      "oracle": {
+        "address": "0x5Ae4D93B9b9626Dc3289e1Afb14b821FD3C95F44",
+        "type": "market",
+        "description": "Uses price source 0x5Ae4…5F44, not the issuer NAV feed; needs review."
+      },
+      "collateralUsd": 11671192.472675676,
+      "borrowUsd": 0,
+      "supplyUsd": 11671192.472675676,
+      "url": "https://app.aave.com/reserve-overview/?underlyingAsset=0x43415eb6ff9db7e26a15b704e7a3edce97d31c4e&marketName=proto_horizon_v3"
+    }
+  ],
+  "defiSource": {
+    "name": "Morpho API; Aave v3 Core and Horizon pools onchain",
+    "url": "https://api.morpho.org/graphql"
+  }
+}

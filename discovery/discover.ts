@@ -4,13 +4,20 @@ import { getAddress, type Address } from "viem";
 import type { Asset, Chain } from "@/lib/schema/asset";
 import { DiscoveredSchema, type Discovered, type DiscoveredMeta } from "@/lib/schema/discovered";
 import { Context } from "./context";
+import { centrifuge } from "./handlers/centrifuge";
 import { dsProtocol } from "./handlers/ds-protocol";
+import { hashnote } from "./handlers/hashnote";
 import { maplePool } from "./handlers/maple";
+import { ondo } from "./handlers/ondo";
 import { oracleFeed } from "./handlers/oracle";
 import { ozStandard } from "./handlers/oz-access-control";
+import { superstate } from "./handlers/superstate";
 import { clientsFor } from "./rpc";
 
-export const TOOL_VERSION = "discovery-0.1.0";
+export const TOOL_VERSION = "discovery-0.2.0";
+
+/** Platforms with their own handler. Each maps the token, its oracle and the contracts they rely on. */
+const PLATFORMS: Record<string, (ctx: Context, token: Address) => Promise<unknown>> = { superstate, ondo, hashnote, centrifuge };
 /** Blocks behind head, so a snapshot never lands on a block that later reorgs. */
 const CONFIRMATIONS = 12n;
 
@@ -35,6 +42,8 @@ export async function discover(asset: Asset, chain: Chain): Promise<DiscoveryRes
     extra.dsRoles = (await dsProtocol(ctx, token)).roles;
   } else if (asset.tokenStandard === "erc4626" && asset.platform === "maple") {
     extra.maple = await maplePool(ctx, token);
+  } else if (PLATFORMS[asset.platform]) {
+    extra[asset.platform] = await PLATFORMS[asset.platform](ctx, token);
   } else {
     const proxy = await ctx.detectProxy(token);
     const { src, permissions } = await ozStandard(ctx, token, proxy?.implementation ?? token, "token");
@@ -43,7 +52,7 @@ export async function discover(asset: Asset, chain: Chain): Promise<DiscoveryRes
   }
 
   const ref = asset.pricing.reference;
-  if (ref.type === "oracle" && ref.chain === chain && ref.address) await oracleFeed(ctx, getAddress(ref.address));
+  if (ref.type === "oracle" && ref.chain === chain && ref.address && !PLATFORMS[asset.platform]) await oracleFeed(ctx, getAddress(ref.address));
 
   const holders = await ctx.classifyHolders();
   const discovered = DiscoveredSchema.parse({

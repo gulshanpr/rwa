@@ -1,0 +1,150 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: jtrsy
+name: Janus Henderson Anemoy Treasury Fund
+ticker: JTRSY
+assetClass: us-treasuries
+description: >
+  Tokenized shares of a BVI professional fund holding 0–6 month US Treasury bills, with Janus Henderson as sub-manager. Runs on Centrifuge V3; subscriptions and redemptions are requests through ERC-7540 async vaults that the fund manager fills at NAV.
+issuer: anemoy-capital-spc
+manager: anemoy-asset-management
+platform: centrifuge
+tokenStandard: custom
+priceModel: accumulating-nav
+
+deployments:
+  - chain: ethereum
+    token: "0x8c213ee79581Ff4984583C6a801e5263418C4b86"
+    discovery:
+      ignoreMethods: []
+      poolId: "281474976710662"
+      labels:
+        "0x7bf090b97f896fb77e852cc98aa52a8cb7dc02ec": JTRSY hub manager (writes NAV; Vault Street says 3-signer MPC)
+        "0x95d24a7a76fe73d0b27dd6b7fdc3cc71261237a9": JTRSY balance-sheet manager
+        "0x2b0fb28ade869c3076a87bb6f787a3e616e67cfb": JTRSY balance-sheet manager Safe
+        "0x9711730060c73ee7fcfe1890e8a0993858a7d225": Centrifuge ProtocolGuardian Safe
+        "0x7ed48c31f2fdc40d37407cbabf0870b2b688368f": Centrifuge Root (shared)
+        "0xec3582fcdc34078a4b7a8c75a5a3ae46f48525ab": Centrifuge Spoke (shared)
+        "0x12a110ce5f0fc871cc72bc7ecaf35cf39dd0f43e": Centrifuge BalanceSheet (shared)
+        "0xa4a7bb3831958463b3fe3e27a6a160f764341953": Centrifuge Hub (shared)
+        "0xb6c9af6d9896c822be9e5f311dd3ead749ac3d85": OnOfframpManager (JTRSY balance-sheet manager)
+  - chain: base
+    token: "0x8c213ee79581ff4984583c6a801e5263418c4b86"
+    discovery: { poolId: "281474976710662" }
+  - chain: arbitrum
+    token: "0x8c213ee79581ff4984583c6a801e5263418c4b86"
+    discovery: { poolId: "281474976710662" }
+  - chain: bsc
+    token: "0xa5d465251fbcc907f5dd6bb2145488dfc6a2627b"
+    discovery: { poolId: "281474976710662" }
+
+access:
+  investorType:
+    value: non-us-professional
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "Factsheet, June 2026: non-US Professional Investors (BVI SIBA definition)", checkedAt: 2026-10-13 }
+  minimumInvestment:
+    status: public
+    value: 500000
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "500,000 USDC", checkedAt: 2026-10-13 }
+  transferRestricted:
+    value: true
+    source: { url: "https://github.com/centrifuge/protocol/blob/main/src/vaults/AsyncVault.sol", note: "The FullRestrictions hook 0x21cd…5ecc checks the member list and freeze status on every transfer, mint and burn. The deJTRSY deRWA wrapper exists for open DeFi use (negligible supply).", checkedAt: 2026-10-13 }
+
+serviceProviders:
+  custodian:
+    status: public
+    value: jpmorgan
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "Factsheet, June 2026. Conflicts with the S&P release (2025-03), which names Pershing LLC (a BNY subsidiary).", checkedAt: 2026-10-13 }
+  fundAdministrator:
+    status: public
+    value: trident-trust
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "Trident Trust (Cayman) keeps the registers and oversees NAV calculation", checkedAt: 2026-10-13 }
+  auditor:
+    status: public
+    value: mha-cayman
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", checkedAt: 2026-10-13 }
+  transferAgent:
+    status: public
+    value: trident-trust
+    source: { url: "https://centrifuge.mypinata.cloud/ipfs/QmQ9P1BuH6mBkN9Gs1aBZo34zX6NYigRZ84nu13Wi52CKC", note: "Registrar, per the S&P release (2025-03-11). Onchain, the share token is the register.", checkedAt: 2026-10-13 }
+
+legal:
+  vehicleType:
+    status: public
+    value: Segregated portfolio of a BVI segregated portfolio company (open-ended BVI professional fund)
+    source: { url: "https://centrifuge.mypinata.cloud/ipfs/QmQ9P1BuH6mBkN9Gs1aBZo34zX6NYigRZ84nu13Wi52CKC", checkedAt: 2026-10-13 }
+  jurisdiction:
+    status: public
+    value: British Virgin Islands (licensed by the BVI FSC)
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", checkedAt: 2026-10-13 }
+  lei:
+    status: public
+    value: 2549009CBJ86SM12V633
+    source: { url: "https://api.gleif.org/api/v1/lei-records/2549009CBJ86SM12V633", note: "LEI of Anemoy Capital SPC Limited (ISSUED). The JTRSY segregated portfolio has no LEI of its own.", checkedAt: 2026-10-13 }
+  secFilings:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: No EDGAR filer for Anemoy
+  offeringDocument:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: Only a factsheet and the S&P release are public. Vault Street quotes the Memorandum and Portfolio Supplement, so investors receive it.
+  auditedFinancials:
+    status: not_public
+    searchedAt: 2026-10-13
+  insolvency:
+    status: public
+    value: "Statutory segregation as a BVI segregated portfolio: 'BVI statutory segregation ring-fences JTRSY assets from every other portfolio of the SPC … the bills are held in segregated custody accounts, with the fund as direct owner'. The memorandum warns that 'courts outside the BVI may not recognise the statutory segregation'. Quoted by Vault Street, not seen first-hand."
+    source: { url: "https://app.vaultstreet.com/research/jtrsy", checkedAt: 2026-10-13 }
+
+pricing:
+  reference:
+    type: oracle
+    provider: centrifuge
+    chain: ethereum
+    address: "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB"
+    writer: eoa
+    dataOrigin: issuer
+    cadenceSeconds: 86400
+    businessDaysOnly: true
+    read:
+      decimals: 18
+      value: { fn: "function pricePoolPerShare(uint64, bytes16, bool) view returns (uint128)", args: ["281474976710662", "0x00010000000000060000000000000001", "false"] }
+      updatedAt: { fn: "function markersPricePoolPerShare(uint64, bytes16) view returns (uint64, uint64, uint64)", args: ["281474976710662", "0x00010000000000060000000000000001"], index: 0 }
+    historyOnchain: true
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Spoke pricePoolPerShare for pool 281474976710662 (0x0001000000000006), share class 0x0001…0001. Written by the pool's only hub manager, EOA 0x7bf0…02ec, through Hub updateSharePrice and pushed to Spoke as UpdateSharePrice. One update per business day. Spoke maxSharePriceAge is 2^64−1, so vaults never reject a stale price. The Chronicle feed with the same value is not read by the vaults.", checkedAt: 2026-10-13 }
+
+verification:
+  methods:
+    - type: proof-of-asset
+      provider: chronicle
+      independent: true
+      assetLevel: true
+      frequency: daily
+      cryptographicallyVerifiable: true
+      onchain: true
+      feed: { chain: ethereum, address: "0xE980a33EFA3EDDaa689eCbdCE4B2278D4DB94471" }
+      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "ChronicleVAO_Centrifuge_JTRSY_Router_1. readWithAge() = 1.119104 at review, age under an hour, updating on business days. Chainlink adapter 0x22d9…09aE also works. Blockscout labels these 'ChronicleVAO_James_BADBNY_20260312_Router_2' and 'Groma_GRO', which conflicts with Chronicle's docs; the value matches JTRSY's NAV. Independence and method rest on Chronicle's own claims.", checkedAt: 2026-10-13 }
+
+exit:
+  redemption:
+    available:
+      value: true
+      source: { url: "https://docs.centrifuge.io/developer/protocol/guides/invest-into-a-vault/", note: "ERC-7540 requestRedeem → the pool manager approves and revokes at NAV on the Hub → the holder claims. Redemption depends on an operator acting.", checkedAt: 2026-10-13 }
+    whoCanRedeem:
+      value: whitelisted-holders
+      source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "Allowlisted members (non-US professional investors)", checkedAt: 2026-10-13 }
+    settlement:
+      status: public
+      value: T+1
+      source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "'T+0 (10 am ET cut off) or T+1 (3 pm ET cut off)', US business days. Vault Street (Portfolio Supplement): up to T+2/T+3 only on banking, custodian or ramp delays.", checkedAt: 2026-10-13 }
+    gatesOrSuspension:
+      status: public
+      value: issuer-discretion
+      source: { url: "https://app.vaultstreet.com/research/jtrsy", note: "Memorandum as quoted by Vault Street (not seen first-hand): the Board 'may suspend redemption rights … or such other circumstances as the Board may determine in its sole discretion'. 'No queues, gates, or notice periods are currently in place, and no suspension has ever occurred.'", checkedAt: 2026-10-13 }
+  instantLiquidity: []
+
+externalIds:
+  defillama: anemoy-capital
+  defillamaStablecoin: null
+  rwaxyz: JTRSY
+  coingecko: janus-henderson-anemoy-treasury-fund

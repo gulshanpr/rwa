@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: superstate
+name: Superstate
+type: [platform, transfer-agent, oracle]
+jurisdiction: US
+website: https://superstate.com

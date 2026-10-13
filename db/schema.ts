@@ -44,6 +44,7 @@ export const deployment = pgTable(
     /** [address, label] pairs; an array because jsonb does not keep object key order. */
     labels: jsonb("labels").$type<[string, string][]>().notNull().default([]),
     ignoreMethods: text("ignore_methods").array().notNull().default(sql`'{}'::text[]`),
+    poolId: text("pool_id"),
   },
   (t) => [primaryKey({ columns: [t.assetSlug, t.chain] })],
 );

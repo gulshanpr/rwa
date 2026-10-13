@@ -4,6 +4,25 @@ export const metadata = { title: "Changelog" };
 
 Changes to the framework, scoring rules and data. Every entry links to the pull request that made it once the repository is public.
 
+## Framework v0.3, 13 Oct 2026
+
+- Pricing: feeds that only update on business days (fund NAVs) don't count weekends towards their age, for both the freshness check and the stale-price alert.
+- Pricing: a price reference can name the exact calls that return the value and its update time, for NAV contracts that aren't Chainlink-style feeds (Superstate checkpoints, Ondo `getPriceData`, Centrifuge share prices). The NAV is the same on every chain, so it now prices all of a fund's deployments.
+- Control: when several holders share a power, the weakest one (a single key before a multisig) leads the reasons.
+- Control: a contract that only holds stop powers (pause, freeze, compliance) over another contract no longer inherits that contract's minting or pricing powers. Previously a 1-of-9 pauser on OUSG showed up as able to mint.
+- Discovery: new handlers for Superstate, Ondo, Hashnote and Centrifuge V3. Guards written inline (`_requireAuth()`, `_assertOwner()`) are recognised, and modifiers left in comments are ignored. Centrifuge's shared Hub and BalanceSheet are filtered to the asset's pool.
+- Discovery: BNB Chain is supported. Where a chain's logs can't be scanned (BNB Chain, and Centrifuge's spoke chains), holders are only checked among the addresses already found on Ethereum, so those reviews are a lower bound. Discovery prints a warning when this happens.
+- Alerts: the watcher reads Centrifuge (wards, pool managers, hook and request manager changes, freezes), Hashnote (roles, capabilities, minters, oracle and teller changes), Superstate (oracle, allowlist, accounting pause, mints and burns) and Ondo (oracles, KYC registry, compliance, router, pauses) events. Tokens with no named mint event alert on large mints and burns from `Transfer`.
+
+## Data, 13 Oct 2026
+
+- Added USTB (Superstate), OUSG (Ondo), USYC (Circle, formerly Hashnote) and JTRSY (Janus Henderson Anemoy, on Centrifuge). Phase 0 reviews are in `research/`; permissions come from the new handlers.
+- USTB, Ethereum, block 26,183,258 (3 contracts, 5 holders): one key owns the token and its proxy admin, so it can upgrade, mint, burn from any wallet and swap the price oracle. A second single key writes the NAV checkpoints. $11.7M of USTB is supplied on Aave Horizon.
+- OUSG, Ethereum, block 26,183,453 (8 contracts, 10 holders): a 2-of-6 Safe sets the price on the RWA oracle (bounded against SHV), and a 3-of-5 Safe can repoint OndoOracle. A single wallet (0x059b…61a9) can assign or remove holders' KYC IDs, alongside the 2-of-6 Safe. Other OUSG chains are not tracked yet.
+- USYC: on Ethereum (block 26,183,723), single keys can upgrade the token, the Teller and the Entitlements contract, and a single key writes the price. On BNB Chain (block 127,400,715), where most USYC now sits, a single key owns the upgradeable token and can mint. That review is a lower bound until a BNB Chain log source is set up.
+- JTRSY, on Ethereum, Base, Arbitrum and BNB Chain: one pool manager key writes the NAV and controls minting through the Hub. Balance-sheet managers, including a 2-of-6 Safe, can mint, burn and move shares directly. Protocol-wide changes go through a 48-hour delay held by a 4-of-9 Safe.
+- Live data for all four comes from onchain supply × NAV. DefiLlama counts USYC tokens at $1 each, so it isn't used. Morpho doesn't index BNB Chain.
+
 ## Framework v0.2, 12 Oct 2026
 
 - Control: new critical power `allocate` (lend out or move the assets backing the token). Marking a vault's loans or strategies impaired counts as `set-price`.

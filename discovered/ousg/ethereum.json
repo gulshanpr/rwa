@@ -1,0 +1,365 @@
+{
+  "asset": "ousg",
+  "block": 26183453,
+  "chain": "ethereum",
+  "contracts": {
+    "0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe": {
+      "name": "RWAOracleExternalComparisonCheck",
+      "permissions": [
+        {
+          "holder": "0x118919e891D0205A7492650AD32E727617FA9452",
+          "power": "admin",
+          "via": "RWAOracleExternalComparisonCheck.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x118919e891D0205A7492650AD32E727617FA9452",
+          "power": "set-price",
+          "via": "RWAOracleExternalComparisonCheck.setPrice · onlyRole(SETTER_ROLE)"
+        },
+        {
+          "holder": "0x682d3d7cB33A9089C19b9B135a5DB3d2C5CF20C4",
+          "power": "set-price",
+          "via": "RWAOracleExternalComparisonCheck.setPrice · onlyRole(SETTER_ROLE)"
+        },
+        {
+          "holder": "0xeAEf4335c7Db4Cd1D1cc3368Fa43721E2798BeFE",
+          "power": "set-price",
+          "via": "RWAOracleExternalComparisonCheck.setPrice · onlyRole(SETTER_ROLE)"
+        }
+      ],
+      "role": "oracle",
+      "verified": true
+    },
+    "0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92": {
+      "name": "CashKYCSenderReceiver",
+      "permissions": [
+        {
+          "holder": "0xAEd4caF2E535D964165B4392342F71bac77e8367",
+          "power": "admin",
+          "via": "CashKYCSenderReceiver.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a",
+          "power": "mint",
+          "via": "CashKYCSenderReceiver.mint · onlyRole(MINTER_ROLE)"
+        },
+        {
+          "holder": "0xAEd4caF2E535D964165B4392342F71bac77e8367",
+          "power": "mint",
+          "via": "CashKYCSenderReceiver.mint · onlyRole(MINTER_ROLE)"
+        },
+        {
+          "holder": "0x2e55b738F5969Eea10fB67e326BEE5e2fA15A2CC",
+          "power": "pause",
+          "via": "CashKYCSenderReceiver.pause, unpause · onlyRole(PAUSER_ROLE)"
+        },
+        {
+          "holder": "0xAEd4caF2E535D964165B4392342F71bac77e8367",
+          "power": "pause",
+          "via": "CashKYCSenderReceiver.pause, unpause · onlyRole(PAUSER_ROLE)"
+        },
+        {
+          "holder": "0xAEd4caF2E535D964165B4392342F71bac77e8367",
+          "power": "set-compliance",
+          "via": "CashKYCSenderReceiver.setKYCRegistry, setKYCRequirementGroup · onlyRole(KYC_CONFIGURER_ROLE)"
+        },
+        {
+          "holder": "0xBA80Aa44cC25E85CC30359150dfB1C7D041CF6d5",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xBA80Aa44cC25E85CC30359150dfB1C7D041CF6d5",
+        "implementation": "0x1CEB44b6E515aBf009E0CCb6ddaFD723886cf3Ff",
+        "type": "eip1967"
+      },
+      "role": "token",
+      "verified": true
+    },
+    "0x56A5D911052323D688C731d516530878557463e7": {
+      "name": "OndoIDRegistryView",
+      "permissions": [
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OndoIDRegistryView.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-compliance",
+          "via": "OndoIDRegistryView.setKYCRequirementGroupToRwaToken, setOndoRegistry · onlyRole(DEFAULT_ADMIN_ROLE)"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a": {
+      "name": "OUSG_InstantManager",
+      "permissions": [
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OUSG_InstantManager.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "allocate",
+          "via": "OUSG_InstantManager.retrieveTokens, setOndoTokenRouter · onlyRole(DEFAULT_ADMIN_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "mint",
+          "via": "OUSG_InstantManager.setAdminSubscriptionChecker · onlyRole(DEFAULT_ADMIN_ROLE)"
+        },
+        {
+          "holder": "0x682d3d7cB33A9089C19b9B135a5DB3d2C5CF20C4",
+          "power": "mint",
+          "via": "OUSG_InstantManager.adminSubscribe · ADMIN_SUBSCRIPTION_ROLE (capped by AdminSubscriptionChecker allowance)"
+        },
+        {
+          "holder": "0x2e55b738F5969Eea10fB67e326BEE5e2fA15A2CC",
+          "power": "pause",
+          "via": "OUSG_InstantManager.pauseRedeem, pauseSubscribe · onlyRole(PAUSER_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "pause",
+          "via": "OUSG_InstantManager.unpauseRedeem, unpauseSubscribe · onlyRole(DEFAULT_ADMIN_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-compliance",
+          "via": "OUSG_InstantManager.setAcceptedRedemptionToken, setAcceptedSubscriptionToken, setOndoCompliance +1 more · onlyRole(DEFAULT_ADMIN_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OUSG_InstantManager.setMinimumRwaPrice · onlyRole(CONFIGURER_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OUSG_InstantManager.setOndoOracle · onlyRole(DEFAULT_ADMIN_ROLE)"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x99B8d1D1c17a10CD1A878d1A44c11fd7E4daD7bC": {
+      "name": "OndoTokenRouter",
+      "permissions": [
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OndoTokenRouter.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "allocate",
+          "via": "OndoTokenRouter.setDepositTokenRecipient, setUserWithdrawTokenSources, setWithdrawTokenSources · onlyRole(DEFAULT_ADMIN_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OndoTokenRouter.setMinimumTokenPriceAndOracle · onlyRole(DEFAULT_ADMIN_ROLE)"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x9Cad45a8BF0Ed41Ff33074449B357C7a1fAb4094": {
+      "name": "OndoOracle",
+      "permissions": [
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OndoOracle.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OndoOracle.setHardcodedPrice · onlyRole(HARDCODED_SETTER_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OndoOracle.setTokenToAggregatorV3Oracle · onlyRole(AGGREGATOR_V3_ORACLE_SETTER_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OndoOracle.setTokenToOracleType · onlyRole(DEFAULT_ADMIN_ROLE)"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OndoOracle.setTokenToRWAOracle · onlyRole(RWA_ORACLE_SETTER_ROLE)"
+        }
+      ],
+      "role": "oracle",
+      "verified": true
+    },
+    "0xADC4966E4F8CAAf12C777f07AA7A0Ae8D894cDf3": {
+      "name": "OUSGOracleWrapper",
+      "permissions": [
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OUSGOracleWrapper.transferOwnership · onlyOwner (owner())"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "set-price",
+          "via": "OUSGOracleWrapper.setRwaOracle · onlyOwner (owner())"
+        }
+      ],
+      "role": "oracle",
+      "verified": true
+    },
+    "0xcf6958D69d535FD03BD6Df3F4fe6CDcd127D97df": {
+      "name": "OndoIDRegistry",
+      "permissions": [
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OndoIDRegistry.grantRole, revokeRole · DEFAULT_ADMIN_ROLE"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "admin",
+          "via": "OndoIDRegistry.setRWARole · onlyRole(RWA_ROLE_MANAGER)"
+        },
+        {
+          "holder": "0x059bC3DbE522DA79B346643d420e927ba1eB61a9",
+          "power": "freeze",
+          "via": "OndoIDRegistry.setUserID, removeUserAddresses · rwaRole(OUSG) or MASTER_CONFIGURER_ROLE"
+        },
+        {
+          "holder": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+          "power": "freeze",
+          "via": "OndoIDRegistry.setUserID, removeUserAddresses · rwaRole(OUSG) or MASTER_CONFIGURER_ROLE"
+        },
+        {
+          "holder": "0xeAEf4335c7Db4Cd1D1cc3368Fa43721E2798BeFE",
+          "power": "freeze",
+          "via": "OndoIDRegistry.setUserID, removeUserAddresses · rwaRole(OUSG) or MASTER_CONFIGURER_ROLE"
+        },
+        {
+          "holder": "0x988D740A4365d9D8106FC71aA691dDd2527C07fF",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0x988D740A4365d9D8106FC71aA691dDd2527C07fF",
+        "implementation": "0x136f28d64B658460ABdD418dA5c156Be74D05213",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x059bC3DbE522DA79B346643d420e927ba1eB61a9": {
+      "kind": "eoa"
+    },
+    "0x118919e891D0205A7492650AD32E727617FA9452": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x736D16abCb54eE822e0547757A14D20fbE20be1b",
+        "0x60F030d621a4Ab27DfF024a8e43eB36e2D95FB02",
+        "0x23733B909Eba1BFdEd9512271649cb5ecF4250c2",
+        "0x71B11397Cd43dB712d36FE519a32352101f147A1",
+        "0x108C052Bb6070eE6E0738177FAf13D6aE76a71a5"
+      ],
+      "threshold": 3
+    },
+    "0x2e55b738F5969Eea10fB67e326BEE5e2fA15A2CC": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x7D72d4c9c660D8118b9Ac440037F7D6cfF40C8d2",
+        "0x74a4C329AA5a6BFa16bD32BAf37209f4C632173D",
+        "0x756531B70c42c48f98270baAc414f9F208a8580b",
+        "0x59702bb067EeAe05aC2C1B8c6F30DffD1cc29893",
+        "0x189D409b807aC1949Fe82c143270992FE9457607",
+        "0x40482b9538A418cB62B92F14cC13D20092b3DbB4",
+        "0x60F030d621a4Ab27DfF024a8e43eB36e2D95FB02",
+        "0xaA1E4eef723ceaDd137B3AD39ea540dA4B092f8e",
+        "0x020679fF2Bc53758bEbAD1bBe0ab0CF7c1beD241"
+      ],
+      "threshold": 1
+    },
+    "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x6264422fD4c54292d71F6d3BE7CbF8900573172B",
+        "0x60F030d621a4Ab27DfF024a8e43eB36e2D95FB02",
+        "0x40482b9538A418cB62B92F14cC13D20092b3DbB4",
+        "0x81961c315e38bAdC02C014A13Dd1d4b3dab81d15",
+        "0x74a4C329AA5a6BFa16bD32BAf37209f4C632173D"
+      ],
+      "threshold": 3
+    },
+    "0x682d3d7cB33A9089C19b9B135a5DB3d2C5CF20C4": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xe2Cbb2fD440133946cd5171F675e1075570C5cAE",
+        "0xD16E51667CD56b5d03B2ACDD8567088FC5cDD579",
+        "0x81961c315e38bAdC02C014A13Dd1d4b3dab81d15",
+        "0xfF1621Ee754512B34a6Bd62A941Cc4d5E4d0b85B",
+        "0xdb8441d6ADB9F69AF1c339A685e1e26c3c3816dB",
+        "0x58417F57F29c6b03114129e0EB59A174B1f41504"
+      ],
+      "threshold": 3
+    },
+    "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a": {
+      "controllers": [
+        "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF",
+        "0x682d3d7cB33A9089C19b9B135a5DB3d2C5CF20C4"
+      ],
+      "kind": "contract",
+      "name": "OUSG_InstantManager"
+    },
+    "0x988D740A4365d9D8106FC71aA691dDd2527C07fF": {
+      "kind": "proxy-admin",
+      "owner": "0x5AE21c99FC5f1584D8Cb09a298CFFd92B5d178eF"
+    },
+    "0xAEd4caF2E535D964165B4392342F71bac77e8367": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x74a4C329AA5a6BFa16bD32BAf37209f4C632173D",
+        "0x189D409b807aC1949Fe82c143270992FE9457607",
+        "0x59702bb067EeAe05aC2C1B8c6F30DffD1cc29893",
+        "0x60F030d621a4Ab27DfF024a8e43eB36e2D95FB02",
+        "0xaA1E4eef723ceaDd137B3AD39ea540dA4B092f8e",
+        "0x020679fF2Bc53758bEbAD1bBe0ab0CF7c1beD241",
+        "0x40482b9538A418cB62B92F14cC13D20092b3DbB4"
+      ],
+      "threshold": 4
+    },
+    "0xBA80Aa44cC25E85CC30359150dfB1C7D041CF6d5": {
+      "kind": "proxy-admin",
+      "owner": "0xAEd4caF2E535D964165B4392342F71bac77e8367"
+    },
+    "0xeAEf4335c7Db4Cd1D1cc3368Fa43721E2798BeFE": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xe2Cbb2fD440133946cd5171F675e1075570C5cAE",
+        "0x58417F57F29c6b03114129e0EB59A174B1f41504",
+        "0x81961c315e38bAdC02C014A13Dd1d4b3dab81d15",
+        "0xdb8441d6ADB9F69AF1c339A685e1e26c3c3816dB",
+        "0xD16E51667CD56b5d03B2ACDD8567088FC5cDD579",
+        "0xfF1621Ee754512B34a6Bd62A941Cc4d5E4d0b85B"
+      ],
+      "threshold": 2
+    }
+  },
+  "timestamp": "2026-10-13T12:04:47Z"
+}

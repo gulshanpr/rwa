@@ -1,0 +1,280 @@
+{
+  "asset": "usyc",
+  "block": 26183723,
+  "chain": "ethereum",
+  "contracts": {
+    "0x136471a34f6ef19fE571EFFC1CA711fdb8E49f2b": {
+      "name": "YieldCoin",
+      "permissions": [
+        {
+          "holder": "0x13FF8Cabb86eDf94a2dF4f98773bda4005182dD6",
+          "power": "admin",
+          "via": "YieldCoin.transferOwnership · _assertOwner() (owner())"
+        },
+        {
+          "holder": "0x6A41494C22cb69F639CD6e43CE3A68818dB8C378",
+          "power": "burn-from",
+          "via": "YieldCoin.burn, burnFor · minterAllowance > 0"
+        },
+        {
+          "holder": "0x85fBFb6a6EF755797Cf65A4C7D7A90423f96d011",
+          "power": "burn-from",
+          "via": "YieldCoin.burn, burnFor · minterAllowance > 0"
+        },
+        {
+          "holder": "0x9fde717a21c5b272B8956d3AA0c3551E1FFd23D7",
+          "power": "burn-from",
+          "via": "YieldCoin.burn, burnFor · minterAllowance > 0"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "burn-from",
+          "via": "YieldCoin.burn, burnFor · minterAllowance > 0"
+        },
+        {
+          "holder": "0xeE35F963BFC71b51eC95147f26c030D674ea30e6",
+          "power": "burn-from",
+          "via": "YieldCoin.burn, burnFor · minterAllowance > 0"
+        },
+        {
+          "holder": "0xfd78EE919681417d192449715b2594ab58f5D002",
+          "power": "burn-from",
+          "via": "YieldCoin.burn, burnFor · minterAllowance > 0"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "force-transfer",
+          "via": "YieldCoin.transferFrom · fund-admin branch skips allowance and allowlist (role 255)"
+        },
+        {
+          "holder": "0x6A41494C22cb69F639CD6e43CE3A68818dB8C378",
+          "power": "mint",
+          "via": "YieldCoin.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0x85fBFb6a6EF755797Cf65A4C7D7A90423f96d011",
+          "power": "mint",
+          "via": "YieldCoin.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0x9fde717a21c5b272B8956d3AA0c3551E1FFd23D7",
+          "power": "mint",
+          "via": "YieldCoin.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "mint",
+          "via": "YieldCoin.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "mint",
+          "via": "YieldCoin.setMinterAllowance, incrementMinterAllowance, decrementMinterAllowance · creates minters (Entitlements capability, role 20)"
+        },
+        {
+          "holder": "0xeE35F963BFC71b51eC95147f26c030D674ea30e6",
+          "power": "mint",
+          "via": "YieldCoin.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0xfd78EE919681417d192449715b2594ab58f5D002",
+          "power": "mint",
+          "via": "YieldCoin.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0x13FF8Cabb86eDf94a2dF4f98773bda4005182dD6",
+          "power": "upgrade",
+          "via": "YieldCoin.upgradeTo, upgradeToAndCall · _assertOwner() (owner())"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xBF0f2F3aad6b99893D80c550fbAcEc915545eb92",
+        "type": "eip1967"
+      },
+      "role": "token",
+      "verified": true
+    },
+    "0x74f2199AEb743f68f05943e5715A33EaF2b61f53": {
+      "name": "GenericNextPriceAggregator",
+      "permissions": [
+        {
+          "holder": "0x1DE107dC268f4be3ee688CF24c7742F6ebB19E98",
+          "power": "admin",
+          "via": "GenericNextPriceAggregator.transferOwnership · onlyOwner (owner())"
+        },
+        {
+          "holder": "0x1DE107dC268f4be3ee688CF24c7742F6ebB19E98",
+          "power": "set-price",
+          "via": "GenericNextPriceAggregator.upgradeTo, upgradeToAndCall · onlyOwner (owner())"
+        },
+        {
+          "holder": "0x9fde717a21c5b272B8956d3AA0c3551E1FFd23D7",
+          "power": "set-price",
+          "via": "GenericNextPriceAggregator.transmit, setNextPrice · msg.sender == reporter()"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x6DeaA761bc131Ac5f1D562EE71819E846EF11624",
+        "type": "eip1967"
+      },
+      "role": "oracle",
+      "verified": true
+    },
+    "0x902D906b8d988092213bE799B18Bd2cbd64F808C": {
+      "name": "Entitlements",
+      "permissions": [
+        {
+          "holder": "0x8fB098D65B38f8425de8f80Ad54eE990fB5d2fC0",
+          "power": "admin",
+          "via": "Entitlements.setUserRole, setUserRoleBatch, setRoleCapability · owner() (role 255 grants)"
+        },
+        {
+          "holder": "0x8fB098D65B38f8425de8f80Ad54eE990fB5d2fC0",
+          "power": "admin",
+          "via": "Entitlements.transferOwnership · _assertOwner() (owner())"
+        },
+        {
+          "holder": "0x8fB098D65B38f8425de8f80Ad54eE990fB5d2fC0",
+          "power": "pause",
+          "via": "Entitlements.unpause · owner()"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "pause",
+          "via": "Entitlements.pause · Entitlements capability, role 255 (blocks every transfer and redemption)"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-compliance",
+          "via": "Entitlements.setPublicCapability · Entitlements capability, role 255"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-compliance",
+          "via": "Entitlements.setRoleCapability · Entitlements capability, role 255"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-compliance",
+          "via": "Entitlements.setUserRole, setUserRoleBatch · Entitlements capability, role 255"
+        },
+        {
+          "holder": "0x8fB098D65B38f8425de8f80Ad54eE990fB5d2fC0",
+          "power": "upgrade",
+          "via": "Entitlements.upgradeTo, upgradeToAndCall · _assertOwner() (owner())"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xb59B15683710822c40DF789a8E67ECFe30460C76",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x9fde717a21c5b272B8956d3AA0c3551E1FFd23D7": {
+      "name": "PriceReporter",
+      "permissions": [
+        {
+          "holder": "0x0a18AE6fC841226D611931D38ecEc8893ac89f5a",
+          "power": "admin",
+          "via": "PriceReporter.transferOwnership · _assertOwner() (owner())"
+        },
+        {
+          "holder": "0x0a18AE6fC841226D611931D38ecEc8893ac89f5a",
+          "power": "set-price",
+          "via": "PriceReporter.upgradeTo, upgradeToAndCall · _assertOwner() (owner())"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-price",
+          "via": "PriceReporter.setFeeSchedule, setTokenDetails, transmit +2 more · _assertFundAdmin() (fund admin, role 255)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x88Bd154Df6Ab08f71443e845841727162d88F65B",
+        "type": "eip1967"
+      },
+      "role": "oracle",
+      "verified": true
+    },
+    "0xeE35F963BFC71b51eC95147f26c030D674ea30e6": {
+      "name": "Teller",
+      "permissions": [
+        {
+          "holder": "0x8b1A2015758578669E1ddBd98242648130a3a55b",
+          "power": "admin",
+          "via": "Teller.transferOwnership · _assertOwner() (owner())"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-price",
+          "via": "Teller.setOracle · _assertFundAdmin() (fund admin, role 255)"
+        },
+        {
+          "holder": "0x8b1A2015758578669E1ddBd98242648130a3a55b",
+          "power": "upgrade",
+          "via": "Teller.upgradeTo, upgradeToAndCall · _assertOwner() (owner())"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xb69ecb156Dc0028198028c501340d5367845ca72",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x0a18AE6fC841226D611931D38ecEc8893ac89f5a": {
+      "kind": "eoa"
+    },
+    "0x13FF8Cabb86eDf94a2dF4f98773bda4005182dD6": {
+      "kind": "eoa"
+    },
+    "0x1DE107dC268f4be3ee688CF24c7742F6ebB19E98": {
+      "kind": "eoa"
+    },
+    "0x6A41494C22cb69F639CD6e43CE3A68818dB8C378": {
+      "kind": "contract-unknown"
+    },
+    "0x7D1565698cddf4C8f90d6b8574729fef565cae0E": {
+      "kind": "eoa"
+    },
+    "0x85fBFb6a6EF755797Cf65A4C7D7A90423f96d011": {
+      "kind": "eoa"
+    },
+    "0x8b1A2015758578669E1ddBd98242648130a3a55b": {
+      "kind": "eoa"
+    },
+    "0x8fB098D65B38f8425de8f80Ad54eE990fB5d2fC0": {
+      "kind": "eoa"
+    },
+    "0x9fde717a21c5b272B8956d3AA0c3551E1FFd23D7": {
+      "controllers": [
+        "0x0a18AE6fC841226D611931D38ecEc8893ac89f5a",
+        "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D"
+      ],
+      "kind": "contract",
+      "name": "PriceReporter"
+    },
+    "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D": {
+      "kind": "eoa"
+    },
+    "0xeE35F963BFC71b51eC95147f26c030D674ea30e6": {
+      "controllers": [
+        "0x8b1A2015758578669E1ddBd98242648130a3a55b",
+        "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D"
+      ],
+      "kind": "contract",
+      "name": "Teller"
+    },
+    "0xfd78EE919681417d192449715b2594ab58f5D002": {
+      "controllers": [
+        "0x7D1565698cddf4C8f90d6b8574729fef565cae0E"
+      ],
+      "kind": "contract",
+      "name": "TokenMinterV2"
+    }
+  },
+  "timestamp": "2026-10-13T12:58:47Z"
+}

@@ -1,0 +1,114 @@
+{
+  "asset": "usyc",
+  "block": 127400715,
+  "chain": "bsc",
+  "contracts": {
+    "0x6B7d54003f73bE979cf92BF369432aC534853692": {
+      "name": "Entitlements",
+      "permissions": [
+        {
+          "holder": "0x2D833EF0B55a7578e6F0F86FBF29674e4a250782",
+          "power": "admin",
+          "via": "Entitlements.setUserRole, setUserRoleBatch, setRoleCapability · owner() (role 255 grants)"
+        },
+        {
+          "holder": "0x2D833EF0B55a7578e6F0F86FBF29674e4a250782",
+          "power": "admin",
+          "via": "Entitlements.transferOwnership · _assertOwner() (owner())"
+        },
+        {
+          "holder": "0x2D833EF0B55a7578e6F0F86FBF29674e4a250782",
+          "power": "pause",
+          "via": "Entitlements.unpause · owner()"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-compliance",
+          "via": "Entitlements.setRoleCapability · Entitlements capability, role 13"
+        },
+        {
+          "holder": "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D",
+          "power": "set-compliance",
+          "via": "Entitlements.setUserRole, setUserRoleBatch · Entitlements capability, role 13"
+        },
+        {
+          "holder": "0x2D833EF0B55a7578e6F0F86FBF29674e4a250782",
+          "power": "upgrade",
+          "via": "Entitlements.upgradeToAndCall · onlyOwner (owner())"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x8Cadc832040bc66a0Aeef9bF6b6D1bD7bcC5ACDb",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x8D0fA28f221eB5735BC71d3a0Da67EE5bC821311": {
+      "name": "USYCSatellite",
+      "permissions": [
+        {
+          "holder": "0xcd636d955a95385Ec5E2776B167B92E89Ef6F70E",
+          "power": "admin",
+          "via": "USYCSatellite.transferOwnership · onlyOwner (owner())"
+        },
+        {
+          "holder": "0x85fBFb6a6EF755797Cf65A4C7D7A90423f96d011",
+          "power": "burn-from",
+          "via": "USYCSatellite.burn · minterAllowance > 0"
+        },
+        {
+          "holder": "0xfd78EE919681417d192449715b2594ab58f5D002",
+          "power": "burn-from",
+          "via": "USYCSatellite.burn · minterAllowance > 0"
+        },
+        {
+          "holder": "0x85fBFb6a6EF755797Cf65A4C7D7A90423f96d011",
+          "power": "mint",
+          "via": "USYCSatellite.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0xfd78EE919681417d192449715b2594ab58f5D002",
+          "power": "mint",
+          "via": "USYCSatellite.mint · minterAllowance > 0"
+        },
+        {
+          "holder": "0xcd636d955a95385Ec5E2776B167B92E89Ef6F70E",
+          "power": "upgrade",
+          "via": "USYCSatellite.upgradeTo, upgradeToAndCall · onlyOwner (owner())"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x191Fb6f3Ba332f1B8789Caf67AbBAbA56147445B",
+        "type": "eip1967"
+      },
+      "role": "token",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x2D833EF0B55a7578e6F0F86FBF29674e4a250782": {
+      "kind": "eoa"
+    },
+    "0x85fBFb6a6EF755797Cf65A4C7D7A90423f96d011": {
+      "kind": "eoa"
+    },
+    "0xDbE01f447040F78ccbC8Dfd101BEc1a2C21f800D": {
+      "kind": "eoa"
+    },
+    "0xE56ab0EEbD57dfDB9569F018AEBB6F3C42585767": {
+      "kind": "eoa"
+    },
+    "0xcd636d955a95385Ec5E2776B167B92E89Ef6F70E": {
+      "kind": "eoa"
+    },
+    "0xfd78EE919681417d192449715b2594ab58f5D002": {
+      "controllers": [
+        "0xE56ab0EEbD57dfDB9569F018AEBB6F3C42585767"
+      ],
+      "kind": "contract",
+      "name": "TokenMinterV2"
+    }
+  },
+  "timestamp": "2026-10-13T12:13:07Z"
+}

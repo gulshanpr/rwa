@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: anemoy-capital-spc
+name: Anemoy Capital SPC Limited
+type: [issuer]
+jurisdiction: VG
+lei: 2549009CBJ86SM12V633

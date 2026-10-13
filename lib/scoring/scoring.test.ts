@@ -160,6 +160,17 @@ describe("pricing (TECH_SPEC 6.2)", () => {
     expect(scorePricing(asset({ pricing: { reference: ref } }), live).color).toBe("red");
   });
 
+  test("weekends don't count towards a business-day feed's age", () => {
+    const live = (updatedAt: string) => ({ asset: "fixture", sample: false, asOf: "2026-10-12T12:00:00Z", supply: [], aum: { usd: 0, source: { name: "x", url: "https://x.y" } }, oracle: { chain: "ethereum" as const, address: TOKEN, value: 1, updatedAt }, defiMarkets: [], defiSource: { name: "x", url: "https://x.y" } });
+    const ref = (businessDaysOnly: boolean) => ({ type: "oracle", provider: "p", chain: "ethereum", address: TOKEN, writer: "oracle-network", dataOrigin: "fund-administrator", cadenceSeconds: 86400, businessDaysOnly, historyOnchain: true, source: src });
+    const friday = live("2026-10-09T21:00:00Z");
+    expect(scorePricing(asset({ pricing: { reference: ref(true) } }), friday).color).toBe("green");
+    expect(scorePricing(asset({ pricing: { reference: ref(false) } }), friday).color).toBe("yellow");
+    const thursday = live("2026-10-08T00:00:00Z");
+    expect(scorePricing(asset({ pricing: { reference: ref(true) } }), thursday).color).toBe("yellow");
+    expect(scorePricing(asset({ pricing: { reference: ref(false) } }), thursday).color).toBe("red");
+  });
+
   const vault = (writer: string, dataOrigin = "issuer") => asset({
     priceModel: "accumulating-nav",
     pricing: { reference: { type: "vault", provider: "p", chain: "ethereum", address: TOKEN, method: "convertToAssets", writer, dataOrigin, historyOnchain: true, source: src } },
@@ -220,6 +231,11 @@ describe("disclosure (TECH_SPEC 6.5)", () => {
 /** Phase 0 hand scores (research/<slug>.md, section M). The engine must agree with them on the committed data. */
 const HAND_SCORES: Record<string, Partial<Record<SliceId, SliceColor>>> = {
   syrupusdc: { control: "red", pricing: "red", verification: "red", exit: "red", disclosure: "red", legal: "grey" },
+  // Hand score was Verification yellow (4/5) only because the Chronicle cadence was unconfirmed; the router updates daily.
+  ustb: { control: "red", pricing: "red", verification: "green", exit: "yellow", disclosure: "yellow", legal: "grey" },
+  ousg: { control: "red", pricing: "yellow", verification: "red", exit: "green", disclosure: "red", legal: "grey" },
+  usyc: { control: "red", pricing: "red", verification: "red", exit: "yellow", disclosure: "yellow", legal: "grey" },
+  jtrsy: { control: "red", pricing: "red", verification: "green", exit: "red", disclosure: "yellow", legal: "grey" },
 };
 
 describe("engine matches Phase 0 hand scores", () => {

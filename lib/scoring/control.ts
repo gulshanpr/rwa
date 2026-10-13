@@ -224,7 +224,13 @@ export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
     }
   }
   const order = [...CRITICAL_POWERS, ...HIGH_POWERS, "unclassified"];
-  return rows.sort((a, b) => order.indexOf(a.power) - order.indexOf(b.power));
+  // Within a power, the weakest holder first, so it leads the reasons.
+  const colors = ["red", "yellow", "green"];
+  const keys = ["eoa", "weak-safe", "no-delay", "short-delay", "weak-safe-timelock"];
+  const keyRank = (k?: string) => (k && keys.includes(k) ? keys.indexOf(k) : keys.length);
+  return rows.sort(
+    (a, b) => order.indexOf(a.power) - order.indexOf(b.power) || colors.indexOf(a.color) - colors.indexOf(b.color) || keyRank(a.reasonKey) - keyRank(b.reasonKey),
+  );
 }
 
 function reasonText(row: PowerRow, ticker: string): string {

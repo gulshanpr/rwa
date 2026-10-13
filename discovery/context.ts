@@ -20,6 +20,8 @@ const PROBE = parseAbi([
   "function getMinDelay() view returns (uint256)",
 ]);
 
+const STOP_ONLY = new Set<string>(["pause", "freeze", "set-compliance"]);
+
 export type ProxyInfo = Omit<NonNullable<DiscoveredContract["proxy"]>, "implementation" | "admin"> & {
   implementation: Address;
   admin?: Address;
@@ -139,14 +141,17 @@ export class Context {
     return out;
   }
 
-  /** A role held by a contract we already mapped: it is controlled by whoever holds its own critical or high powers. */
+  /**
+   * A role held by a contract we already mapped: it is controlled by whoever holds its own critical
+   * powers. Pause, freeze and compliance holders can stop the contract but not direct it, so they only
+   * count when nobody holds a critical power.
+   */
   private trackedContract(address: Address): Holder | undefined {
     const c = this.contracts[getAddress(address)];
     if (!c) return undefined;
-    const controllers = new Set<string>();
-    for (const p of c.permissions) {
-      if (p.power !== "unclassified" && getAddress(p.holder) !== getAddress(address)) controllers.add(getAddress(p.holder));
-    }
+    const others = c.permissions.filter((p) => p.power !== "unclassified" && getAddress(p.holder) !== getAddress(address));
+    const steering = others.filter((p) => !STOP_ONLY.has(p.power));
+    const controllers = new Set((steering.length > 0 ? steering : others).map((p) => getAddress(p.holder)));
     return { kind: "contract", name: c.name, controllers: [...controllers].sort() };
   }
 

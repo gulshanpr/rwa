@@ -69,7 +69,7 @@ function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetSt
     flags.push({ id: "eoa-high", label: "EOA can freeze/pause", color: "yellow" });
   if (powers.some((r) => r.power === "upgrade" && !isSingleKey(r) && r.holder.delaySeconds === 0))
     flags.push({ id: "no-upgrade-timelock", label: "No upgrade timelock", color: "yellow" });
-  if (stats.oracle && stats.oracle.ageSeconds > 86400)
+  if (stats.oracle && stats.oracle.scheduledAgeSeconds > 86400)
     flags.push({ id: "price-stale", label: "Price stale > 24h", color: "red" });
   if (live?.defiMarkets.some((m) => m.oracle.type === "fixed"))
     flags.push({ id: "defi-fixed", label: "Fixed $1 in DeFi", color: "yellow" });

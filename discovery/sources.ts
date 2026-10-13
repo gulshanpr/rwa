@@ -44,17 +44,48 @@ async function fromEtherscan(chainId: number, address: Address): Promise<Verifie
   return { verified: true, name: r.ContractName, abi: JSON.parse(r.ABI) as Abi, sources };
 }
 
-/** Verified ABI and source, from Sourcify (no key) or Etherscan V2 (needs ETHERSCAN_API_KEY). Cached on disk. */
+const BLOCKSCOUT: Record<number, string> = {
+  1: "https://eth.blockscout.com",
+  10: "https://optimism.blockscout.com",
+  137: "https://polygon.blockscout.com",
+  8453: "https://base.blockscout.com",
+  42161: "https://arbitrum.blockscout.com",
+};
+
+async function fromBlockscout(chainId: number, address: Address): Promise<VerifiedSource | undefined> {
+  const host = BLOCKSCOUT[chainId];
+  if (!host) return undefined;
+  const res = await fetch(`${host}/api/v2/smart-contracts/${address}`);
+  if (res.status === 404) return undefined;
+  if (!res.ok) throw new Error(`Blockscout ${res.status} for ${address}`);
+  const d = (await res.json()) as {
+    is_verified?: boolean;
+    name?: string;
+    abi?: Abi;
+    file_path?: string;
+    source_code?: string;
+    additional_sources?: { file_path: string; source_code: string }[];
+  };
+  if (!d.is_verified || !d.abi) return undefined;
+  const sources: Record<string, string> = { [d.file_path || `${d.name ?? "Contract"}.sol`]: d.source_code ?? "" };
+  for (const s of d.additional_sources ?? []) sources[s.file_path] = s.source_code;
+  return { verified: true, name: d.name, abi: d.abi, sources };
+}
+
+/** Unverified results are re-checked after this long, in case the contract gets verified. */
+const RECHECK_UNVERIFIED_MS = 7 * 86_400_000;
+
+/** Verified ABI and source, from Sourcify or Blockscout (no key) or Etherscan V2 (needs ETHERSCAN_API_KEY). Cached on disk. */
 export async function verifiedSource(chainId: number, address: Address): Promise<VerifiedSource> {
   const rel = `sources/${chainId}/${address.toLowerCase()}.json`;
-  const hit = readCache<VerifiedSource>(rel);
-  if (hit) return hit;
+  const hit = readCache<VerifiedSource & { checkedAt?: number }>(rel);
+  if (hit && (hit.verified || Date.now() - (hit.checkedAt ?? 0) < RECHECK_UNVERIFIED_MS)) return hit;
   const found =
     (await withRetry(() => fromSourcify(chainId, address)).catch(() => undefined)) ??
-    (await fromEtherscan(chainId, address).catch(() => undefined)) ??
-    EMPTY;
-  writeCache(rel, found);
-  return found;
+    (await withRetry(() => fromBlockscout(chainId, address), 3).catch(() => undefined)) ??
+    (await fromEtherscan(chainId, address).catch(() => undefined));
+  writeCache(rel, found ?? { ...EMPTY, checkedAt: Date.now() });
+  return found ?? EMPTY;
 }
 
 export function hasFunction(abi: Abi, name: string): boolean {
@@ -66,28 +97,47 @@ export interface PrivilegedFunction {
   modifiers: string[];
 }
 
+/** Internal calls at the top of a function body that act as an access check, e.g. `_checkOwner()` or `_requireAuth()`. */
+const INLINE_GUARD = /\b(_(?:check|require|assert|only)\w*(?:Owner|Auth|Admin|Manager|Ward|Minter|Reporter|Guardian|Safe)\w*)\s*\(\s*\)\s*;/g;
+const INLINE_ROLE = /(?:\b_checkRole\s*\(\s*([\w.]+)\s*\)|require\s*\(\s*hasRole\s*\(\s*([\w.]+)\s*,\s*(?:_msgSender\(\)|msg\.sender)\s*\))/g;
+/** Only the first statements count; later calls are usually unrelated checks. */
+const GUARD_WINDOW = 400;
+
+function guardsOf(tail: string, body: string): string[] {
+  const head = tail.replace(/returns\s*\([^)]*\)/, "");
+  const mods = [...head.matchAll(/\b(only\w+|auth|requiresAuth)\b(\s*\(\s*([\w.]+)\s*\))?/g)].map((x) => (x[3] ? `${x[1]}(${x[3]})` : x[1]));
+  const start = body.slice(0, GUARD_WINDOW);
+  for (const x of start.matchAll(INLINE_ROLE)) mods.push(`onlyRole(${x[1] ?? x[2]})`);
+  for (const x of start.matchAll(INLINE_GUARD)) mods.push(x[1] === "_checkOwner" ? "onlyOwner" : `${x[1]}()`);
+  return mods;
+}
+
 /**
- * Functions in the ABI whose verified source declares an `only*` modifier.
- * Interfaces are skipped so the modifiers come from the implementation.
+ * Functions in the ABI whose verified source guards them with a modifier (`only*`, `auth`, `requiresAuth`)
+ * or an inline check at the top of the body. A UUPS `upgradeTo` inherits the guard on `_authorizeUpgrade`.
+ * Interfaces are skipped so the guards come from the implementation.
  */
 export function privilegedFunctions(src: VerifiedSource): PrivilegedFunction[] {
   const inAbi = new Set(
     src.abi.filter((x) => x.type === "function" && x.stateMutability !== "view" && x.stateMutability !== "pure").map((x) => (x as { name: string }).name),
   );
   const found = new Map<string, Set<string>>();
+  const authorizeUpgrade = new Set<string>();
   for (const [file, content] of Object.entries(src.sources)) {
     const base = file.split("/").pop() ?? file;
     if (/^I[A-Z]/.test(base)) continue;
     const re = /function\s+(\w+)\s*\(([^)]*)\)([^{;]*)\{/g;
     for (const m of content.matchAll(re)) {
       const [, name, , tail] = m;
-      if (!inAbi.has(name)) continue;
-      const mods = [...tail.matchAll(/\b(only\w+)(\s*\(\s*([\w.]+)\s*\))?/g)].map((x) => (x[3] ? `${x[1]}(${x[3]})` : x[1]));
+      if (!inAbi.has(name) && name !== "_authorizeUpgrade") continue;
+      const mods = guardsOf(tail, content.slice(m.index + m[0].length)).filter((x) => x !== "onlyProxy");
       if (mods.length === 0) continue;
-      const set = found.get(name) ?? new Set<string>();
+      const set = name === "_authorizeUpgrade" ? authorizeUpgrade : (found.get(name) ?? new Set<string>());
       mods.forEach((x) => set.add(x));
-      found.set(name, set);
+      if (name !== "_authorizeUpgrade") found.set(name, set);
     }
   }
+  if (authorizeUpgrade.size > 0)
+    for (const fn of ["upgradeTo", "upgradeToAndCall"]) if (inAbi.has(fn)) found.set(fn, new Set([...(found.get(fn) ?? []), ...authorizeUpgrade]));
   return [...found.entries()].map(([name, mods]) => ({ name, modifiers: [...mods] })).sort((a, b) => a.name.localeCompare(b.name));
 }

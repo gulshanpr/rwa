@@ -1,8 +1,9 @@
-import { getAddress, parseAbi } from "viem";
+import { getAddress, parseAbi, type Abi, type AbiFunction, type Address } from "viem";
 import { getDb, schema } from "@/db/client";
 import { clientsFor } from "@/discovery/rpc";
-import type { Chain } from "@/lib/schema/asset";
+import type { Chain, PriceReference } from "@/lib/schema/asset";
 import { formatDuration } from "@/lib/format";
+import { feedAgeSeconds } from "@/lib/scoring/pricing";
 import { raiseAlert } from "../alerts";
 import { log, publishedAssets } from "../util";
 
@@ -11,9 +12,30 @@ const FEED_ABI = parseAbi([
   "function decimals() view returns (uint8)",
 ]);
 
-export async function readFeed(chain: Chain, address: string) {
-  const { client } = clientsFor(chain);
-  const feed = getAddress(address);
+type OracleRef = Extract<PriceReference, { type: "oracle" }>;
+
+async function call(chain: Chain, address: Address, spec: NonNullable<OracleRef["read"]>["value"], prior: readonly unknown[] = []): Promise<readonly unknown[]> {
+  const abi = parseAbi([spec.fn] as [string]) as Abi;
+  const fn = abi[0] as AbiFunction;
+  const args = spec.args.map((a, i) => {
+    const ref = /^\$value\.(\d+)$/.exec(a);
+    if (ref) return prior[Number(ref[1])];
+    return /int/.test(fn.inputs[i]!.type) ? BigInt(a) : fn.inputs[i]!.type === "bool" ? a === "true" : a;
+  });
+  const out = await clientsFor(chain).client.readContract({ address, abi, functionName: fn.name, args });
+  return fn.outputs.length > 1 ? (out as readonly unknown[]) : [out];
+}
+
+/** Reads a price feed: Chainlink-style by default, or with the asset's own `read` spec. */
+export async function readFeed(ref: OracleRef & { address: string }) {
+  const feed = getAddress(ref.address);
+  if (ref.read) {
+    const value = await call(ref.chain, feed, ref.read.value);
+    const updatedAt = await call(ref.chain, feed, ref.read.updatedAt, value);
+    const raw = value[ref.read.value.index] as bigint;
+    return { value: Number(raw) / 10 ** ref.read.decimals, updatedAt: new Date(Number(updatedAt[ref.read.updatedAt.index]) * 1000), roundId: undefined };
+  }
+  const { client } = clientsFor(ref.chain);
   const [[roundId, answer, , updatedAt], decimals] = await Promise.all([
     client.readContract({ address: feed, abi: FEED_ABI, functionName: "latestRoundData" }),
     client.readContract({ address: feed, abi: FEED_ABI, functionName: "decimals" }),
@@ -26,7 +48,7 @@ export async function oraclesJob() {
   for (const asset of await publishedAssets()) {
     const ref = asset.pricing.reference;
     if (ref.type !== "oracle" || !ref.address) continue;
-    const r = await readFeed(ref.chain, ref.address);
+    const r = await readFeed({ ...ref, address: ref.address });
     const ageSeconds = Math.round((now.getTime() - r.updatedAt.getTime()) / 1000);
     await getDb().insert(schema.oracleReading).values({
       assetSlug: asset.slug,
@@ -40,7 +62,7 @@ export async function oraclesJob() {
     });
     log("oracles", `${asset.slug} value=${r.value} age=${formatDuration(ageSeconds)}`);
 
-    if (ageSeconds > 3 * ref.cadenceSeconds) {
+    if (feedAgeSeconds(ref, r.updatedAt, now) > 3 * ref.cadenceSeconds) {
       await raiseAlert({
         // One alert per stale update: the id is keyed on the last onchain update time.
         id: `oracle-stale-${asset.slug}-${r.updatedAt.getTime() / 1000}`,

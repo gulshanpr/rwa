@@ -82,6 +82,8 @@ For regulated securities, freeze and force-transfer powers are often legally req
 - **Yellow:** an issuer-controlled multisig or a single provider relaying issuer-reported NAV writes the price, or the update is late (1–3× cadence).
 - **Green:** an independent oracle network publishes data from a fund administrator or custodian at least daily, with history onchain.
 
+Funds that strike NAV on business days only don't publish on weekends, so for those feeds weekends don't count towards the age.
+
 For vault tokens (ERC-4626) the NAV is the contract's own accounting, so there is no feed to go stale. We score who can move it instead: **red** if a single key can write it down or back up (for example by marking a loan impaired), **yellow** if an issuer multisig can, or if the numbers are the issuer's own accounting rather than a fund administrator's or custodian's.
 
 For stable $1 tokens, we also check how DeFi markets price the token. If a lending market hardcodes $1, the slice gets a yellow flag: *DeFi markets assume $1 with no onchain NAV check.*

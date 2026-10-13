@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: invesco
+name: Invesco Advisers, Inc.
+type: [manager]
+jurisdiction: US
+website: https://www.invesco.com

@@ -1,4 +1,4 @@
-import { decodeEventLog, formatUnits, getAddress, parseAbi, toEventSelector, type Abi, type AbiEvent, type Address, type Log } from "viem";
+import { decodeEventLog, formatUnits, getAddress, parseAbi, toEventSelector, zeroAddress, type Abi, type AbiEvent, type Address, type Log } from "viem";
 import { getDb, schema } from "@/db/client";
 import { clientsFor } from "@/discovery/rpc";
 import { verifiedSource } from "@/discovery/sources";
@@ -7,7 +7,7 @@ import type { Alert } from "@/lib/schema/live";
 import { raiseAlert } from "./alerts";
 import { catalog, getCursor, log, setCursor } from "./util";
 
-const CONFIRMATIONS: Record<Chain, bigint> = { ethereum: 12n, arbitrum: 30n, optimism: 30n, base: 30n, polygon: 30n, avalanche: 30n };
+const CONFIRMATIONS: Record<Chain, bigint> = { ethereum: 12n, arbitrum: 30n, optimism: 30n, base: 30n, polygon: 30n, avalanche: 30n, bsc: 30n };
 const CHUNK = BigInt(process.env.WATCH_CHUNK ?? 500);
 // PublicNode rejects eth_getLogs with more than ~8 addresses.
 const ADDRESS_BATCH = Number(process.env.WATCH_ADDRESS_BATCH ?? 8);
@@ -111,6 +111,56 @@ const RULES: Record<string, Rule> = {
   InvestorFullyLocked: { severity: "medium", kind: "freeze", title: (c) => `${c}: an investor was fully locked`, consequence: "One investor can no longer move any tokens." },
   HolderLocked: { severity: "medium", kind: "freeze", title: (c) => `${c}: holder tokens locked`, consequence: "Part of one holder's balance can no longer move." },
   Locked: { severity: "medium", kind: "freeze", title: (c, a) => `${c}: tokens locked in ${fmt(a.who)}`, consequence: "Part of one wallet's balance can no longer move." },
+
+  // Centrifuge V3. Hub and BalanceSheet are shared, so these are filtered to the asset's pool.
+  Rely: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: ward ${fmt(a.user)} added`, consequence: "A new address can call every `auth` function on this contract. On the token or BalanceSheet that includes minting, burning and moving shares." },
+  Deny: { severity: "high", kind: "role-revoke", title: (c, a) => `${c}: ward ${fmt(a.user)} removed`, consequence: "An address lost its `auth` access to this contract." },
+  UpdateManager: {
+    severity: "critical",
+    kind: "role-grant",
+    title: (c, a) => `${c}: pool manager ${fmt(a.manager ?? a.who)} ${a.canManage ? "added" : "removed"}`,
+    consequence: "Pool managers can set the share price, mint, burn and move shares, and change the pool's other managers.",
+  },
+  UpdateBalanceSheetManager: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: balance-sheet manager ${String(a.manager).slice(0, 42)} ${a.canManage ? "added" : "removed"} on chain ${a.centrifugeId}`, consequence: "Balance-sheet managers can mint, burn and move shares and override the price within a transaction." },
+  UpdateHookManager: { severity: "high", kind: "role-grant", title: (c, a) => `${c}: hook manager ${fmt(a.manager)} ${a.canManage ? "added" : "removed"}`, consequence: "Hook managers can change who may hold and transfer the token." },
+  UpdateShareHook: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: transfer hook changed on chain ${a.centrifugeId}`, consequence: "Transfer, mint and burn restrictions for the token now run through a different contract." },
+  SetSpokeRequestManager: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: request manager changed on chain ${a.centrifugeId}`, consequence: "A different contract now processes deposits and redemptions, and can mint and burn shares." },
+  TransferSharesFrom: { severity: "medium", kind: "seize", title: (c, a) => `${c}: shares moved from ${fmt(a.from)} to ${fmt(a.to)}`, consequence: "A balance-sheet manager moved shares out of a holder's wallet without their signature." },
+  Freeze: { severity: "medium", kind: "freeze", title: (c, a) => `${c}: ${fmt(a.user)} frozen`, consequence: "That wallet can no longer send or receive the token." },
+  Unfreeze: { severity: "medium", kind: "freeze", title: (c, a) => `${c}: ${fmt(a.user)} unfrozen`, consequence: "That wallet can move the token again." },
+
+  // Hashnote (USYC).
+  UserRoleUpdated: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: role ${a.role} ${a.enabled ? "granted to" : "removed from"} ${fmt(a.user)}`, consequence: "Roles decide who can mint, set prices and change entitlements. Role 255 is the fund admin." },
+  RoleCapabilityUpdated: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: role ${a.role} ${a.enabled ? "can now" : "can no longer"} call ${a.functionSig} on ${fmt(a.target)}`, consequence: "Which role may call a privileged function changed." },
+  PublicCapabilityUpdated: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: ${a.functionSig} on ${fmt(a.target)} ${a.enabled ? "opened to anyone" : "no longer public"}`, consequence: "A public capability lets any address call the function." },
+  MinterConfigured: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: minter ${fmt(a.minter)} allowance set to ${a.amount}`, consequence: "Minters can create new tokens up to their allowance." },
+  TellerSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: teller changed to ${fmt(a.newTeller)}`, consequence: "A different contract now handles subscriptions and redemptions." },
+  OracleSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: price oracle changed to ${fmt(a.newOracle)}`, consequence: "Subscriptions, redemptions and integrators now read the price from a different contract." },
+
+  // Superstate (USTB).
+  SetOracle: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: price oracle changed to ${fmt(a.newOracle)}`, consequence: "Onchain subscriptions now price the token from a different contract." },
+  AllowlistUpdated: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: allowlist contract changed to ${fmt(a.newAllowlist)}`, consequence: "A different contract now decides who may hold and transfer the token." },
+  AllowedSet: { severity: "low", kind: "compliance-change", title: (c, a) => `${c}: ${fmt(a.addr)} ${a.isAllowed ? "allowed" : "removed"}`, consequence: "Only allowlisted addresses can hold the token." },
+  AccountingPaused: { severity: "high", kind: "pause", title: (c) => `${c}: accounting paused`, consequence: "Transfers, subscriptions and redemptions stop until accounting is unpaused." },
+  SetRedemptionContract: { severity: "high", kind: "service-change", title: (c, a) => `${c}: redemption contract changed to ${fmt(a.newRedemptionContract)}`, consequence: "A different contract now handles onchain redemptions." },
+  SetMaximumOracleDelay: { severity: "medium", kind: "service-change", title: (c, a) => `${c}: maximum oracle delay set to ${a.newMaxOracleDelay}s`, consequence: "How old the price may be before onchain subscriptions stop changed." },
+  SetMaximumAcceptablePriceDelta: { severity: "high", kind: "service-change", title: (c, a) => `${c}: maximum price change per checkpoint set to ${a.newDelta}`, consequence: "How far the admin can move the NAV in one update changed." },
+
+  // Ondo (OUSG).
+  OndoOracleSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: oracle changed to ${fmt(a.newOndoOracle)}`, consequence: "Instant subscriptions and redemptions now price OUSG from a different contract." },
+  TokenToRWAOracleSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: RWA oracle for ${fmt(a.token)} changed to ${fmt(a.newRWAOracle)}`, consequence: "The token's price now comes from a different contract." },
+  AggregatorV3OracleSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: price feed for ${fmt(a.token)} changed to ${fmt(a.newOracle)}`, consequence: "The token's price now comes from a different feed." },
+  HardcodedPriceSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: price for ${fmt(a.token)} hard-coded to ${a.newPrice}`, consequence: "The token's price is now a fixed value set by the admin, not a feed." },
+  TokenToOracleTypeSet: { severity: "high", kind: "service-change", title: (c, a) => `${c}: oracle type for ${fmt(a.token)} set to ${a.oracleType}`, consequence: "Where the token's price comes from changed." },
+  OndoIDRegistrySet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: ID registry changed to ${fmt(a.newOndoIDRegistry)}`, consequence: "A different contract now decides which wallets are KYC'd." },
+  OndoComplianceSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: compliance contract changed to ${fmt(a.newOndoCompliance)}`, consequence: "A different contract now screens subscriptions and redemptions." },
+  OndoTokenRouterSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: token router changed to ${fmt(a.newOndoTokenRouter)}`, consequence: "Subscription and redemption funds now flow through a different contract." },
+  AdminSubscriptionCheckerSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: admin subscription checker changed to ${fmt(a.newAdminSubscriptionChecker)}`, consequence: "The limits on admin mints now come from a different contract." },
+  TokenWithdrawSourcesSet: { severity: "high", kind: "service-change", title: (c, a) => `${c}: redemption funding sources changed for ${fmt(a.withdrawToken)}`, consequence: "Instant redemptions are paid from a different set of wallets." },
+  RWARoleSet: { severity: "critical", kind: "role-grant", title: (c, a) => `${c}: KYC role for ${fmt(a.rwaToken)} changed`, consequence: "A different role now decides which wallets may hold the token." },
+  KYCRegistrySet: { severity: "critical", kind: "service-change", title: (c, a) => `${c}: KYC registry changed to ${fmt(a.newRegistry)}`, consequence: "A different contract now decides which wallets may hold the token." },
+  SubscribePaused: { severity: "high", kind: "pause", title: (c) => `${c}: subscriptions paused`, consequence: "Instant subscriptions stop until unpaused." },
+  RedeemPaused: { severity: "high", kind: "pause", title: (c) => `${c}: redemptions paused`, consequence: "Instant redemptions stop until unpaused." },
 };
 
 // Mint and burn only alert above this share of supply or USD amount (spec 8.2).
@@ -123,18 +173,25 @@ const AMOUNT_EVENTS: Record<string, { kind: "mint" | "burn"; field: string; verb
   Withdraw: { kind: "burn", field: "shares_", verb: "burned" },
   Burn: { kind: "burn", field: "value", verb: "burned" },
   OmnibusBurn: { kind: "burn", field: "value", verb: "burned" },
+  // Superstate.
+  Mint: { kind: "mint", field: "amount", verb: "minted" },
+  AdminBurn: { kind: "burn", field: "amount", verb: "burned" },
+  OffchainRedeem: { kind: "burn", field: "amount", verb: "redeemed" },
 };
+const ERC20_TRANSFER = parseAbi(["event Transfer(address indexed from, address indexed to, uint256 value)"])[0];
 
 interface Watched {
   asset: Asset;
   name: string;
+  /** Token with no named mint/burn event: mints and burns are read from Transfer to or from the zero address. */
+  transferMints?: boolean;
 }
 
 async function watchList(chain: Chain): Promise<{ addresses: Map<string, Watched>; events: Map<string, AbiEvent[]> }> {
   const addresses = new Map<string, Watched>();
   const events = new Map<string, AbiEvent[]>();
   const add = (e: AbiEvent) => {
-    if (!RULES[e.name] && !AMOUNT_EVENTS[e.name]) return;
+    if (!RULES[e.name] && !AMOUNT_EVENTS[e.name] && e !== ERC20_TRANSFER) return;
     const sel = toEventSelector(e);
     const list = events.get(sel) ?? [];
     if (!list.some((x) => x.inputs.length === e.inputs.length && x.inputs.every((i, k) => i.indexed === e.inputs[k]!.indexed))) list.push(e);
@@ -149,10 +206,19 @@ async function watchList(chain: Chain): Promise<{ addresses: Map<string, Watched
     for (const s of snapshots.get(asset.slug) ?? []) {
       if (s.discovered.chain !== chain) continue;
       for (const [addr, c] of Object.entries(s.discovered.contracts)) {
-        addresses.set(addr.toLowerCase(), { asset, name: `${asset.ticker} ${labels[addr.toLowerCase()] ?? c.name}` });
+        const watched: Watched = { asset, name: `${asset.ticker} ${labels[addr.toLowerCase()] ?? c.name}` };
+        addresses.set(addr.toLowerCase(), watched);
+        const abiEvents: AbiEvent[] = [];
         for (const a of new Set([addr, c.proxy?.implementation].filter(Boolean) as string[])) {
           const src = await verifiedSource(chainId, getAddress(a));
-          (src.abi as Abi | undefined)?.forEach((e) => e.type === "event" && add(e));
+          (src.abi as Abi | undefined)?.forEach((e) => e.type === "event" && abiEvents.push(e));
+        }
+        abiEvents.forEach(add);
+        const isToken = asset.deployments.some((d) => d.chain === chain && d.token.toLowerCase() === addr.toLowerCase());
+        const namedAmount = abiEvents.some((e) => AMOUNT_EVENTS[e.name] && e.inputs.some((i) => i.name === AMOUNT_EVENTS[e.name]!.field));
+        if (isToken && !namedAmount) {
+          watched.transferMints = true;
+          add(ERC20_TRANSFER);
         }
       }
       for (const [addr, h] of Object.entries(s.discovered.holders)) {
@@ -212,11 +278,26 @@ export async function watcherJob() {
         logs.push(...(await client.getLogs({ address: watchedAddresses.slice(i, i + ADDRESS_BATCH), fromBlock: from, toBlock: to })));
       }
       logs.sort((a, b) => Number(a.blockNumber! - b.blockNumber!) || a.logIndex! - b.logIndex!);
-      for (const l of logs) {
-        const ev = decode(l, events);
+      const decoded = logs.map((l) => decode(l, events));
+      // A ward relied and denied in the same transaction (deployment scripts) changes nothing.
+      const wardKey = (l: Log, user: unknown) => `${l.transactionHash}|${l.address.toLowerCase()}|${String(user).toLowerCase()}`;
+      const relied = new Set(logs.flatMap((l, i) => (decoded[i]?.name === "Rely" ? [wardKey(l, decoded[i]!.args.user)] : [])));
+      const netZero = new Set(logs.flatMap((l, i) => (decoded[i]?.name === "Deny" && relied.has(wardKey(l, decoded[i]!.args.user)) ? [wardKey(l, decoded[i]!.args.user)] : [])));
+      for (const [i, l] of logs.entries()) {
+        const ev = decoded[i];
         if (!ev) continue;
+        if ((ev.name === "Rely" || ev.name === "Deny") && netZero.has(wardKey(l, ev.args.user))) continue;
         const watched = addresses.get(l.address.toLowerCase())!;
         const { asset } = watched;
+        let amountRule = AMOUNT_EVENTS[ev.name];
+        if (ev.name === "Transfer") {
+          if (!watched.transferMints) continue;
+          if (ev.args.from === zeroAddress) amountRule = { kind: "mint", field: "value", verb: "minted" };
+          else if (ev.args.to === zeroAddress) amountRule = { kind: "burn", field: "value", verb: "burned" };
+          else continue;
+        }
+        const poolId = asset.deployments.find((d) => d.chain === chain)?.discovery.poolId;
+        if (poolId && ev.args.poolId !== undefined && String(ev.args.poolId) !== poolId) continue;
         const block = l.blockNumber!;
         if (!blockTimes.has(block)) blockTimes.set(block, new Date(Number((await client.getBlock({ blockNumber: block })).timestamp) * 1000));
         const ts = blockTimes.get(block)!;
@@ -235,7 +316,7 @@ export async function watcherJob() {
           await raiseAlert({ ...base, severity: rule.severity, kind: rule.kind, title: rule.title(watched.name, ev.args), consequence: rule.consequence });
           continue;
         }
-        const amount = AMOUNT_EVENTS[ev.name];
+        const amount = amountRule;
         const deployment = asset.deployments.find((d) => d.chain === chain && d.token.toLowerCase() === l.address.toLowerCase());
         if (amount && deployment) {
           const { supply, decimals } = await supplyFor(asset, chain, getAddress(deployment.token));

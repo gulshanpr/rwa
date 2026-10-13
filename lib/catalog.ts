@@ -78,6 +78,7 @@ export function assetToRows(asset: Asset) {
       token: d.token,
       labels: Object.entries(d.discovery.labels),
       ignoreMethods: d.discovery.ignoreMethods,
+      poolId: d.discovery.poolId ?? null,
     })),
     facts,
   };
@@ -102,7 +103,11 @@ export function rowsToAsset(row: AssetRow, deployments: DeploymentRow[], facts: 
     priceModel: row.priceModel,
     deployments: [...deployments]
       .sort((a, b) => a.position - b.position)
-      .map((d) => ({ chain: d.chain, token: d.token, discovery: { ignoreMethods: d.ignoreMethods, labels: Object.fromEntries(d.labels) } })),
+      .map((d) => ({
+        chain: d.chain,
+        token: d.token,
+        discovery: { ignoreMethods: d.ignoreMethods, labels: Object.fromEntries(d.labels), ...(d.poolId ? { poolId: d.poolId } : {}) },
+      })),
   };
   for (const f of facts) {
     const keys = f.path.split(".");

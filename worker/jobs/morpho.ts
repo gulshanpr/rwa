@@ -35,6 +35,10 @@ export async function morphoJob() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ query: QUERY, variables: { addresses: [d.token], chains: [chainId] } }),
       });
+      if (res.errors?.some((e) => /unsupported chainId/i.test(e.message))) {
+        log("morpho", `${asset.slug}/${d.chain} skipped: Morpho doesn't index this chain`);
+        continue;
+      }
       if (res.errors?.length) throw new Error(`Morpho API: ${res.errors[0]!.message}`);
       const markets = res.data?.markets.items ?? [];
       for (const m of markets) {

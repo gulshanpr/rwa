@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: ondo
+name: Ondo Finance
+type: [platform, oracle]
+jurisdiction: US
+website: https://ondo.finance

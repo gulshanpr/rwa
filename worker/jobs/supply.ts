@@ -7,7 +7,7 @@ import { readFeed } from "./oracles";
 import { raiseAlert } from "../alerts";
 import { fetchJson, log, publishedAssets } from "../util";
 
-const CHAIN_PREFIX: Record<string, string> = { ethereum: "ethereum", arbitrum: "arbitrum", optimism: "optimism", base: "base", polygon: "polygon", avalanche: "avax" };
+const CHAIN_PREFIX: Record<string, string> = { ethereum: "ethereum", arbitrum: "arbitrum", optimism: "optimism", base: "base", polygon: "polygon", avalanche: "avax", bsc: "bsc" };
 const VAULT_ABI = parseAbi(["function asset() view returns (address)", "function convertToExitAssets(uint256) view returns (uint256)", "function convertToAssets(uint256) view returns (uint256)"]);
 
 async function llamaPrice(chain: string, token: string): Promise<number | undefined> {
@@ -58,8 +58,9 @@ export async function supplyJob() {
       const ref = asset.pricing.reference;
       let priceUsd: number | undefined;
       let source = "DefiLlama coins";
-      if (ref.type === "oracle" && ref.address && ref.chain === d.chain) {
-        priceUsd = (await readFeed(d.chain, ref.address)).value;
+      // A NAV feed prices the same fund share on every chain.
+      if (ref.type === "oracle" && ref.address) {
+        priceUsd = (await readFeed({ ...ref, address: ref.address })).value;
         source = `${ref.provider} feed`;
       } else if (ref.type === "vault" && ref.chain === d.chain) {
         const v = await vaultPrice(d.chain, getAddress(ref.address), decimals);
