@@ -1,0 +1,36 @@
+name: Catalog sync
+
+# The Git copy and Postgres hold the same catalog. When asset, entity or discovery files change on main
+# (a merged discovery PR or a hand edit), load the change into Postgres so the site and worker see it.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/assets/**"
+      - "data/entities/**"
+      - "discovered/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-sync
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - run: bun run validate
+      - run: bun run db:migrate
+      - run: bun rwa import --by "github:${{ github.actor }}"
+      - run: bun rwa check

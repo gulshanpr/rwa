@@ -1,6 +1,5 @@
 import { getDb, schema } from "@/db/client";
-import { loadAssets } from "@/lib/data";
-import { fetchJson, log } from "../util";
+import { fetchJson, log, publishedAssets } from "../util";
 
 interface Stablecoin {
   tokens: { date: number; circulating: { peggedUSD?: number } }[];
@@ -9,7 +8,7 @@ interface Stablecoin {
 // Fund-level AUM across every chain (we only track some deployments onchain).
 // Upserts the full daily history so the 30-day change is always available.
 export async function aumJob() {
-  for (const asset of loadAssets()) {
+  for (const asset of await publishedAssets()) {
     const id = asset.externalIds.defillamaStablecoin;
     if (!id) continue;
     const data = await fetchJson<Stablecoin>(`https://stablecoins.llama.fi/stablecoin/${id}`);

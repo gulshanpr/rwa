@@ -31,7 +31,7 @@ function run() {
     for (const [role, item] of Object.entries(asset.serviceProviders)) {
       if (item.status === "public") refs.push([`serviceProviders.${role}`, item.value]);
     }
-    if (asset.pricing.reference.type === "oracle") refs.push(["pricing.reference.provider", asset.pricing.reference.provider]);
+    if (asset.pricing.reference.type !== "none") refs.push(["pricing.reference.provider", asset.pricing.reference.provider]);
     asset.verification.methods.forEach((m, i) => refs.push([`verification.methods[${i}].provider`, m.provider]));
     for (const [field, slug] of refs) {
       if (!entities.has(slug)) errors.push(`${file}: ${field} "${slug}" has no data/entities/${slug}.yaml`);

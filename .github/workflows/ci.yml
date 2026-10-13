@@ -16,6 +16,8 @@ jobs:
       - run: bun install --frozen-lockfile
       - name: Validate data (schemas, sources, entity references, staleness)
         run: bun run validate
+      - name: Scoring tests (rules + Phase 0 hand scores)
+        run: bun run test
       - name: Typecheck
         run: bunx next typegen && bunx tsc --noEmit
       - name: Build

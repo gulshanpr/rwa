@@ -1,0 +1,213 @@
+{
+  "asset": "syrupusdc",
+  "sample": false,
+  "asOf": "2026-10-12T13:15:10.527Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 888379252.967653,
+      "priceUsd": 1.1873569044017802,
+      "source": "totalSupply() · vault exit rate rate=1.187665"
+    }
+  ],
+  "aum": {
+    "usd": 1054823239.7384385,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "defiMarkets": [
+    {
+      "marketId": "0xdb1966b0052cc35716936b66a42982563f5c1db86a181f0b0dc6feb36dffbc28",
+      "protocol": "morpho",
+      "name": "syrupUSDC / USDT",
+      "chain": "ethereum",
+      "loanAsset": "USDT",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x80032f4cb6E3573b9ed61E888AF658E48Fb790cC",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 5.073989596690747,
+      "borrowUsd": 1.610445471693281,
+      "supplyUsd": 6.264839507536423,
+      "url": "https://app.morpho.org/ethereum/market/0xdb1966b0052cc35716936b66a42982563f5c1db86a181f0b0dc6feb36dffbc28"
+    },
+    {
+      "marketId": "0xc9629945524f3fde56c7e8854a6c3d48e76b9d97236abbe73c750fcc7aeb8501",
+      "protocol": "morpho",
+      "name": "syrupUSDC / PYUSD",
+      "chain": "ethereum",
+      "loanAsset": "PYUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0xc8043d248551Ed19B33cbc89dCCd69148c827039",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 58684876.137110285,
+      "borrowUsd": 51956717.39536498,
+      "supplyUsd": 59401828.02956709,
+      "url": "https://app.morpho.org/ethereum/market/0xc9629945524f3fde56c7e8854a6c3d48e76b9d97236abbe73c750fcc7aeb8501"
+    },
+    {
+      "marketId": "0xc0ae375fd761ff19b3f04de5534c0f1ec110f80e1c2ede27c42c1c43c3040394",
+      "protocol": "morpho",
+      "name": "syrupUSDC / RLUSD",
+      "chain": "ethereum",
+      "loanAsset": "RLUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0xf766F4F1Bcb0CBBF4EEF5E26FF7c7f66a713c1B5",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 4903179.303877331,
+      "borrowUsd": 4194952.269879668,
+      "supplyUsd": 4742864.77093132,
+      "url": "https://app.morpho.org/ethereum/market/0xc0ae375fd761ff19b3f04de5534c0f1ec110f80e1c2ede27c42c1c43c3040394"
+    },
+    {
+      "marketId": "0xab3196447663a41382ba4b4d55eab3fa702ee2cf071db224fd72492953040056",
+      "protocol": "morpho",
+      "name": "syrupUSDC / AUSD",
+      "chain": "ethereum",
+      "loanAsset": "AUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0xEa876EF062E90a6478e726800A83f44D4EAe09Bc",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 365649.96696798725,
+      "borrowUsd": 320226.7724729758,
+      "supplyUsd": 371309.1424856118,
+      "url": "https://app.morpho.org/ethereum/market/0xab3196447663a41382ba4b4d55eab3fa702ee2cf071db224fd72492953040056"
+    },
+    {
+      "marketId": "0x8478285631c72ae8b81f85d1b203f80d3f48ef1f6b621aa9bf13a5666095dbda",
+      "protocol": "morpho",
+      "name": "syrupUSDC / mUSD",
+      "chain": "ethereum",
+      "loanAsset": "mUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x80032f4cb6E3573b9ed61E888AF658E48Fb790cC",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 4.014608688490377,
+      "borrowUsd": 0.9136635528832903,
+      "supplyUsd": 1.0046037882117944,
+      "url": "https://app.morpho.org/ethereum/market/0x8478285631c72ae8b81f85d1b203f80d3f48ef1f6b621aa9bf13a5666095dbda"
+    },
+    {
+      "marketId": "0x729badf297ee9f2f6b3f717b96fd355fc6ec00422284ce1968e76647b258cf44",
+      "protocol": "morpho",
+      "name": "syrupUSDC / USDC",
+      "chain": "ethereum",
+      "loanAsset": "USDC",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x80032f4cb6E3573b9ed61E888AF658E48Fb790cC",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 29076.939075049806,
+      "borrowUsd": 24146.422910126377,
+      "supplyUsd": 26688.018006383136,
+      "url": "https://app.morpho.org/ethereum/market/0x729badf297ee9f2f6b3f717b96fd355fc6ec00422284ce1968e76647b258cf44"
+    },
+    {
+      "marketId": "0x6f9bb2e7aed06563a924be05f5484c70b53ec85e36652288ccafa711f847adbc",
+      "protocol": "morpho",
+      "name": "syrupUSDC / PYUSD",
+      "chain": "ethereum",
+      "loanAsset": "PYUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0xf8A3ADe50843592d23Ad9b74cE3cE6e8Aa9B6B51",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 0,
+      "borrowUsd": 0,
+      "supplyUsd": 0.0009998316596214884,
+      "url": "https://app.morpho.org/ethereum/market/0x6f9bb2e7aed06563a924be05f5484c70b53ec85e36652288ccafa711f847adbc"
+    },
+    {
+      "marketId": "0x52b1a14ca2cd6b99cd9b39bb52f6d0dec07dc718d7be3bedb8e925f32ee6d0d9",
+      "protocol": "morpho",
+      "name": "syrupUSDC / AUSD",
+      "chain": "ethereum",
+      "loanAsset": "AUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x80032f4cb6E3573b9ed61E888AF658E48Fb790cC",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 0,
+      "borrowUsd": 0,
+      "supplyUsd": 0.9992192388719203,
+      "url": "https://app.morpho.org/ethereum/market/0x52b1a14ca2cd6b99cd9b39bb52f6d0dec07dc718d7be3bedb8e925f32ee6d0d9"
+    },
+    {
+      "marketId": "0x486cee17fb967ec0235388fa7fdcd24082ae1c2842a4a5dda0d01960117ce52e",
+      "protocol": "morpho",
+      "name": "syrupUSDC / USDC",
+      "chain": "ethereum",
+      "loanAsset": "USDC",
+      "lltv": 0.86,
+      "oracle": {
+        "address": "0x426e271cD65cf6745C729Fcc09CF2295BF444f80",
+        "type": "market",
+        "description": "Uses feed 0x5360…1028, not the issuer NAV feed."
+      },
+      "collateralUsd": 0,
+      "borrowUsd": 0,
+      "supplyUsd": 0.0009997300343162275,
+      "url": "https://app.morpho.org/ethereum/market/0x486cee17fb967ec0235388fa7fdcd24082ae1c2842a4a5dda0d01960117ce52e"
+    },
+    {
+      "marketId": "0x43ae7c4b8faba733bcb5832e51776f92a8008746239bffc20cd20fcce8c444b2",
+      "protocol": "morpho",
+      "name": "syrupUSDC / msUSD",
+      "chain": "ethereum",
+      "loanAsset": "msUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x96B6E87277a8A809dc0A28675d8cc40000cd7F33",
+        "type": "market",
+        "description": "Uses feed 0x3715…9Ba1, not the issuer NAV feed."
+      },
+      "collateralUsd": 4.155892406750258,
+      "borrowUsd": 0,
+      "supplyUsd": 0.885420196699241,
+      "url": "https://app.morpho.org/ethereum/market/0x43ae7c4b8faba733bcb5832e51776f92a8008746239bffc20cd20fcce8c444b2"
+    },
+    {
+      "marketId": "0x2f1f7f439143b7985b68394c87a98b9ed7b8cfd2a15fb14c99b3bf76a38cbe7d",
+      "protocol": "morpho",
+      "name": "syrupUSDC / RLUSD",
+      "chain": "ethereum",
+      "loanAsset": "RLUSD",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0xc910368a162a145dc292B2eaD6Af7839140d2c06",
+        "type": "nav-feed",
+        "description": "Reads the vault's own exchange rate (BASE_VAULT 0x80ac…Cc0b)."
+      },
+      "collateralUsd": 4.092057899382574,
+      "borrowUsd": 0.9218617256598453,
+      "supplyUsd": 1.011106389036866,
+      "url": "https://app.morpho.org/ethereum/market/0x2f1f7f439143b7985b68394c87a98b9ed7b8cfd2a15fb14c99b3bf76a38cbe7d"
+    }
+  ],
+  "defiSource": {
+    "name": "Morpho API; Aave v3 Core, Prime, Horizon and EtherFi pools onchain (not listed)",
+    "url": "https://api.morpho.org/graphql"
+  }
+}

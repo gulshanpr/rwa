@@ -132,8 +132,14 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
           label="Oracle age"
           info="Time since the onchain NAV/price was last updated, compared with its expected cadence."
           infoHref="/methodology#pricing"
-          value={stats.oracle ? formatDuration(stats.oracle.ageSeconds) : "—"}
-          status={stats.oracle ? FRESHNESS[stats.oracle.freshness] : { color: "red", label: "No onchain price" }}
+          value={stats.oracle ? formatDuration(stats.oracle.ageSeconds) : asset.pricing.reference.type === "vault" ? "Live" : "—"}
+          status={
+            stats.oracle
+              ? FRESHNESS[stats.oracle.freshness]
+              : asset.pricing.reference.type === "vault"
+                ? { color: "green", label: "NAV computed onchain every block" }
+                : { color: "red", label: "No onchain price" }
+          }
         />
         <StatCard
           label="Used as DeFi collateral"

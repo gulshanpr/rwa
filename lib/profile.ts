@@ -1,5 +1,6 @@
 import { cache } from "react";
-import { loadAssets, loadDiscovered, loadEntities, type DiscoverySnapshot } from "./data";
+import { getSiteCatalog, type Catalog } from "./catalog";
+import type { DiscoverySnapshot } from "./data";
 import { getAlerts, getLive } from "./live-store";
 import type { Asset, AssetClass } from "./schema/asset";
 import type { Power } from "./schema/discovered";
@@ -41,6 +42,8 @@ export interface AssetProfile {
   asset: Asset;
   sample: boolean;
   entities: { issuer?: Entity; manager?: Entity; platform?: Entity };
+  /** Display names for every entity slug, so pages can name custodians, auditors and providers. */
+  entityNames: Record<string, string>;
   snapshots: DiscoverySnapshot[];
   live?: Live;
   score: AssetScore;
@@ -50,8 +53,8 @@ export interface AssetProfile {
   alerts: Alert[];
 }
 
-export function entityName(slug: string): string {
-  return loadEntities().get(slug)?.name ?? slug;
+export function nameOf(profile: AssetProfile, slug: string): string {
+  return profile.entityNames[slug] ?? slug;
 }
 
 const isSingleKey = (r: PowerRow) => r.holder.holderClass === "eoa" || r.holder.holderClass === "unknown";
@@ -75,9 +78,9 @@ function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetSt
   return flags;
 }
 
-function buildProfile(asset: Asset, live: Live | undefined, alerts: Alert[]): AssetProfile {
-  const entities = loadEntities();
-  const snapshots = loadDiscovered(asset);
+function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, alerts: Alert[]): AssetProfile {
+  const { entities } = catalog;
+  const snapshots = catalog.snapshots.get(asset.slug) ?? [];
   const discovered = snapshots.map((s) => s.discovered);
   const powers = analyzePowers(discovered);
   const score = scoreAsset(asset, discovered, live);
@@ -102,6 +105,7 @@ function buildProfile(asset: Asset, live: Live | undefined, alerts: Alert[]): As
       manager: entities.get(asset.manager),
       platform: entities.get(asset.platform),
     },
+    entityNames: Object.fromEntries([...entities.values()].map((e) => [e.slug, e.name])),
     snapshots,
     live,
     score,
@@ -114,10 +118,11 @@ function buildProfile(asset: Asset, live: Live | undefined, alerts: Alert[]): As
 
 // Deduplicated per request; live data and alerts may come from Postgres.
 export const getProfiles = cache(async (): Promise<AssetProfile[]> => {
-  const assets = loadAssets();
+  const catalog = await getSiteCatalog();
+  const { assets } = catalog;
   const [lives, { alerts }] = await Promise.all([Promise.all(assets.map(getLive)), getAlerts()]);
   return assets
-    .map((asset, i) => buildProfile(asset, lives[i], alerts))
+    .map((asset, i) => buildProfile(asset, catalog, lives[i], alerts))
     .sort((a, b) => (b.stats.aumUsd ?? 0) - (a.stats.aumUsd ?? 0));
 });
 

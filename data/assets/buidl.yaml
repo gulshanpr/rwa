@@ -1,11 +1,10 @@
-# Phase 0 review: research/buidl.md (2026-10-11).
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
 slug: buidl
 name: BlackRock USD Institutional Digital Liquidity Fund
 ticker: BUIDL
 assetClass: us-treasuries
 description: >
-  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash,
-  US Treasury bills, notes and repurchase agreements. Yield is paid monthly as new tokens.
+  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash, US Treasury bills, notes and repurchase agreements. Yield is paid monthly as new tokens.
 issuer: blackrock-buidl-fund-ltd
 manager: blackrock
 platform: securitize
@@ -34,6 +33,7 @@ access:
     value: qualified-purchaser
     source: { url: "https://cranedata.com/archives/all-articles/10236/", note: "ICA 3(c)(7), Reg D 506(c)", checkedAt: 2026-10-11 }
   minimumInvestment:
+    status: public
     value: 5000000
     source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-11 }
   transferRestricted:

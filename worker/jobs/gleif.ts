@@ -1,6 +1,5 @@
-import { loadAssets } from "@/lib/data";
 import { raiseAlert } from "../alerts";
-import { fetchJson, getCheck, log, upsertCheck } from "../util";
+import { fetchJson, getCheck, log, publishedAssets, upsertCheck } from "../util";
 
 interface LeiRecord {
   data: {
@@ -19,7 +18,7 @@ interface LeiState {
 }
 
 export async function gleifJob() {
-  for (const asset of loadAssets()) {
+  for (const asset of await publishedAssets()) {
     const lei = asset.legal.lei;
     if (lei.status !== "public") continue;
     const res = await fetchJson<LeiRecord>(`https://api.gleif.org/api/v1/lei-records/${lei.value}`);

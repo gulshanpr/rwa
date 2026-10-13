@@ -32,6 +32,14 @@ export function scorePricing(asset: Asset, live: Live | undefined): SliceResult 
     return sliceFromReasons("pricing", reasons, "");
   }
 
+  if (ref.type === "vault") {
+    if (ref.writer === "eoa") add("eoa", "red", "A single key can write the onchain NAV down or back up, for example by marking loans as impaired.");
+    else if (ref.writer === "issuer-multisig") add("issuer-writer", "yellow", "The issuer's own multisig can write the onchain NAV down or back up.");
+    if (ref.dataOrigin === "issuer") add("issuer-origin", "yellow", "The NAV is the issuer's own accounting, not a fund administrator's or custodian's.");
+    if (!ref.historyOnchain) add("history", "yellow", "Price history isn't kept onchain.");
+    return sliceFromReasons("pricing", reasons, "The token's own contract computes the NAV and nobody can override it.");
+  }
+
   const age = oracleAge(asset, live);
   if (ref.writer === "eoa") add("eoa", "red", "A single key writes the onchain price.");
   if (age?.freshness === "stale")

@@ -29,6 +29,7 @@ export class Context {
   readonly c: ChainClients;
   readonly contracts: Record<string, DiscoveredContract> = {};
   private readonly pendingHolders = new Set<string>();
+  private readonly knownHolders = new Map<string, Holder>();
 
   constructor(
     readonly asset: Asset,
@@ -103,6 +104,11 @@ export class Context {
     }
   }
 
+  /** For holders a handler understands better than the generic probes (e.g. a non-OpenZeppelin timelock). */
+  setHolder(address: string, holder: Holder) {
+    this.knownHolders.set(getAddress(address), holder);
+  }
+
   /** Classifies every address that holds a permission, following ProxyAdmins and timelocks. */
   async classifyHolders(): Promise<Record<string, Holder>> {
     const out: Record<string, Holder> = {};
@@ -112,7 +118,7 @@ export class Context {
       const address = queue.shift()! as Address;
       if (out[address]) continue;
       const d = depth.get(address) ?? 0;
-      const holder = this.trackedContract(address) ?? (await this.classify(address));
+      const holder = this.knownHolders.get(address) ?? this.trackedContract(address) ?? (await this.classify(address));
       out[address] = holder;
       const next: string[] =
         holder.kind === "proxy-admin"

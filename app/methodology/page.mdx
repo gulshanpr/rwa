@@ -59,7 +59,8 @@ We look at every **critical** and **high** power across all deployments and take
 | `mint` | Create new tokens | Critical |
 | `force-transfer` | Move tokens out of a holder's wallet | Critical |
 | `burn-from` | Destroy tokens in a holder's wallet | Critical |
-| `set-price` | Write the NAV or price used onchain | Critical |
+| `set-price` | Write the NAV or price used onchain, including marking a vault's loans or strategies as impaired | Critical |
+| `allocate` | Lend out or move the assets backing the token (fund loans, move money into strategies) | Critical |
 | `admin` | Grant or revoke other roles | Critical |
 | `freeze` | Block a specific address | High |
 | `pause` | Stop all transfers | High |
@@ -80,6 +81,8 @@ For regulated securities, freeze and force-transfer powers are often legally req
 - **Red:** a single key writes the price, there is no onchain price or NAV, or the last update is older than 3× the expected cadence.
 - **Yellow:** an issuer-controlled multisig or a single provider relaying issuer-reported NAV writes the price, or the update is late (1–3× cadence).
 - **Green:** an independent oracle network publishes data from a fund administrator or custodian at least daily, with history onchain.
+
+For vault tokens (ERC-4626) the NAV is the contract's own accounting, so there is no feed to go stale. We score who can move it instead: **red** if a single key can write it down or back up (for example by marking a loan impaired), **yellow** if an issuer multisig can, or if the numbers are the issuer's own accounting rather than a fund administrator's or custodian's.
 
 For stable $1 tokens, we also check how DeFi markets price the token. If a lending market hardcodes $1, the slice gets a yellow flag: *DeFi markets assume $1 with no onchain NAV check.*
 

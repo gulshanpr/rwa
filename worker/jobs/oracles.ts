@@ -1,11 +1,10 @@
 import { getAddress, parseAbi } from "viem";
 import { getDb, schema } from "@/db/client";
 import { clientsFor } from "@/discovery/rpc";
-import { loadAssets } from "@/lib/data";
 import type { Chain } from "@/lib/schema/asset";
 import { formatDuration } from "@/lib/format";
 import { raiseAlert } from "../alerts";
-import { log } from "../util";
+import { log, publishedAssets } from "../util";
 
 const FEED_ABI = parseAbi([
   "function latestRoundData() view returns (uint80 roundId, int256 answer, uint256 startedAt, uint256 updatedAt, uint80 answeredInRound)",
@@ -24,7 +23,7 @@ export async function readFeed(chain: Chain, address: string) {
 
 export async function oraclesJob() {
   const now = new Date();
-  for (const asset of loadAssets()) {
+  for (const asset of await publishedAssets()) {
     const ref = asset.pricing.reference;
     if (ref.type !== "oracle" || !ref.address) continue;
     const r = await readFeed(ref.chain, ref.address);

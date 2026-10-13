@@ -6,7 +6,7 @@ import { RiskList } from "@/components/risk/risk-list";
 import { SliceDot } from "@/components/risk/slice-dot";
 import { Card } from "@/components/ui/card";
 import { tabMetadata } from "@/lib/asset-meta";
-import { entityName, getProfile } from "@/lib/profile";
+import { getProfile, nameOf } from "@/lib/profile";
 import { bestMethod, passCount, VERIFICATION_TESTS } from "@/lib/scoring/verification";
 
 export const generateMetadata = tabMetadata("Verification");
@@ -15,6 +15,7 @@ export default async function VerificationPage({ params }: PageProps<"/assets/[s
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score } = profile;
+  const entityName = (s: string) => nameOf(profile, s);
   const slice = score.slices.verification;
   const best = bestMethod(asset);
 

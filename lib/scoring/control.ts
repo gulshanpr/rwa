@@ -5,7 +5,7 @@ import { sliceFromReasons, type Reason, type SliceColor, type SliceResult } from
 
 export const SEVEN_DAYS = 7 * 86400;
 
-export const CRITICAL_POWERS: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "admin"];
+export const CRITICAL_POWERS: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "allocate", "admin"];
 export const HIGH_POWERS: Power[] = ["freeze", "pause", "set-compliance"];
 
 export type Criticality = "critical" | "high" | "unclassified";
@@ -22,6 +22,7 @@ export const POWER_LABELS: Record<Power, string> = {
   "force-transfer": "Force-transfer",
   "burn-from": "Burn from holder",
   "set-price": "Set price",
+  allocate: "Allocate funds",
   freeze: "Freeze",
   pause: "Pause",
   "set-compliance": "Set compliance",
@@ -40,7 +41,9 @@ function powerVerb(power: Power, ticker: string): string {
     case "burn-from":
       return "destroy tokens in any holder's wallet";
     case "set-price":
-      return "change the onchain price";
+      return "change the onchain price or NAV";
+    case "allocate":
+      return "lend out or move the assets backing the token";
     case "freeze":
       return "freeze a specific holder's tokens";
     case "pause":

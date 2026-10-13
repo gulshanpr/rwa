@@ -22,6 +22,8 @@ const KIND_LABELS: Record<Alert["kind"], string> = {
   "service-change": "Service change",
   "timelock-scheduled": "Timelock queued",
   "oracle-stale": "Oracle stale",
+  "nav-drop": "NAV write-down",
+  "compliance-change": "Access rules changed",
   filing: "SEC filing",
   "lei-change": "LEI change",
 };

@@ -1,8 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { loadAssets } from "@/lib/data";
+import { saveSnapshot } from "@/db/catalog-store";
+import { closeDb, hasDatabase } from "@/db/client";
+import { getCatalog } from "@/lib/catalog";
 import type { Chain } from "@/lib/schema/asset";
-import { diffSummary, discover, readPrevious, sameContent, write } from "./discover";
+import { diffSummary, discover, sameContent, write } from "./discover";
 
 const USAGE = `Usage:
   bun run discover <slug>                 all deployments of one asset
@@ -26,9 +28,10 @@ if (!slug && !all) {
   process.exit(1);
 }
 
-const assets = loadAssets().filter((a) => all || a.slug === slug);
+const catalog = await getCatalog({ includeDrafts: true });
+const assets = catalog.assets.filter((a) => all || a.slug === slug);
 if (assets.length === 0) {
-  console.error(`No asset "${slug}" in data/assets/.`);
+  console.error(`No asset "${slug}" in the ${catalog.source === "db" ? "database" : "data/assets/ files"}.`);
   process.exit(1);
 }
 
@@ -43,7 +46,7 @@ for (const asset of assets) {
     console.error(`Discovering ${label}…`);
     try {
       const result = await discover(asset, d.chain);
-      const prev = readPrevious(asset.slug, d.chain);
+      const prev = catalog.snapshots.get(asset.slug)?.find((s) => s.discovered.chain === d.chain)?.discovered;
       if (sameContent(prev, result.discovered)) {
         console.error(`  ${label}: no changes at block ${result.meta.block}.`);
         continue;
@@ -53,7 +56,10 @@ for (const asset of assets) {
       summary.push(`### ${label} at block ${result.meta.block}`, ...lines.map((l) => `- ${l}`), "");
       console.error(lines.map((l) => `  ${l}`).join("\n"));
       if (result.extra.dsRoles) console.error(`  DS roles: ${JSON.stringify(result.extra.dsRoles)}`);
-      if (!dryRun) write(result);
+      if (!dryRun) {
+        write(result);
+        if (catalog.source === "db") await saveSnapshot(result.discovered, result.meta, { by: "discovery", extra: result.extra, diffSummary: lines });
+      }
     } catch (e) {
       failed++;
       console.error(`  ${label} failed: ${e instanceof Error ? e.message : String(e)}`);
@@ -66,4 +72,5 @@ const out = path.join(process.cwd(), ".cache", "discovery-summary.md");
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, summary.length > 0 ? summary.join("\n") : "No changes.\n");
 console.error(`\n${changed} snapshot(s) changed${dryRun ? " (dry run, nothing written)" : ""}, ${failed} failed. Summary: .cache/discovery-summary.md`);
+if (hasDatabase()) await closeDb();
 if (failed > 0) process.exit(1);

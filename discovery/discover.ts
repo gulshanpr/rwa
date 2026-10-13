@@ -5,6 +5,7 @@ import type { Asset, Chain } from "@/lib/schema/asset";
 import { DiscoveredSchema, type Discovered, type DiscoveredMeta } from "@/lib/schema/discovered";
 import { Context } from "./context";
 import { dsProtocol } from "./handlers/ds-protocol";
+import { maplePool } from "./handlers/maple";
 import { oracleFeed } from "./handlers/oracle";
 import { ozStandard } from "./handlers/oz-access-control";
 import { clientsFor } from "./rpc";
@@ -32,6 +33,8 @@ export async function discover(asset: Asset, chain: Chain): Promise<DiscoveryRes
 
   if (asset.tokenStandard === "ds-protocol") {
     extra.dsRoles = (await dsProtocol(ctx, token)).roles;
+  } else if (asset.tokenStandard === "erc4626" && asset.platform === "maple") {
+    extra.maple = await maplePool(ctx, token);
   } else {
     const proxy = await ctx.detectProxy(token);
     const { src, permissions } = await ozStandard(ctx, token, proxy?.implementation ?? token, "token");

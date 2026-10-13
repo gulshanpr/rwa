@@ -9,9 +9,10 @@ export const InvestorType = z.enum([
   "qualified-purchaser",
   "accredited-investor",
   "non-us-professional",
+  "non-us-persons",
   "retail",
 ]);
-export const Frequency = z.enum(["realtime", "daily", "weekly", "monthly", "quarterly", "annual"]);
+export const Frequency = z.enum(["realtime", "daily", "weekly", "monthly", "quarterly", "annual", "unstated"]);
 
 const Deployment = z.object({
   chain: Chain,
@@ -33,6 +34,18 @@ const PriceReference = z.discriminatedUnion("type", [
     writer: z.enum(["eoa", "issuer-multisig", "single-provider", "oracle-network"]),
     dataOrigin: z.enum(["issuer", "fund-administrator", "custodian"]),
     cadenceSeconds: z.number().int().positive(),
+    historyOnchain: z.boolean(),
+    source: Source,
+  }),
+  /** NAV computed by the token contract's own accounting (ERC-4626 vaults). Nothing to go stale, but someone can write it down. */
+  z.object({
+    type: z.literal("vault"),
+    provider: z.string(),
+    chain: Chain,
+    address: Address,
+    method: z.string(),
+    writer: z.enum(["eoa", "issuer-multisig", "governance", "none"]),
+    dataOrigin: z.enum(["issuer", "fund-administrator", "custodian"]),
     historyOnchain: z.boolean(),
     source: Source,
   }),
@@ -80,7 +93,7 @@ export const AssetSchema = z.object({
 
   access: z.object({
     investorType: Sourced(InvestorType),
-    minimumInvestment: Sourced(z.number()),
+    minimumInvestment: Disclosed(z.number()),
     transferRestricted: Sourced(z.boolean()),
   }),
 

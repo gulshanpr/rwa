@@ -8,6 +8,13 @@
       "when": 1791714048107,
       "tag": "0000_spotty_leopardon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791885740039,
+      "tag": "0001_catalog",
+      "breakpoints": true
     }
   ]
 }

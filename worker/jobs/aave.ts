@@ -1,10 +1,9 @@
 import { erc20Abi, formatUnits, getAddress, parseAbi, type Address } from "viem";
 import { getDb, schema } from "@/db/client";
 import { clientsFor } from "@/discovery/rpc";
-import { loadAssets } from "@/lib/data";
 import type { Chain } from "@/lib/schema/asset";
 import { classifyFeed } from "./defi-shared";
-import { log, setCursor } from "../util";
+import { log, publishedAssets, setCursor } from "../util";
 
 const POOLS: Partial<Record<Chain, { name: string; pool: Address; market: string }[]>> = {
   ethereum: [
@@ -23,7 +22,7 @@ const ORACLE_ABI = parseAbi(["function getSourceOfAsset(address) view returns (a
 
 export async function aaveJob() {
   const now = new Date();
-  for (const asset of loadAssets()) {
+  for (const asset of await publishedAssets()) {
     for (const d of asset.deployments) {
       const { client } = clientsFor(d.chain);
       const token = getAddress(d.token);

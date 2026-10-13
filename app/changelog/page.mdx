@@ -4,6 +4,19 @@ export const metadata = { title: "Changelog" };
 
 Changes to the framework, scoring rules and data. Every entry links to the pull request that made it once the repository is public.
 
+## Framework v0.2, 12 Oct 2026
+
+- Control: new critical power `allocate` (lend out or move the assets backing the token). Marking a vault's loans or strategies impaired counts as `set-price`.
+- Pricing: vault tokens (ERC-4626) are scored on who can move the contract's own NAV, not on feed freshness.
+- Verification: a report with no stated cadence fails the "at least daily" test.
+
+## Data, 12 Oct 2026
+
+- Added syrupUSDC (Maple), Ethereum deployment. Phase 0 review in `research/syrupusdc.md`; permissions from the new Maple discovery handler at block 26,176,587 (10 contracts, 13 holders).
+- syrupUSDC: the pool delegate is a single wallet that can fund loans, mark them impaired and change who can deposit, redeem and transfer. Its manager contracts can be upgraded with no delay by a 3-of-6 Safe.
+- syrupUSDC: 4 funded Morpho markets ($64M collateral) price it from the vault's own exchange rate. It is not listed on Aave's Ethereum pools.
+- Alerts: the watcher now reads Maple events (version upgrades, pauses, admin and pool delegate changes, permission changes, impairments, defaults) and the supply job alerts when a vault's NAV per share falls.
+
 ## Framework v0.1, 6 Oct 2026
 
 - First public draft of the six-slice rosette: Control, Pricing, Verification, Exit, Disclosure, and Legal & insolvency (not assessed).

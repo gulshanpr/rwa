@@ -68,6 +68,8 @@ export const AlertSchema = z.object({
     "service-change",
     "timelock-scheduled",
     "oracle-stale",
+    "nav-drop",
+    "compliance-change",
     "filing",
     "lei-change",
   ]),

@@ -10,7 +10,7 @@ import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { CHAINS } from "@/lib/chains";
 import { formatUsd, formatUsdFull } from "@/lib/format";
 import { INVESTOR_LABELS, TOKEN_STANDARD_LABELS } from "@/lib/labels";
-import { entityName, getProfile } from "@/lib/profile";
+import { getProfile, nameOf } from "@/lib/profile";
 import { worstColor } from "@/lib/scoring/types";
 import { RISK_WORD } from "@/lib/ui";
 
@@ -18,6 +18,7 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score, powers, live } = profile;
+  const entityName = (s: string) => nameOf(profile, s);
   const { legal, serviceProviders: sp, access } = asset;
   const verification = asset.verification.methods[0];
 
@@ -61,11 +62,7 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
                   <span className="font-mono text-[12px]">{v.cik}</span> (Form {v.forms.join(", ")})
                 </span>
               )),
-              {
-                label: "Min. investment",
-                value: <span className="tnum">{formatUsdFull(access.minimumInvestment.value)}</span>,
-                source: access.minimumInvestment.source,
-              },
+              disclosedFact("Min. investment", access.minimumInvestment, (v) => <span className="tnum">{formatUsdFull(v)}</span>),
               {
                 label: "Who can hold",
                 value: INVESTOR_LABELS[access.investorType.value],

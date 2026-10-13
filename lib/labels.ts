@@ -4,6 +4,7 @@ export const INVESTOR_LABELS: Record<Asset["access"]["investorType"]["value"], s
   "qualified-purchaser": "Qualified purchasers",
   "accredited-investor": "Accredited investors",
   "non-us-professional": "Non-US professional investors",
+  "non-us-persons": "Non-US persons",
   retail: "Retail",
 };
 
