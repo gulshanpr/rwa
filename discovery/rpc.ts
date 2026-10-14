@@ -141,7 +141,7 @@ async function explorerLogs(c: ChainClients, address: Address, event: AbiEvent, 
   for (;;) {
     const url = `${base}${sep}module=logs&action=getLogs&address=${address}&topic0=${topic0}&fromBlock=${from}&toBlock=${toBlock}`;
     const d = await withRetry(async () => {
-      const res = await fetch(url);
+      const res = await fetch(url, { headers: { "user-agent": "rwabeat" } });
       if (!res.ok) throw new Error(`log API ${res.status}`);
       const j = (await res.json()) as { status: string; message: string; result: ExplorerLog[] | string };
       if (j.status !== "1" && !/no records|no logs/i.test(j.message)) throw new Error(`log API: ${j.message} ${typeof j.result === "string" ? j.result : ""}`);
