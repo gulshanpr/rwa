@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: securitize-capital
+name: Securitize Capital LLC
+type: [manager]
+jurisdiction: US
+website: https://securitize.io

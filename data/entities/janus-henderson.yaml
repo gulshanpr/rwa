@@ -1,0 +1,5 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: janus-henderson
+name: Janus Henderson Investors
+type: [manager]
+website: https://www.janushenderson.com
