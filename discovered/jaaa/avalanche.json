@@ -1,0 +1,212 @@
+{
+  "asset": "jaaa",
+  "block": 97523043,
+  "chain": "avalanche",
+  "contracts": {
+    "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
+      "name": "BalanceSheet",
+      "permissions": [
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0xf837a22883e004f705E0D7e1deE08e295Df30B27",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710663), moves pool escrow assets"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710663), within one transaction"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x3C5E7B28c4fF6F0bc8d9A9587992E96401e680A7": {
+      "name": "FullRestrictions",
+      "permissions": [
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "FullRestrictions.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "admin",
+          "via": "FullRestrictions.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "freeze",
+          "via": "FullRestrictions.updateRestriction · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "freeze",
+          "via": "FullRestrictions.updateRestriction · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "set-compliance",
+          "via": "FullRestrictions.trustedCall · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "set-compliance",
+          "via": "FullRestrictions.trustedCall · auth (wards)"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x58F93d6b1EF2F44eC379Cb975657C132CBeD3B6b": {
+      "name": "ShareToken",
+      "permissions": [
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "admin",
+          "via": "ShareToken.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "ShareToken.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "admin",
+          "via": "ShareToken.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "burn-from",
+          "via": "ShareToken.burn · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "burn-from",
+          "via": "ShareToken.burn · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "burn-from",
+          "via": "ShareToken.burn · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "force-transfer",
+          "via": "ShareToken.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "force-transfer",
+          "via": "ShareToken.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "force-transfer",
+          "via": "ShareToken.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "mint",
+          "via": "ShareToken.mint · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "mint",
+          "via": "ShareToken.mint · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "mint",
+          "via": "ShareToken.mint · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "set-compliance",
+          "via": "ShareToken.file · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "set-compliance",
+          "via": "ShareToken.file · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "set-compliance",
+          "via": "ShareToken.file · auth (wards)"
+        }
+      ],
+      "role": "token",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae"
+      ],
+      "kind": "contract",
+      "name": "BalanceSheet"
+    },
+    "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC": {
+      "kind": "eoa"
+    },
+    "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f": {
+      "controllers": [],
+      "kind": "contract",
+      "name": "Root"
+    },
+    "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC"
+      ],
+      "kind": "contract",
+      "name": "MessageProcessor"
+    },
+    "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB": {
+      "kind": "contract-unknown"
+    },
+    "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC"
+      ],
+      "kind": "contract",
+      "name": "AsyncRequestManager"
+    },
+    "0xf837a22883e004f705E0D7e1deE08e295Df30B27": {
+      "kind": "contract-unknown"
+    }
+  },
+  "timestamp": "2026-10-14T10:58:11Z"
+}

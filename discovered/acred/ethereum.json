@@ -1,0 +1,1677 @@
+{
+  "asset": "acred",
+  "block": 26190152,
+  "chain": "ethereum",
+  "contracts": {
+    "0x17418038ecF73BA4026c4f428547BF099706F27B": {
+      "name": "DSToken",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "DSToken.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "DSToken.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "burn-from",
+          "via": "DSToken.omnibusBurn · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "burn-from",
+          "via": "DSToken.omnibusBurn · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "burn-from",
+          "via": "DSToken.omnibusBurn · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "burn-from",
+          "via": "DSToken.burn · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "force-transfer",
+          "via": "DSToken.omnibusSeize, seize · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "force-transfer",
+          "via": "DSToken.omnibusSeize, seize · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "force-transfer",
+          "via": "DSToken.omnibusSeize, seize · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "mint",
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "pause",
+          "via": "DSToken.pause, unpause · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "pause",
+          "via": "DSToken.pause, unpause · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "pause",
+          "via": "DSToken.pause, unpause · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "DSToken.setCap · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "DSToken.setFeature, setFeatures · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "set-compliance",
+          "via": "DSToken.setCap · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "set-compliance",
+          "via": "DSToken.setCap · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "DSToken.__BaseDSContract_init, __ServiceConsumer_init, __StandardToken_init +1 more · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "DSToken.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "DSToken.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xFc8a9000c161E3C6e073e967107Ce926A44A06E2",
+        "type": "eip1967"
+      },
+      "role": "token",
+      "verified": true
+    },
+    "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366": {
+      "name": "TokenIssuer (service 512)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TokenIssuer.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TokenIssuer.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "mint",
+          "via": "TokenIssuer.issueTokens · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "TokenIssuer.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TokenIssuer.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TokenIssuer.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x23f2086DA9c290304271fA994E4254F65Fc3d66b",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B": {
+      "name": "SecuritizeOnRamp (service 16384)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "SecuritizeOnRamp.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "pause",
+          "via": "SecuritizeOnRamp.pause, unpause · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "SecuritizeOnRamp.toggleInvestorSubscription · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-price",
+          "via": "SecuritizeOnRamp.updateNavProvider · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "SecuritizeOnRamp.subscribe · onlySecuritizeOnRamp (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "SecuritizeOnRamp.toggleTwoStepTransfer, updateAssetProvider, updateBridgeParams +1 more · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "SecuritizeOnRamp.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x6246d141D4b7e0306663CfBf76a2a9f4e18BF9E0",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x3A8E9CD2E17E1F2904b7f745Da29C9cA765Cc319": {
+      "name": "RegistryService (service 4)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "RegistryService.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "RegistryService.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xD280bcA62a7FC67011cAef77815e8606071BEf9F",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "set-compliance",
+          "via": "RegistryService.addOmnibusWallet, removeOmnibusWallet · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "set-compliance",
+          "via": "RegistryService.addWallet, registerInvestor, removeInvestor +3 more · onlyExchangeOrAbove (EXCHANGE, ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "set-compliance",
+          "via": "RegistryService.updateInvestor · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "RegistryService.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "RegistryService.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "RegistryService.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x9Ef3fd1Fe1704A028F134274bdb7e8f0b138800b",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x4914665651C7aE7f6Ef6FFeA3dcD554A1a39ec91": {
+      "name": "InvestorLockManager (service 64)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "InvestorLockManager.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "InvestorLockManager.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "freeze",
+          "via": "InvestorLockManager.addManualLockRecord, createLockForInvestor · onlyTransferAgentOrAboveOrToken (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "freeze",
+          "via": "InvestorLockManager.removeLockRecord, removeLockRecordForInvestor · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "freeze",
+          "via": "InvestorLockManager.addManualLockRecord, createLockForInvestor · onlyTransferAgentOrAboveOrToken (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "freeze",
+          "via": "InvestorLockManager.removeLockRecord, removeLockRecordForInvestor · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "freeze",
+          "via": "InvestorLockManager.addManualLockRecord, createLockForInvestor · onlyTransferAgentOrAboveOrToken (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "freeze",
+          "via": "InvestorLockManager.removeLockRecord, removeLockRecordForInvestor · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "InvestorLockManager.lockInvestor, unlockInvestor · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "set-compliance",
+          "via": "InvestorLockManager.lockInvestor, unlockInvestor · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "set-compliance",
+          "via": "InvestorLockManager.lockInvestor, unlockInvestor · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "InvestorLockManager.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "InvestorLockManager.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "InvestorLockManager.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xF73D3583eAfCe5C568EB11ea183F572d6EBAd6c5",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x49465989B80ea0aE4f4129A0f803a4f38B09EA6c": {
+      "name": "ComplianceConfigurationService (service 256)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "ComplianceConfigurationService.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "ComplianceConfigurationService.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "ComplianceConfigurationService.setAll, setAuthorizedSecurities, setBlockFlowbackEndTime +20 more · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "set-compliance",
+          "via": "ComplianceConfigurationService.setAll, setAuthorizedSecurities, setBlockFlowbackEndTime +20 more · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "set-compliance",
+          "via": "ComplianceConfigurationService.setAll, setAuthorizedSecurities, setBlockFlowbackEndTime +20 more · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "ComplianceConfigurationService.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "ComplianceConfigurationService.setCountriesCompliance · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "unclassified",
+          "via": "ComplianceConfigurationService.setCountriesCompliance · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "unclassified",
+          "via": "ComplianceConfigurationService.setCountriesCompliance · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "ComplianceConfigurationService.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "ComplianceConfigurationService.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xE51d0f15Cbe2b9412587B582328d8Cf74e22F2eD",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x5275732D1bFE540350165267346537670Bc2138a": {
+      "name": "WalletManager (service 32)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "WalletManager.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "WalletManager.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "set-compliance",
+          "via": "WalletManager.addExchangeWallet, addIssuerWallet, addIssuerWallets +3 more · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "WalletManager.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "WalletManager.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "WalletManager.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xC67b3F3aB90f89bf03eDdE245773FeAEd690C20A",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE": {
+      "name": "TokenReallocator (service 8192)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TokenReallocator.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TokenReallocator.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "force-transfer",
+          "via": "TokenReallocator.reallocateTokens · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "TokenReallocator.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TokenReallocator.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TokenReallocator.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x4A2895Be546B7B33070E51e20b575172fe0529A7",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e": {
+      "name": "TransactionRelayer (service 4096)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TransactionRelayer.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TransactionRelayer.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "TransactionRelayer.setInvestorNonce · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "TransactionRelayer.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "TransactionRelayer.updateDomainSeparator · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TransactionRelayer.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TransactionRelayer.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x65E8E48C752Fe249A8aB9ea653D0Fc07A644Ed54",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xD6BcbbC87bFb6c8964dDc73DC3EaE6d08865d51C": {
+      "name": "EthereumPriceFeedAcredFundamentalWithoutRoundsV1",
+      "permissions": [
+        {
+          "holder": "0x8223a6271d1e0BDA019Ee55d545d7B86eFF1F573",
+          "power": "set-price",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0x8223a6271d1e0BDA019Ee55d545d7B86eFF1F573",
+        "implementation": "0xe2072fB13FF92D04E44cc55574816dBA3E539e1d",
+        "type": "eip1967"
+      },
+      "role": "oracle",
+      "verified": true
+    },
+    "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9": {
+      "name": "OmnibusTBEController (service 2048)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "OmnibusTBEController.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "OmnibusTBEController.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "burn-from",
+          "via": "OmnibusTBEController.bulkBurn · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "burn-from",
+          "via": "OmnibusTBEController.bulkBurn · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "burn-from",
+          "via": "OmnibusTBEController.bulkBurn · onlyTransferAgentOrAbove (TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "mint",
+          "via": "OmnibusTBEController.bulkIssuance · onlyIssuerOrAbove (ISSUER, MASTER)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.__BaseDSContract_init, __ServiceConsumer_init, initialize · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "unclassified",
+          "via": "OmnibusTBEController.adjustCounters, bulkTransfer, internalTBETransfer · onlyIssuerOrTransferAgentOrAbove (ISSUER, TRANSFER_AGENT, MASTER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "OmnibusTBEController.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "OmnibusTBEController.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x89a764C155814DDeD33c9dc22aC7a4DB850aa966",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F": {
+      "name": "WalletRegistrar (service 1024)",
+      "permissions": [
+        {
+          "holder": "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+          "power": "admin",
+          "via": "WalletRegistrar.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+          "power": "admin",
+          "via": "WalletRegistrar.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "WalletRegistrar.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+          "power": "set-compliance",
+          "via": "WalletRegistrar.registerWallet · onlyOwnerOrIssuerOrAbove (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+          "power": "unclassified",
+          "via": "WalletRegistrar.__BaseDSContract_init, __ServiceConsumer_init · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+          "power": "upgrade",
+          "via": "WalletRegistrar.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+          "power": "upgrade",
+          "via": "WalletRegistrar.upgradeToAndCall · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "WalletRegistrar.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x7940fc888f07F4513CE1CB71D3Ea7325E968040A",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xc397436742eAF7C325DDBFc4dc63D95822b27101": {
+      "name": "TrustService (service 1)",
+      "permissions": [
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "TrustService.setServiceOwner · onlyMaster (MASTER)"
+        },
+        {
+          "holder": "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "admin",
+          "via": "TrustService.removeRole, setRole, setRoles · onlyMasterOrIssuerOrTransferAgent (MASTER, ISSUER, TRANSFER_AGENT)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "unclassified",
+          "via": "TrustService.addEntity, addResource, changeEntityOwner +1 more · onlyMasterOrIssuer (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+          "power": "unclassified",
+          "via": "TrustService.addOperator, removeOperator · onlyEntityOwnerOrAbove(_name) (MASTER, ISSUER)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "TrustService.upgradeToAndCall · onlyMaster (MASTER)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xD5417b82ae5B9AB7db1532B517fB284F38d7141e",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xd72a6BA4a87DDB33e801b3f1c7750b2d0911fC6C": {
+      "name": "EthereumMultiFeedAdapterWithoutRoundsV3",
+      "permissions": [
+        {
+          "holder": "0x8223a6271d1e0BDA019Ee55d545d7B86eFF1F573",
+          "power": "set-price",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0x8223a6271d1e0BDA019Ee55d545d7B86eFF1F573",
+        "implementation": "0x0C6C73865429e1D87b7B817B95bB1f38F2136529",
+        "type": "eip1967"
+      },
+      "role": "oracle",
+      "verified": true
+    },
+    "0xdFE6B0EdD2bEe2DFE2759b8A5749AA750FF147AF": {
+      "name": "ComplianceServiceRegulated (service 8)",
+      "permissions": [
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "ComplianceServiceRegulated.renounceOwnership, transferOwnership · onlyOwner (contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "admin",
+          "via": "ComplianceServiceRegulated.setDSService · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "set-compliance",
+          "via": "ComplianceServiceRegulated.setAccreditedInvestorsCount, setEURetailInvestorsCount, setJPInvestorsCount +3 more · onlyMasterOrTBEOmnibus (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "unclassified",
+          "via": "ComplianceServiceRegulated.__BaseDSContract_init, __ServiceConsumer_init, initialize · onlyInitializing (unrecognized modifier, needs review)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "ComplianceServiceRegulated.upgradeToAndCall · onlyMaster (MASTER or contract owner)"
+        },
+        {
+          "holder": "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+          "power": "upgrade",
+          "via": "ComplianceServiceRegulated.upgradeToAndCall · onlyOwner (contract owner)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x510617056a3568fA67855E23aAe98199488b8776",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x0656748e529baac7338A2dC99297Bb9F568511A3": {
+      "controllers": [
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
+      ],
+      "kind": "contract",
+      "name": "MintingAssetProvider"
+    },
+    "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366": {
+      "controllers": [
+        "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+        "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+        "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+        "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+        "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+        "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+        "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+        "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+        "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+        "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF"
+      ],
+      "kind": "contract",
+      "name": "TokenIssuer (service 512)"
+    },
+    "0x22F53B51E4272F954f25BC377B1b759c6C5A528B": {
+      "kind": "eoa"
+    },
+    "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B": {
+      "controllers": [
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
+      ],
+      "kind": "contract",
+      "name": "SecuritizeOnRamp (service 16384)"
+    },
+    "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E": {
+      "kind": "eoa"
+    },
+    "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845": {
+      "controllers": [
+        "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78"
+      ],
+      "kind": "contract",
+      "name": "SecuritizeBridge"
+    },
+    "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee": {
+      "kind": "eoa"
+    },
+    "0x6906F3a09BCc1b7cd3b0C8626724299618dF4472": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xDed99B7F82A3DdaDa95bC102F7D172e74d24A981",
+        "0xeCad2Ed2847E2b5474e95A74e84d9532F7cf66B1",
+        "0x52acD229E2550518400d3aF420B80cfA843A5e6d"
+      ],
+      "threshold": 2
+    },
+    "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE": {
+      "controllers": [
+        "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+        "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+        "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+        "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+        "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+        "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+        "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+        "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+        "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9",
+        "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+        "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+        "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF"
+      ],
+      "kind": "contract",
+      "name": "TokenReallocator (service 8192)"
+    },
+    "0x8223a6271d1e0BDA019Ee55d545d7B86eFF1F573": {
+      "kind": "proxy-admin",
+      "owner": "0x6906F3a09BCc1b7cd3b0C8626724299618dF4472"
+    },
+    "0x8d35600bBD1eE2d1001788cef8d3785537a81C78": {
+      "kind": "eoa"
+    },
+    "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e": {
+      "controllers": [
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
+      ],
+      "kind": "contract",
+      "name": "TransactionRelayer (service 4096)"
+    },
+    "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48": {
+      "kind": "eoa"
+    },
+    "0xD280bcA62a7FC67011cAef77815e8606071BEf9F": {
+      "kind": "contract-unknown"
+    },
+    "0xDCC82829b3eb1d497D2FF982c76EaeC44435a4E9": {
+      "controllers": [
+        "0x0656748e529baac7338A2dC99297Bb9F568511A3",
+        "0x1ffD2C4373A0CBee33f974e4142611C8c4A4f366",
+        "0x22F53B51E4272F954f25BC377B1b759c6C5A528B",
+        "0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B",
+        "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845",
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee",
+        "0x7b021A22fe5a6CaEFD81623fF8fbE7e97B0e61eE",
+        "0x8d35600bBD1eE2d1001788cef8d3785537a81C78",
+        "0x9b70F9B94aC226eb5D9f7C33E5B95001f470224e",
+        "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48",
+        "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F",
+        "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A",
+        "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF"
+      ],
+      "kind": "contract",
+      "name": "OmnibusTBEController (service 2048)"
+    },
+    "0xDdf17A432B312a6C0E42F3B34ADBE914B12cb44F": {
+      "controllers": [
+        "0x3EE611d581d2C6A81459FfF8C6c8d197B0aD1A3E",
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
+      ],
+      "kind": "contract",
+      "name": "WalletRegistrar (service 1024)"
+    },
+    "0xF9bE8Dcf30B47f3b82CDf9ccbD9492EeB3e2926A": {
+      "controllers": [
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
+      ],
+      "kind": "contract",
+      "name": "IssuerMulticall"
+    },
+    "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78": {
+      "kind": "eoa"
+    },
+    "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF": {
+      "controllers": [
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
+      ],
+      "kind": "contract",
+      "name": "BulkOperator"
+    }
+  },
+  "timestamp": "2026-10-14T10:30:11Z"
+}

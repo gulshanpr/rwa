@@ -1,0 +1,1021 @@
+{
+  "asset": "mf-one",
+  "block": 26190122,
+  "chain": "ethereum",
+  "contracts": {
+    "0x0312A9D1Ff2372DDEdCBB21e4B6389aFc919aC4B": {
+      "name": "MidasAccessControl",
+      "permissions": [
+        {
+          "holder": "0xB60842E9DaBCd1C52e354ac30E82a97661cB7E89",
+          "power": "admin",
+          "via": "MidasAccessControl.grantRole, revokeRole, grantRoleMult +1 more · DEFAULT_ADMIN_ROLE on the shared controller"
+        },
+        {
+          "holder": "0xd4195CF4df289a4748C1A7B6dDBE770e27bA1227",
+          "power": "admin",
+          "via": "MidasAccessControl.grantRole, revokeRole, grantRoleMult +1 more · DEFAULT_ADMIN_ROLE on the shared controller"
+        },
+        {
+          "holder": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+        "implementation": "0xDd5a54bA2aB379A5e642c58F98aD793A183960E2",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x238a700eD6165261Cf8b2e544ba797BC11e466Ba": {
+      "name": "mFONE",
+      "permissions": [
+        {
+          "holder": "0x375ea756418fe30Eea21E1189104974c185aBB48",
+          "power": "burn-from",
+          "via": "mFONE.burn · M_FONE_BURN_OPERATOR_ROLE. burn(from, amount) destroys any holder's tokens"
+        },
+        {
+          "holder": "0x44b0440e35c596e858cEA433D0d82F5a985fD19C",
+          "power": "burn-from",
+          "via": "mFONE.burn · M_FONE_BURN_OPERATOR_ROLE. burn(from, amount) destroys any holder's tokens"
+        },
+        {
+          "holder": "0x4f75307888fD06B16594cC93ED478625AD65EEea",
+          "power": "burn-from",
+          "via": "mFONE.burn · M_FONE_BURN_OPERATOR_ROLE. burn(from, amount) destroys any holder's tokens"
+        },
+        {
+          "holder": "0x081bb8aD7F452f916991C17fDFa64D4A25153169",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x0B10FF561F0a5234eF30968C32000350Ef06cdF5",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x1118795F172BB88bF25522d04c7C3fD4e6b4b85D",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x1202Ac80145F26a7d59B3d7a64836dbaCd6bD424",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x120f61E5d3F07a37d020ba3cf2bc97e0d8f34F0a",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x17209eF173a1199eEc2F48655c6a7B6Bd0e2b00f",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x20D4CeD0EFac28517C1b0a06F98B1180F28f5125",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x28E43481fC1d4455Bddb9e52FA353D6a0948478C",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x2C4Cd7E9D027b8b6eAb96Ffb74b0944C72ADD2DA",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x2e935e6De43d58826D753Bde19955900dC49600d",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x2fACac0cdA0225D7aCcA792821164b398C26bBd2",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x309453188f1Df8fEF2323807D20f4968F6d1D14C",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x329Da2FdE152ecfAb028a8277186bCD744e06717",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x37144C5762F39024aA4D6fEa92F82685D93ae708",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x3E230f26dED57C30364F386B87E564f0a6f897A0",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x428DB70E0a8b39Fc2e35F442c118C66c2E72CeA4",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x462C735196AF2277deE9f15Ac60B45E7Fe8415AA",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x4A133c636aa68376DDf6fDD65181Dfb7a16D4341",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x4a2Dc57Cd464D6B492062ceb542F3D1A64556f1A",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x4f75307888fD06B16594cC93ED478625AD65EEea",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x50b047aFb2a6eE26579f0b9c42D56e1a994be8c2",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x5683de280d0C3967fBa2f04D707FA1eF5A044e25",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x5bA822279F3cC0Fe48565043EF29c2C759f4f4C0",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x60B89A7A1db4072dBcAa1264091EdCd94a15d466",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x683949B2b4F988628b2845C4E1b75Ea16A0fAfb4",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x6cf7C5e83fC4Ce7928839805a2e64b169263eDc5",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x7191b6F35f9c8f5b66d0c92450b5dc3BeA29024D",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x743F42651b7454188A834206649501DBE6F18619",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x76E350c5a674Db787918E5F728466C7356d4d361",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x7ebf219c293DBF3AE139D45e445DDA2eD1605Bd4",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x7F81f431D615D3a35370a07424045dB1B43Dc530",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x823D417249EDDffB2597B4c991e6aC8Dc5C7ec1a",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x8781bC62573e524306bBB05ef94c7A7E141ce00D",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x8D5CcA2b1A7Fc79505dBC5d42BF1b0B33f7144Ef",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x92BF5492edd7C96df074C7987f81c1bd2bCD8E94",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x96ED1E651A4a61Fb2D1B3215Df5375c86097E84d",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x9bA8C38Ae60E6e6311D53f8a85E5CF4004d3c987",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x9f2B8F5428681afE68aB23205E279D02711Ca128",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xA13f82F679E24ad08E014F8af6EcE32023b14F07",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xA26477ba31ae5D62f3490E3f3bE9E03f1ad0b5c8",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xA328C029904346dC6C5cBA34f41B61FcfCaA6F6a",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xA4BC9e80ab95f51475eCeA4FEC9A70AD2cc3FfF9",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xAdDBE833B198E503ED2b5E64F8C2871D36b54b18",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xAe30A49439D7830EB8866F9722b9A96E909d03cD",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xB5a2514eD0F6Cc2CD22b92bFfe49ED45EFE23882",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xb5CcD8dC8082467849eE008d4242f7b3b569EF05",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xb755FF07FD80B38265Ae35639568CfCdc874f21D",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xc0722e656796EDa9aE701eAd6d48e89b30460a72",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xc4dA1BFA7dA1fF2E2ade68cF696a727903e38B2E",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xC8193468B0fE387af7E83792fBCcdbcc535305Cb",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xC8887bF65BC84c24d82471ea9e206c7B17B95F75",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xc91d58535E74AE24D32465372Bb2EF1c92bB990D",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xcFA659560492c3d90dEE555413cE5f3A64C62256",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xD48163b5418b5ed387641cb0ea6a54859040dCd1",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xE10aBe1aF40afa411190cF776EAD838F8D70D9D3",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xEcA221776539bBfDDDB342BF14729840B20a976d",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xf5F58b98f8dFF44143B78c1aD342Baf0E711EDfd",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xf9658b5dD17C1a8933B6916EF858c2b221A93350",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0x41438435c20B1C2f1fcA702d387889F346A0C3DE",
+          "power": "mint",
+          "via": "mFONE.mint · M_FONE_MINT_OPERATOR_ROLE on the shared controller"
+        },
+        {
+          "holder": "0x4f75307888fD06B16594cC93ED478625AD65EEea",
+          "power": "mint",
+          "via": "mFONE.mint · M_FONE_MINT_OPERATOR_ROLE on the shared controller"
+        },
+        {
+          "holder": "0x4f75307888fD06B16594cC93ED478625AD65EEea",
+          "power": "pause",
+          "via": "mFONE.pause, unpause · M_FONE_PAUSE_OPERATOR_ROLE"
+        },
+        {
+          "holder": "0x081bb8aD7F452f916991C17fDFa64D4A25153169",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x0B10FF561F0a5234eF30968C32000350Ef06cdF5",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x1118795F172BB88bF25522d04c7C3fD4e6b4b85D",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x1202Ac80145F26a7d59B3d7a64836dbaCd6bD424",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x120f61E5d3F07a37d020ba3cf2bc97e0d8f34F0a",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x17209eF173a1199eEc2F48655c6a7B6Bd0e2b00f",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x20D4CeD0EFac28517C1b0a06F98B1180F28f5125",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x28E43481fC1d4455Bddb9e52FA353D6a0948478C",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x2C4Cd7E9D027b8b6eAb96Ffb74b0944C72ADD2DA",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x2e935e6De43d58826D753Bde19955900dC49600d",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x2fACac0cdA0225D7aCcA792821164b398C26bBd2",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x309453188f1Df8fEF2323807D20f4968F6d1D14C",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x329Da2FdE152ecfAb028a8277186bCD744e06717",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x37144C5762F39024aA4D6fEa92F82685D93ae708",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x3E230f26dED57C30364F386B87E564f0a6f897A0",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x428DB70E0a8b39Fc2e35F442c118C66c2E72CeA4",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x462C735196AF2277deE9f15Ac60B45E7Fe8415AA",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x4A133c636aa68376DDf6fDD65181Dfb7a16D4341",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x4a2Dc57Cd464D6B492062ceb542F3D1A64556f1A",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x4f75307888fD06B16594cC93ED478625AD65EEea",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x50b047aFb2a6eE26579f0b9c42D56e1a994be8c2",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x5683de280d0C3967fBa2f04D707FA1eF5A044e25",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x5bA822279F3cC0Fe48565043EF29c2C759f4f4C0",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x60B89A7A1db4072dBcAa1264091EdCd94a15d466",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x683949B2b4F988628b2845C4E1b75Ea16A0fAfb4",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x6cf7C5e83fC4Ce7928839805a2e64b169263eDc5",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x7191b6F35f9c8f5b66d0c92450b5dc3BeA29024D",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x743F42651b7454188A834206649501DBE6F18619",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x76E350c5a674Db787918E5F728466C7356d4d361",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x7ebf219c293DBF3AE139D45e445DDA2eD1605Bd4",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x7F81f431D615D3a35370a07424045dB1B43Dc530",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x805CcC01428CE2F4d3ED23F96c2837393172CDb1",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x823D417249EDDffB2597B4c991e6aC8Dc5C7ec1a",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x8781bC62573e524306bBB05ef94c7A7E141ce00D",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x8D5CcA2b1A7Fc79505dBC5d42BF1b0B33f7144Ef",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x92BF5492edd7C96df074C7987f81c1bd2bCD8E94",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x96ED1E651A4a61Fb2D1B3215Df5375c86097E84d",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x9bA8C38Ae60E6e6311D53f8a85E5CF4004d3c987",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0x9f2B8F5428681afE68aB23205E279D02711Ca128",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xA13f82F679E24ad08E014F8af6EcE32023b14F07",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xA26477ba31ae5D62f3490E3f3bE9E03f1ad0b5c8",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xA328C029904346dC6C5cBA34f41B61FcfCaA6F6a",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xA4BC9e80ab95f51475eCeA4FEC9A70AD2cc3FfF9",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xAdDBE833B198E503ED2b5E64F8C2871D36b54b18",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xAe30A49439D7830EB8866F9722b9A96E909d03cD",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xB5a2514eD0F6Cc2CD22b92bFfe49ED45EFE23882",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xb5CcD8dC8082467849eE008d4242f7b3b569EF05",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xb755FF07FD80B38265Ae35639568CfCdc874f21D",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xc0722e656796EDa9aE701eAd6d48e89b30460a72",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xc4dA1BFA7dA1fF2E2ade68cF696a727903e38B2E",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xC8193468B0fE387af7E83792fBCcdbcc535305Cb",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xC8887bF65BC84c24d82471ea9e206c7B17B95F75",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xc91d58535E74AE24D32465372Bb2EF1c92bB990D",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xcFA659560492c3d90dEE555413cE5f3A64C62256",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xD48163b5418b5ed387641cb0ea6a54859040dCd1",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xE10aBe1aF40afa411190cF776EAD838F8D70D9D3",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xEcA221776539bBfDDDB342BF14729840B20a976d",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xf5F58b98f8dFF44143B78c1aD342Baf0E711EDfd",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xf9658b5dD17C1a8933B6916EF858c2b221A93350",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+        "implementation": "0x32FB951CE9be3CD9a0a406eA86647a3C7D6406E2",
+        "type": "eip1967"
+      },
+      "role": "token",
+      "verified": true
+    },
+    "0x375ea756418fe30Eea21E1189104974c185aBB48": {
+      "name": "MFOneRedemptionVaultWithSwapper",
+      "permissions": [
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "admin",
+          "via": "MFOneRedemptionVaultWithSwapper.setInstantFee, setInstantDailyLimit, setFeeReceiver +7 more · deposit or redemption vault admin role"
+        },
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "allocate",
+          "via": "MFOneRedemptionVaultWithSwapper.withdrawToken · vault admin can pull tokens out of the vault"
+        },
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "pause",
+          "via": "MFOneRedemptionVaultWithSwapper.pauseFn, unpauseFn, pause +1 more · deposit or redemption vault admin role"
+        },
+        {
+          "holder": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+        "implementation": "0xf5a51bc23dB02b18988a1fC694e520ac973C8856",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x41438435c20B1C2f1fcA702d387889F346A0C3DE": {
+      "name": "MFOneDepositVault",
+      "permissions": [
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "admin",
+          "via": "MFOneDepositVault.setInstantFee, setInstantDailyLimit, setFeeReceiver +7 more · deposit or redemption vault admin role"
+        },
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "allocate",
+          "via": "MFOneDepositVault.withdrawToken · vault admin can pull tokens out of the vault"
+        },
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "pause",
+          "via": "MFOneDepositVault.pauseFn, unpauseFn, pause +1 more · deposit or redemption vault admin role"
+        },
+        {
+          "holder": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+        "implementation": "0xE802E0C7a2a65dd72926Aa34c27236c83A80Be50",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x44b0440e35c596e858cEA433D0d82F5a985fD19C": {
+      "name": "MFOneRedemptionVaultWithMToken",
+      "permissions": [
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "admin",
+          "via": "MFOneRedemptionVaultWithMToken.setInstantFee, setInstantDailyLimit, setFeeReceiver +7 more · deposit or redemption vault admin role"
+        },
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "allocate",
+          "via": "MFOneRedemptionVaultWithMToken.withdrawToken · vault admin can pull tokens out of the vault"
+        },
+        {
+          "holder": "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+          "power": "pause",
+          "via": "MFOneRedemptionVaultWithMToken.pauseFn, unpauseFn, pause +1 more · deposit or redemption vault admin role"
+        },
+        {
+          "holder": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+        "implementation": "0x2118d1D95F82B0778c9335eAfB3a65838c4d8067",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C": {
+      "name": "MFOneCustomAggregatorFeed",
+      "permissions": [
+        {
+          "holder": "0x85A56E098b6159d2560aA2BA4F70e8Ef3aE7E5e9",
+          "power": "set-price",
+          "via": "MFOneCustomAggregatorFeed.setRoundData, setRoundDataSafe · feed admin role. setRoundDataSafe caps the move at maxAnswerDeviation; setRoundData does not"
+        },
+        {
+          "holder": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+          "power": "set-price",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC",
+        "implementation": "0x7Cc057c382DEa2d1D590386db13655f6eC8A65B4",
+        "type": "eip1967"
+      },
+      "role": "oracle",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x081bb8aD7F452f916991C17fDFa64D4A25153169": {
+      "kind": "eoa"
+    },
+    "0x0B10FF561F0a5234eF30968C32000350Ef06cdF5": {
+      "kind": "eoa"
+    },
+    "0x1118795F172BB88bF25522d04c7C3fD4e6b4b85D": {
+      "kind": "eoa"
+    },
+    "0x1202Ac80145F26a7d59B3d7a64836dbaCd6bD424": {
+      "kind": "eoa"
+    },
+    "0x120f61E5d3F07a37d020ba3cf2bc97e0d8f34F0a": {
+      "kind": "eoa"
+    },
+    "0x17209eF173a1199eEc2F48655c6a7B6Bd0e2b00f": {
+      "kind": "eoa"
+    },
+    "0x20D4CeD0EFac28517C1b0a06F98B1180F28f5125": {
+      "kind": "eoa"
+    },
+    "0x28E43481fC1d4455Bddb9e52FA353D6a0948478C": {
+      "kind": "eoa"
+    },
+    "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12": {
+      "kind": "eoa"
+    },
+    "0x2C4Cd7E9D027b8b6eAb96Ffb74b0944C72ADD2DA": {
+      "kind": "eoa"
+    },
+    "0x2e935e6De43d58826D753Bde19955900dC49600d": {
+      "kind": "eoa"
+    },
+    "0x2fACac0cdA0225D7aCcA792821164b398C26bBd2": {
+      "kind": "eoa"
+    },
+    "0x309453188f1Df8fEF2323807D20f4968F6d1D14C": {
+      "kind": "eoa"
+    },
+    "0x329Da2FdE152ecfAb028a8277186bCD744e06717": {
+      "kind": "eoa"
+    },
+    "0x37144C5762F39024aA4D6fEa92F82685D93ae708": {
+      "kind": "eoa"
+    },
+    "0x375ea756418fe30Eea21E1189104974c185aBB48": {
+      "controllers": [
+        "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+        "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC"
+      ],
+      "kind": "contract",
+      "name": "MFOneRedemptionVaultWithSwapper"
+    },
+    "0x3E230f26dED57C30364F386B87E564f0a6f897A0": {
+      "kind": "eoa"
+    },
+    "0x41438435c20B1C2f1fcA702d387889F346A0C3DE": {
+      "controllers": [
+        "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+        "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC"
+      ],
+      "kind": "contract",
+      "name": "MFOneDepositVault"
+    },
+    "0x428DB70E0a8b39Fc2e35F442c118C66c2E72CeA4": {
+      "kind": "eoa"
+    },
+    "0x44b0440e35c596e858cEA433D0d82F5a985fD19C": {
+      "controllers": [
+        "0x2ACB4BdCbEf02f81BF713b696Ac26390d7f79A12",
+        "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC"
+      ],
+      "kind": "contract",
+      "name": "MFOneRedemptionVaultWithMToken"
+    },
+    "0x462C735196AF2277deE9f15Ac60B45E7Fe8415AA": {
+      "kind": "eoa"
+    },
+    "0x4A133c636aa68376DDf6fDD65181Dfb7a16D4341": {
+      "kind": "eoa"
+    },
+    "0x4a2Dc57Cd464D6B492062ceb542F3D1A64556f1A": {
+      "kind": "eoa"
+    },
+    "0x4f75307888fD06B16594cC93ED478625AD65EEea": {
+      "kind": "eoa"
+    },
+    "0x50b047aFb2a6eE26579f0b9c42D56e1a994be8c2": {
+      "kind": "eoa"
+    },
+    "0x5683de280d0C3967fBa2f04D707FA1eF5A044e25": {
+      "kind": "eoa"
+    },
+    "0x5bA822279F3cC0Fe48565043EF29c2C759f4f4C0": {
+      "kind": "eoa"
+    },
+    "0x60B89A7A1db4072dBcAa1264091EdCd94a15d466": {
+      "kind": "eoa"
+    },
+    "0x683949B2b4F988628b2845C4E1b75Ea16A0fAfb4": {
+      "kind": "eoa"
+    },
+    "0x6cf7C5e83fC4Ce7928839805a2e64b169263eDc5": {
+      "kind": "eoa"
+    },
+    "0x7191b6F35f9c8f5b66d0c92450b5dc3BeA29024D": {
+      "kind": "eoa"
+    },
+    "0x743F42651b7454188A834206649501DBE6F18619": {
+      "kind": "eoa"
+    },
+    "0x76E350c5a674Db787918E5F728466C7356d4d361": {
+      "kind": "eoa"
+    },
+    "0x7F81f431D615D3a35370a07424045dB1B43Dc530": {
+      "kind": "eoa"
+    },
+    "0x7ebf219c293DBF3AE139D45e445DDA2eD1605Bd4": {
+      "kind": "eoa"
+    },
+    "0x805CcC01428CE2F4d3ED23F96c2837393172CDb1": {
+      "kind": "contract-unknown"
+    },
+    "0x823D417249EDDffB2597B4c991e6aC8Dc5C7ec1a": {
+      "kind": "eoa"
+    },
+    "0x85A56E098b6159d2560aA2BA4F70e8Ef3aE7E5e9": {
+      "kind": "eoa"
+    },
+    "0x8781bC62573e524306bBB05ef94c7A7E141ce00D": {
+      "kind": "eoa"
+    },
+    "0x8D5CcA2b1A7Fc79505dBC5d42BF1b0B33f7144Ef": {
+      "kind": "eoa"
+    },
+    "0x92BF5492edd7C96df074C7987f81c1bd2bCD8E94": {
+      "kind": "eoa"
+    },
+    "0x96ED1E651A4a61Fb2D1B3215Df5375c86097E84d": {
+      "kind": "eoa"
+    },
+    "0x9bA8C38Ae60E6e6311D53f8a85E5CF4004d3c987": {
+      "kind": "eoa"
+    },
+    "0x9f2B8F5428681afE68aB23205E279D02711Ca128": {
+      "kind": "eoa"
+    },
+    "0xA13f82F679E24ad08E014F8af6EcE32023b14F07": {
+      "kind": "eoa"
+    },
+    "0xA26477ba31ae5D62f3490E3f3bE9E03f1ad0b5c8": {
+      "kind": "eoa"
+    },
+    "0xA328C029904346dC6C5cBA34f41B61FcfCaA6F6a": {
+      "kind": "eoa"
+    },
+    "0xA4BC9e80ab95f51475eCeA4FEC9A70AD2cc3FfF9": {
+      "kind": "eoa"
+    },
+    "0xAdDBE833B198E503ED2b5E64F8C2871D36b54b18": {
+      "kind": "eoa"
+    },
+    "0xAe30A49439D7830EB8866F9722b9A96E909d03cD": {
+      "kind": "eoa"
+    },
+    "0xB5a2514eD0F6Cc2CD22b92bFfe49ED45EFE23882": {
+      "kind": "eoa"
+    },
+    "0xB60842E9DaBCd1C52e354ac30E82a97661cB7E89": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x8003544D32eE074aA8A1fb72129Fa8Ef7fe02E5f",
+        "0x82B30194bEae06D991Bc71850F949ec8cB7E0CB7",
+        "0xC50BD8430545C80a681C7cb33E6560fB0Bd86880"
+      ],
+      "threshold": 1
+    },
+    "0xC8193468B0fE387af7E83792fBCcdbcc535305Cb": {
+      "kind": "eoa"
+    },
+    "0xC8887bF65BC84c24d82471ea9e206c7B17B95F75": {
+      "kind": "eoa"
+    },
+    "0xD48163b5418b5ed387641cb0ea6a54859040dCd1": {
+      "kind": "eoa"
+    },
+    "0xE10aBe1aF40afa411190cF776EAD838F8D70D9D3": {
+      "kind": "eoa"
+    },
+    "0xE3EEe3e0D2398799C884a47FC40C029C8e241852": {
+      "executors": [
+        "0xB60842E9DaBCd1C52e354ac30E82a97661cB7E89"
+      ],
+      "kind": "timelock",
+      "minDelaySeconds": 172800,
+      "proposers": [
+        "0xB60842E9DaBCd1C52e354ac30E82a97661cB7E89"
+      ]
+    },
+    "0xEcA221776539bBfDDDB342BF14729840B20a976d": {
+      "kind": "eoa"
+    },
+    "0xb5CcD8dC8082467849eE008d4242f7b3b569EF05": {
+      "kind": "eoa"
+    },
+    "0xb755FF07FD80B38265Ae35639568CfCdc874f21D": {
+      "kind": "eoa"
+    },
+    "0xbf25b58cB8DfaD688F7BcB2b87D71C23A6600AaC": {
+      "kind": "proxy-admin",
+      "owner": "0xE3EEe3e0D2398799C884a47FC40C029C8e241852"
+    },
+    "0xc0722e656796EDa9aE701eAd6d48e89b30460a72": {
+      "kind": "eoa"
+    },
+    "0xc4dA1BFA7dA1fF2E2ade68cF696a727903e38B2E": {
+      "kind": "eoa"
+    },
+    "0xc91d58535E74AE24D32465372Bb2EF1c92bB990D": {
+      "kind": "eoa"
+    },
+    "0xcFA659560492c3d90dEE555413cE5f3A64C62256": {
+      "kind": "eoa"
+    },
+    "0xd4195CF4df289a4748C1A7B6dDBE770e27bA1227": {
+      "kind": "eoa"
+    },
+    "0xf5F58b98f8dFF44143B78c1aD342Baf0E711EDfd": {
+      "kind": "eoa"
+    },
+    "0xf9658b5dD17C1a8933B6916EF858c2b221A93350": {
+      "kind": "eoa"
+    }
+  },
+  "timestamp": "2026-10-14T10:24:11Z"
+}
