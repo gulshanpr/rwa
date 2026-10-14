@@ -1,0 +1,142 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: mf-one
+name: Midas Fasanara ONE
+ticker: mF-ONE
+assetClass: private-credit
+description: >
+  Tokenized certificate giving indirect exposure to Fasanara Capital's F-ONE strategy (fintech receivables, SME lending, real-estate credit and delta-neutral digital assets). Holders have no beneficial interest in the underlying, and the claims are subordinated. Midas uses one shared permissions contract across its tokens. A 48-hour timelock covers upgrades only; granting a mint or burn role is instant. The published signer policy (4 or more) does not match the 1-of-3 Safe onchain.
+issuer: midas-software-gmbh
+manager: fasanara
+platform: midas
+tokenStandard: custom
+priceModel: accumulating-nav
+
+deployments:
+  - chain: ethereum
+    token: "0x238a700eD6165261Cf8b2e544ba797BC11e466Ba"
+    discovery:
+      ignoreMethods: []
+      labels:
+        "0x0312a9d1ff2372ddedcbb21e4b6389afc919ac4b": Midas Controller (shared)
+        "0xe3eee3e0d2398799c884a47fc40c029c8e241852": Midas timelock (48 hours)
+        "0xb60842e9dabcd1c52e354ac30e82a97661cb7e89": Admin Safe (1 of 3)
+        "0xd4195cf4df289a4748c1a7b6ddbe770e27ba1227": DEFAULT_ADMIN (single wallet)
+        "0x4f75307888fd06b16594cc93ed478625ad65eeea": Mint, burn and pause (single wallet)
+        "0x85a56e098b6159d2560aa2ba4f70e8ef3ae7e5e9": Price writer (single wallet)
+        "0x2acb4bdcbef02f81bf713b696ac26390d7f79a12": Vault admin (single wallet)
+        "0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C": mF-ONE/USD price feed
+        "0x9Db5B0B081E2202fb588cbD541B01b77f45Cfe2d": Largest holder at review (about 45%, identity unknown)
+
+access:
+  investorType:
+    value: non-us-professional
+    source: { url: "https://midas.app/mfone", note: "KYC'd eligible investors. The offering document is not public, so the exact legal category is not confirmed. Prohibited persons can be excluded at Midas's discretion.", checkedAt: 2026-10-14 }
+  minimumInvestment:
+    status: unknown
+    note: Deposit vault minMTokenAmountForFirstDeposit() returned 148000 (18-decimal raw units) at review. That is not a confirmed currency minimum. Fiat redemption minimum is 1,000.
+  transferRestricted:
+    value: false
+    source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "The token blocks only blacklisted addresses. Deposit and redemption vaults require the greenlist. Secondary transfers between non-blacklisted wallets are open.", checkedAt: 2026-10-14 }
+
+serviceProviders:
+  custodian:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: rwa.xyz has a custodian field and no name was read from it.
+  fundAdministrator:
+    status: not_public
+    searchedAt: 2026-10-14
+  auditor:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: Midas Software GmbH's statutory auditor (Dirk Stresska, Ausborn & Partner) is named in the final terms of a different Midas product. That is not treated as the mF-ONE auditor.
+  transferAgent:
+    status: not_public
+    searchedAt: 2026-10-14
+
+legal:
+  vehicleType:
+    status: public
+    value: German exempt-offer tokenized certificate (debt instrument), qualified subordination
+    source: { url: "https://midas.app/mfone", note: "Summarized by findas.org from Midas docs. Holders have no legal or beneficial interest in the underlying assets.", checkedAt: 2026-10-14 }
+  jurisdiction:
+    status: public
+    value: Germany
+    source: { url: "https://midas.app/mfone", checkedAt: 2026-10-14 }
+  lei:
+    status: public
+    value: 984500BB00BN6D2B7C48
+    source: { url: "https://api.gleif.org/api/v1/lei-records/984500BB00BN6D2B7C48", note: "GLEIF ISSUED record for Midas Software GmbH, Germany. This is the issuer entity, not a separate fund vehicle.", checkedAt: 2026-10-14 }
+  secFilings:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: Exempt offer. No MFSA filing for mF-ONE was found.
+  offeringDocument:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: Final terms and the base prospectus were not found.
+  auditedFinancials:
+    status: not_public
+    searchedAt: 2026-10-14
+  insolvency:
+    status: public
+    value: "Claims are subordinated (qualified subordination). The redemption amount is a hypothetical best-efforts liquidation net of fees and may differ from the oracle price. Midas docs, as summarized publicly, say a holder can lose the entire claim."
+    source: { url: "https://www.findas.org/tokenomics-review/the-tokenomics-of-midas-mf-one-mf-one", checkedAt: 2026-10-14 }
+
+pricing:
+  reference:
+    type: oracle
+    provider: midas
+    chain: ethereum
+    address: "0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C"
+    writer: eoa
+    dataOrigin: issuer
+    cadenceSeconds: 86400
+    businessDaysOnly: true
+    historyOnchain: true
+    source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "CustomAggregatorFeed mF-ONE/USD, 8 decimals. setRoundDataSafe caps each update at 0.4% and waits at least an hour. setRoundData, held by the same wallet, skips the cap. The vault DataFeed 0xcf4e49f5e750af8f2f9aa1642b68e5839d9c1c00 accepts the answer for 30 days and bounds it between 0.90 and 1.23. Docs say two co-signers review updates offchain; the onchain writer is one wallet. Morpho does not read this feed directly. Its oracle uses CustomAggregatorV3CompatibleFeedDiscounted 0x4386307a07C4de7Ba11B4F4ec3e1f37BBE95dC99, whose underlyingFeed is this contract, with a 7.7% discount.", checkedAt: 2026-10-14 }
+
+verification:
+  methods:
+    - type: attestation
+      provider: midas
+      independent: true
+      assetLevel: false
+      frequency: weekly
+      cryptographicallyVerifiable: true
+      onchain: true
+      feed: { chain: ethereum, address: "0x2D6e9F608807436DE5D9603B00Abe3FEd1Bc809d" }
+      source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "Midas Attestation Engine. NAV email is notarised with vlayer and checked by LlamaRisk and Canary. The NAV still originates with Fasanara. Asset-level custodian PDFs are described with placeholder IPFS links, so asset-level is not counted. The latest report at review was 2026-10-09, about four days old, so the daily test fails.", checkedAt: 2026-10-14 }
+
+exit:
+  redemption:
+    available:
+      value: true
+      source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard redemption on vault 0x44b0440e35c596e858cEA433D0d82F5a985fD19C is fee-free after the next NAV. rwa.xyz says 2 business days. midas.app says 1–7 business days.", checkedAt: 2026-10-14 }
+    whoCanRedeem:
+      value: whitelisted-holders
+      source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "Redemption vault greenlistEnabled is true. The token itself is transferable without the greenlist.", checkedAt: 2026-10-14 }
+    settlement:
+      status: public
+      value: T+2
+      source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard path is T+2 or longer. Instant redemption is separate.", checkedAt: 2026-10-14 }
+    minimum:
+      value: 1
+      source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Onchain redemption minimum is 1 mF-ONE. Fiat redemption minimum is 1,000.", checkedAt: 2026-10-14 }
+    gatesOrSuspension:
+      status: not_public
+      searchedAt: 2026-10-14
+      note: The vault admin can pause any vault function and the token pauser can freeze transfers. The legal suspension wording is not public. Docs say pauses are multisig-authorised; onchain, a single wallet holds the pause role.
+  instantLiquidity:
+    - type: offramp-contract
+      label: Instant redemption into mTBILL (1% fee)
+      chain: ethereum
+      address: "0x44b0440e35c596e858cEA433D0d82F5a985fD19C"
+      depthPctOfSupply: 9
+      source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "instantFee is 1%. Daily limit 30,000,000 mF-ONE. At review the vault held about 6.03M mTBILL and 0 USDC, roughly 9% of AUM. A second redemption vault 0x375e…bb48 has no daily limit.", checkedAt: 2026-10-14 }
+
+externalIds:
+  defillama: null
+  defillamaStablecoin: null
+  rwaxyz: mF-ONE
+  coingecko: null

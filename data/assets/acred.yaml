@@ -1,0 +1,139 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: acred
+name: Apollo Diversified Credit Securitize Fund
+ticker: ACRED
+assetClass: private-credit
+description: >
+  Tokenized feeder into Apollo Diversified Credit Fund, a 1940 Act closed-end interval fund. The token is Securitize DS Protocol on a standard upgradeable proxy, with a different owner wallet from BUIDL. One wallet can upgrade, mint and seize, with no timelock. The Apollo fund offers to buy back at least 5% of shares each quarter. Also deployed on Ink, Sei, Solana and Aptos, which this version does not read.
+issuer: acred-fund
+manager: apollo
+platform: securitize
+tokenStandard: ds-protocol
+priceModel: accumulating-nav
+
+deployments:
+  - chain: ethereum
+    token: "0x17418038ecF73BA4026c4f428547BF099706F27B"
+    discovery:
+      ignoreMethods: []
+      labels:
+        "0x59c1eacec450c57dcb9b8725d0f96635c2b676ee": ACRED owner and MASTER (single wallet)
+        "0x22F53B51E4272F954f25BC377B1b759c6C5A528B": ISSUER key (single wallet)
+        "0x8d35600bBD1eE2d1001788cef8d3785537a81C78": ISSUER key (single wallet, nonce 0 at review)
+        "0xB40Ee3fC18f7de7ac7C97e307c4aD523e0821a48": TRANSFER_AGENT key (single wallet)
+        "0x3ee611d581d2c6a81459fff8c6c8d197b0ad1a3e": WalletRegistrar owner (single wallet)
+        "0x805c7a5eb2d89dae4319c7a502ec5ce163f52615": OnRamp custodian wallet (single wallet)
+        "0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c": RedStone ACRED_FUNDAMENTAL feed
+  - chain: avalanche
+    token: "0x7C64925002BFA705834B118a923E9911BeE32875"
+    discovery:
+      ignoreMethods: []
+  - chain: polygon
+    token: "0xFCe60bBc52a5705CeC5B445501FBAf3274Dc43D0"
+    discovery:
+      ignoreMethods: []
+
+access:
+  investorType:
+    value: accredited-investor
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002056038", note: "Form D, Rule 506(c). Filed 2025-02-12, amended 2026-02-12.", checkedAt: 2026-10-14 }
+  minimumInvestment:
+    status: public
+    value: 50000
+    source: { url: "https://www.privatefunddata.com", note: "Offchain terms say $50,000. The onchain OnRamp minSubscriptionAmount was 1,000 USDC at review. Form D and the 2026-02-12 amendment both enter $0 as the minimum accepted from an outside investor. Which figure an investor actually faces is not settled.", checkedAt: 2026-10-14 }
+  transferRestricted:
+    value: true
+    source: { url: "https://etherscan.io/address/0x17418038ecF73BA4026c4f428547BF099706F27B", note: "DS Protocol compliance service. Transfers need an allowed wallet.", checkedAt: 2026-10-14 }
+
+serviceProviders:
+  custodian:
+    status: public
+    value: first-citizens
+    source: { url: "https://www.privatefunddata.com", note: "Form ADV names First Citizens Bank & Trust. rwa.xyz (via findas.org) names BNY Mellon. The two sources disagree; the filed adviser brochure is used here.", checkedAt: 2026-10-14 }
+  fundAdministrator:
+    status: public
+    value: securitize-fund-services
+    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", checkedAt: 2026-10-14 }
+  auditor:
+    status: public
+    value: withum
+    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", note: "Also named in the Form ADV excerpt on privatefunddata.com.", checkedAt: 2026-10-14 }
+  transferAgent:
+    status: public
+    value: securitize
+    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", checkedAt: 2026-10-14 }
+
+legal:
+  vehicleType:
+    status: public
+    value: BVI business company, feeder into a US 1940 Act closed-end interval fund
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002056038", note: "Issuer name on EDGAR CIK 0002056038. The underlying Apollo Diversified Credit Fund is CIK 0001676197.", checkedAt: 2026-10-14 }
+  jurisdiction:
+    status: public
+    value: British Virgin Islands
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002056038", checkedAt: 2026-10-14 }
+  lei:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: GLEIF full-text search returned no record. Glassnode also lists none.
+  secFilings:
+    status: public
+    value: { cik: "0002056038", forms: [D, D/A] }
+    source: { url: "https://www.sec.gov/Archives/edgar/data/2056038/000205603826000001/xslFormDX01/primary_doc.xml", note: "Form D filed 2025-02-12: $40,000,000 sold, 5 investors. Form D/A filed 2026-02-12: $110,943,000 sold, 26 investors. Offering amount indefinite. Rule 506(c) and Investment Company Act 3(c)(1). BVI business company, incorporated 2024. Sales compensation recipient: Securitize Markets, LLC (CRD 283256). NAV range declined.", checkedAt: 2026-10-14 }
+  offeringDocument:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: No public offering memorandum. The Securitize primary-market page is not readable without a browser session.
+  auditedFinancials:
+    status: not_public
+    searchedAt: 2026-10-14
+  insolvency:
+    status: unknown
+
+pricing:
+  reference:
+    type: oracle
+    provider: redstone
+    chain: ethereum
+    address: "0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c"
+    writer: single-provider
+    dataOrigin: issuer
+    cadenceSeconds: 86400
+    historyOnchain: false
+    source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "RedStone ACRED_FUNDAMENTAL (EthereumPriceFeedAcredFundamentalWithoutRoundsV1), read by RedStoneNavProvider 0x8fac01686d4c7444c31152aac025b45cb0a95ccd. The contract name says rounds are not stored. The OnRamp owner (the same single wallet that owns the token) can swap that provider. The feed proxy is owned by Safe 0x6906…4472, 2 of 3, with no timelock.", checkedAt: 2026-10-14 }
+
+verification:
+  methods:
+    - type: attestation
+      provider: redstone
+      independent: true
+      assetLevel: false
+      frequency: daily
+      cryptographicallyVerifiable: false
+      onchain: true
+      feed: { chain: ethereum, address: "0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c" }
+      source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "No Chronicle proof-of-asset or Chainlink proof-of-reserve was found. The feed relays an administrator NAV. Independent, daily and onchain; not asset-level and not a cryptographic reserve proof.", checkedAt: 2026-10-14 }
+
+exit:
+  redemption:
+    available:
+      value: true
+      source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "The underlying interval fund must offer to repurchase at least 5% of shares each quarter, and can prorate. Token Terminal also says holders may redeem at NAV. Those two descriptions disagree; the quarterly repurchase is what is scored.", checkedAt: 2026-10-14 }
+    whoCanRedeem:
+      value: whitelisted-holders
+      source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002056038", checkedAt: 2026-10-14 }
+    settlement:
+      status: public
+      value: T+90
+      source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "Quarterly window, so slower than T+5. A daily NAV redemption is also described elsewhere and was not confirmed.", checkedAt: 2026-10-14 }
+    gatesOrSuspension:
+      status: public
+      value: stated-limits
+      source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "Repurchase offers are at least 5% of shares and can be prorated. No separate suspension clause was read in a public offering memorandum.", checkedAt: 2026-10-14 }
+  instantLiquidity: []
+
+externalIds:
+  defillama: null
+  defillamaStablecoin: null
+  rwaxyz: ACRED
+  coingecko: apollo-diversified-credit-securitize-fund
