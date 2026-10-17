@@ -73,15 +73,66 @@ const PriceReference = z.discriminatedUnion("type", [
 ]);
 
 const VerificationMethod = z.object({
-  type: z.enum(["attestation", "audit", "proof-of-reserve", "proof-of-asset", "self-reported"]),
+  type: z.enum(["attestation", "audit", "proof-of-reserve", "self-reported"]),
   provider: z.string(),
   independent: z.boolean(),
   assetLevel: z.boolean(),
   frequency: Frequency,
-  cryptographicallyVerifiable: z.boolean(),
-  onchain: z.boolean(),
+  /** The report itself can be read by anyone, not only the fact that one exists. */
+  publicReport: z.boolean(),
+  /** Where the data is published onchain, if it is. Not scored; it tells the DeFi job which feeds carry this asset's NAV. */
   feed: z.object({ chain: Chain, address: Address }).optional(),
   source: Source,
+});
+
+/** A deployment outside the tracked `deployments`: a non-EVM chain, or an EVM chain we don't read yet. */
+const OtherChain = z.object({
+  chain: z.string(),
+  /** native: the issuer mints there directly. lock-and-mint / burn-and-mint: a bridge mints there against tokens locked or burned elsewhere. */
+  issuance: z.enum(["native", "lock-and-mint", "burn-and-mint"]),
+  bridge: z.string().optional(),
+  token: z.string().optional(),
+  source: Source,
+});
+
+/**
+ * An onchain limit on a power, e.g. a price setter that can only move the NAV a little per update.
+ * It only counts when it caps the move at 2% a day or less and the holders it limits can't lift it.
+ */
+const Bound = z.object({
+  chain: Chain,
+  contract: Address,
+  power: z.enum(["mint", "set-price"]),
+  /** Largest move per day the bound allows, as a % of the NAV (set-price) or of supply (mint). */
+  maxMovePctPerDay: z.number().positive(),
+  holderCanRemove: z.boolean(),
+  description: z.string(),
+  source: Source,
+});
+
+const Incident = z.object({
+  date: IsoDate,
+  kind: z.enum(["default", "impairment", "redemption-halt", "depeg", "exploit", "key-compromise", "other"]),
+  title: z.string(),
+  description: z.string().optional(),
+  source: Source,
+});
+
+/** Another token or fund this asset holds. `asset` is a tracked asset's slug or, for untracked funds, a name. */
+const Holding = z.object({
+  asset: z.string(),
+  sharePct: z.number().min(0).max(100).optional(),
+  source: Source,
+});
+
+/** Private-credit portfolio facts. Scored as disclosures (is it public?), never as credit quality. */
+const Portfolio = z.object({
+  loanLevelData: Disclosed(Frequency).optional(),
+  largestExposurePct: Disclosed(z.number().min(0).max(100)).optional(),
+  collateral: Disclosed(z.string()).optional(),
+  lossHistory: Disclosed(z.string()).optional(),
+  firstLoss: Disclosed(z.string()).optional(),
+  weightedMaturityDays: Disclosed(z.number().nonnegative()).optional(),
 });
 
 const InstantLiquidity = z.object({
@@ -128,11 +179,32 @@ export const AssetSchema = z.object({
     offeringDocument: Disclosed(z.string()),
     auditedFinancials: Disclosed(z.string()),
     insolvency: Disclosed(z.string()),
+    /** Who regulates or registered the vehicle (e.g. BVI FSC professional fund, SEC-registered interval fund). */
+    regulator: Disclosed(z.string()).optional(),
+    /** What a token holder legally owns. Shown, not scored: the legal slice is not assessed. */
+    claimType: Disclosed(z.enum(["fund-share", "spv-note", "issuer-note", "vault-share", "tracker-certificate", "other"])).optional(),
+    /** Whether the token is the legal register of ownership, or mirrors an offchain register kept by a transfer agent. */
+    register: Disclosed(z.enum(["onchain", "offchain-mirrored"])).optional(),
   }),
 
-  pricing: z.object({ reference: PriceReference }),
+  pricing: z.object({
+    reference: PriceReference,
+    /** Who marks the loans and how bad loans are written down. Scored for private credit. */
+    valuation: z
+      .object({
+        valuer: Disclosed(z.enum(["independent-agent", "fund-administrator", "manager"])).optional(),
+        impairmentPolicy: Disclosed(z.string()).optional(),
+      })
+      .optional(),
+  }),
 
-  verification: z.object({ methods: z.array(VerificationMethod) }),
+  verification: z.object({
+    methods: z.array(VerificationMethod),
+    /** Assets the issuer or administrator says back the token, to reconcile with onchain supply × price. */
+    reported: Sourced(z.object({ usd: z.number().positive(), asOf: IsoDate })).optional(),
+  }),
+
+  portfolio: Portfolio.optional(),
 
   exit: z.object({
     redemption: z.object({
@@ -144,6 +216,13 @@ export const AssetSchema = z.object({
     }),
     instantLiquidity: z.array(InstantLiquidity).default([]),
   }),
+
+  otherChains: z.array(OtherChain).optional(),
+  bounds: z.array(Bound).optional(),
+  holdings: z.array(Holding).optional(),
+  incidents: z.array(Incident).optional(),
+  /** Things a reviewer couldn't verify. Shown on the asset page so anyone can help close them. */
+  openQuestions: z.array(z.string()).optional(),
 
   externalIds: z.object({
     defillama: z.string().nullable().default(null),
@@ -158,3 +237,6 @@ export type Chain = z.infer<typeof Chain>;
 export type AssetClass = z.infer<typeof AssetClass>;
 export type VerificationMethod = z.infer<typeof VerificationMethod>;
 export type PriceReference = z.infer<typeof PriceReference>;
+export type Bound = z.infer<typeof Bound>;
+export type OtherChain = z.infer<typeof OtherChain>;
+export type Incident = z.infer<typeof Incident>;

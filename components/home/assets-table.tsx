@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Rosette } from "@/components/risk/rosette";
 import { SliceDot } from "@/components/risk/slice-dot";
+import { StageBadge } from "@/components/risk/stage-badge";
 import { Card } from "@/components/ui/card";
 import { Segmented } from "@/components/ui/segmented";
 import { Table, Td, Th, Tr } from "@/components/ui/table";
@@ -15,9 +16,10 @@ import type { SliceId } from "@/lib/scoring/types";
 type Filter = "us-treasuries" | "private-credit" | "all";
 const DOT_SLICES: { id: SliceId; label: string }[] = [
   { id: "control", label: "Ctrl" },
-  { id: "pricing", label: "Price" },
-  { id: "verification", label: "Verif" },
-  { id: "exit", label: "Exit" },
+  { id: "exit-window", label: "Window" },
+  { id: "pricing", label: "NAV" },
+  { id: "verification", label: "Resv" },
+  { id: "exit", label: "Redeem" },
   { id: "disclosure", label: "Discl" },
 ];
 
@@ -49,6 +51,7 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
             <Th>Issuer</Th>
             <Th align="right">Value</Th>
             <Th align="center">Rosette</Th>
+            <Th>Stage</Th>
             {DOT_SLICES.map((s) => (
               <Th key={s.id} align="center">
                 {s.label}
@@ -60,7 +63,7 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
         <tbody>
           {shown.length === 0 && (
             <tr>
-              <Td colSpan={11} className="py-8 text-center text-fg-muted">
+              <Td colSpan={13} className="py-8 text-center text-fg-muted">
                 No assets in this class yet. The v1 list of 20 is being added one by one.
               </Td>
             </tr>
@@ -82,6 +85,9 @@ export function AssetsTable({ rows }: { rows: AssetRow[] }) {
                 <span className="inline-flex">
                   <Rosette slices={r.slices} size="sm" ticker={r.ticker} />
                 </span>
+              </Td>
+              <Td>
+                <StageBadge stage={r.stage} compact />
               </Td>
               {DOT_SLICES.map((s) => (
                 <Td key={s.id} align="center">

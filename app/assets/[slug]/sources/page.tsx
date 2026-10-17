@@ -12,9 +12,9 @@ export const generateMetadata = tabMetadata("Sources");
 const TAB_TITLES: Record<TabId, string> = {
   overview: "Overview",
   control: "Control",
-  pricing: "Pricing",
+  pricing: "NAV",
   defi: "DeFi exposure",
-  verification: "Verification",
+  verification: "Reserves",
   exit: "Exit",
   disclosure: "Disclosure",
   history: "History",

@@ -1,5 +1,6 @@
 import type { Chain, AssetClass } from "./schema/asset";
 import { ASSET_CLASSES, getProfiles, type AssetProfile, type Flag } from "./profile";
+import type { Stage } from "./scoring/stages";
 import { SLICE_ORDER, SLICE_LABELS, type SliceColor, type SliceId } from "./scoring/types";
 
 export interface AssetRow {
@@ -12,6 +13,7 @@ export interface AssetRow {
   aumUsd: number | null;
   chains: Chain[];
   slices: Record<SliceId, { color: SliceColor; headline: string }>;
+  stage: Stage | null;
   flags: Flag[];
   singleKeyPowers: number;
   oracleAgeSeconds: number | null;
@@ -32,6 +34,7 @@ export function toRow(p: AssetProfile): AssetRow {
     slices: Object.fromEntries(
       SLICE_ORDER.map((s) => [s, { color: p.score.slices[s].color, headline: p.score.slices[s].headline }]),
     ) as AssetRow["slices"],
+    stage: p.score.stage.assessed ? p.score.stage.stage : null,
     flags: p.flags,
     singleKeyPowers: p.stats.singleKeyPowers,
     oracleAgeSeconds: p.stats.oracle?.ageSeconds ?? null,
@@ -74,6 +77,7 @@ export function rowsToCsv(rows: AssetRow[]): string {
     "aum_usd",
     "chains",
     ...SLICE_ORDER.map((s) => `${s}_color`),
+    "stage",
     "single_key_powers",
     "oracle_age_seconds",
     "defi_collateral_usd",
@@ -90,6 +94,7 @@ export function rowsToCsv(rows: AssetRow[]): string {
       r.aumUsd ?? "",
       r.chains.join(";"),
       ...SLICE_ORDER.map((s) => r.slices[s].color),
+      r.stage ?? "",
       r.singleKeyPowers,
       r.oracleAgeSeconds ?? "",
       r.defiCollateralUsd,

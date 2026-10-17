@@ -5,6 +5,8 @@ import type { Discovered, Holder, Power } from "../schema/discovered";
 import { analyzePowers, scoreControl } from "./control";
 import { scoreDisclosure } from "./disclosure";
 import { scoreExit } from "./exit";
+import { scoreExitWindow } from "./exit-window";
+import { fixFor } from "./fixes";
 import { scoreAsset } from "./index";
 import { scorePricing } from "./pricing";
 import type { SliceColor, SliceId } from "./types";
@@ -53,7 +55,8 @@ function asset(overrides: Record<string, unknown> = {}): Asset {
       reference: { type: "oracle", provider: "p", chain: "ethereum", writer: "oracle-network", dataOrigin: "fund-administrator", cadenceSeconds: 86400, historyOnchain: true, source: src },
     },
     verification: {
-      methods: [{ type: "proof-of-asset", provider: "v", independent: true, assetLevel: true, frequency: "daily", cryptographicallyVerifiable: true, onchain: true, source: src }],
+      methods: [{ type: "attestation", provider: "v", independent: true, assetLevel: true, frequency: "daily", publicReport: true, source: src }],
+      reported: { value: { usd: 1000, asOf: checkedAt }, source: src },
     },
     exit: {
       redemption: {
@@ -189,16 +192,55 @@ describe("pricing (TECH_SPEC 6.2)", () => {
   });
 });
 
-describe("verification (TECH_SPEC 6.3)", () => {
-  const method = (m: Record<string, unknown>) =>
-    asset({ verification: { methods: [{ type: "attestation", provider: "v", independent: true, assetLevel: true, frequency: "daily", cryptographicallyVerifiable: true, onchain: true, source: src, ...m }] } });
+const liveWith = (usd: number, extra: Record<string, unknown> = {}) => ({
+  asset: "fixture",
+  sample: false,
+  asOf: "2026-10-12T00:00:00Z",
+  supply: [{ chain: "ethereum" as const, totalSupply: usd, priceUsd: 1, source: "x" }],
+  aum: { usd, source: { name: "x", url: "https://x.y" } },
+  defiMarkets: [],
+  defiSource: { name: "x", url: "https://x.y" },
+  ...extra,
+});
 
-  test("5 of 5 is green", () => expect(scoreVerification(method({})).color).toBe("green"));
-  test("3 of 5 is yellow", () => expect(scoreVerification(method({ onchain: false, cryptographicallyVerifiable: false })).color).toBe("yellow"));
-  test("unstated frequency fails the daily test", () =>
-    expect(scoreVerification(method({ frequency: "unstated", onchain: false, cryptographicallyVerifiable: false })).color).toBe("red"));
-  test("self-reported only is red", () => expect(scoreVerification(method({ type: "self-reported" })).color).toBe("red"));
+describe("reserves", () => {
+  const method = (m: Record<string, unknown>, reported?: unknown) =>
+    asset({
+      verification: {
+        methods: [{ type: "attestation", provider: "v", independent: true, assetLevel: true, frequency: "daily", publicReport: true, source: src, ...m }],
+        ...(reported === undefined ? { reported: { value: { usd: 1000, asOf: checkedAt }, source: src } } : reported === null ? {} : { reported }),
+      },
+    });
+
+  test("4 report tests plus a matching reconciliation is green", () => expect(scoreVerification(method({}), liveWith(1020)).color).toBe("green"));
+  test("onchain value more than 5% off the reported total fails reconciliation", () => {
+    const r = scoreVerification(method({}), liveWith(800));
+    expect(r.color).toBe("yellow");
+    expect(r.reasons.map((x) => x.id)).toContain("verification.reconciles");
+  });
+  test("a reported total older than 45 days can't reconcile", () => {
+    const old = { value: { usd: 1000, asOf: "2026-06-01" }, source: src };
+    expect(scoreVerification(method({}, old), liveWith(1000)).reasons[0]!.text).toContain("too old");
+  });
+  test("unread native chains are named when supply falls short", () => {
+    const a = asset({ ...method({}), otherChains: [{ chain: "solana", issuance: "native", source: src }] });
+    expect(scoreVerification(a, liveWith(500)).reasons[0]!.text).toContain("solana");
+  });
+  test("weekly passes the frequency test, monthly doesn't", () => {
+    expect(scoreVerification(method({ frequency: "weekly" }), liveWith(1000)).color).toBe("green");
+    expect(scoreVerification(method({ frequency: "monthly" }), liveWith(1000)).color).toBe("yellow");
+  });
+  test("a report that isn't public fails a test", () => expect(scoreVerification(method({ publicReport: false }), liveWith(1000)).color).toBe("yellow"));
+  test("2 of 5 is red", () =>
+    expect(scoreVerification(method({ assetLevel: false, frequency: "unstated", publicReport: false }), liveWith(1000)).color).toBe("red"));
+  test("self-reported only is red", () => expect(scoreVerification(method({ type: "self-reported" }), liveWith(1000)).color).toBe("red"));
   test("no method is red", () => expect(scoreVerification(asset({ verification: { methods: [] } })).color).toBe("red"));
+  test("private credit with nothing public about the loan book is capped at yellow", () => {
+    const a = asset({ ...method({}), assetClass: "private-credit" });
+    const r = scoreVerification(a, liveWith(1000));
+    expect(r.color).toBe("yellow");
+    expect(r.reasons.map((x) => x.id)).toContain("verification.portfolio.loan-level");
+  });
 });
 
 describe("exit (TECH_SPEC 6.4)", () => {
@@ -218,24 +260,35 @@ describe("exit (TECH_SPEC 6.4)", () => {
   });
 });
 
-describe("disclosure (TECH_SPEC 6.5)", () => {
-  test("6 of 6 is green", () => expect(scoreDisclosure(asset()).color).toBe("green"));
-  test("4 of 6 is yellow", () =>
+describe("disclosure", () => {
+  test("8 of 9 points (regulator unknown) is green", () => expect(scoreDisclosure(asset()).color).toBe("green"));
+  test("missing offering document and financials (4 points) is yellow", () =>
     expect(scoreDisclosure(asset({ legal: { ...asset().legal, offeringDocument: hidden, auditedFinancials: hidden } })).color).toBe("yellow"));
+  test("the offering document counts double", () =>
+    expect(scoreDisclosure(asset({ legal: { ...asset().legal, offeringDocument: hidden } })).headline).toBe("6 of 9 disclosure points are public."));
   test("unknown counts as not public", () => {
     const sp = { custodian: { status: "unknown" }, fundAdministrator: hidden, auditor: hidden, transferAgent: hidden };
     expect(scoreDisclosure(asset({ serviceProviders: sp, legal: { ...asset().legal, offeringDocument: hidden } })).color).toBe("red");
   });
 });
 
-/** Phase 0 hand scores (research/<slug>.md, section M). The engine must agree with them on the committed data. */
+/**
+ * Phase 0 hand scores (research/<slug>.md, section M), updated for framework v0.4. The engine must agree with
+ * them on the committed data. What v0.4 changed against the original hand scores:
+ * - Reserves: Chronicle proof-of-asset is no longer used, so USTB and JTRSY drop to red (their only remaining
+ *   report is self-reported or none). syrupUSDC's Network Firm report now passes 3 of 5 (independent,
+ *   asset-level, public), so it is yellow.
+ * - OUSG: its 2-of-6 price setter is capped at 2% a day by the contract, so Control is yellow. Its instant
+ *   redemption facility has no measured liquidity, so Redemption is yellow, not green.
+ * - USYC: the CIMA registration counts as a disclosure point, which doesn't change its color.
+ * - Exit window is new: every reviewed asset can be upgraded or have roles granted with no notice.
+ */
 const HAND_SCORES: Record<string, Partial<Record<SliceId, SliceColor>>> = {
-  syrupusdc: { control: "red", pricing: "red", verification: "red", exit: "red", disclosure: "red", legal: "grey" },
-  // Hand score was Verification yellow (4/5) only because the Chronicle cadence was unconfirmed; the router updates daily.
-  ustb: { control: "red", pricing: "red", verification: "green", exit: "yellow", disclosure: "yellow", legal: "grey" },
-  ousg: { control: "red", pricing: "yellow", verification: "red", exit: "green", disclosure: "red", legal: "grey" },
-  usyc: { control: "red", pricing: "red", verification: "red", exit: "yellow", disclosure: "yellow", legal: "grey" },
-  jtrsy: { control: "red", pricing: "red", verification: "green", exit: "red", disclosure: "yellow", legal: "grey" },
+  syrupusdc: { control: "red", "exit-window": "red", pricing: "red", verification: "yellow", exit: "red", disclosure: "red", legal: "grey" },
+  ustb: { control: "red", "exit-window": "red", pricing: "red", verification: "red", exit: "yellow", disclosure: "yellow", legal: "grey" },
+  ousg: { control: "yellow", "exit-window": "red", pricing: "yellow", verification: "red", exit: "yellow", disclosure: "red", legal: "grey" },
+  usyc: { control: "red", "exit-window": "red", pricing: "red", verification: "red", exit: "yellow", disclosure: "yellow", legal: "grey" },
+  jtrsy: { control: "red", "exit-window": "red", pricing: "red", verification: "red", exit: "red", disclosure: "yellow", legal: "grey" },
 };
 
 describe("engine matches Phase 0 hand scores", () => {
@@ -248,9 +301,111 @@ describe("engine matches Phase 0 hand scores", () => {
     });
   }
 
-  test("syrupUSDC's top risks are the pool delegate key, then the NAV it can write down", () => {
+  test("syrupUSDC's top risks are the pool delegate key, no notice before upgrades, then the NAV it can write down", () => {
     const a = loadAssets().find((x) => x.slug === "syrupusdc")!;
     const score = scoreAsset(a, loadDiscovered(a).map((s) => s.discovered), loadLive("syrupusdc"));
-    expect(score.risks.slice(0, 3).map((r) => r.id)).toEqual(["control.eoa.set-price", "control.eoa.allocate", "pricing.eoa"]);
+    expect(score.risks.slice(0, 4).map((r) => r.id)).toEqual(["control.eoa.set-price", "control.eoa.allocate", "exit-window.none", "pricing.eoa"]);
+  });
+});
+
+describe("control bounds, bridges and missing discovery", () => {
+  const bound = (maxMovePctPerDay: number, holderCanRemove = false) => ({
+    chain: "ethereum" as const, contract: TOKEN, power: "set-price" as const, maxMovePctPerDay, holderCanRemove, description: "cap", source: src,
+  });
+  const rows = (b: ReturnType<typeof bound>[]) => analyzePowers([discovered([["set-price", EOA]], { [EOA]: { kind: "eoa" } })], b);
+
+  test("a tight bound the holder can't lift turns red into yellow", () => {
+    const r = scoreControl(rows([bound(1)]), "FIX");
+    expect(r.color).toBe("yellow");
+    expect(r.reasons[0]!.id).toBe("control.bounded.set-price");
+  });
+  test("a loose bound doesn't count", () => expect(scoreControl(rows([bound(9)]), "FIX").color).toBe("red"));
+  test("a bound the holder can lift doesn't count", () => expect(scoreControl(rows([bound(1, true)]), "FIX").color).toBe("red"));
+
+  test("a bridge contract that can mint is flagged", () => {
+    const BRIDGE = "0x0000000000000000000000000000000000000005";
+    const d = discovered([["mint", BRIDGE]], { [BRIDGE]: { kind: "contract", name: "TokenBridge", controllers: [SAFE] }, [SAFE]: safe(3, 5) });
+    const r = scoreControl(analyzePowers([d]), "FIX", { discovered: [d] });
+    expect(r.reasons.some((x) => x.id.startsWith("control.bridge."))).toBe(true);
+  });
+  test("tokens bridged to other chains are flagged", () => {
+    const d = discovered([], {});
+    const r = scoreControl([], "FIX", { discovered: [d], otherChains: [{ chain: "base", issuance: "lock-and-mint", bridge: "Chainlink CCIP", source: src }] });
+    expect(r.color).toBe("yellow");
+    expect(r.headline).toContain("Chainlink CCIP");
+  });
+  test("an unverified contract with critical powers is flagged", () => {
+    const d = discovered([["mint", SAFE]], { [SAFE]: safe(3, 5) });
+    d.contracts[TOKEN]!.verified = false;
+    const r = scoreControl(analyzePowers([d]), "FIX", { discovered: [d] });
+    expect(r.reasons.some((x) => x.id.startsWith("control.unverified"))).toBe(true);
+  });
+  test("no discovery snapshot is grey, not green", () => expect(scoreControl([], "FIX", { discovered: [] }).color).toBe("grey"));
+});
+
+describe("exit window", () => {
+  const w = (holders: Record<string, Holder>, holder: string, settlement = "T+1") =>
+    scoreExitWindow(
+      asset({ exit: { ...asset().exit, redemption: { ...asset().exit.redemption, settlement: pub(settlement) } } }),
+      analyzePowers([discovered([["upgrade", holder]], holders)]),
+      true,
+    );
+
+  test("an EOA that can upgrade gives no notice: red", () => expect(w({ [EOA]: { kind: "eoa" } }, EOA).color).toBe("red"));
+  test("a 2-day timelock against T+3 redemption is red", () =>
+    expect(w({ [TIMELOCK]: timelock(2), [SAFE]: safe(3, 5) }, TIMELOCK, "T+3").color).toBe("red"));
+  test("a 3-day timelock against T+1 redemption leaves 2 days: yellow", () =>
+    expect(w({ [TIMELOCK]: timelock(3), [SAFE]: safe(3, 5) }, TIMELOCK).color).toBe("yellow"));
+  test("a 10-day timelock against T+1 redemption leaves 9 days: green", () =>
+    expect(w({ [TIMELOCK]: timelock(10), [SAFE]: safe(3, 5) }, TIMELOCK).color).toBe("green"));
+  test("nothing can upgrade or grant roles: green", () => expect(scoreExitWindow(asset(), [], true).color).toBe("green"));
+  test("no discovery: grey", () => expect(scoreExitWindow(asset(), [], false).color).toBe("grey"));
+});
+
+describe("NAV for private credit", () => {
+  const credit = (valuation?: unknown) => asset({ assetClass: "private-credit", pricing: { ...asset().pricing, ...(valuation ? { valuation } : {}) } });
+  test("unknown valuer and write-down policy are yellow", () => {
+    const r = scorePricing(credit(), undefined);
+    expect(r.color).toBe("yellow");
+    expect(r.reasons.map((x) => x.id)).toEqual(expect.arrayContaining(["pricing.valuer-unknown", "pricing.impairment-policy"]));
+  });
+  test("an independent valuer with a public policy adds nothing", () =>
+    expect(scorePricing(credit({ valuer: pub("independent-agent"), impairmentPolicy: pub("90 days past due") }), undefined).color).toBe("green"));
+  test("an EOA writer under a tight cap is yellow, not red", () => {
+    const ref = { type: "oracle", provider: "p", chain: "ethereum", address: TOKEN, writer: "eoa", dataOrigin: "fund-administrator", cadenceSeconds: 86400, historyOnchain: true, source: src };
+    const capped = asset({ pricing: { reference: ref }, bounds: [{ chain: "ethereum", contract: TOKEN, power: "set-price", maxMovePctPerDay: 1, holderCanRemove: false, description: "cap", source: src }] });
+    expect(scorePricing(capped, undefined).color).toBe("yellow");
+  });
+});
+
+describe("stages and fixes", () => {
+  const score = (a: Asset, holders: Record<string, Holder>, perms: [Power, string][]) => scoreAsset(a, [discovered(perms, holders)], liveWith(1000));
+
+  test("a fully green asset with a long timelock is Stage 2", () => {
+    const tl = { [TIMELOCK]: timelock(10), [SAFE]: safe(3, 5) };
+    expect(score(asset(), tl, [["upgrade", TIMELOCK], ["mint", TIMELOCK]]).stage.stage).toBe(2);
+  });
+  test("a single key with a critical power keeps it at Stage 0", () => {
+    const r = score(asset(), { [EOA]: { kind: "eoa" } }, [["mint", EOA]]);
+    expect(r.stage.stage).toBe(0);
+    expect(r.stage.next.map((x) => x.id)).toContain("s1-no-single-key");
+  });
+  test("no discovery is not assessed", () => expect(scoreAsset(asset(), [], undefined).stage.assessed).toBe(false));
+  test("every reason the engine produces has a fix", () => {
+    for (const a of loadAssets()) {
+      const s = scoreAsset(a, loadDiscovered(a).map((x) => x.discovered), loadLive(a.slug));
+      for (const r of s.risks) expect([r.id, fixFor(r.id) ?? r.fix]).toEqual([r.id, expect.any(String)]);
+    }
+  });
+});
+
+describe("look-through", () => {
+  test("a fund holding a token with red Control gets a yellow finding", () => {
+    const under = scoreAsset(asset(), [discovered([["mint", EOA]], { [EOA]: { kind: "eoa" } })], undefined);
+    const holder = asset({ holdings: [{ asset: "under", sharePct: 30, source: src }] });
+    const tl = { [TIMELOCK]: timelock(10), [SAFE]: safe(3, 5) };
+    const r = scoreAsset(holder, [discovered([["upgrade", TIMELOCK]], tl)], liveWith(1000), new Map([["under", { ticker: "UND", score: under }]]));
+    expect(r.slices.control.color).toBe("yellow");
+    expect(r.slices.control.reasons.map((x) => x.id)).toContain("control.look-through.under");
   });
 });

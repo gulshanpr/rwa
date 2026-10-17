@@ -9,7 +9,6 @@ import { getAlerts } from "@/lib/live-store";
 import { formatPct, formatUsd, formatUsdFull } from "@/lib/format";
 import { getProfiles } from "@/lib/profile";
 import { assetRows, sliceDistribution } from "@/lib/rows";
-import { bestMethod, passCount } from "@/lib/scoring/verification";
 import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
@@ -24,12 +23,7 @@ export default async function HomePage() {
   const has30d = profiles.length > 0 && profiles.every((p) => p.live?.aum.usd30dAgo !== undefined);
   const total30d = profiles.reduce((s, p) => s + (p.live?.aum.usd30dAgo ?? 0), 0);
   const eoaValue = profiles.filter((p) => p.stats.singleKeyPowers > 0).reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
-  const verifiedValue = profiles
-    .filter((p) => {
-      const best = bestMethod(p.asset);
-      return best && passCount(best) === 5;
-    })
-    .reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
+  const verifiedValue = profiles.filter((p) => p.score.slices.verification.color === "green").reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
   const weekAgo = Date.now() - 7 * 86400 * 1000;
   const alerts7d = alerts.filter((a) => new Date(a.publishedAt).getTime() >= weekAgo).length;
   const delta = total30d ? total / total30d - 1 : 0;
@@ -67,9 +61,9 @@ export default async function HomePage() {
           sub={`· ${share(eoaValue)}`}
         />
         <StatCard
-          label="Value passing all 5 verification tests"
-          info="Independent, asset-level, daily, verifiable and onchain reserve data. Tests adapted from Chronicle Labs."
-          infoHref="/methodology#verification"
+          label="Value with green reserves"
+          info="Reserves checked independently, line by line, at least weekly, in a public report, and matching onchain supply × price."
+          infoHref="/methodology#reserves"
           value={formatUsd(verifiedValue)}
           sub={`· ${share(verifiedValue)}`}
         />

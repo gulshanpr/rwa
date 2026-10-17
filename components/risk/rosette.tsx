@@ -39,12 +39,13 @@ export function Rosette({
       </defs>
       {SLICE_ORDER.map((slice, i) => {
         const result = slices[slice];
-        const start = -120 + 60 * i;
+        const step = 360 / SLICE_ORDER.length;
+        const start = -90 - step / 2 + step * i;
         const fill = result.color === "grey" ? (size === "sm" ? "var(--border-strong)" : `url(#${patternId})`) : RISK_FILL[result.color];
         return (
           <polygon
             key={slice}
-            points={`${c},${c} ${point(c, c, r, start)} ${point(c, c, r, start + 60)}`}
+            points={`${c},${c} ${point(c, c, r, start)} ${point(c, c, r, start + step)}`}
             fill={fill}
             stroke="var(--surface)"
             strokeWidth={gap}

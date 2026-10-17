@@ -114,18 +114,17 @@ pricing:
       updatedAt: { fn: "function markersPricePoolPerShare(uint64, bytes16) view returns (uint64, uint64, uint64)", args: ["281474976710663", "0x00010000000000070000000000000001"], index: 0 }
     historyOnchain: true
     source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Spoke pricePoolPerShare for pool 281474976710663, share class 0x00010000000000070000000000000001. Written by hub manager EOA 0x7bf0…02ec, the same key as JTRSY. That role previously sat with Safe 0x742d…be1e (3 of 8). Spoke maxSharePriceAge is 2^64−1, so vaults never reject a stale price. Vault Street says the key is a Fordefi MPC; that was not verified.", checkedAt: 2026-10-14 }
+  valuation:
+    valuer:
+      status: public
+      value: fund-administrator
+      source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "June 2026 factsheet: Trident Trust is administrator and NAV calculation agent", checkedAt: 2026-10-14 }
 
 verification:
-  methods:
-    - type: proof-of-asset
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0x5D44916E0Db13EcD661b20Df4D645904E57589C8" }
-      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "Router readWithAge matched JAAA's NAV at review. Blockscout labels this contract ChronicleVAO_FakeWho_FAKEWAT_Router_1, which conflicts with Chronicle's docs. Aave Horizon does not read this router. Its getSourceOfAsset for JAAA is 0xF77f2537dba4ffD60f77fACdfB2c1706364fA03d (the LlamaGuard feed Vault Street cites). Horizon LTV is 81% and the liquidation threshold is 86%.", checkedAt: 2026-10-14 }
+  methods: []
+  reported:
+    value: { usd: 682000000, asOf: 2026-06-29 }
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "June 2026 factsheet: AUM 682M USDC", checkedAt: 2026-10-14 }
 
 exit:
   redemption:
@@ -144,6 +143,25 @@ exit:
       value: issuer-discretion
       source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Portfolio Supplement as quoted by Vault Street (not seen first-hand): the board may suspend redemptions in its sole discretion. No instant redemption buffer was found.", checkedAt: 2026-10-14 }
   instantLiquidity: []
+
+otherChains:
+  - chain: solana
+    issuance: lock-and-mint
+    bridge: Issuer escrow wallet on Ethereum (no code)
+    source: { url: "https://etherscan.io/address/0x5d2c428E04F3A10b963F5C8f216071DDcDBdd03B", checkedAt: 2026-10-14 }
+  - chain: stellar
+    issuance: lock-and-mint
+    bridge: Issuer escrow wallet on Ethereum (no code)
+    source: { url: "https://etherscan.io/address/0xf26EfA5b4a207f63FDd8bB881cA789DEd2Ab4836", checkedAt: 2026-10-14 }
+
+openQuestions:
+  - "Whether 0x42b7… is a Fordefi or Fireblocks MPC wallet, and who the seven Safe owners are."
+  - "Custodian: J.P. Morgan (factsheet) or Pershing/StoneX (Ethena governance post)."
+  - "AUM: 682M USDC on the June factsheet vs $583M onchain."
+  - "Why the Solana escrow fell from $192.9M to $78.66M. Solana itself is not read."
+  - "Settlement: T+1 on the factsheet vs T+3 in the fund terms quoted by Vault Street."
+  - "Who controls the OnOfframpManager 0xF8b1…Ece7, which is also a balance-sheet manager."
+  - "Supply on Plume, Monad and other Centrifuge spokes."
 
 externalIds:
   defillama: null

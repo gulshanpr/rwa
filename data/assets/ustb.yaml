@@ -102,22 +102,12 @@ pricing:
 
 verification:
   methods:
-    - type: proof-of-asset
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0xDf8deCbDB89C95297ee6ef816Bd8A7B66973f254" }
-      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "ChronicleVAO_Superstate_USTB_Router_2. readWithAge() sampled over 10 days to 2026-10-13: the age advanced about every 23.7h including weekends (11.231 → 11.2399), so the feed is live and daily. Blockscout mislabels the router. Independence and method are Chronicle's own claims; Yearn's July 2026 report said nothing was attested onchain.", checkedAt: 2026-10-13 }
     - type: self-reported
       provider: superstate
       independent: false
       assetLevel: true
       frequency: unstated
-      cryptographicallyVerifiable: false
-      onchain: false
+      publicReport: true
       source: { url: "https://superstate.com/assets/ustb", note: "Issuer-published line-item holdings snapshot", checkedAt: 2026-10-13 }
 
 exit:
@@ -143,6 +133,29 @@ exit:
       address: "0x4c21B7577C8FE8b0B0669165ee7C8f67fa1454Cf"
       depthPctOfSupply: 0
       source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "USDC balance $0.013862 at block 26,183,016: effectively empty, so instant redemption depends on Superstate topping it up. Owner and ProxyAdmin owner: EOA 0x8cf4…0765.", checkedAt: 2026-10-13 }
+
+otherChains:
+  - chain: solana
+    issuance: native
+    token: "CCz3SGVziFeLYk2xfEstkiqJfYkjaSWb2GCABYsVcjo2"
+    source: { url: "https://explorer.solana.com/address/CCz3SGVziFeLYk2xfEstkiqJfYkjaSWb2GCABYsVcjo2", checkedAt: 2026-10-13 }
+  - chain: plume
+    issuance: native
+    token: "0xe4fa682f94610ccd170680cc3b045d77d9e528a8"
+    source: { url: "https://explorer.plume.org/address/0xe4fa682f94610ccd170680cc3b045d77d9e528a8", checkedAt: 2026-10-13 }
+
+bounds:
+  - chain: ethereum
+    contract: "0xE4fA682f94610cCd170680cc3B045d77D9E528a8"
+    power: set-price
+    maxMovePctPerDay: 8.9
+    holderCanRemove: true
+    description: "Each checkpoint may differ from the last by at most maximumAcceptablePriceDelta = $1.00 (about 8.9% of NAV), and checkpoints expire after 5 days. The same owner key can change the delta."
+    source: { url: "https://etherscan.io/address/0xE4fA682f94610cCd170680cc3B045d77D9E528a8#code", checkedAt: 2026-10-13 }
+
+openQuestions:
+  - "Whether the owner keys (token, proxy admin and oracle) are MPC or hardware-backed."
+  - "Supply on Solana and Plume, and book-entry shares, aren't read, so reserves can't be reconciled with onchain supply."
 
 externalIds:
   defillama: invesco-ustb

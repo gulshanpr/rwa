@@ -108,6 +108,11 @@ pricing:
     dataOrigin: issuer
     historyOnchain: true
     source: { url: "https://eth.blockscout.com/address/0xbAD003DA1e107f537Ae2f687f5FE7a7aFFe9B241?tab=contract", note: "LoanManager.impairLoan can be called by the pool delegate (an EOA) or the governor and writes the NAV down at once. Interest accrues per second from Maple's own loan accounting.", checkedAt: 2026-10-12 }
+  valuation:
+    valuer:
+      status: public
+      value: manager
+      source: { url: "https://eth.blockscout.com/address/0xbAD003DA1e107f537Ae2f687f5FE7a7aFFe9B241?tab=contract", note: "Maple's pool delegate (or the governor) marks loans impaired through LoanManager.impairLoan; no independent valuation agent is named", checkedAt: 2026-10-12 }
 
 verification:
   methods:
@@ -116,9 +121,18 @@ verification:
       independent: true
       assetLevel: true
       frequency: unstated
-      cryptographicallyVerifiable: false
-      onchain: false
+      publicReport: true
       source: { url: "https://maple.finance/insights/introducing-proof-of-reserves", note: "Per-loan collateral value with custodian confirmation, 'every cycle'. LlamaRisk: no Chainlink Proof-of-Reserve feed covers Maple's loan book.", checkedAt: 2026-10-12 }
+
+portfolio:
+  loanLevelData:
+    status: public
+    value: unstated
+    source: { url: "https://maple.finance/insights/introducing-proof-of-reserves", note: "Collateral value and custodian confirmation per loan, reviewed by The Network Firm 'every cycle'; cadence not stated", checkedAt: 2026-10-12 }
+  collateral:
+    status: public
+    value: Overcollateralized loans to crypto institutions, with collateral held at Anchorage Digital, BitGo and Zodia Custody
+    source: { url: "https://governance.aave.com/t/syrup-usdc-syrupusdc-on-aave-arc-assessments/25729/2", checkedAt: 2026-10-12 }
 
 exit:
   redemption:
@@ -149,6 +163,60 @@ exit:
       address: "0x79eea4a1be86c43a9a9c4384b0b28a07af24ae29"
       depthPctOfSupply: 0.05
       source: { url: "https://api.geckoterminal.com/api/v2/networks/eth/tokens/0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b/pools", note: "Pool TVL about $0.49M", checkedAt: 2026-10-12 }
+
+otherChains:
+  - chain: arbitrum
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0x41CA7586cC1311807B4605fBB748a3B8862b42b5"
+    source: { url: "https://arbiscan.io/token/0x41ca7586cc1311807b4605fbb748a3b8862b42b5", checkedAt: 2026-10-12 }
+  - chain: base
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0x660975730059246A68521a3e2FBD4740173100f5"
+    source: { url: "https://basescan.org/token/0x660975730059246a68521a3e2fbd4740173100f5", checkedAt: 2026-10-12 }
+  - chain: ink
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0x3c23e6FB09064e9A64829Fa8FEe27Ad19A27Bfa9"
+    source: { url: "https://explorer.inkonchain.com/address/0x3c23e6FB09064e9A64829Fa8FEe27Ad19A27Bfa9", checkedAt: 2026-10-12 }
+  - chain: monad
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0xaB6e5a0C3799d020c790D34F7B2C02639e238AF7"
+    source: { url: "https://monadscan.com/address/0xaB6e5a0C3799d020c790D34F7B2C02639e238AF7", checkedAt: 2026-10-12 }
+  - chain: tempo
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0x20c0000000000000000000008191667423F70E67"
+    source: { url: "https://explore.tempo.xyz/address/0x20c0000000000000000000008191667423F70E67", checkedAt: 2026-10-12 }
+  - chain: robinhood chain
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0xC6a4854eeB493224d5f9485E12Dd3A81f22EEE14"
+    source: { url: "https://robinhoodchain.blockscout.com/address/0xC6a4854eeB493224d5f9485E12Dd3A81f22EEE14", checkedAt: 2026-10-12 }
+  - chain: arc
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "0x0dC6b79F3c3854E4d74514fD4d29BE6c96Beee39"
+    source: { url: "https://explorer.arc.io/token/0x0dc6b79f3c3854e4d74514fd4d29be6c96beee39", checkedAt: 2026-10-12 }
+  - chain: solana
+    issuance: lock-and-mint
+    bridge: Chainlink CCIP
+    token: "AvZZF1YaZDziPY2RCK4oJrRVrbN3mTD9NL24hPeaZeUj"
+    source: { url: "https://solscan.io/token/AvZZF1YaZDziPY2RCK4oJrRVrbN3mTD9NL24hPeaZeUj", checkedAt: 2026-10-12 }
+
+incidents:
+  - date: 2022-12-05
+    kind: default
+    title: "Maple v1 (before Syrup): Orthogonal Trading defaulted"
+    description: "Over 30% of active loans in Maple v1 pools defaulted in late 2022. That was not this pool, which launched later on Maple v2."
+    source: { url: "https://www.alearesearch.io/reports/theses/maple-syrup", checkedAt: 2026-10-12 }
+
+openQuestions:
+  - "Executor 0x6D9F…993e and RoleAdmin 0xa04B…9b2a on the GovernorTimelock have no code and nonce 0: counterfactual Safes or unused keys?"
+  - "The impairment policy: when Maple marks a loan impaired, and by how much."
+  - "The largest borrower's share of the loan book, and the history of defaults since the pool launched."
 
 externalIds:
   defillama: null

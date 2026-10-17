@@ -7,10 +7,24 @@ import { Card } from "@/components/ui/card";
 import { tabMetadata } from "@/lib/asset-meta";
 import { formatDate } from "@/lib/format";
 import { getProfile, nameOf } from "@/lib/profile";
-import { disclosureChecks } from "@/lib/scoring/disclosure";
+import { disclosureChecks, disclosurePoints, DISCLOSURE_GREEN, DISCLOSURE_YELLOW } from "@/lib/scoring/disclosure";
 import { repoNewIssueUrl } from "@/lib/site";
 
 export const generateMetadata = tabMetadata("Disclosure");
+
+const CLAIM_LABELS = {
+  "fund-share": "A share in a fund",
+  "spv-note": "A note issued by a special-purpose vehicle",
+  "issuer-note": "A note issued by the operating company",
+  "vault-share": "A share of an onchain vault",
+  "tracker-certificate": "A tracker certificate",
+  other: "Other",
+} as const;
+
+const REGISTER_LABELS = {
+  onchain: "The token is the legal record of ownership",
+  "offchain-mirrored": "A transfer agent keeps the legal record; the token mirrors it",
+} as const;
 
 export default async function DisclosurePage({ params }: PageProps<"/assets/[slug]/disclosure">) {
   const { slug } = await params;
@@ -19,13 +33,15 @@ export default async function DisclosurePage({ params }: PageProps<"/assets/[slu
   const entityName = (s: string) => nameOf(profile, s);
   const renderValue = (value: unknown) => (typeof value === "string" ? entityName(value) : String(value));
   const checks = disclosureChecks(asset);
+  const { max } = disclosurePoints(checks);
   const slice = score.slices.disclosure;
+  const { legal } = asset;
 
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
       <Card
-        title="Six key disclosures"
-        description="Unknown counts as not public."
+        title="Key disclosures"
+        description={`Unknown counts as not public. The offering document and audited financials count double. Green is ${DISCLOSURE_GREEN}+ of ${max} points, yellow ${DISCLOSURE_YELLOW}+.`}
         actions={<SliceDot color={slice.color} label={<span className="text-small text-fg-muted">{slice.headline}</span>} />}
       >
         <ul className="divide-y divide-line rounded-control border border-line">
@@ -45,7 +61,10 @@ export default async function DisclosurePage({ params }: PageProps<"/assets/[slu
                 )}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-body font-medium text-fg">{c.label}</p>
+                <p className="text-body font-medium text-fg">
+                  {c.label}
+                  {c.weight > 1 && <span className="ml-1.5 text-label font-normal text-fg-subtle">×{c.weight}</span>}
+                </p>
                 {c.item.status === "public" ? (
                   <p className="text-small text-fg-muted">
                     {renderValue(c.item.value)}
@@ -86,18 +105,22 @@ export default async function DisclosurePage({ params }: PageProps<"/assets/[slu
             ]}
           />
         </Card>
-        <Card title="Legal & insolvency" id="legal">
-          <div className="flex items-start gap-2.5">
+        <Card title="Legal & insolvency" id="legal" description="Not assessed. These are the facts we found; we don't judge them.">
+          <div className="mb-3 flex items-start gap-2.5">
             <SliceDot color="grey" className="mt-1.5" />
-            <div className="text-small text-fg-muted">
-              <p className="font-medium text-fg">Not assessed in v1.</p>
-              <p className="mt-1">We don&apos;t yet evaluate bankruptcy remoteness or what claims holders have if the issuer fails.</p>
-              <p className="mt-2">
-                Until a qualified legal contributor joins, we only show which documents are public, so you can read them
-                yourself.
-              </p>
-            </div>
+            <p className="text-small text-fg-muted">
+              We don&apos;t evaluate bankruptcy remoteness or what claims holders have if the issuer fails. Read the documents linked
+              here yourself.
+            </p>
           </div>
+          <FactList
+            facts={[
+              disclosedFact("What a holder owns", legal.claimType ?? { status: "unknown" }, (v) => CLAIM_LABELS[v]),
+              disclosedFact("Legal register", legal.register ?? { status: "unknown" }, (v) => REGISTER_LABELS[v]),
+              disclosedFact("Regulator", legal.regulator ?? { status: "unknown" }),
+              disclosedFact("Insolvency terms", legal.insolvency),
+            ]}
+          />
         </Card>
       </div>
     </div>

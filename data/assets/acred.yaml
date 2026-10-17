@@ -109,10 +109,9 @@ verification:
       independent: true
       assetLevel: false
       frequency: daily
-      cryptographicallyVerifiable: false
-      onchain: true
+      publicReport: true
       feed: { chain: ethereum, address: "0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c" }
-      source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "No Chronicle proof-of-asset or Chainlink proof-of-reserve was found. The feed relays an administrator NAV. Independent, daily and onchain; not asset-level and not a cryptographic reserve proof.", checkedAt: 2026-10-14 }
+      source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "No proof-of-reserve feed was found. The feed relays an administrator NAV: independent and daily, but a fund-level total, not holdings.", checkedAt: 2026-10-14 }
 
 exit:
   redemption:
@@ -131,6 +130,18 @@ exit:
       value: stated-limits
       source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "Repurchase offers are at least 5% of shares and can be prorated. No separate suspension clause was read in a public offering memorandum.", checkedAt: 2026-10-14 }
   instantLiquidity: []
+
+holdings:
+  - asset: Apollo Diversified Credit Fund
+    source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "ACRED is a feeder fund into this 1940 Act closed-end interval fund; the feeder's own look-through holdings are not public", checkedAt: 2026-10-14 }
+
+openQuestions:
+  - "Custodian: First Citizens (adviser filing) or BNY Mellon (rwa.xyz)."
+  - "The minimum investment: $0, $50,000 or 1,000 USDC."
+  - "Redemption is scored T+90 from the quarterly buyback, while Token Terminal says daily NAV."
+  - "Regulator: Token Terminal says BVI FSC; the BVI register couldn't be checked directly."
+  - "LEI, offering memorandum and audited financials were not found."
+  - "The issuer wallet 0x8d35… has nonce 0."
 
 externalIds:
   defillama: null

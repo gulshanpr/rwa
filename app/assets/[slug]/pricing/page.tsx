@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { AgeGauge } from "@/components/charts/age-gauge";
 import { AddressChip } from "@/components/data/address-chip";
 import { EmptyUnknown } from "@/components/data/empty-unknown";
-import { FactList } from "@/components/data/fact-list";
+import { disclosedFact, FactList } from "@/components/data/fact-list";
+import { SourceMarker } from "@/components/data/source-marker";
 import { RiskList } from "@/components/risk/risk-list";
 import { SliceDot } from "@/components/risk/slice-dot";
 import { Card } from "@/components/ui/card";
@@ -13,8 +14,9 @@ import { CHAINS } from "@/lib/chains";
 import { formatDateTime, formatDuration, formatUsdFull } from "@/lib/format";
 import { PRICE_MODEL_LABELS, PROTOCOL_LABELS } from "@/lib/labels";
 import { getProfile, nameOf } from "@/lib/profile";
+import { boundCounts, MAX_BOUNDED_MOVE_PCT } from "@/lib/scoring/control";
 
-export const generateMetadata = tabMetadata("Pricing");
+export const generateMetadata = tabMetadata("NAV");
 
 const WRITER_LABELS = {
   eoa: "A single key (EOA)",
@@ -30,6 +32,12 @@ const VAULT_WRITER_LABELS = {
   none: "Nobody; it follows the contract's accounting",
 } as const;
 
+const VALUER_LABELS = {
+  "independent-agent": "Independent valuation agent",
+  "fund-administrator": "Fund administrator",
+  manager: "The manager itself",
+} as const;
+
 const ORIGIN_LABELS = {
   issuer: "Issuer (self-reported)",
   "fund-administrator": "Fund administrator",
@@ -42,12 +50,14 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
   const { asset, score, stats, live } = profile;
   const entityName = (s: string) => nameOf(profile, s);
   const ref = asset.pricing.reference;
+  const valuation = asset.pricing.valuation;
+  const priceBounds = (asset.bounds ?? []).filter((b) => b.power === "set-price");
   const age = stats.oracle;
 
   return (
     <div className="grid gap-4">
-      <Card title="Pricing findings" description={score.slices.pricing.headline}>
-        <RiskList reasons={score.slices.pricing.reasons} slug={slug} />
+      <Card title="NAV findings" description={score.slices.pricing.headline}>
+        <RiskList reasons={score.slices.pricing.reasons} slug={slug} showFix />
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -120,6 +130,44 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
           )}
         </Card>
       </div>
+
+      {(priceBounds.length > 0 || asset.assetClass === "private-credit") && (
+        <div className="grid gap-4 lg:grid-cols-2">
+          {asset.assetClass === "private-credit" && (
+            <Card title="Loan valuation" description="For credit, the NAV is only as good as the marks on the loans.">
+              <FactList
+                facts={[
+                  disclosedFact("Who values the loans", valuation?.valuer ?? { status: "unknown" }, (v) => VALUER_LABELS[v]),
+                  disclosedFact("Write-down policy", valuation?.impairmentPolicy ?? { status: "unknown" }),
+                ]}
+              />
+            </Card>
+          )}
+          {priceBounds.length > 0 && (
+            <Card
+              title="Limits on the price setter"
+              description={`A limit counts when it caps the move at ${MAX_BOUNDED_MOVE_PCT}% a day or less and the setter can't lift it.`}
+            >
+              <ul className="space-y-3">
+                {priceBounds.map((b) => (
+                  <li key={b.contract} className="text-small">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <AddressChip address={b.contract} chain={b.chain} kind="contract" />
+                      <Tag variant={boundCounts(b) ? "risk-green" : "risk-yellow"}>
+                        {boundCounts(b) ? `Counts · up to ${b.maxMovePctPerDay}% a day` : b.holderCanRemove ? "Doesn't count · the setter can lift it" : `Doesn't count · up to ${b.maxMovePctPerDay}% a day`}
+                      </Tag>
+                    </div>
+                    <p className="mt-1 text-fg-muted">
+                      {b.description}
+                      <SourceMarker source={b.source} />
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+        </div>
+      )}
 
       {live && (
         <Card

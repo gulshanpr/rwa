@@ -1,4 +1,6 @@
-export type SliceId = "control" | "pricing" | "verification" | "exit" | "disclosure" | "legal";
+import type { StageResult } from "./stages";
+
+export type SliceId = "control" | "exit-window" | "pricing" | "verification" | "exit" | "disclosure" | "legal";
 export type SliceColor = "green" | "yellow" | "red" | "grey";
 export type TabId =
   | "overview"
@@ -11,19 +13,21 @@ export type TabId =
   | "history"
   | "sources";
 
-export const SLICE_ORDER: SliceId[] = ["control", "pricing", "verification", "exit", "disclosure", "legal"];
+export const SLICE_ORDER: SliceId[] = ["control", "exit-window", "pricing", "verification", "exit", "disclosure", "legal"];
 
 export const SLICE_LABELS: Record<SliceId, string> = {
   control: "Control",
-  pricing: "Pricing",
-  verification: "Verification",
-  exit: "Exit",
+  "exit-window": "Exit window",
+  pricing: "NAV",
+  verification: "Reserves",
+  exit: "Redemption",
   disclosure: "Disclosure",
   legal: "Legal & insolvency",
 };
 
 export const SLICE_TABS: Record<SliceId, TabId> = {
   control: "control",
+  "exit-window": "exit",
   pricing: "pricing",
   verification: "verification",
   exit: "exit",
@@ -44,6 +48,8 @@ export interface Reason {
   text: string;
   critical: boolean;
   evidence: Evidence;
+  /** What the issuer could change to clear this finding. */
+  fix?: string;
 }
 
 export interface SliceResult {
@@ -56,6 +62,7 @@ export interface SliceResult {
 export interface AssetScore {
   slices: Record<SliceId, SliceResult>;
   risks: Reason[];
+  stage: StageResult;
 }
 
 const COLOR_RANK: Record<SliceColor, number> = { grey: 0, green: 1, yellow: 2, red: 3 };

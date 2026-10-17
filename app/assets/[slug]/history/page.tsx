@@ -29,6 +29,15 @@ export default async function HistoryPage({ params }: PageProps<"/assets/[slug]/
             ? [{ label: "Source", href: a.url }]
             : [],
     })),
+    ...(profile.asset.incidents ?? []).map((i) => ({
+      id: `incident-${i.date}-${i.kind}`,
+      date: i.date,
+      color: "red" as const,
+      badge: `Incident · ${i.kind.replace(/-/g, " ")}`,
+      title: i.title,
+      body: i.description ?? "",
+      links: i.source.url ? [{ label: "Source", href: i.source.url }] : [],
+    })),
     ...profile.snapshots.map((s) => ({
       id: `discovery-${s.discovered.chain}-${s.discovered.block}`,
       date: s.discovered.timestamp,
@@ -41,7 +50,7 @@ export default async function HistoryPage({ params }: PageProps<"/assets/[slug]/
   ].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <Card title="History" description="Alerts and discovery snapshots for this asset, newest first.">
+    <Card title="History" description="Incidents, alerts and discovery snapshots for this asset, newest first.">
       <Timeline items={items} />
     </Card>
   );

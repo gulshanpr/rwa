@@ -55,6 +55,15 @@ export function formatDelay(seconds: number): string {
   return formatDuration(seconds);
 }
 
+/** A length of time as a noun: "2 days", "36h". */
+export function formatSpan(seconds: number): string {
+  if (seconds > 0 && seconds % 86400 === 0) {
+    const d = seconds / 86400;
+    return `${d} day${d === 1 ? "" : "s"}`;
+  }
+  return formatDuration(seconds);
+}
+
 export function relativeTime(iso: string, now: number): string {
   const diff = (now - new Date(iso).getTime()) / 1000;
   if (diff < 60) return "just now";

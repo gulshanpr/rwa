@@ -10,6 +10,10 @@ import { CHAINS } from "@/lib/chains";
 import { formatPct, formatUsdFull } from "@/lib/format";
 import { WHO_CAN_REDEEM_LABELS } from "@/lib/labels";
 import { getProfile } from "@/lib/profile";
+import { SliceDot } from "@/components/risk/slice-dot";
+import { POWER_LABELS } from "@/lib/scoring/control";
+import { exitWindow } from "@/lib/scoring/exit-window";
+import { formatSpan } from "@/lib/format";
 
 export const generateMetadata = tabMetadata("Exit");
 
@@ -22,13 +26,59 @@ const GATE_LABELS = {
 export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exit">) {
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
-  const { asset, score } = profile;
+  const { asset, score, powers } = profile;
   const { redemption, instantLiquidity } = asset.exit;
+  const timing = exitWindow(asset, powers);
+  const ew = score.slices["exit-window"];
 
   return (
     <div className="grid gap-4">
-      <Card title="Exit findings" description={score.slices.exit.headline}>
-        <RiskList reasons={score.slices.exit.reasons} slug={slug} />
+      <Card
+        id="exit-window"
+        title="Exit window"
+        description="If the issuer upgrades the contracts or hands out new roles, can holders redeem before the change takes effect?"
+        actions={<SliceDot color={ew.color} label={<span className="text-small text-fg-muted">{ew.headline}</span>} />}
+      >
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-control border border-line px-4 py-3">
+            <p className="text-label text-fg-muted">Notice before a change</p>
+            <p className="tnum text-h2 text-fg">
+              {timing.noticeSeconds === Infinity ? "Can't change" : timing.noticeSeconds === 0 ? "None" : formatSpan(timing.noticeSeconds)}
+            </p>
+            {timing.fastest && (
+              <p className="text-small text-fg-muted">
+                {POWER_LABELS[timing.fastest.power]} via {timing.fastest.holder.path.map((s) => s.label).join(" → ")}
+              </p>
+            )}
+          </div>
+          <div className="rounded-control border border-line px-4 py-3">
+            <p className="text-label text-fg-muted">Time to redeem</p>
+            <p className="tnum text-h2 text-fg">{timing.exitSeconds === undefined ? "Not public" : timing.exitSeconds === 0 ? "Same day" : formatSpan(timing.exitSeconds)}</p>
+            <p className="text-small text-fg-muted">Documented settlement with the issuer</p>
+          </div>
+          <div className="rounded-control border border-line px-4 py-3">
+            <p className="text-label text-fg-muted">Time left after redeeming</p>
+            <p className="tnum text-h2 text-fg">
+              {timing.noticeSeconds === Infinity
+                ? "Unlimited"
+                : timing.windowSeconds === undefined
+                  ? "Unknown"
+                  : timing.windowSeconds <= 0
+                    ? "None"
+                    : formatSpan(timing.windowSeconds)}
+            </p>
+            <p className="text-small text-fg-muted">Green needs at least 7 days</p>
+          </div>
+        </div>
+        {ew.reasons.length > 0 && (
+          <div className="mt-4">
+            <RiskList reasons={ew.reasons} slug={slug} showFix />
+          </div>
+        )}
+      </Card>
+
+      <Card title="Redemption findings" description={score.slices.exit.headline}>
+        <RiskList reasons={score.slices.exit.reasons} slug={slug} showFix />
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">

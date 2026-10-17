@@ -6,7 +6,7 @@ import type { Asset, AssetClass } from "./schema/asset";
 import type { Power } from "./schema/discovered";
 import type { Entity } from "./schema/entity";
 import type { Alert, Live } from "./schema/live";
-import { scoreAsset, type AssetScore, type SliceColor } from "./scoring";
+import { scoreAsset, type AssetScore, type HeldAsset, type SliceColor } from "./scoring";
 import { analyzePowers, holderLabel, lookupHolder, type PowerRow } from "./scoring/control";
 import { oracleAge, type OracleAge } from "./scoring/pricing";
 import { formatUsd, shortAddress } from "./format";
@@ -57,7 +57,7 @@ export function nameOf(profile: AssetProfile, slug: string): string {
   return profile.entityNames[slug] ?? slug;
 }
 
-const isSingleKey = (r: PowerRow) => r.holder.holderClass === "eoa" || r.holder.holderClass === "unknown";
+const isSingleKey = (r: PowerRow) => (r.holder.holderClass === "eoa" || r.holder.holderClass === "unknown") && r.reasonKey !== "bounded";
 
 function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetStats): Flag[] {
   const flags: Flag[] = [];
@@ -78,12 +78,12 @@ function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetSt
   return flags;
 }
 
-function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, alerts: Alert[]): AssetProfile {
+function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, alerts: Alert[], held: Map<string, HeldAsset>): AssetProfile {
   const { entities } = catalog;
   const snapshots = catalog.snapshots.get(asset.slug) ?? [];
   const discovered = snapshots.map((s) => s.discovered);
-  const powers = analyzePowers(discovered);
-  const score = scoreAsset(asset, discovered, live);
+  const powers = analyzePowers(discovered, asset.bounds);
+  const score = scoreAsset(asset, discovered, live, held);
 
   const stats: AssetStats = {
     aumUsd: live?.aum.usd,
@@ -121,8 +121,11 @@ export const getProfiles = cache(async (): Promise<AssetProfile[]> => {
   const catalog = await getSiteCatalog();
   const { assets } = catalog;
   const [lives, { alerts }] = await Promise.all([Promise.all(assets.map(getLive)), getAlerts()]);
+  // Score once on their own, then again so funds that hold other tracked tokens can look through to them.
+  const first = assets.map((asset, i) => buildProfile(asset, catalog, lives[i], alerts, new Map()));
+  const held = new Map(first.map((p) => [p.asset.slug, { ticker: p.asset.ticker, score: p.score }]));
   return assets
-    .map((asset, i) => buildProfile(asset, catalog, lives[i], alerts))
+    .map((asset, i) => (asset.holdings?.some((h) => held.has(h.asset)) ? buildProfile(asset, catalog, lives[i], alerts, held) : first[i]))
     .sort((a, b) => (b.stats.aumUsd ?? 0) - (a.stats.aumUsd ?? 0));
 });
 

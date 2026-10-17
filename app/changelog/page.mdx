@@ -4,6 +4,17 @@ export const metadata = { title: "Changelog" };
 
 Changes to the framework, scoring rules and data. Every entry links to the pull request that made it once the repository is public.
 
+## Framework v0.4, 17 Oct 2026
+
+- New slice, **Exit window** (after L2BEAT): can holders redeem before an upgrade or role change takes effect? Notice is the shortest timelock on `upgrade` and `admin`; exit is the documented settlement time. Every asset reviewed so far is red: all can be changed with no notice.
+- **Reserves** replaces Verification, with vendor-neutral tests: independent, asset-level, at least weekly, public report, and a reconciliation we compute (reported assets against onchain supply × price on every chain, within 5%). Chronicle proof-of-asset feeds are no longer used, and the "cryptographically verifiable" and "onchain" tests are gone. BUIDL, USTB, JTRSY and JAAA move from green to red, because they have no other public, independent report.
+- Private credit: Reserves checks four loan-book disclosures (loan-level data, largest borrower, collateral, loss history), and NAV checks who values the loans and whether the write-down policy is public.
+- Control: onchain limits count. A power capped at 2% a day, which its holders can't lift, is yellow instead of red. OUSG's 2-of-6 price setter is capped this way, so OUSG's Control is yellow. Bridges that mint the token, unverified contracts with critical powers, and tokens bridged to other chains are flagged. An asset with no discovery snapshot is grey, not green.
+- Redemption: an instant redemption contract needs measured liquidity of at least 2% of supply. OUSG's facility isn't measured, so its Redemption is yellow, not green.
+- Disclosure: a seventh check, regulator or registration. The offering document and audited financials count double (9 points; green at 8).
+- **Stages** with a checklist, **how to fix** on every finding, look-through to tracked holdings, other-chain deployments, incidents on the History tab, and open questions on every asset page.
+- Pricing is renamed **NAV**, Exit is renamed **Redemption**.
+
 ## Framework v0.3, 13 Oct 2026
 
 - Pricing: feeds that only update on business days (fund NAVs) don't count weekends towards their age, for both the freshness check and the stale-price alert.

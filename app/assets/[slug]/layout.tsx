@@ -6,6 +6,7 @@ import { SampleBanner } from "@/components/data/sample-banner";
 import { StatCard } from "@/components/data/stat-card";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { Tag } from "@/components/ui/tag";
+import { StageBadge } from "@/components/risk/stage-badge";
 import { formatDuration, formatPct, formatUsd, formatUsdFull } from "@/lib/format";
 import { INVESTOR_LABELS } from "@/lib/labels";
 import { ASSET_CLASSES, getProfile, getProfiles } from "@/lib/profile";
@@ -64,6 +65,17 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
             <h1 className="text-[24px] leading-8 font-semibold text-fg md:text-display">{asset.name}</h1>
             <p className="mt-1 text-body text-fg-muted">{asset.description}</p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
+              <StageBadge stage={profile.score.stage.assessed ? profile.score.stage.stage : null} />
+              <Tag
+                variant={profile.snapshots.length === 0 ? "risk-grey" : asset.openQuestions?.length ? "risk-yellow" : "risk-green"}
+                title="Review status: open questions are listed on the Overview tab."
+              >
+                {profile.snapshots.length === 0
+                  ? "Not reviewed"
+                  : asset.openQuestions?.length
+                    ? `Partly reviewed · ${asset.openQuestions.length} open question${asset.openQuestions.length === 1 ? "" : "s"}`
+                    : "Reviewed"}
+              </Tag>
               <Tag>{cls.label}</Tag>
               <Tag>{INVESTOR_LABELS[asset.access.investorType.value]} only</Tag>
               {asset.access.transferRestricted.value && <Tag>Transfer-restricted</Tag>}
@@ -114,7 +126,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
         />
         <StatCard
           label="Single-key powers"
-          info="Critical powers (upgrade, mint, force-transfer, burn, set price, grant roles) that a single key (EOA) or unrecognized contract can use."
+          info="Critical powers (upgrade, mint, force-transfer, burn, set price, allocate, grant roles) that a single key (EOA) or unrecognized contract can use without an onchain limit."
           infoHref="/methodology#control"
           value={stats.singleKeyPowers}
           status={
@@ -131,7 +143,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
         <StatCard
           label="Oracle age"
           info="Time since the onchain NAV/price was last updated, compared with its expected cadence."
-          infoHref="/methodology#pricing"
+          infoHref="/methodology#nav"
           value={stats.oracle ? formatDuration(stats.oracle.ageSeconds) : asset.pricing.reference.type === "vault" ? "Live" : "—"}
           status={
             stats.oracle

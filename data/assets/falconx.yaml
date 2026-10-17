@@ -101,10 +101,23 @@ verification:
       independent: false
       assetLevel: false
       frequency: monthly
-      cryptographicallyVerifiable: false
-      onchain: true
+      publicReport: true
       feed: { chain: ethereum, address: "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d" }
       source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", note: "The only onchain figure is the vault's own price. No independent asset-level attestation was found. A real-time risk engine is claimed and not published onchain.", checkedAt: 2026-10-14 }
+
+portfolio:
+  collateral:
+    status: public
+    value: None onchain. USDC is lent to a single FalconX borrower wallet; collateral sits offchain with FalconX and isn't itemised
+    source: { url: "https://artifacts.llama.fi/pdf-exports/0b2211d5-c314-4e7a-97d3-42c6cbf37e7f.pdf", checkedAt: 2026-10-14 }
+  largestExposurePct:
+    status: public
+    value: 100
+    source: { url: "https://artifacts.llama.fi/pdf-exports/0b2211d5-c314-4e7a-97d3-42c6cbf37e7f.pdf", note: "The vault lends to one borrower, FalconX (borrower wallet 0xc08f538b079be6edfb6594985e8b93784f41a2c6)", checkedAt: 2026-10-14 }
+  firstLoss:
+    status: public
+    value: Marketed as an equity tranche, but the junior (BB) tranche supply is 0 onchain, so any first-loss capital sits offchain
+    source: { url: "https://artifacts.llama.fi/pdf-exports/0b2211d5-c314-4e7a-97d3-42c6cbf37e7f.pdf", note: "getCurrentAARatio = 100% onchain", checkedAt: 2026-10-14 }
 
 exit:
   redemption:
@@ -126,6 +139,13 @@ exit:
       value: issuer-discretion
       source: { url: "https://etherscan.io/address/0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d#code", note: "The owner Safe can pause or call emergencyShutdown with no published limit. Separately, startEpoch pauses deposits and turns withdrawal requests off until the epoch stops. That is why the vault reads as paused while an epoch is running. Legal suspension terms were not found.", checkedAt: 2026-10-14 }
   instantLiquidity: []
+
+openQuestions:
+  - "The lending entity's legal name, custodian, administrator, auditor, offering documents and LEI."
+  - "Whether the busy Safe owners are personal keys or MPC wallets, and the allowance-module delegates."
+  - "rwa.xyz shows a 7-day APY of −3.82% and slightly lower supply than the chain."
+  - "The 10% performance fee doesn't match the contract, which reads 0."
+  - "The guardian can be changed with no event and no getter, so it may no longer be the owner."
 
 externalIds:
   defillama: null

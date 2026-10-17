@@ -3,14 +3,18 @@ import { notFound } from "next/navigation";
 import { AddressChip } from "@/components/data/address-chip";
 import { disclosedFact, FactList } from "@/components/data/fact-list";
 import { RiskList } from "@/components/risk/risk-list";
+import { Rosette } from "@/components/risk/rosette";
 import { RosetteCard } from "@/components/risk/rosette-card";
+import { StageCard } from "@/components/risk/stage-card";
+import { SourceMarker } from "@/components/data/source-marker";
 import { SliceDot } from "@/components/risk/slice-dot";
 import { Card } from "@/components/ui/card";
 import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { CHAINS } from "@/lib/chains";
 import { formatUsd, formatUsdFull } from "@/lib/format";
 import { INVESTOR_LABELS, TOKEN_STANDARD_LABELS } from "@/lib/labels";
-import { getProfile, nameOf } from "@/lib/profile";
+import { getProfile, getProfiles, nameOf } from "@/lib/profile";
+import { repoNewIssueUrl } from "@/lib/site";
 import { worstColor } from "@/lib/scoring/types";
 import { RISK_WORD } from "@/lib/ui";
 
@@ -21,6 +25,8 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
   const entityName = (s: string) => nameOf(profile, s);
   const { legal, serviceProviders: sp, access } = asset;
   const verification = asset.verification.methods[0];
+  const tracked = new Map((await getProfiles()).map((p) => [p.asset.slug, p]));
+  const ISSUANCE = { native: "Issued directly", "lock-and-mint": "Bridged (lock and mint)", "burn-and-mint": "Bridged (burn and mint)" } as const;
 
   return (
     <div className="grid gap-4">
@@ -37,7 +43,7 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
             </p>
           )}
           <p className="mt-4 rounded-control bg-subtle px-3 py-2.5 text-small text-fg-muted">
-            <strong className="font-medium text-fg">Legal &amp; insolvency: not assessed yet.</strong> We don&apos;t yet
+            <strong className="font-medium text-fg">Legal &amp; insolvency: not assessed.</strong> We don&apos;t
             evaluate what happens to holders if the issuer fails.{" "}
             <Link href={`/assets/${slug}/disclosure`} className="text-accent hover:underline">
               What we know →
@@ -45,6 +51,67 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
           </p>
         </Card>
       </div>
+
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <StageCard result={score.stage} />
+        <Card
+          title="Open questions"
+          description="What the review couldn't verify. Unknown is a finding, and anyone can help close it."
+        >
+          {asset.openQuestions?.length ? (
+            <ul className="list-disc space-y-1.5 pl-4 text-small text-fg">
+              {asset.openQuestions.map((q) => (
+                <li key={q}>{q}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-small text-fg-muted">None recorded.</p>
+          )}
+          <a
+            href={repoNewIssueUrl(`${asset.ticker}: answer to an open question`)}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-block text-small text-accent hover:underline"
+          >
+            Know an answer? Open an issue or PR →
+          </a>
+        </Card>
+      </div>
+
+      {asset.holdings?.length ? (
+        <Card id="holdings" title="What it holds" description="Funds and tokens behind this one. Red Control or Reserves in a tracked holding passes through as yellow.">
+          <Table>
+            <thead>
+              <tr>
+                <Th>Holding</Th>
+                <Th align="right">Share</Th>
+                <Th>Its rosette</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {asset.holdings.map((h) => {
+                const p = tracked.get(h.asset);
+                return (
+                  <Tr key={h.asset}>
+                    <Td className="font-medium">
+                      {p ? (
+                        <Link href={`/assets/${p.asset.slug}`} className="text-accent hover:underline">
+                          {p.asset.ticker}
+                        </Link>
+                      ) : (
+                        h.asset
+                      )}
+                      <SourceMarker source={h.source} />
+                    </Td>
+                    <Td align="right">{h.sharePct !== undefined ? `${h.sharePct}%` : "—"}</Td>
+                    <Td>{p ? <Rosette slices={p.score.slices} size="sm" ticker={p.asset.ticker} /> : <span className="text-fg-muted">Not tracked</span>}</Td>
+                  </Tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </Card>
+      ) : null}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Key facts">
@@ -81,11 +148,11 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
               disclosedFact("Transfer agent", sp.transferAgent, entityName),
               verification
                 ? {
-                    label: "Verification",
+                    label: "Reserve report",
                     value: `${entityName(verification.provider)} · ${verification.type.replace(/-/g, " ")}`,
                     source: verification.source,
                   }
-                : { label: "Verification", value: "None found" },
+                : { label: "Reserve report", value: "None found" },
             ]}
           />
         </Card>
@@ -137,6 +204,35 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
           </tbody>
         </Table>
       </Card>
+
+      {asset.otherChains?.length ? (
+        <Card id="other-chains" title="Other chains" description="Deployments we don't read yet. Supply there isn't in the totals above.">
+          <Table>
+            <thead>
+              <tr>
+                <Th>Chain</Th>
+                <Th>How it got there</Th>
+                <Th>Token</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {asset.otherChains.map((o) => (
+                <Tr key={o.chain}>
+                  <Td className="font-medium">{o.chain}</Td>
+                  <Td className="text-fg-muted">
+                    {ISSUANCE[o.issuance]}
+                    {o.bridge ? ` · ${o.bridge}` : ""}
+                  </Td>
+                  <Td>
+                    <span className="font-mono text-[12px]">{o.token ? `${o.token.slice(0, 8)}…${o.token.slice(-4)}` : "—"}</span>
+                    <SourceMarker source={o.source} />
+                  </Td>
+                </Tr>
+              ))}
+            </tbody>
+          </Table>
+        </Card>
+      ) : null}
     </div>
   );
 }

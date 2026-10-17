@@ -26,7 +26,7 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
   return (
     <div className="grid gap-4">
       <Card title="Control findings" description={score.slices.control.headline}>
-        <RiskList reasons={score.slices.control.reasons} slug={slug} />
+        <RiskList reasons={score.slices.control.reasons} slug={slug} showFix />
       </Card>
 
       {profile.snapshots.map((snapshot) => {

@@ -16,7 +16,12 @@ const SECTION_TABS: Record<string, TabId> = {
   legal: "disclosure",
   pricing: "pricing",
   verification: "verification",
+  portfolio: "verification",
   exit: "exit",
+  bounds: "control",
+  otherChains: "overview",
+  holdings: "overview",
+  incidents: "history",
 };
 
 function humanize(path: string[]): string {

@@ -95,6 +95,10 @@ legal:
     status: public
     value: "Statutory segregation as a BVI segregated portfolio: 'BVI statutory segregation ring-fences JTRSY assets from every other portfolio of the SPC … the bills are held in segregated custody accounts, with the fund as direct owner'. The memorandum warns that 'courts outside the BVI may not recognise the statutory segregation'. Quoted by Vault Street, not seen first-hand."
     source: { url: "https://app.vaultstreet.com/research/jtrsy", checkedAt: 2026-10-13 }
+  regulator:
+    status: public
+    value: BVI Financial Services Commission (licensed)
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "June 2026 factsheet", checkedAt: 2026-10-13 }
 
 pricing:
   reference:
@@ -111,19 +115,13 @@ pricing:
       value: { fn: "function pricePoolPerShare(uint64, bytes16, bool) view returns (uint128)", args: ["281474976710662", "0x00010000000000060000000000000001", "false"] }
       updatedAt: { fn: "function markersPricePoolPerShare(uint64, bytes16) view returns (uint64, uint64, uint64)", args: ["281474976710662", "0x00010000000000060000000000000001"], index: 0 }
     historyOnchain: true
-    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Spoke pricePoolPerShare for pool 281474976710662 (0x0001000000000006), share class 0x0001…0001. Written by the pool's only hub manager, EOA 0x7bf0…02ec, through Hub updateSharePrice and pushed to Spoke as UpdateSharePrice. One update per business day. Spoke maxSharePriceAge is 2^64−1, so vaults never reject a stale price. The Chronicle feed with the same value is not read by the vaults.", checkedAt: 2026-10-13 }
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Spoke pricePoolPerShare for pool 281474976710662 (0x0001000000000006), share class 0x0001…0001. Written by the pool's only hub manager, EOA 0x7bf0…02ec, through Hub updateSharePrice and pushed to Spoke as UpdateSharePrice. One update per business day. Spoke maxSharePriceAge is 2^64−1, so vaults never reject a stale price.", checkedAt: 2026-10-13 }
 
 verification:
-  methods:
-    - type: proof-of-asset
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0xE980a33EFA3EDDaa689eCbdCE4B2278D4DB94471" }
-      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "ChronicleVAO_Centrifuge_JTRSY_Router_1. readWithAge() = 1.119104 at review, age under an hour, updating on business days. Chainlink adapter 0x22d9…09aE also works. Blockscout labels these 'ChronicleVAO_James_BADBNY_20260312_Router_2' and 'Groma_GRO', which conflicts with Chronicle's docs; the value matches JTRSY's NAV. Independence and method rest on Chronicle's own claims.", checkedAt: 2026-10-13 }
+  methods: []
+  reported:
+    value: { usd: 891000000, asOf: 2026-06-29 }
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "June 2026 factsheet: AUM 891M USDC", checkedAt: 2026-10-13 }
 
 exit:
   redemption:
@@ -142,6 +140,36 @@ exit:
       value: issuer-discretion
       source: { url: "https://app.vaultstreet.com/research/jtrsy", note: "Memorandum as quoted by Vault Street (not seen first-hand): the Board 'may suspend redemption rights … or such other circumstances as the Board may determine in its sole discretion'. 'No queues, gates, or notice periods are currently in place, and no suspension has ever occurred.'", checkedAt: 2026-10-13 }
   instantLiquidity: []
+
+otherChains:
+  - chain: avalanche
+    issuance: native
+    token: "0xa5d465251fbcc907f5dd6bb2145488dfc6a2627b"
+    source: { url: "https://snowtrace.io/token/0xa5d465251fbcc907f5dd6bb2145488dfc6a2627b", checkedAt: 2026-10-13 }
+  - chain: plume
+    issuance: native
+    token: "0xa5d465251fbcc907f5dd6bb2145488dfc6a2627b"
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", checkedAt: 2026-10-13 }
+  - chain: monad, pharos, x layer, arc
+    issuance: native
+    token: "0xc18e6f730896971a79d748e8dea61067a9bc6040"
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", checkedAt: 2026-10-13 }
+  - chain: solana
+    issuance: native
+    token: "JTRu97Z4oduVwfVBWdf1fSAz8h7CBBPqEo4Jco9fZPj"
+    source: { url: "https://solscan.io/token/JTRu97Z4oduVwfVBWdf1fSAz8h7CBBPqEo4Jco9fZPj", checkedAt: 2026-10-13 }
+  - chain: stellar
+    issuance: native
+    token: "CBHOEKLWTB6HR2A3IXHIIMQG5FOXWXS6EG4Q5YJDRPMXPCX7M24CYR2O"
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", checkedAt: 2026-10-13 }
+
+openQuestions:
+  - "Base, Arbitrum and BNB Chain holders are a lower bound: full log history couldn't be scanned (Infura caps Arbitrum log queries, Base hit a rate limit)."
+  - "The AUM gap: 891M USDC on the June factsheet vs about $335M onchain."
+  - "Custodian: J.P. Morgan (June factsheet) or Pershing (S&P release, March 2025)."
+  - "The suspension clause and the MPC claim come only from Vault Street's quote of the memorandum."
+  - "Who signs each balance-sheet Safe, and whether the admin keys are MPC or hardware-backed."
+  - "Who controls the OnOfframpManager 0xb6c9…3d85, shown as an unknown contract."
 
 externalIds:
   defillama: anemoy-capital

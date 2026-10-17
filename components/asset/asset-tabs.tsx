@@ -7,9 +7,9 @@ import { cn } from "@/lib/ui";
 const TABS = [
   { segment: null, label: "Overview" },
   { segment: "control", label: "Control" },
-  { segment: "pricing", label: "Pricing" },
+  { segment: "pricing", label: "NAV" },
   { segment: "defi", label: "DeFi exposure" },
-  { segment: "verification", label: "Verification" },
+  { segment: "verification", label: "Reserves" },
   { segment: "exit", label: "Exit" },
   { segment: "disclosure", label: "Disclosure" },
   { segment: "history", label: "History" },

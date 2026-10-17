@@ -1,6 +1,8 @@
 import type { Asset } from "../schema/asset";
 import { sliceFromReasons, type Reason, type SliceResult } from "./types";
 
+export const MIN_INSTANT_DEPTH_PCT = 2;
+
 export function settlementDays(settlement: string): number {
   return Number(settlement.replace("T+", ""));
 }
@@ -41,10 +43,13 @@ export function scoreExit(asset: Asset): SliceResult {
   if (redemption.whoCanRedeem.value === "issuer-approved")
     add("approval", "yellow", "Each redemption needs case-by-case approval from the issuer.");
 
-  const instant = instantLiquidity.filter((l) =>
-    l.type === "offramp-contract" ? l.depthPctOfSupply !== 0 : (l.depthPctOfSupply ?? 0) >= 2,
-  );
-  if (instant.length === 0)
+  // Every instant route needs measured capacity of at least 2% of supply. A facility with no measured
+  // liquidity might be empty, as BUIDL's USDC facility was at review.
+  const instant = instantLiquidity.filter((l) => (l.depthPctOfSupply ?? 0) >= MIN_INSTANT_DEPTH_PCT);
+  const unmeasured = instantLiquidity.filter((l) => l.type === "offramp-contract" && l.depthPctOfSupply === undefined);
+  if (instant.length === 0 && unmeasured.length > 0)
+    add("instant-unmeasured", "yellow", `There's an onchain redemption contract (${unmeasured[0].label}), but how much it can pay out isn't measured.`);
+  else if (instant.length === 0)
     add("no-instant", "yellow", "There's no onchain way to exit instantly; redemption goes through the issuer.");
 
   return sliceFromReasons(

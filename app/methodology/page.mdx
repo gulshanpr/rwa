@@ -18,7 +18,7 @@ We only score things anyone can check: a contract call, a transaction, or a publ
 
 ## Scope
 
-v1 covers the 20 largest tokenized Treasury and private-credit assets, the same sample as Chronicle Labs' October 2026 report, so results are comparable. Only EVM deployments are covered for now. Stablecoins, tokenized stocks and non-EVM chains come later.
+v1 covers the 20 largest tokenized Treasury and private-credit assets. Only EVM deployments are read for now. Deployments on other chains (Solana, Stellar, XRPL, or EVM chains we don't read yet) are listed on each asset page, and they count against reconciliation when their supply isn't read. Stablecoins, tokenized stocks and non-EVM chains come later.
 
 ## Data
 
@@ -38,16 +38,29 @@ The site is in preview. BUIDL is the first profile. Its permissions are read fro
 
 ## The rosette
 
-Six slices. Five are scored green, yellow or red. The sixth, legal and insolvency, is grey ("not assessed") in v1.
+Seven slices. Six are scored green, yellow or red. The seventh, legal and insolvency, is grey ("not assessed").
 
 | Slice | Question it answers |
 |---|---|
-| Control | Who can upgrade, mint, pause, freeze, or force-transfer, and with what checks? |
-| Pricing | Where does the onchain price or NAV come from, how fresh is it, and who signs it? |
-| Verification | Is reserve data independent, asset-level, daily, verifiable and onchain? |
-| Exit | Can holders redeem or sell, how fast, and who is allowed? |
-| Disclosure | Are the key documents and service providers publicly named? |
-| Legal & insolvency | What happens to holders if the issuer fails? *Not assessed in v1.* |
+| Control | Who can upgrade, mint, reprice, move the backing assets, freeze or seize, and with what checks? |
+| Exit window | If the issuer changes the code or hands out new roles, can holders redeem before it takes effect? |
+| NAV | Where does the onchain price come from, how fresh is it, who writes it, and (for credit) who marks the loans? |
+| Reserves | Is there an independent, public, line-by-line reserve report, and does it match onchain supply? |
+| Redemption | Can holders redeem or sell, how fast, and who is allowed? |
+| Disclosure | Are the key documents, providers and regulator public? |
+| Legal & insolvency | What happens to holders if the issuer fails? *Not assessed.* |
+
+Every yellow or red finding comes with **how to fix it**: what the issuer could change to clear it.
+
+## Stages
+
+Stages turn the rosette into a checklist an issuer can work through.
+
+- **Stage 0, "Trust us":** any Stage 1 requirement unmet.
+- **Stage 1, "Verify us":** no single key holds a critical power without an onchain limit; NAV and Reserves are not red; redemption is documented with a public settlement time; at least 4 of the 7 key disclosures are public.
+- **Stage 2, "Prove it":** Control, Exit window, NAV, Reserves, Redemption and Disclosure are all green.
+
+The legal slice will join Stage 2 once it is assessed. An asset with no discovery snapshot has no stage.
 
 ## Control
 
@@ -69,48 +82,78 @@ We look at every **critical** and **high** power across all deployments and take
 Holders are classified as: a single key (**EOA**); a **Safe** multisig, "strong" if it needs at least 3 signers and at least half of all signers; a **timelock**, which takes the class of its proposer plus its delay; or an **unknown contract**, treated as a single key until labeled.
 
 - **Red:** any critical power held by a single key or unknown contract, or by a weak Safe with no timelock.
-- **Yellow:** critical powers held by strong Safes without a timelock, an upgrade delay under 7 days, or high powers held by a single key.
+- **Yellow:** critical powers held by strong Safes without a timelock, an upgrade delay under 7 days, high powers held by a single key, a Safe module that can bypass signers, a critical power on an unverified contract, or a **bridge** that can mint the token.
 - **Green:** upgrades are impossible or behind a 7-day+ timelock controlled by a strong Safe, other critical powers are held by strong Safes behind a timelock, and no single key holds a high power.
 
-Privileged functions that no handler recognizes are listed as **unclassified** for manual review, so nothing is silently ignored. They don't change the color.
+**Onchain limits.** A power that would be red becomes yellow when the contract caps how far it can move things: at most **2% a day** (of the NAV for `set-price`, of supply for `mint`), and only if the holders it limits can't lift the cap themselves. Looser caps, and caps the same key can remove, are shown but don't count.
+
+**Bridges.** When a bridge mints the token on other chains (lock-and-mint or burn-and-mint), whoever controls the bridge, or forges a message past it, can create unbacked tokens there. That is a yellow finding even when the bridge itself is well run.
+
+An asset with no discovery snapshot is grey, not green. Privileged functions that no handler recognizes are listed as **unclassified** for manual review; they don't change the color.
 
 For regulated securities, freeze and force-transfer powers are often legally required. This slice scores who holds them and what checks exist, not whether they exist.
 
-## Pricing
+## Exit window
 
-- **Red:** a single key writes the price, there is no onchain price or NAV, or the last update is older than 3× the expected cadence.
-- **Yellow:** an issuer-controlled multisig or a single provider relaying issuer-reported NAV writes the price, or the update is late (1–3× cadence).
+Adapted from L2BEAT. Notice is the shortest delay before a **rule change** (an `upgrade`, or `admin` granting new roles) takes effect: zero for a single key. Exit is the documented redemption settlement time.
+
+- **Green:** holders can redeem and still have at least 7 days before any change takes effect, or nothing can change the rules.
+- **Yellow:** holders can redeem first, with less than 7 days to spare, or there is a delay but the settlement time isn't public.
+- **Red:** no notice, or redemption takes longer than the notice.
+
+Instant DEX liquidity doesn't count as exit here: it holds only a small share of supply.
+
+## NAV
+
+- **Red:** a single key writes the price with no onchain cap, there is no onchain price or NAV, or the last update is older than 3× the expected cadence.
+- **Yellow:** an issuer-controlled multisig or a single provider relaying issuer-reported NAV writes the price, a single key writes it under a counted cap, or the update is late (1–3× cadence).
 - **Green:** an independent oracle network publishes data from a fund administrator or custodian at least daily, with history onchain.
 
 Funds that strike NAV on business days only don't publish on weekends, so for those feeds weekends don't count towards the age.
 
 For vault tokens (ERC-4626) the NAV is the contract's own accounting, so there is no feed to go stale. We score who can move it instead: **red** if a single key can write it down or back up (for example by marking a loan impaired), **yellow** if an issuer multisig can, or if the numbers are the issuer's own accounting rather than a fund administrator's or custodian's.
 
+**Private credit.** A credit fund's NAV is only as good as the marks on its loans. Yellow if who values the loans isn't public, if the manager marks its own loans with no independent valuation agent, or if the policy for writing down loans that stop paying isn't public.
+
 For stable $1 tokens, we also check how DeFi markets price the token. If a lending market hardcodes $1, the slice gets a yellow flag: *DeFi markets assume $1 with no onchain NAV check.*
 
-## Verification
+## Reserves
 
-For the best verification method we count five tests: **independent**, **asset-level**, **at least daily**, **cryptographically verifiable**, **onchain**. Green is 5 of 5, yellow is 3–4, red is 0–2 or self-reported only.
+Five tests. The first four describe the best reserve report we found. The fifth we compute ourselves.
 
-Five tests adapted from Chronicle Labs, "The Transparency Gap in Onchain Finance" (Oct 2026).
+1. **Independent:** an auditor, administrator, custodian or attestation firm checks the reserves, not the issuer.
+2. **Asset-level:** holdings are reported line by line (loan by loan for credit), not just as a total.
+3. **At least weekly.**
+4. **Public report:** anyone can read the report itself, not just a claim that one exists.
+5. **Reconciles onchain:** the reported assets match onchain supply × price across every chain, within 5%, using a reported figure no older than 45 days. Supply on chains we don't read counts as missing.
 
-## Exit
+Green is 5 of 5, yellow is 3–4, red is 0–2 or self-reported only. The tests don't depend on any one vendor's product.
 
-- **Green:** documented redemption at T+1 or faster for all eligible holders, plus an onchain instant-liquidity path (a redemption contract, or DEX liquidity of at least 2% of supply at ≤ 1% slippage).
-- **Yellow:** documented redemption at T+5 or faster but no instant path, or the documentation is incomplete. Unpublished suspension or gating terms count as incomplete.
+**Private credit** adds four disclosures about the loan book: loan-level data, the largest borrower's share, the collateral, and the loss history. Any of them missing caps Reserves at yellow. These are scored as *is it public?*, never as credit quality.
+
+**Look-through.** When a fund holds another tracked token (OUSG holds BUIDL), a red Control or Reserves slice on the holding passes through to the fund as a yellow finding.
+
+## Redemption
+
+- **Green:** documented redemption at T+1 or faster for all eligible holders, plus an onchain instant exit with measured liquidity of at least 2% of supply (a funded redemption contract, or DEX liquidity at ≤ 1% slippage).
+- **Yellow:** documented redemption at T+5 or faster but no instant path, an instant redemption contract whose liquidity isn't measured, or incomplete documentation. Unpublished suspension or gating terms count as incomplete.
 - **Red:** no documented redemption, redemption slower than T+5, or redemptions can be suspended at the issuer's discretion with no stated limits.
 
 ## Disclosure
 
-Six checks, each public, not public, or unknown: legal entity and jurisdiction, custodian named, fund administrator named, auditor named, offering document public, audited financials public. Green is 5 or more public, yellow is 3–4, red is 2 or fewer. Unknown counts as not public.
+Seven checks, each public, not public, or unknown: legal entity and jurisdiction, regulator or registration, custodian named, fund administrator named, auditor named, offering document public (counts double), audited financials public (counts double). That makes 9 points. Green is 8 or more, yellow 4–7, red 3 or fewer. Unknown counts as not public.
 
 ## Legal
 
-Always grey in v1. We don't yet evaluate bankruptcy remoteness or holder claims. The Disclosure tab shows which documents are public so you can read them yourself.
+Always grey. We don't evaluate bankruptcy remoteness or holder claims. The Disclosure tab shows the facts we found (what a holder owns, who keeps the legal register, the regulator, any insolvency terms) and which documents are public, so you can read them yourself.
+
+## Open questions
+
+Each asset page lists what its review couldn't verify, and marks the asset "partly reviewed" until they're closed. Unknown is a finding, and anyone can answer one with a pull request.
 
 ## DeFi exposure
 
-For each asset we list the lending markets that accept it as collateral (Morpho first, then Aave including Horizon, then Euler) with loan asset, LLTV, the oracle used, collateral supplied and amount borrowed. Markets whose oracle hardcodes the price are flagged.
+For each asset we list the lending markets that accept it as collateral (Morpho first, then Aave including Horizon, then Euler) with loan asset, LLTV, the oracle used, collateral supplied and amount borrowed. Markets whose oracle hardcodes the price are flagged. We also show whether a liquidator could actually exit: whether it must be allowlisted to receive the token, whether it can redeem, and how much instant liquidity exists.
 
 ## Alerts
 

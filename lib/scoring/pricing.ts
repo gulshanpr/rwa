@@ -1,6 +1,7 @@
 import type { Asset } from "../schema/asset";
 import type { Live } from "../schema/live";
 import { formatDuration, secondsBetween } from "../format";
+import { boundCounts } from "./control";
 import { sliceFromReasons, type Reason, type SliceResult } from "./types";
 
 export type OracleFreshness = "on-schedule" | "late" | "stale" | "missing";
@@ -55,8 +56,15 @@ export function scorePricing(asset: Asset, live: Live | undefined): SliceResult 
     return sliceFromReasons("pricing", reasons, "");
   }
 
+  scoreValuation(asset, add);
+  const bound = (asset.bounds ?? []).find((b) => b.power === "set-price" && b.chain === ref.chain && boundCounts(b));
+  const eoaWriter = (text: string) =>
+    bound
+      ? add("eoa-bounded", "yellow", `${text.replace(/\.$/, "")}, but an onchain limit caps each day's move at ${bound.maxMovePctPerDay}%.`)
+      : add("eoa", "red", text);
+
   if (ref.type === "vault") {
-    if (ref.writer === "eoa") add("eoa", "red", "A single key can write the onchain NAV down or back up, for example by marking loans as impaired.");
+    if (ref.writer === "eoa") eoaWriter("A single key can write the onchain NAV down or back up, for example by marking loans as impaired.");
     else if (ref.writer === "issuer-multisig") add("issuer-writer", "yellow", "The issuer's own multisig can write the onchain NAV down or back up.");
     if (ref.dataOrigin === "issuer") add("issuer-origin", "yellow", "The NAV is the issuer's own accounting, not a fund administrator's or custodian's.");
     if (!ref.historyOnchain) add("history", "yellow", "Price history isn't kept onchain.");
@@ -64,7 +72,7 @@ export function scorePricing(asset: Asset, live: Live | undefined): SliceResult 
   }
 
   const age = oracleAge(asset, live);
-  if (ref.writer === "eoa") add("eoa", "red", "A single key writes the onchain price.");
+  if (ref.writer === "eoa") eoaWriter("A single key writes the onchain price.");
   if (age?.freshness === "stale")
     add("stale", "red", `The onchain price hasn't updated in ${formatDuration(age.ageSeconds)}; lending markets may misprice it.`);
   else if (age?.freshness === "late")
@@ -92,4 +100,14 @@ export function scorePricing(asset: Asset, live: Live | undefined): SliceResult 
   }
 
   return sliceFromReasons("pricing", reasons, "An independent oracle network publishes the NAV at least daily.");
+}
+
+/** Private credit: who marks the loans, and whether the write-down policy is public. */
+function scoreValuation(asset: Asset, add: (id: string, color: Reason["color"], text: string) => void) {
+  if (asset.assetClass !== "private-credit") return;
+  const { valuer, impairmentPolicy } = asset.pricing.valuation ?? {};
+  if (!valuer || valuer.status !== "public") add("valuer-unknown", "yellow", "Who values the loans behind the NAV isn't public.");
+  else if (valuer.value === "manager") add("valuer-manager", "yellow", "The manager marks its own loans; no independent valuation agent checks the NAV.");
+  if (!impairmentPolicy || impairmentPolicy.status !== "public")
+    add("impairment-policy", "yellow", "The policy for writing down loans that stop paying isn't public.");
 }

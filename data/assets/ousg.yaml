@@ -111,9 +111,11 @@ verification:
       independent: false
       assetLevel: true
       frequency: daily
-      cryptographicallyVerifiable: false
-      onchain: false
+      publicReport: true
       source: { url: "https://ondo.finance/ousg", note: "Holdings by underlying fund, 'As of' about daily. The product-page FAQ is stale and contradicts its own holdings table (10k.nyxshcon.org). The underlying BUIDL tokens are visible onchain but no third party reconciles them.", checkedAt: 2026-10-13 }
+  reported:
+    value: { usd: 320000000, asOf: 2026-10-01 }
+    source: { url: "https://ondo.finance/ousg", note: "Holdings table total, about $320M around 2026-10-01", checkedAt: 2026-10-13 }
 
 exit:
   redemption:
@@ -137,6 +139,50 @@ exit:
       chain: ethereum
       address: "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a"
       source: { url: "https://docs.ondo.finance/addresses", note: "Global limit $50M per day (about 16% of the ~$320M reported AUM). The USDC actually available behind OndoTokenRouter 0x99b8…d7bc was not measured.", checkedAt: 2026-10-13 }
+
+otherChains:
+  - chain: polygon
+    issuance: native
+    token: "0xbA11C5effA33c4D6F8f593CFA394241CfE925811"
+    source: { url: "https://polygonscan.com/token/0xbA11C5effA33c4D6F8f593CFA394241CfE925811", checkedAt: 2026-10-13 }
+  - chain: solana
+    issuance: native
+    token: "i7u4r16TcsJTgq1kAG8opmVZyVnAKBwLKu6ZPMwzxNc"
+    source: { url: "https://explorer.solana.com/address/i7u4r16TcsJTgq1kAG8opmVZyVnAKBwLKu6ZPMwzxNc", checkedAt: 2026-10-13 }
+  - chain: xrpl
+    issuance: native
+    token: "4F55534700000000000000000000000000000000.rHuiXXjHLpMP8ZE9sSQU5aADQVWDwv6h5p"
+    source: { url: "https://docs.ondo.finance/addresses", checkedAt: 2026-10-13 }
+
+bounds:
+  - chain: ethereum
+    contract: "0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe"
+    power: set-price
+    maxMovePctPerDay: 2
+    holderCanRemove: false
+    description: "Each setPrice must stay within ±74 bps of the Chainlink SHV move (MAX_CHANGE_DIFF_BPS) and within 200 bps absolute (MAX_ABSOLUTE_DIFF_BPS), at least 23 hours apart (MIN_PRICE_UPDATE_WINDOW). A separate 3-of-5 Safe can repoint OndoOracle to a different oracle."
+    source: { url: "https://etherscan.io/address/0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe#code", checkedAt: 2026-10-13 }
+
+holdings:
+  - asset: State Street Galaxy SWEEP
+    sharePct: 47.33
+    source: { url: "https://ondo.finance/ousg", note: "Holdings table, 2026-09-30 / 10-01", checkedAt: 2026-10-13 }
+  - asset: buidl
+    sharePct: 31.85
+    source: { url: "https://ondo.finance/ousg", note: "Holdings table, 2026-09-30 / 10-01; $101.8M", checkedAt: 2026-10-13 }
+  - asset: Franklin BENJI
+    sharePct: 12.92
+    source: { url: "https://ondo.finance/ousg", note: "Holdings table, 2026-09-30 / 10-01", checkedAt: 2026-10-13 }
+  - asset: Fidelity FYOXX
+    sharePct: 6.91
+    source: { url: "https://ondo.finance/ousg", note: "Holdings table, 2026-09-30 / 10-01", checkedAt: 2026-10-13 }
+
+openQuestions:
+  - "Supply on other chains: $134M on Ethereum vs about $320M reported. The rest is presumably on Solana or XRPL, but it is unexplained."
+  - "Who controls the rate-limiter configurers (TokenManagerRegistrar 0xd274…d5f, PortfolioTokenRegistrar 0x355c…831)."
+  - "Confirm the RWAOracleExternalComparisonCheck limits are constants the price setters can't change."
+  - "Whether the admin keys are MPC or hardware-backed."
+  - "The instant redemption facility's available USDC isn't measured."
 
 externalIds:
   defillama: null

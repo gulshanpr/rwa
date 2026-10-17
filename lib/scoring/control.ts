@@ -1,9 +1,11 @@
 import type { Discovered, Holder, Power } from "../schema/discovered";
-import type { Chain } from "../schema/asset";
+import type { Bound, Chain, OtherChain } from "../schema/asset";
 import { formatDelay, formatDuration } from "../format";
 import { sliceFromReasons, type Reason, type SliceColor, type SliceResult } from "./types";
 
 export const SEVEN_DAYS = 7 * 86400;
+/** A bound counts when it caps the move at this % per day or less. */
+export const MAX_BOUNDED_MOVE_PCT = 2;
 
 export const CRITICAL_POWERS: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "allocate", "admin"];
 export const HIGH_POWERS: Power[] = ["freeze", "pause", "set-compliance"];
@@ -169,6 +171,16 @@ export interface PowerRow {
   checks: string;
   color: SliceColor;
   reasonKey?: string;
+  /** An onchain limit on this power, whether or not it is tight enough to count. */
+  bound?: Bound;
+}
+
+export function boundCounts(b: Bound): boolean {
+  return b.maxMovePctPerDay <= MAX_BOUNDED_MOVE_PCT && !b.holderCanRemove;
+}
+
+export function findBound(bounds: Bound[], chain: Chain, contract: string, power: Power): Bound | undefined {
+  return bounds.find((b) => b.chain === chain && b.power === power && b.contract.toLowerCase() === contract.toLowerCase());
 }
 
 function evaluate(power: Power, h: ResolvedHolder): { color: SliceColor; key?: string } {
@@ -200,13 +212,16 @@ function checksText(power: Power, h: ResolvedHolder): string {
   return "No delay";
 }
 
-export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
+export function analyzePowers(snapshots: Discovered[], bounds: Bound[] = []): PowerRow[] {
   const rows: PowerRow[] = [];
   for (const d of snapshots) {
     for (const [contract, c] of Object.entries(d.contracts)) {
       c.permissions.forEach((p, i) => {
         const holder = resolveHolder(d, p.holder);
-        const { color, key } = evaluate(p.power, holder);
+        const bound = findBound(bounds, d.chain, contract, p.power);
+        let { color, key } = evaluate(p.power, holder);
+        // A tight bound the holder can't lift turns "can do anything" into "can do a little": red becomes yellow.
+        if (bound && boundCounts(bound) && color === "red") ({ color, key } = { color: "yellow", key: "bounded" });
         rows.push({
           id: `${d.chain}-${contract}-${i}`,
           chain: d.chain,
@@ -216,9 +231,10 @@ export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
           criticality: criticalityOf(p.power),
           via: p.via,
           holder,
-          checks: checksText(p.power, holder),
+          checks: key === "bounded" ? `Capped at ${bound!.maxMovePctPerDay}% a day` : checksText(p.power, holder),
           color,
           reasonKey: key,
+          bound,
         });
       });
     }
@@ -226,7 +242,7 @@ export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
   const order = [...CRITICAL_POWERS, ...HIGH_POWERS, "unclassified"];
   // Within a power, the weakest holder first, so it leads the reasons.
   const colors = ["red", "yellow", "green"];
-  const keys = ["eoa", "weak-safe", "no-delay", "short-delay", "weak-safe-timelock"];
+  const keys = ["eoa", "weak-safe", "bounded", "no-delay", "short-delay", "weak-safe-timelock"];
   const keyRank = (k?: string) => (k && keys.includes(k) ? keys.indexOf(k) : keys.length);
   return rows.sort(
     (a, b) => order.indexOf(a.power) - order.indexOf(b.power) || colors.indexOf(a.color) - colors.indexOf(b.color) || keyRank(a.reasonKey) - keyRank(b.reasonKey),
@@ -238,6 +254,10 @@ function reasonText(row: PowerRow, ticker: string): string {
   const s = row.holder.safe;
   const multisig = s ? `A ${s.threshold}-of-${s.owners} multisig` : "A multisig";
   switch (row.reasonKey) {
+    case "bounded": {
+      const who = row.holder.holderClass === "eoa" || row.holder.holderClass === "unknown" ? "A single key" : multisig;
+      return `${who} can ${verb}, but an onchain limit caps each day's move at ${row.bound!.maxMovePctPerDay}%.`;
+    }
     case "eoa":
       return `A single key can ${verb}.`;
     case "weak-safe":
@@ -255,7 +275,22 @@ function reasonText(row: PowerRow, ticker: string): string {
   }
 }
 
-export function scoreControl(rows: PowerRow[], ticker: string): SliceResult {
+const BRIDGE_NAME = /bridge|\bOFT\b|ccip|wormhole|layerzero|axelar|hyperlane/i;
+
+export interface ControlContext {
+  discovered: Discovered[];
+  otherChains?: OtherChain[];
+}
+
+export function scoreControl(rows: PowerRow[], ticker: string, ctx?: ControlContext): SliceResult {
+  if (ctx && ctx.discovered.length === 0) {
+    return {
+      slice: "control",
+      color: "grey",
+      headline: "Not assessed yet: no discovery snapshot of this token's permissions.",
+      reasons: [],
+    };
+  }
   const reasons = new Map<string, Reason>();
   for (const row of rows) {
     if (row.color === "red" || row.color === "yellow") {
@@ -282,10 +317,60 @@ export function scoreControl(rows: PowerRow[], ticker: string): SliceResult {
         evidence: { tab: "control", anchor: `power-${row.id}`, label: "Safe modules" },
       });
     }
+    const bridge = row.power === "mint" ? row.holder.path.find((step) => step.kind === "contract" && BRIDGE_NAME.test(step.label)) : undefined;
+    if (bridge) {
+      const id = `control.bridge.${row.chain}.${bridge.address.toLowerCase()}`;
+      reasons.set(id, {
+        id,
+        slice: "control",
+        color: "yellow",
+        text: `A bridge contract (${bridge.label}) can mint ${ticker}. Whoever controls it, or gets a forged message past it, can create tokens.`,
+        critical: true,
+        evidence: { tab: "control", anchor: `power-${row.id}`, label: "Bridge mint" },
+      });
+    }
   }
+
+  for (const d of ctx?.discovered ?? []) {
+    for (const [address, c] of Object.entries(d.contracts)) {
+      if (c.verified || !rows.some((r) => r.chain === d.chain && r.contract === address && r.criticality === "critical")) continue;
+      const id = `control.unverified.${d.chain}.${address.toLowerCase()}`;
+      reasons.set(id, {
+        id,
+        slice: "control",
+        color: "yellow",
+        text: `${c.name}'s source code isn't verified, so its privileged functions can't be fully reviewed.`,
+        critical: true,
+        evidence: { tab: "control", label: c.name },
+      });
+    }
+  }
+
+  const bridged = new Map<string, string[]>();
+  for (const o of ctx?.otherChains ?? []) {
+    if (o.issuance === "native") continue;
+    const name = o.bridge ?? "A bridge";
+    bridged.set(name, [...(bridged.get(name) ?? []), o.chain]);
+  }
+  for (const [bridge, chains] of bridged) {
+    reasons.set(`control.bridge.${bridge}`, {
+      id: `control.bridge.${bridge}`,
+      slice: "control",
+      color: "yellow",
+      text: `${bridge} mints ${ticker} on ${listChains(chains)}. If it is compromised, unbacked tokens can be created there.`,
+      critical: true,
+      evidence: { tab: "overview", anchor: "other-chains", label: "Other chains" },
+    });
+  }
+
   return sliceFromReasons(
     "control",
     [...reasons.values()],
     "Critical powers are timelocked and held by strong multisigs.",
   );
+}
+
+export function listChains(chains: string[]): string {
+  if (chains.length <= 3) return chains.join(chains.length === 2 ? " and " : ", ");
+  return `${chains.slice(0, 2).join(", ")} and ${chains.length - 2} other chains`;
 }

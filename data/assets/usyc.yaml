@@ -99,6 +99,10 @@ legal:
     status: public
     value: "Claimed bankruptcy-remote: 'All investments in iSDYF are held bankruptcy-remote at our custodian, BNY Mellon, via primebroker, Marex … resolution of the iSDYF fund would be independent of any resolution or bankruptcy of Hashnote.' Written before the Circle acquisition."
     source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", checkedAt: 2026-10-13 }
+  regulator:
+    status: public
+    value: Cayman Islands Monetary Authority (registered mutual fund, reg. 2055432)
+    source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "The token issuer, Circle International Bermuda Limited, is regulated by the Bermuda Monetary Authority", checkedAt: 2026-10-13 }
 
 pricing:
   reference:
@@ -120,10 +124,12 @@ verification:
       independent: false
       assetLevel: false
       frequency: daily
-      cryptographicallyVerifiable: false
-      onchain: true
+      publicReport: true
       feed: { chain: ethereum, address: "0x74f2199AEb743f68f05943e5715A33EaF2b61f53" }
-      source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Issuer-posted NAV oracle and price API with fund-level principal, interest and balance only. No Chronicle PoA or Chainlink PoR feed found.", checkedAt: 2026-10-13 }
+      source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Issuer-posted NAV oracle and price API with fund-level principal, interest and balance only. No independent proof-of-reserve found.", checkedAt: 2026-10-13 }
+  reported:
+    value: { usd: 2384942722, asOf: 2026-10-09 }
+    source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Issuer price report round 530: balance $2,384,942,722, totalSupply 2,092,523,161.92", checkedAt: 2026-10-13 }
 
 exit:
   redemption:
@@ -148,6 +154,21 @@ exit:
       address: "0xeE35F963BFC71b51eC95147f26c030D674ea30e6"
       depthPctOfSupply: 1.6
       source: { url: "https://usyc.docs.hashnote.com/overview/subscription-and-redemption", note: "totalAssets = min(treasury USDC 42.4M, allowance 38.3M) = $38.3M, about 1.6% of supply. The treasury is EOA 0x5126…5ec5 and the allowance is revocable. The BSC Cross Chain Teller was not measured.", checkedAt: 2026-10-13 }
+
+otherChains:
+  - chain: arc
+    issuance: native
+    token: "0x8a5D989Bbb96929F689B0200f435f53dA42bF490"
+    source: { url: "https://explorer.arc.io/address/0x8a5D989Bbb96929F689B0200f435f53dA42bF490", checkedAt: 2026-10-13 }
+  - chain: solana
+    issuance: native
+    token: "7LWanZteUKtvFjv4MHYgKXXdAuCQYFPJysL9pxxdRQGn"
+    source: { url: "https://solscan.io/token/7LWanZteUKtvFjv4MHYgKXXdAuCQYFPJysL9pxxdRQGn", checkedAt: 2026-10-13 }
+
+openQuestions:
+  - "BNB Chain holders are a lower bound: no public BNB Chain endpoint serves full log history. A paid Etherscan v2 plan or NodeReal would close this."
+  - "Whether the admin keys are MPC or hardware-backed."
+  - "Who 0x85fb…d011 is."
 
 externalIds:
   defillama: circle-usyc

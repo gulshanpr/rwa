@@ -18,6 +18,7 @@ export default async function DefiPage({ params }: PageProps<"/assets/[slug]/def
   const profile = (await getProfile(slug)) ?? notFound();
   const { asset, live, stats } = profile;
   const markets = live?.defiMarkets ?? [];
+  const instantDepth = asset.exit.instantLiquidity.reduce((s, l) => s + (l.depthPctOfSupply ?? 0), 0);
 
   const byProtocol = Object.entries(
     markets.reduce<Record<string, number>>((acc, m) => {
@@ -101,6 +102,27 @@ export default async function DefiPage({ params }: PageProps<"/assets/[slug]/def
         )}
       </Card>
 
+      {markets.length > 0 && (
+        <Card title="Can a liquidator actually exit?" description="Lending only works if bad collateral can be seized and sold.">
+          <ul className="space-y-2 text-small text-fg">
+            <li>
+              {asset.access.transferRestricted.value
+                ? `${asset.ticker} is transfer-restricted, so a liquidator must be allowlisted to receive it. If few are, bad debt can build up when the collateral falls.`
+                : `Anyone can receive ${asset.ticker}, so any liquidator can seize it.`}
+            </li>
+            <li>
+              {asset.exit.redemption.whoCanRedeem.value === "all-holders"
+                ? "Any holder, including a liquidator, can queue a redemption with the issuer."
+                : `Only ${asset.exit.redemption.whoCanRedeem.value === "issuer-approved" ? "issuer-approved" : "allowlisted"} holders can redeem with the issuer, so a liquidator who isn't one must sell on a DEX.`}
+            </li>
+            <li>
+              {instantDepth > 0
+                ? `Measured instant exit liquidity: ${formatPct(instantDepth / 100)} of supply, against ${formatUsd(stats.defiBorrowUsd)} borrowed.`
+                : "No instant exit liquidity is measured, so a large liquidation may not find a buyer."}
+            </li>
+          </ul>
+        </Card>
+      )}
       <Card title="Collateral by protocol">
         <Donut data={byProtocol} label={`${asset.ticker} collateral by protocol`} />
       </Card>

@@ -103,10 +103,9 @@ verification:
       independent: true
       assetLevel: false
       frequency: weekly
-      cryptographicallyVerifiable: true
-      onchain: true
+      publicReport: true
       feed: { chain: ethereum, address: "0x2D6e9F608807436DE5D9603B00Abe3FEd1Bc809d" }
-      source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "Midas Attestation Engine. NAV email is notarised with vlayer and checked by LlamaRisk and Canary. The NAV still originates with Fasanara. Asset-level custodian PDFs are described with placeholder IPFS links, so asset-level is not counted. The latest report at review was 2026-10-09, about four days old, so the daily test fails.", checkedAt: 2026-10-14 }
+      source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "Midas Attestation Engine. NAV email is notarised with vlayer and checked by LlamaRisk and Canary. The NAV still originates with Fasanara. Asset-level custodian PDFs are described with placeholder IPFS links, so asset-level is not counted. The latest report at review was 2026-10-09, about four days old.", checkedAt: 2026-10-14 }
 
 exit:
   redemption:
@@ -134,6 +133,23 @@ exit:
       address: "0x44b0440e35c596e858cEA433D0d82F5a985fD19C"
       depthPctOfSupply: 9
       source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "instantFee is 1%. Daily limit 30,000,000 mF-ONE. At review the vault held about 6.03M mTBILL and 0 USDC, roughly 9% of AUM. A second redemption vault 0x375e…bb48 has no daily limit.", checkedAt: 2026-10-14 }
+
+bounds:
+  - chain: ethereum
+    contract: "0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C"
+    power: set-price
+    maxMovePctPerDay: 9.6
+    holderCanRemove: true
+    description: "setRoundDataSafe caps each update at 0.4% and at least 1 hour apart, but setRoundData skips the check and the same admin can call it. Answers must stay between 0.1 and 1000."
+    source: { url: "https://etherscan.io/address/0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C#code", checkedAt: 2026-10-14 }
+
+openQuestions:
+  - "Whether 0xd419, 0x4f75, 0x85a5 and 0x2acb are Fordefi or Fireblocks wallets."
+  - "Why the admin Safe is 1-of-3 when the docs say four or more signers."
+  - "Who 0x9Db5… is, the wallet with about 45% of supply."
+  - "The terms, custodian, administrator and this product's own auditor. The only auditor found belongs to a different Midas product."
+  - "Other chains (Midas runs LayerZero OFT routes), the audit PDFs, and the contents of the attestation records."
+  - "The unit of the minimum deposit (raw value 148,000)."
 
 externalIds:
   defillama: null

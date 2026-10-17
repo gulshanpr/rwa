@@ -84,6 +84,10 @@ legal:
     searchedAt: 2026-10-11
   insolvency:
     status: unknown
+  regulator:
+    status: public
+    value: BVI Financial Services Commission (professional fund)
+    source: { url: "https://www.bvifsc.vg/regulated-entities/blackrock-usd-institutional-digital-liquidity-fund-ltd", checkedAt: 2026-10-11 }
 
 pricing:
   reference:
@@ -98,16 +102,7 @@ pricing:
     source: { url: "https://etherscan.io/address/0xb9BD795BB71012c0F3cd1D9c9A4c686F2d3524A4#code", note: "RedStone BUIDL_FUNDAMENTAL, linked from the Securitize page. PriceFeedWithoutRounds keeps only the latest value. NAV data from Securitize. 24h heartbeat.", checkedAt: 2026-10-11 }
 
 verification:
-  methods:
-    - type: proof-of-asset
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0x8c68E0CacB61a065b99E2104457aCC829d61cbB0" }
-      source: { url: "https://chroniclelabs.org/blog/buidl-tokenized-by-securitize-is-now-verified-onchain-by-chronicle-proof-of-asset", note: "Router reads are whitelisted; cadence is Chronicle's own claim", checkedAt: 2026-10-11 }
+  methods: []
 
 exit:
   redemption:
@@ -132,6 +127,10 @@ exit:
       address: "0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53"
       depthPctOfSupply: 0
       source: { url: "https://etherscan.io/address/0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53", note: "availableLiquidity() = 0 at block 26,168,303", checkedAt: 2026-10-11 }
+
+openQuestions:
+  - "BUIDL is issued on chains other than Ethereum; their supply and controls aren't tracked yet."
+  - "The Circle USDC redemption facility held no liquidity at review; whether it is still in use."
 
 externalIds:
   defillama: blackrock-buidl

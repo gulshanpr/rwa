@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Rosette } from "@/components/risk/rosette";
 import { SliceDot } from "@/components/risk/slice-dot";
+import { StageBadge } from "@/components/risk/stage-badge";
 import { Segmented } from "@/components/ui/segmented";
 import { Tag } from "@/components/ui/tag";
 import { CHAINS } from "@/lib/chains";
@@ -35,9 +36,10 @@ const features = tableFeatures({
 const RANK: Record<SliceColor, number> = { grey: 0, green: 1, yellow: 2, red: 3 };
 const SHORT: Record<SliceId, string> = {
   control: "Ctrl",
-  pricing: "Price",
-  verification: "Verif",
-  exit: "Exit",
+  "exit-window": "Window",
+  pricing: "NAV",
+  verification: "Resv",
+  exit: "Redeem",
   disclosure: "Discl",
   legal: "Legal",
 };
@@ -72,6 +74,11 @@ const columns = helper.columns([
         <Rosette slices={info.row.original.slices} size="sm" ticker={info.row.original.ticker} />
       </span>
     ),
+  }),
+  helper.accessor((r) => r.stage ?? -1, {
+    id: "stage",
+    header: "Stage",
+    cell: (info) => <StageBadge stage={info.row.original.stage} compact />,
   }),
   ...SLICE_ORDER.map((slice) =>
     helper.accessor((r) => RANK[r.slices[slice].color], {
