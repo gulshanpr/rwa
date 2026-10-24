@@ -20,6 +20,8 @@ const PROBE = parseAbi([
   "function getMinDelay() view returns (uint256)",
 ]);
 
+const STOP_ONLY = new Set<string>(["pause", "freeze", "set-compliance"]);
+
 export type ProxyInfo = Omit<NonNullable<DiscoveredContract["proxy"]>, "implementation" | "admin"> & {
   implementation: Address;
   admin?: Address;
@@ -29,6 +31,7 @@ export class Context {
   readonly c: ChainClients;
   readonly contracts: Record<string, DiscoveredContract> = {};
   private readonly pendingHolders = new Set<string>();
+  private readonly knownHolders = new Map<string, Holder>();
 
   constructor(
     readonly asset: Asset,
@@ -103,6 +106,11 @@ export class Context {
     }
   }
 
+  /** For holders a handler understands better than the generic probes (e.g. a non-OpenZeppelin timelock). */
+  setHolder(address: string, holder: Holder) {
+    this.knownHolders.set(getAddress(address), holder);
+  }
+
   /** Classifies every address that holds a permission, following ProxyAdmins and timelocks. */
   async classifyHolders(): Promise<Record<string, Holder>> {
     const out: Record<string, Holder> = {};
@@ -112,7 +120,7 @@ export class Context {
       const address = queue.shift()! as Address;
       if (out[address]) continue;
       const d = depth.get(address) ?? 0;
-      const holder = this.trackedContract(address) ?? (await this.classify(address));
+      const holder = this.knownHolders.get(address) ?? this.trackedContract(address) ?? (await this.classify(address));
       out[address] = holder;
       const next: string[] =
         holder.kind === "proxy-admin"
@@ -133,14 +141,17 @@ export class Context {
     return out;
   }
 
-  /** A role held by a contract we already mapped: it is controlled by whoever holds its own critical or high powers. */
+  /**
+   * A role held by a contract we already mapped: it is controlled by whoever holds its own critical
+   * powers. Pause, freeze and compliance holders can stop the contract but not direct it, so they only
+   * count when nobody holds a critical power.
+   */
   private trackedContract(address: Address): Holder | undefined {
     const c = this.contracts[getAddress(address)];
     if (!c) return undefined;
-    const controllers = new Set<string>();
-    for (const p of c.permissions) {
-      if (p.power !== "unclassified" && getAddress(p.holder) !== getAddress(address)) controllers.add(getAddress(p.holder));
-    }
+    const others = c.permissions.filter((p) => p.power !== "unclassified" && getAddress(p.holder) !== getAddress(address));
+    const steering = others.filter((p) => !STOP_ONLY.has(p.power));
+    const controllers = new Set((steering.length > 0 ? steering : others).map((p) => getAddress(p.holder)));
     return { kind: "contract", name: c.name, controllers: [...controllers].sort() };
   }
 

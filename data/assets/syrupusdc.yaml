@@ -1,0 +1,157 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: syrupusdc
+name: Syrup USDC
+ticker: syrupUSDC
+assetClass: private-credit
+description: >
+  Share in a Maple USDC lending pool (ERC-4626). Its value grows with interest from overcollateralized loans to crypto institutions and from Aave and Sky strategies. It is not a stablecoin.
+issuer: maple-international-operations-spc
+manager: maple
+platform: maple
+tokenStandard: erc4626
+priceModel: accumulating-nav
+
+deployments:
+  - chain: ethereum
+    token: "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b"
+    discovery:
+      ignoreMethods: []
+      labels:
+        "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f": Pool delegate (single wallet)
+        "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818": Maple SecurityAdmin Safe
+        "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8": Maple OperationalAdmin Safe
+        "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196": Maple governance proposer Safe
+        "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b": Maple GovernorTimelock
+        "0x804a6f5f667170f545bf14e5ddb48c70b788390c": MapleGlobals
+        "0x7aD5fFa5fdF509E30186F4609c2f6269f4B6158F": PoolManager
+        "0xBe10aDcE8B6E3E02Db384E7FaDA5395DD113D8b3": PoolPermissionManager
+        "0x1bc47a0Dd0FdaB96E9eF982fdf1F34DC6207cfE3": WithdrawalManagerQueue
+        "0x6ACEb4cAbA81Fa6a8065059f3A944fb066A10fAc": Open-term LoanManager
+        "0x4A1c3F0D9aD0b3f9dA085bEBfc22dEA54263371b": Fixed-term LoanManager
+        "0x560b3a85af1cef113bb60105d0cf21e1d05f91d4": MapleAaveStrategy
+        "0x859c9980931fa0a63765fd8ef2e29918af5b038c": MapleSkyStrategy
+        "0xE463cD473EcC1d1A4ecF20b62624D84DD20a8339": PoolManagerFactory
+        "0xfB2C579c1D5f82C7b0f2a3479e5F9bC26bd22b62": STRATEGY_MANAGER bot (single wallet)
+        "0x134cCaaA4F1e4552eC8aEcb9E4A2360dDcF8df76": SyrupRouter (syrupUSDC; grants deposit permission on Maple-signed authorizations)
+        "0x191ac16255f49F7C6cB2e3b2502064A805943849": SyrupRouter (other Maple pool)
+        "0xF007476Bb27430795138C511F18F821e8D1e5Ee2": SyrupRouter (other Maple pool)
+        "0x252ec5CF960C9D7CBA75D31A1e4150139eD7B5d5": Permission admin (single wallet)
+        "0x4575e7E9eA9e3C6132b2ea94A69E61d407708655": Permission admin (single wallet)
+        "0x4f6F1d5eFd38130120dd6e7f820E8F8048ccaA1B": Permission admin (single wallet)
+        "0x54b130c704919320E17F4F1Ffa4832A91AB29Dca": Permission admin (single wallet)
+
+access:
+  investorType:
+    value: non-us-persons
+    source: { url: "https://docs.maple.finance/legal/interface-terms-of-use-syrupusdc-and-syrupusdt", note: "US, Australia and sanctioned jurisdictions excluded; 18+; no accreditation stated", checkedAt: 2026-10-12 }
+  minimumInvestment:
+    status: not_public
+    searchedAt: 2026-10-12
+  transferRestricted:
+    value: false
+    source: { url: "https://etherscan.io/address/0xbe10adce8b6e3e02db384e7fada5395dd113d8b3#readProxyContract", note: "PoolPermissionManager permissionLevels(PoolManager) = 1 (function level) and poolBitmaps for P:transfer = 0, so any address can transfer. Deposits need bitmap 16. The pool delegate can change this.", checkedAt: 2026-10-12 }
+
+serviceProviders:
+  custodian:
+    status: not_public
+    searchedAt: 2026-10-12
+    note: The pool's USDC sits in the onchain contracts; no fund custodian is named. Borrower collateral is held with Anchorage Digital, BitGo and Zodia Custody (https://governance.aave.com/t/syrup-usdc-syrupusdc-on-aave-arc-assessments/25729/2).
+  fundAdministrator:
+    status: not_public
+    searchedAt: 2026-10-12
+  auditor:
+    status: not_public
+    searchedAt: 2026-10-12
+    note: No financial-statement auditor is named. Smart-contract audits are listed at https://docs.maple.finance/technical-resources/security/security
+  transferAgent:
+    status: not_public
+    searchedAt: 2026-10-12
+    note: Not applicable. syrupUSDC is a plain ERC-20 with no transfer agent.
+
+legal:
+  vehicleType:
+    status: public
+    value: Segregated portfolio (Secured Loan Segregated Portfolio 1) of a Cayman segregated portfolio company
+    source: { url: "https://docs.maple.finance/legal/interface-terms-of-use-syrupusdc-and-syrupusdt", checkedAt: 2026-10-12 }
+  jurisdiction:
+    status: public
+    value: Cayman Islands
+    source: { url: "https://search.gleif.org/#/record/984500AEHEB0A6C97D08", note: "Registration no. 410607, George Town", checkedAt: 2026-10-12 }
+  lei:
+    status: public
+    value: 984500AEHEB0A6C97D08
+    source: { url: "https://search.gleif.org/#/record/984500AEHEB0A6C97D08", note: "LEI of the SPC. Secured Loan Segregated Portfolio 1 has no LEI of its own.", checkedAt: 2026-10-12 }
+  secFilings:
+    status: not_public
+    searchedAt: 2026-10-12
+    note: No EDGAR filer found for Maple International Operations SPC
+  offeringDocument:
+    status: not_public
+    searchedAt: 2026-10-12
+    note: Only the Interface Terms and Risk Disclosures are public; no offering memorandum
+  auditedFinancials:
+    status: not_public
+    searchedAt: 2026-10-12
+  insolvency:
+    status: public
+    value: Assets and liabilities of each segregated portfolio are ring-fenced by statute; lender claims are only against the portfolio they deposited in. Bankruptcy remoteness is not claimed in those words.
+    source: { url: "https://docs.maple.finance/legal/syrupusdc-and-syrupusdt-risks", checkedAt: 2026-10-12 }
+
+pricing:
+  reference:
+    type: vault
+    provider: maple
+    chain: ethereum
+    address: "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b"
+    method: convertToExitAssets(shares), from PoolManager totalAssets() minus unrealizedLosses()
+    writer: eoa
+    dataOrigin: issuer
+    historyOnchain: true
+    source: { url: "https://eth.blockscout.com/address/0xbAD003DA1e107f537Ae2f687f5FE7a7aFFe9B241?tab=contract", note: "LoanManager.impairLoan can be called by the pool delegate (an EOA) or the governor and writes the NAV down at once. Interest accrues per second from Maple's own loan accounting.", checkedAt: 2026-10-12 }
+
+verification:
+  methods:
+    - type: proof-of-reserve
+      provider: the-network-firm
+      independent: true
+      assetLevel: true
+      frequency: unstated
+      cryptographicallyVerifiable: false
+      onchain: false
+      source: { url: "https://maple.finance/insights/introducing-proof-of-reserves", note: "Per-loan collateral value with custodian confirmation, 'every cycle'. LlamaRisk: no Chainlink Proof-of-Reserve feed covers Maple's loan book. Unresolved: the announcement says PoR 'will launch'; no published report was confirmed.", checkedAt: 2026-10-12 }
+
+exit:
+  redemption:
+    available:
+      value: true
+      source: { url: "https://docs.maple.finance/legal/syrupusdc-and-syrupusdt-risks", note: "FIFO queue in WithdrawalManagerQueue 0x1bc47a0Dd0FdaB96E9eF982fdf1F34DC6207cfE3", checkedAt: 2026-10-12 }
+    whoCanRedeem:
+      value: all-holders
+      source: { url: "https://etherscan.io/address/0xbe10adce8b6e3e02db384e7fada5395dd113d8b3#readProxyContract", note: "poolBitmaps for P:requestRedeem and P:redeem = 0 at block 26,176,570, so any holder (including a liquidator) can queue a redemption. The pool delegate can change this.", checkedAt: 2026-10-12 }
+    settlement:
+      status: not_public
+      searchedAt: 2026-10-12
+      note: "'Currently processed on average in less than 24 hours, this is not guaranteed'"
+    gatesOrSuspension:
+      status: public
+      value: issuer-discretion
+      source: { url: "https://docs.maple.finance/legal/syrupusdc-and-syrupusdt-risks", note: "'There is no guaranteed maximum withdrawal period.' Requests only settle when the pool delegate, OperationalAdmin or a Maple-registered redeemer calls processRedemptions (WithdrawalManagerQueue source).", checkedAt: 2026-10-12 }
+  instantLiquidity:
+    - type: dex
+      label: Uniswap v4 syrupUSDC/USDC 0.08%
+      chain: ethereum
+      address: "0x000000000004444c5dc75cB358380D2e3dE08A90"
+      depthPctOfSupply: 0.36
+      source: { url: "https://api.geckoterminal.com/api/v2/networks/eth/tokens/0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b/pools", note: "Uniswap v4 PoolManager singleton. Pool TVL about $3.77M; this is total TVL, an upper bound on depth at 1% slippage.", checkedAt: 2026-10-12 }
+    - type: dex
+      label: Fluid syrupUSDC/USDC
+      chain: ethereum
+      address: "0x79eea4a1be86c43a9a9c4384b0b28a07af24ae29"
+      depthPctOfSupply: 0.05
+      source: { url: "https://api.geckoterminal.com/api/v2/networks/eth/tokens/0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b/pools", note: "Pool TVL about $0.49M", checkedAt: 2026-10-12 }
+
+externalIds:
+  defillama: null
+  defillamaStablecoin: null
+  rwaxyz: syrupUSDC
+  coingecko: syrupusdc

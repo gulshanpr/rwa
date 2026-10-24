@@ -1,0 +1,208 @@
+{
+  "asset": "falconx",
+  "block": 26190113,
+  "chain": "ethereum",
+  "contracts": {
+    "0x17E9Ab2992dfecBe779a06A92a6cDB9fE6aEeEf3": {
+      "name": "IdleCreditVault",
+      "permissions": [
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "admin",
+          "via": "IdleCreditVault.renounceOwnership, setManager, transferOwnership · onlyOwner (owner)"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "allocate",
+          "via": "IdleCreditVault.setBorrower · owner. points the vault's only borrower"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "allocate",
+          "via": "IdleCreditVault.transferToken · onlyOwner (owner)"
+        },
+        {
+          "holder": "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d",
+          "power": "set-price",
+          "via": "IdleCreditVault.setApr, setAprs, setAprsWithBuffer · only the vault, which the operator drives at epoch stop"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "unclassified",
+          "via": "IdleCreditVault.setMaxApr, setWhitelistedCDO · onlyOwner (owner)"
+        },
+        {
+          "holder": "0x9438904ABC7d8944A6E2A89671fEf51C629af351",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0x9438904ABC7d8944A6E2A89671fEf51C629af351",
+        "implementation": "0xBBA97a1ca6D4966870CBE9F032Ae9c6E6546d2ee",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d": {
+      "name": "IdleCDOEpochVariant",
+      "permissions": [
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "admin",
+          "via": "IdleCDOEpochVariant.renounceOwnership, transferOwnership · onlyOwner (owner)"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "allocate",
+          "via": "IdleCDOEpochVariant.transferToken · owner, no timelock"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "pause",
+          "via": "IdleCDOEpochVariant.pause, unpause, emergencyShutdown · owner. startEpoch also pauses deposits itself"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "set-compliance",
+          "via": "IdleCDOEpochVariant._setLimit · _checkOnlyOwner() (owner)"
+        },
+        {
+          "holder": "0x1fb0f3602F52e2420aCff5CF04DBfDE96378Df58",
+          "power": "set-price",
+          "via": "IdleCDOEpochVariant.startEpoch, stopEpoch, stopEpochWithDuration · owner or the strategy manager's operator. stopEpoch sets the interest and therefore priceAA"
+        },
+        {
+          "holder": "0xc08f538b079BE6EdFb6594985e8b93784f41A2C6",
+          "power": "set-price",
+          "via": "IdleCDOEpochVariant.writeOffDeposit · borrower, and only while an epoch is running"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "set-price",
+          "via": "IdleCDOEpochVariant.startEpoch, stopEpoch, stopEpochWithDuration · owner or the strategy manager's operator. stopEpoch sets the interest and therefore priceAA"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "set-price",
+          "via": "IdleCDOEpochVariant.updateAccounting · _checkOnlyOwnerOrGuardian() (owner (guardian is an internal variable, initialized to the owner; no public getter))"
+        },
+        {
+          "holder": "0x1fb0f3602F52e2420aCff5CF04DBfDE96378Df58",
+          "power": "unclassified",
+          "via": "IdleCDOEpochVariant.setEpochParams, setInstantWithdrawParams, setIsDepositDuringEpochDisabled +1 more · _checkOnlyOwnerOrManager() (owner or the strategy manager's operator)"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "unclassified",
+          "via": "IdleCDOEpochVariant.setBBDepositEnabled, setFeeParams, setGuardian +4 more · _checkOnlyOwner() (owner)"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "unclassified",
+          "via": "IdleCDOEpochVariant.setEpochParams, setInstantWithdrawParams, setIsDepositDuringEpochDisabled +1 more · _checkOnlyOwnerOrManager() (owner or the strategy manager's operator)"
+        },
+        {
+          "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+          "power": "unclassified",
+          "via": "IdleCDOEpochVariant.setIsDepositDuringEpochDisabled · _checkOnlyOwnerOrGuardian() (owner (guardian is an internal variable, initialized to the owner; no public getter))"
+        },
+        {
+          "holder": "0x9438904ABC7d8944A6E2A89671fEf51C629af351",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0x9438904ABC7d8944A6E2A89671fEf51C629af351",
+        "implementation": "0x67F839a44E8B6d2CD403d9cB14f3862F2b85E9f8",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xC26A6Fa2C37b38E549a4a1807543801Db684f99C": {
+      "name": "IdleCDOTranche",
+      "permissions": [
+        {
+          "holder": "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d",
+          "power": "burn-from",
+          "via": "IdleCDOTranche.burn · minter is the vault"
+        },
+        {
+          "holder": "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d",
+          "power": "mint",
+          "via": "IdleCDOTranche.mint · minter is the vault"
+        }
+      ],
+      "role": "token",
+      "verified": true
+    },
+    "0xacbb25b7DD30B6B2F7131865Dc1023622de3b3D6": {
+      "name": "IdleCDOTranche",
+      "permissions": [
+        {
+          "holder": "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d",
+          "power": "burn-from",
+          "via": "IdleCDOTranche.burn · minter is the vault"
+        },
+        {
+          "holder": "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d",
+          "power": "mint",
+          "via": "IdleCDOTranche.mint · minter is the vault"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x1fb0f3602F52e2420aCff5CF04DBfDE96378Df58": {
+      "kind": "eoa"
+    },
+    "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d": {
+      "controllers": [
+        "0x1fb0f3602F52e2420aCff5CF04DBfDE96378Df58",
+        "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814"
+      ],
+      "kind": "contract",
+      "name": "IdleCDO"
+    },
+    "0x9438904ABC7d8944A6E2A89671fEf51C629af351": {
+      "kind": "proxy-admin",
+      "owner": "0xDa86e15d0Cda3A05Db930b248d7a2f775e575A44"
+    },
+    "0xDa86e15d0Cda3A05Db930b248d7a2f775e575A44": {
+      "executors": [
+        "0xE5Dab8208c1F4cce15883348B72086dBace3e64B",
+        "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
+        "0xeA173648F959790baea225cE3E75dF8A53a6BDE5"
+      ],
+      "kind": "timelock",
+      "minDelaySeconds": 86400,
+      "proposers": [
+        "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814"
+      ]
+    },
+    "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814": {
+      "kind": "safe",
+      "modules": [
+        "0xCFbFaC74C26F8647cBDb8c5caf80BB5b32E43134"
+      ],
+      "owners": [
+        "0x56d103d2f62bD8aBC278E7E154e46d23B7bE8D41",
+        "0x03a9A81D2a8e0FdcD08dB937A7Eb831a37E7Bd8d",
+        "0xD01CD14a7Ee3d032d84F993a7eEa98F1aB86d8F9",
+        "0xE5Dab8208c1F4cce15883348B72086dBace3e64B",
+        "0xeA173648F959790baea225cE3E75dF8A53a6BDE5",
+        "0x1504d6b71321E628516C4c7f3FD5f6c3F4BF67B7"
+      ],
+      "threshold": 3
+    },
+    "0xc08f538b079BE6EdFb6594985e8b93784f41A2C6": {
+      "kind": "eoa"
+    }
+  },
+  "timestamp": "2026-10-14T10:22:23Z"
+}

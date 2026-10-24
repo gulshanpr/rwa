@@ -1,6 +1,125 @@
-import { bigint, doublePrecision, index, integer, jsonb, pgTable, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { bigint, boolean, doublePrecision, index, integer, jsonb, pgTable, primaryKey, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 
 const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
+
+// Catalog: curated and discovered data. Postgres is where it is edited; `bun rwa export` writes the Git copy.
+
+export const entity = pgTable("entity", {
+  slug: text("slug").primaryKey(),
+  name: text("name").notNull(),
+  types: text("types").array().notNull(),
+  jurisdiction: text("jurisdiction"),
+  lei: text("lei"),
+  website: text("website"),
+  createdAt: ts("created_at").notNull().defaultNow(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+export const asset = pgTable("asset", {
+  slug: text("slug").primaryKey(),
+  name: text("name").notNull(),
+  ticker: text("ticker").notNull(),
+  assetClass: text("asset_class").notNull(),
+  description: text("description").notNull(),
+  issuer: text("issuer").notNull().references(() => entity.slug),
+  manager: text("manager").notNull().references(() => entity.slug),
+  platform: text("platform").notNull().references(() => entity.slug),
+  tokenStandard: text("token_standard").notNull(),
+  priceModel: text("price_model").notNull(),
+  sample: boolean("sample").notNull().default(false),
+  status: text("status").notNull().default("published"),
+  externalIds: jsonb("external_ids").notNull().default({}),
+  createdAt: ts("created_at").notNull().defaultNow(),
+  updatedAt: ts("updated_at").notNull().defaultNow(),
+});
+
+export const deployment = pgTable(
+  "deployment",
+  {
+    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    chain: text("chain").notNull(),
+    position: integer("position").notNull(),
+    token: text("token").notNull(),
+    /** [address, label] pairs; an array because jsonb does not keep object key order. */
+    labels: jsonb("labels").$type<[string, string][]>().notNull().default([]),
+    ignoreMethods: text("ignore_methods").array().notNull().default(sql`'{}'::text[]`),
+    poolId: text("pool_id"),
+  },
+  (t) => [primaryKey({ columns: [t.assetSlug, t.chain] })],
+);
+
+/**
+ * One row per curated field (path into AssetSchema, e.g. "legal.lei"). `body` is the field exactly as the
+ * schema defines it (Sourced, Disclosed, an array of sourced items, or a price reference). Append-only:
+ * an edit supersedes the current row, so history is kept.
+ */
+export const fact = pgTable(
+  "fact",
+  {
+    id: serial("id").primaryKey(),
+    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    path: text("path").notNull(),
+    body: jsonb("body").notNull(),
+    status: text("status").notNull(),
+    sourceUrl: text("source_url"),
+    checkedAt: text("checked_at"),
+    enteredBy: text("entered_by").notNull(),
+    createdAt: ts("created_at").notNull().defaultNow(),
+    supersededAt: ts("superseded_at"),
+  },
+  (t) => [
+    uniqueIndex("fact_current").on(t.assetSlug, t.path).where(sql`superseded_at is null`),
+    index("fact_asset").on(t.assetSlug),
+  ],
+);
+
+export const discoverySnapshot = pgTable(
+  "discovery_snapshot",
+  {
+    id: serial("id").primaryKey(),
+    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    chain: text("chain").notNull(),
+    block: bigint("block", { mode: "number" }).notNull(),
+    ts: ts("ts").notNull(),
+    toolVersion: text("tool_version").notNull(),
+    sample: boolean("sample").notNull().default(false),
+    contracts: jsonb("contracts").notNull(),
+    holders: jsonb("holders").notNull(),
+    extra: jsonb("extra").notNull().default({}),
+    diffSummary: text("diff_summary").array().notNull().default(sql`'{}'::text[]`),
+    status: text("status").notNull().default("approved"),
+    reviewedBy: text("reviewed_by"),
+    createdAt: ts("created_at").notNull().defaultNow(),
+  },
+  (t) => [index("discovery_snapshot_asset").on(t.assetSlug, t.chain, t.block)],
+);
+
+export const researchNote = pgTable(
+  "research_note",
+  {
+    id: serial("id").primaryKey(),
+    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    section: text("section").notNull(),
+    bodyMd: text("body_md").notNull(),
+    enteredBy: text("entered_by").notNull(),
+    createdAt: ts("created_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("research_note_key").on(t.assetSlug, t.section)],
+);
+
+export const handScore = pgTable(
+  "hand_score",
+  {
+    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    slice: text("slice").notNull(),
+    color: text("color").notNull(),
+    reason: text("reason").notNull().default(""),
+    enteredBy: text("entered_by").notNull(),
+    updatedAt: ts("updated_at").notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.assetSlug, t.slice] })],
+);
 
 // chain = "all" for fund-level rows (AUM across every chain).
 export const assetsSnapshot = pgTable(

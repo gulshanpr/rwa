@@ -1,0 +1,73 @@
+{
+  "asset": "jaaa",
+  "sample": false,
+  "asOf": "2026-10-14T10:48:04.507Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 281935842.404478,
+      "priceUsd": 1.0521858316446595,
+      "source": "totalSupply() · centrifuge feed"
+    },
+    {
+      "chain": "base",
+      "totalSupply": 21633261.483833,
+      "priceUsd": 1.0521858316446595,
+      "source": "totalSupply() · centrifuge feed"
+    },
+    {
+      "chain": "avalanche",
+      "totalSupply": 250000001,
+      "priceUsd": 1.0521858316446595,
+      "source": "totalSupply() · centrifuge feed"
+    },
+    {
+      "chain": "arbitrum",
+      "totalSupply": 3553,
+      "priceUsd": 1.0521858316446595,
+      "source": "totalSupply() · centrifuge feed"
+    },
+    {
+      "chain": "bsc",
+      "totalSupply": 970313.950456,
+      "priceUsd": 1.0521858316446595,
+      "source": "totalSupply() · centrifuge feed"
+    }
+  ],
+  "aum": {
+    "usd": 583482258.0068741,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+    "value": 1.0521858316446595,
+    "updatedAt": "2026-10-13T12:00:00.000Z"
+  },
+  "defiMarkets": [
+    {
+      "marketId": "0xAe05Cd22df81871bc7cC2a04BeCfb516bFe332C8:0x5a0F93D040De44e78F251b03c43be9CF317Dcf64",
+      "protocol": "aave",
+      "name": "Aave Horizon · JAAA",
+      "chain": "ethereum",
+      "loanAsset": "pool",
+      "lltv": 0.86,
+      "oracle": {
+        "address": "0xF77f2537dba4ffD60f77fACdfB2c1706364fA03d",
+        "type": "market",
+        "description": "Uses price source 0xF77f…A03d, not the issuer NAV feed; needs review."
+      },
+      "collateralUsd": 51856143.7848205,
+      "borrowUsd": 0,
+      "supplyUsd": 51856143.7848205,
+      "url": "https://app.aave.com/reserve-overview/?underlyingAsset=0x5a0f93d040de44e78f251b03c43be9cf317dcf64&marketName=proto_horizon_v3"
+    }
+  ],
+  "defiSource": {
+    "name": "Morpho API, Aave pools onchain",
+    "url": "https://app.morpho.org"
+  }
+}

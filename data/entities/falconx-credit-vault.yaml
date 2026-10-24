@@ -1,0 +1,5 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: falconx-credit-vault
+name: FalconX Credit Vault
+type: [issuer]
+jurisdiction: MH

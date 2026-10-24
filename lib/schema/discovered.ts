@@ -8,6 +8,7 @@ export const Power = z.enum([
   "force-transfer",
   "burn-from",
   "set-price",
+  "allocate",
   "freeze",
   "pause",
   "set-compliance",

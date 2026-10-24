@@ -71,7 +71,7 @@ export async function ozStandard(ctx: Context, address: Address, implementation:
     (modifier) => {
       if (modifier === "onlyOwner") return owner ? { holders: [getAddress(owner)], label: "owner()" } : undefined;
       const m = /^onlyRole\((\w+)\)$/.exec(modifier);
-      if (m) return { holders: byName.get(m[1]) ?? [], label: m[1] };
+      if (m) return { holders: members.get(m[1] === "DEFAULT_ADMIN_ROLE" ? zeroHash : keccak256(toHex(m[1]))) ?? [], label: m[1] };
       if (/^only(Proxy|Initializing|Delegated)/.test(modifier)) return undefined;
       return { holders: owner ? [getAddress(owner)] : [], label: "unrecognized modifier, needs review" };
     },

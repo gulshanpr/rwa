@@ -6,21 +6,18 @@ import { SliceDot } from "@/components/risk/slice-dot";
 import { Card } from "@/components/ui/card";
 import { tabMetadata } from "@/lib/asset-meta";
 import { formatDate } from "@/lib/format";
-import { entityName, getProfile } from "@/lib/profile";
+import { getProfile, nameOf } from "@/lib/profile";
 import { disclosureChecks } from "@/lib/scoring/disclosure";
 import { repoNewIssueUrl } from "@/lib/site";
 
 export const generateMetadata = tabMetadata("Disclosure");
 
-function renderValue(value: unknown): string {
-  if (typeof value === "string") return entityName(value);
-  return String(value);
-}
-
 export default async function DisclosurePage({ params }: PageProps<"/assets/[slug]/disclosure">) {
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score } = profile;
+  const entityName = (s: string) => nameOf(profile, s);
+  const renderValue = (value: unknown) => (typeof value === "string" ? entityName(value) : String(value));
   const checks = disclosureChecks(asset);
   const slice = score.slices.disclosure;
 

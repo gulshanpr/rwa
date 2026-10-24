@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: maple-international-operations-spc
+name: Maple International Operations SPC (Secured Loan Segregated Portfolio 1)
+type: [issuer]
+jurisdiction: KY
+lei: 984500AEHEB0A6C97D08

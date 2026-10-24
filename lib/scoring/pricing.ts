@@ -7,18 +7,41 @@ export type OracleFreshness = "on-schedule" | "late" | "stale" | "missing";
 
 export interface OracleAge {
   ageSeconds: number;
+  /** Age that counts against the cadence: weekends are left out for business-day feeds. */
+  scheduledAgeSeconds: number;
   cadenceSeconds: number;
+  businessDaysOnly: boolean;
   ratio: number;
   freshness: OracleFreshness;
+}
+
+const DAY_SECONDS = 86400;
+
+/** Seconds between two instants that fall on Saturday or Sunday (UTC). */
+function weekendSeconds(from: number, to: number): number {
+  let total = 0;
+  for (let day = Math.floor(from / DAY_SECONDS); day * DAY_SECONDS < to; day++) {
+    const weekday = new Date(day * DAY_SECONDS * 1000).getUTCDay();
+    if (weekday !== 0 && weekday !== 6) continue;
+    total += Math.max(0, Math.min(to, (day + 1) * DAY_SECONDS) - Math.max(from, day * DAY_SECONDS));
+  }
+  return total;
+}
+
+export function feedAgeSeconds(ref: { businessDaysOnly: boolean }, updatedAt: Date | string, now: Date | string): number {
+  const from = new Date(updatedAt).getTime() / 1000;
+  const to = new Date(now).getTime() / 1000;
+  return Math.max(0, Math.round(to - from - (ref.businessDaysOnly ? weekendSeconds(from, to) : 0)));
 }
 
 export function oracleAge(asset: Asset, live: Live | undefined): OracleAge | undefined {
   const ref = asset.pricing.reference;
   if (ref.type !== "oracle" || !live?.oracle) return undefined;
   const ageSeconds = secondsBetween(live.oracle.updatedAt, live.asOf);
-  const ratio = ageSeconds / ref.cadenceSeconds;
+  const scheduledAgeSeconds = feedAgeSeconds(ref, live.oracle.updatedAt, live.asOf);
+  const ratio = scheduledAgeSeconds / ref.cadenceSeconds;
   const freshness: OracleFreshness = ratio > 3 ? "stale" : ratio > 1 ? "late" : "on-schedule";
-  return { ageSeconds, cadenceSeconds: ref.cadenceSeconds, ratio, freshness };
+  return { ageSeconds, scheduledAgeSeconds, cadenceSeconds: ref.cadenceSeconds, businessDaysOnly: ref.businessDaysOnly, ratio, freshness };
 }
 
 export function scorePricing(asset: Asset, live: Live | undefined): SliceResult {
@@ -32,12 +55,20 @@ export function scorePricing(asset: Asset, live: Live | undefined): SliceResult 
     return sliceFromReasons("pricing", reasons, "");
   }
 
+  if (ref.type === "vault") {
+    if (ref.writer === "eoa") add("eoa", "red", "A single key can write the onchain NAV down or back up, for example by marking loans as impaired.");
+    else if (ref.writer === "issuer-multisig") add("issuer-writer", "yellow", "The issuer's own multisig can write the onchain NAV down or back up.");
+    if (ref.dataOrigin === "issuer") add("issuer-origin", "yellow", "The NAV is the issuer's own accounting, not a fund administrator's or custodian's.");
+    if (!ref.historyOnchain) add("history", "yellow", "Price history isn't kept onchain.");
+    return sliceFromReasons("pricing", reasons, "The token's own contract computes the NAV and nobody can override it.");
+  }
+
   const age = oracleAge(asset, live);
   if (ref.writer === "eoa") add("eoa", "red", "A single key writes the onchain price.");
   if (age?.freshness === "stale")
     add("stale", "red", `The onchain price hasn't updated in ${formatDuration(age.ageSeconds)}; lending markets may misprice it.`);
   else if (age?.freshness === "late")
-    add("late", "yellow", `The onchain price is ${formatDuration(age.ageSeconds - age.cadenceSeconds)} late.`);
+    add("late", "yellow", `The onchain price is ${formatDuration(age.scheduledAgeSeconds - age.cadenceSeconds)} late${age.businessDaysOnly ? " (not counting weekends)" : ""}.`);
 
   if (ref.writer === "issuer-multisig") add("issuer-writer", "yellow", "The issuer's own multisig writes the onchain price.");
   if (ref.writer === "single-provider" && ref.dataOrigin === "issuer")

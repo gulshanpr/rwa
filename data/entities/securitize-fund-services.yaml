@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: securitize-fund-services
+name: Securitize Fund Services, LLC
+type: [fund-administrator]
+jurisdiction: US
+website: https://securitize.io

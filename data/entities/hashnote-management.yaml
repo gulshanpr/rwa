@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: hashnote-management
+name: Hashnote Management LLC
+type: [manager]
+jurisdiction: US
+lei: 254900APXJHL2JE34847

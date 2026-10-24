@@ -1,0 +1,409 @@
+{
+  "asset": "jaaa",
+  "block": 127582341,
+  "chain": "bsc",
+  "contracts": {
+    "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
+      "name": "BalanceSheet",
+      "permissions": [
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0xf837a22883e004f705E0D7e1deE08e295Df30B27",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710663), moves pool escrow assets"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710663), moves pool escrow assets"
+        },
+        {
+          "holder": "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710663), moves pool escrow assets"
+        },
+        {
+          "holder": "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710663)"
+        },
+        {
+          "holder": "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710663), within one transaction"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710663), within one transaction"
+        },
+        {
+          "holder": "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710663), within one transaction"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x3C5E7B28c4fF6F0bc8d9A9587992E96401e680A7": {
+      "name": "FullRestrictions",
+      "permissions": [
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "FullRestrictions.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "admin",
+          "via": "FullRestrictions.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "freeze",
+          "via": "FullRestrictions.updateRestriction · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "freeze",
+          "via": "FullRestrictions.updateRestriction · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "set-compliance",
+          "via": "FullRestrictions.trustedCall · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "set-compliance",
+          "via": "FullRestrictions.trustedCall · auth (wards)"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x58F93d6b1EF2F44eC379Cb975657C132CBeD3B6b": {
+      "name": "ShareToken",
+      "permissions": [
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "admin",
+          "via": "ShareToken.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "ShareToken.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "admin",
+          "via": "ShareToken.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "burn-from",
+          "via": "ShareToken.burn · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "burn-from",
+          "via": "ShareToken.burn · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "burn-from",
+          "via": "ShareToken.burn · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "force-transfer",
+          "via": "ShareToken.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "force-transfer",
+          "via": "ShareToken.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "force-transfer",
+          "via": "ShareToken.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "mint",
+          "via": "ShareToken.mint · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "mint",
+          "via": "ShareToken.mint · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "mint",
+          "via": "ShareToken.mint · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "set-compliance",
+          "via": "ShareToken.file · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "set-compliance",
+          "via": "ShareToken.file · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "set-compliance",
+          "via": "ShareToken.file · auth (wards)"
+        }
+      ],
+      "role": "token",
+      "verified": true
+    },
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6": {
+      "name": "ProtocolGuardian",
+      "permissions": [
+        {
+          "holder": "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x4d47a7a89478745200Bd51c26bA87664538Df541",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        }
+      ],
+      "role": "other",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x7D260305B937242200b13DA96f2d2EFC5e36bEf8",
+        "0xaE666E05800479F9967FAf2a43E94b05fdD85cB7",
+        "0xDa2a2Bf5442E8D157957d9B72A427ee52c923aD1",
+        "0xc89D382ebc8Aff612A3493D3A07d2aA996726F3F",
+        "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+        "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9"
+      ],
+      "threshold": 2
+    },
+    "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf": {
+      "kind": "eoa"
+    },
+    "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155": {
+      "kind": "eoa"
+    },
+    "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
+      "controllers": [
+        "0x02eBc43F723B4b5e433fe7edB6d9475F13F75bc7",
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6",
+        "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+        "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7"
+      ],
+      "kind": "contract",
+      "name": "BalanceSheet"
+    },
+    "0x4d47a7a89478745200Bd51c26bA87664538Df541": {
+      "kind": "eoa"
+    },
+    "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1": {
+      "kind": "eoa"
+    },
+    "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9": {
+      "kind": "eoa"
+    },
+    "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC": {
+      "kind": "eoa"
+    },
+    "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f": {
+      "controllers": [
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "Root"
+    },
+    "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a",
+        "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf",
+        "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9",
+        "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1",
+        "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F",
+        "0x4d47a7a89478745200Bd51c26bA87664538Df541",
+        "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155",
+        "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+        "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9"
+      ],
+      "threshold": 4
+    },
+    "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "MessageProcessor"
+    },
+    "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9": {
+      "kind": "eoa"
+    },
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6": {
+      "executors": [],
+      "kind": "timelock",
+      "minDelaySeconds": 172800,
+      "proposers": [
+        "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225"
+      ]
+    },
+    "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F": {
+      "kind": "eoa"
+    },
+    "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "Spoke"
+    },
+    "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "AsyncRequestManager"
+    },
+    "0xF8b1e652453B3c2F0d378A0F7cDAC1dEe138Ece7": {
+      "kind": "contract-unknown"
+    },
+    "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xb193e82774d17301cA34c4f0B70F2f913449baBC",
+        "0xd757D6A02cD5af9AEF163D7eB8034f75ac22B553"
+      ],
+      "threshold": 1
+    },
+    "0xd55114BfE98a2ca16202Aa741BeE571765292616": {
+      "kind": "eoa"
+    },
+    "0xf837a22883e004f705E0D7e1deE08e295Df30B27": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "MessageDispatcher"
+    }
+  },
+  "timestamp": "2026-10-14T10:55:45Z"
+}

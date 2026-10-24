@@ -7,6 +7,7 @@ export const CHAINS: Record<Chain, { name: string; chainId: number; explorer: st
   base: { name: "Base", chainId: 8453, explorer: "https://basescan.org" },
   polygon: { name: "Polygon", chainId: 137, explorer: "https://polygonscan.com" },
   avalanche: { name: "Avalanche", chainId: 43114, explorer: "https://snowtrace.io" },
+  bsc: { name: "BNB Chain", chainId: 56, explorer: "https://bscscan.com" },
 };
 
 export function explorerAddress(chain: Chain, address: string): string {

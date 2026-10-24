@@ -1,7 +1,17 @@
 import { eq, sql } from "drizzle-orm";
 import { getDb, schema } from "@/db/client";
+import { getCatalog, type Catalog } from "@/lib/catalog";
 
 export const log = (job: string, msg: string) => console.error(`[${new Date().toISOString()}] ${job}: ${msg}`);
+
+// Re-read at most once a minute, so assets published in the admin reach the next job run.
+let catalogCache: { at: number; catalog: Promise<Catalog> } | undefined;
+export function catalog(): Promise<Catalog> {
+  if (!catalogCache || Date.now() - catalogCache.at > 60_000) catalogCache = { at: Date.now(), catalog: getCatalog() };
+  return catalogCache.catalog;
+}
+
+export const publishedAssets = async () => (await catalog()).assets;
 
 export async function fetchJson<T>(url: string, init: RequestInit = {}, attempts = 3): Promise<T> {
   let last: unknown;

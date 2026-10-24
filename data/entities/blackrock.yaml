@@ -1,3 +1,4 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
 slug: blackrock
 name: BlackRock Financial Management, Inc.
 type: [manager]

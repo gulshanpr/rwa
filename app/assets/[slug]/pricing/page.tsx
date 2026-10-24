@@ -12,7 +12,7 @@ import { tabMetadata } from "@/lib/asset-meta";
 import { CHAINS } from "@/lib/chains";
 import { formatDateTime, formatDuration, formatUsdFull } from "@/lib/format";
 import { PRICE_MODEL_LABELS, PROTOCOL_LABELS } from "@/lib/labels";
-import { entityName, getProfile } from "@/lib/profile";
+import { getProfile, nameOf } from "@/lib/profile";
 
 export const generateMetadata = tabMetadata("Pricing");
 
@@ -21,6 +21,13 @@ const WRITER_LABELS = {
   "issuer-multisig": "Issuer-controlled multisig",
   "single-provider": "Single data provider",
   "oracle-network": "Independent oracle network",
+} as const;
+
+const VAULT_WRITER_LABELS = {
+  eoa: "A single key (EOA) can write it down or back up",
+  "issuer-multisig": "An issuer-controlled multisig can write it down or back up",
+  governance: "Only timelocked governance can write it down",
+  none: "Nobody; it follows the contract's accounting",
 } as const;
 
 const ORIGIN_LABELS = {
@@ -33,6 +40,7 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
   const { asset, score, stats, live } = profile;
+  const entityName = (s: string) => nameOf(profile, s);
   const ref = asset.pricing.reference;
   const age = stats.oracle;
 
@@ -46,6 +54,26 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
         <Card title="Onchain price reference">
           {ref.type === "none" ? (
             <EmptyUnknown topic={`${asset.ticker} onchain price`} searchedAt={ref.searchedAt} note={ref.note} />
+          ) : ref.type === "vault" ? (
+            <FactList
+              facts={[
+                {
+                  label: "Current value",
+                  value: <span className="tnum text-h2">{live?.supply[0] ? formatUsdFull(live.supply[0].priceUsd) : "—"}</span>,
+                },
+                { label: "Price model", value: PRICE_MODEL_LABELS[asset.priceModel] },
+                { label: "Computed by", value: entityName(ref.provider), source: ref.source },
+                {
+                  label: "Vault contract",
+                  value: <AddressChip address={ref.address} chain={ref.chain} kind="contract" label={CHAINS[ref.chain].name} />,
+                },
+                { label: "Method", value: <span className="font-mono text-[12px]">{ref.method}</span> },
+                { label: "Who can change it", value: VAULT_WRITER_LABELS[ref.writer], source: ref.source },
+                { label: "Data comes from", value: ORIGIN_LABELS[ref.dataOrigin], source: ref.source },
+                { label: "Expected cadence", value: "Every block (accrues continuously)" },
+                { label: "History onchain", value: ref.historyOnchain ? "Yes" : "No" },
+              ]}
+            />
           ) : (
             <FactList
               facts={[

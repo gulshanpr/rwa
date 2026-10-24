@@ -1,0 +1,5 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: superstate-ustb-fund
+name: Invesco Short Duration US Government Securities Fund, a series of Superstate Asset Trust
+type: [issuer]
+jurisdiction: US

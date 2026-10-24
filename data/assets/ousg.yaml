@@ -1,0 +1,145 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: ousg
+name: Ondo Short-Term US Government Treasuries
+ticker: OUSG
+assetClass: us-treasuries
+description: >
+  Tokenized LP interest in a Delaware fund of tokenized Treasury and money-market funds (State Street SWEEP, BlackRock BUIDL, Franklin BENJI, Fidelity FYOXX) plus USDC. Eligible holders can mint and redeem against USDC instantly, 24/7.
+issuer: ondo-i-lp
+manager: ondo-capital-management
+platform: ondo
+tokenStandard: custom
+priceModel: accumulating-nav
+
+deployments:
+  - chain: ethereum
+    token: "0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92"
+    discovery:
+      ignoreMethods: []
+      labels:
+        "0xaed4caf2e535d964165b4392342f71bac77e8367": Ondo token admin Safe
+        "0x5ae21c99fc5f1584d8cb09a298cffd92b5d178ef": Ondo oracle and registry Safe
+        "0x118919e891d0205a7492650ad32e727617fa9452": OUSG price setter Safe
+        "0x682d3d7cb33a9089c19b9b135a5db3d2c5cf20c4": OUSG price setter Safe
+        "0xeaef4335c7db4cd1d1cc3368fa43721e2798befe": OUSG price setter Safe (shares all 6 owners with 0x682d…20c4)
+        "0x2e55b738f5969eea10fb67e326bee5e2fa15a2cc": Ondo pauser Safe
+        "0x93358db73b6cd4b98d89c8f5f230e81a95c2643a": OUSG InstantManager
+        "0x0502c5ae08e7cd64fe1aeda7d6e229413ecc6abe": OUSG price oracle (docs call it legacy; still live)
+        "0xf67416a2c49f6a46fee1c47681c5a3832cf8856c": ousg.eth Coinbase Prime USDC deposit
+        "0x059bc3dbe522da79b346643d420e927ba1eb61a9": OUSG registrar key (rwaRole in OndoIDRegistry)
+
+access:
+  investorType:
+    value: qualified-purchaser
+    source: { url: "https://docs.ondo.finance/trust-and-security", note: "Accredited Investors and Qualified Purchasers, 3(c)(7), Reg D 506(c); US persons eligible", checkedAt: 2026-10-13 }
+  minimumInvestment:
+    status: public
+    value: 5000
+    source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "$5,000 instant mint/redeem; non-instant $100K subscribe, $50K redeem. Onchain minimumDepositUSD = 5,000.", checkedAt: 2026-10-13 }
+  transferRestricted:
+    value: true
+    source: { url: "https://docs.ondo.finance/addresses", note: "kycRegistry() = OndoIDRegistryView 0x56a5…63e7, requirement group 1. Holders, including contracts and liquidators, must be registered in OndoIDRegistry 0xcf69…97df.", checkedAt: 2026-10-13 }
+
+serviceProviders:
+  custodian:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: Only the Coinbase Prime USDC deposit account (ousg.eth) is named; the custodian of the underlying fund shares is not public
+  fundAdministrator:
+    status: public
+    value: nav-fund-services
+    source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/trust-and-transparency", note: "'our fund administrator (NAV Consulting) has direct, read-only access to all of the Fund's accounts daily'. Ondo reconciles its own daily NAV against NAV Consulting's.", checkedAt: 2026-10-24 }
+  auditor:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: Ondo says the fund is audited every year but does not name the firm
+  transferAgent:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: KYC/AML is "administered by the General Partner"
+
+legal:
+  vehicleType:
+    status: public
+    value: Delaware limited partnership (3(c)(7) private fund); GP Ondo I GP LLC
+    source: { url: "https://docs.ondo.finance/trust-and-security", checkedAt: 2026-10-13 }
+  jurisdiction:
+    status: public
+    value: Delaware, United States
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001957431", checkedAt: 2026-10-13 }
+  lei:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: GLEIF has no record for Ondo I LP or Ondo Finance
+  secFilings:
+    status: public
+    value: { cik: "0001957431", forms: [D, D/A] }
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001957431", note: "Form D 2023-01-11; D/A 2024-01-19, 2025-01-21, 2026-01-20", checkedAt: 2026-10-13 }
+  offeringDocument:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: Available to onboarded investors only
+  auditedFinancials:
+    status: not_public
+    searchedAt: 2026-10-13
+  insolvency:
+    status: not_public
+    searchedAt: 2026-10-13
+    note: No statement on asset segregation or bankruptcy remoteness found
+
+pricing:
+  reference:
+    type: oracle
+    provider: ondo
+    chain: ethereum
+    address: "0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe"
+    writer: issuer-multisig
+    dataOrigin: issuer
+    cadenceSeconds: 86400
+    businessDaysOnly: true
+    read:
+      decimals: 18
+      value: { fn: "function getPriceData() view returns (uint256, uint256)", index: 0 }
+      updatedAt: { fn: "function getPriceData() view returns (uint256, uint256)", index: 1 }
+    historyOnchain: true
+    source: { url: "https://docs.ondo.finance/addresses", note: "RWAOracleExternalComparisonCheck, read by InstantManager through OndoOracle and OUSGOracleWrapper. setPrice is held by three issuer Safes (3/5, 3/6, 2/6). Each update must stay within ±74 bps of the Chainlink SHV move and 200 bps absolute, at least 23h apart. Updates every business day (weekends skipped in the RWAExternalComparisonCheckPriceSet logs). USDC is hardcoded at $1.00 in OndoOracle for instant mint and redeem.", checkedAt: 2026-10-13 }
+
+verification:
+  methods:
+    - type: self-reported
+      provider: ondo
+      independent: false
+      assetLevel: true
+      frequency: daily
+      cryptographicallyVerifiable: false
+      onchain: false
+      source: { url: "https://ondo.finance/ousg", note: "Holdings by underlying fund, 'As of' about daily. The product-page FAQ is stale and contradicts its own holdings table (10k.nyxshcon.org). The underlying BUIDL tokens are visible onchain but no third party reconciles them.", checkedAt: 2026-10-13 }
+
+exit:
+  redemption:
+    available:
+      value: true
+      source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Instant onchain redeem to USDC through OUSG_InstantManager, or non-instant through Ondo support", checkedAt: 2026-10-13 }
+    whoCanRedeem:
+      value: whitelisted-holders
+      source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Onboarded investors registered in OndoIDRegistry", checkedAt: 2026-10-13 }
+    settlement:
+      status: public
+      value: T+0
+      source: { url: "https://ondo.finance/ousg", note: "Instant, 24/7, 0% fee. Non-instant timing is not public.", checkedAt: 2026-10-13 }
+    gatesOrSuspension:
+      status: public
+      value: stated-limits
+      source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/instant-limits", note: "OndoRateLimiter 0x98db…003c at block 26,261,719: globalRedemptionLimits $50M and globalSubscriptionLimits $100M per 24h. The docs page says $50M for both, plus $25M per investor per 24h (per-investor limits not read onchain). Larger amounts go through non-instant requests. pauseRedeem/pauseSubscribe are held by a 1-of-9 Safe (0x2e55…a2cc). Fund-level suspension terms are in the non-public offering documents.", checkedAt: 2026-10-24 }
+  instantLiquidity:
+    - type: offramp-contract
+      label: OUSG InstantManager (USDC, through OndoTokenRouter)
+      chain: ethereum
+      address: "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a"
+      source: { url: "https://docs.ondo.finance/addresses", note: "Global limit $50M per day (about 16% of the ~$320M reported AUM). The USDC actually available behind OndoTokenRouter 0x99b8…d7bc was not measured.", checkedAt: 2026-10-13 }
+
+externalIds:
+  defillama: null
+  defillamaStablecoin: null
+  rwaxyz: OUSG
+  coingecko: ousg

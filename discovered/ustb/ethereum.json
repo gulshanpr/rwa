@@ -1,0 +1,133 @@
+{
+  "asset": "ustb",
+  "block": 26183258,
+  "chain": "ethereum",
+  "contracts": {
+    "0x43415eB6ff9DB7E26A15b704e7A3eDCe97d31C4e": {
+      "name": "FundToken",
+      "permissions": [
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "admin",
+          "via": "FundToken.transferOwnership · onlyOwner (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "allocate",
+          "via": "FundToken.setStablecoinConfig · _requireAuth() (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "burn-from",
+          "via": "FundToken.adminBurn · _requireAuth() (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "mint",
+          "via": "FundToken.bulkMint · _requireAuth() (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "mint",
+          "via": "FundToken.mint · onlyOwner (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "pause",
+          "via": "FundToken.accountingPause, accountingUnpause · _requireAuth() (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "pause",
+          "via": "FundToken.pause, unpause · onlyOwner (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "set-compliance",
+          "via": "FundToken.setAllowlist · _requireAuth() (owner())"
+        },
+        {
+          "holder": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83",
+          "power": "set-price",
+          "via": "FundToken.setMaximumOracleDelay, setOracle · _requireAuth() (owner())"
+        },
+        {
+          "holder": "0xb9d285DCaD879513DC9c1A3b2e0CCcB21c3c2146",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xb9d285DCaD879513DC9c1A3b2e0CCcB21c3c2146",
+        "implementation": "0xB3ac55dd09aA70E9BfBb12F45CD38A1F1597588C",
+        "type": "eip1967"
+      },
+      "role": "token",
+      "verified": true
+    },
+    "0xBcBC2b4FB2AbE1C598C9ea91E0b03338e4728D1f": {
+      "name": "AllowlistV4_2",
+      "permissions": [
+        {
+          "holder": "0x7747940aDBc7191f877a9B90596E0DA4f8deb2Fe",
+          "power": "admin",
+          "via": "AllowlistV4_2.transferOwnership · onlyOwner (owner())"
+        },
+        {
+          "holder": "0x7747940aDBc7191f877a9B90596E0DA4f8deb2Fe",
+          "power": "freeze",
+          "via": "AllowlistV4_2.setAllowed, setAllowedBatch · onlyOwner (owner())"
+        },
+        {
+          "holder": "0xbD09445048322ed9d83F99cEdE8f8dc0fc0FBD46",
+          "power": "upgrade",
+          "via": "Proxy upgrade · eip1967 admin"
+        }
+      ],
+      "proxy": {
+        "admin": "0xbD09445048322ed9d83F99cEdE8f8dc0fc0FBD46",
+        "implementation": "0x2151706cb4763C20381a8860E25A713f6E1E3B93",
+        "type": "eip1967"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xE4fA682f94610cCd170680cc3B045d77D9E528a8": {
+      "name": "SuperstateOracle",
+      "permissions": [
+        {
+          "holder": "0x4B1df64357a5D484563c9b7c16a80eD8B8fB1395",
+          "power": "admin",
+          "via": "SuperstateOracle.transferOwnership · onlyOwner (owner())"
+        },
+        {
+          "holder": "0x4B1df64357a5D484563c9b7c16a80eD8B8fB1395",
+          "power": "set-price",
+          "via": "SuperstateOracle.addCheckpoint, addCheckpoints, setMaximumAcceptablePriceDelta · onlyOwner (owner())"
+        }
+      ],
+      "role": "oracle",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x4B1df64357a5D484563c9b7c16a80eD8B8fB1395": {
+      "kind": "eoa"
+    },
+    "0x7747940aDBc7191f877a9B90596E0DA4f8deb2Fe": {
+      "kind": "eoa"
+    },
+    "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83": {
+      "kind": "eoa"
+    },
+    "0xb9d285DCaD879513DC9c1A3b2e0CCcB21c3c2146": {
+      "kind": "proxy-admin",
+      "owner": "0xad309BB6f13074128b4F23EF9EA2fe8552AfCA83"
+    },
+    "0xbD09445048322ed9d83F99cEdE8f8dc0fc0FBD46": {
+      "kind": "proxy-admin",
+      "owner": "0x7747940aDBc7191f877a9B90596E0DA4f8deb2Fe"
+    }
+  },
+  "timestamp": "2026-10-13T11:25:47Z"
+}

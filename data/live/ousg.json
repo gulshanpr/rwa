@@ -1,0 +1,31 @@
+{
+  "asset": "ousg",
+  "sample": false,
+  "asOf": "2026-10-13T17:36:48.183Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 1148069.8837030693,
+      "priceUsd": 116.876975,
+      "source": "totalSupply() · ondo feed"
+    }
+  ],
+  "aum": {
+    "usd": 134182935.09581654,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe",
+    "value": 116.876975,
+    "updatedAt": "2026-10-12T22:58:11.000Z"
+  },
+  "defiMarkets": [],
+  "defiSource": {
+    "name": "Morpho API; Aave v3 Core and Horizon pools onchain (not listed)",
+    "url": "https://api.morpho.org/graphql"
+  }
+}

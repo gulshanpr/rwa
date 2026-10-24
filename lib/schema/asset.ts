@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Address, Disclosed, IsoDate, Source, Sourced } from "./sourced";
 
-export const Chain = z.enum(["ethereum", "arbitrum", "optimism", "base", "polygon", "avalanche"]);
+export const Chain = z.enum(["ethereum", "arbitrum", "optimism", "base", "polygon", "avalanche", "bsc"]);
 export const AssetClass = z.enum(["us-treasuries", "private-credit"]);
 export const TokenStandard = z.enum(["ds-protocol", "erc3643", "erc4626", "oz-erc20", "custom"]);
 export const PriceModel = z.enum(["stable-nav", "accumulating-nav", "market"]);
@@ -9,9 +9,10 @@ export const InvestorType = z.enum([
   "qualified-purchaser",
   "accredited-investor",
   "non-us-professional",
+  "non-us-persons",
   "retail",
 ]);
-export const Frequency = z.enum(["realtime", "daily", "weekly", "monthly", "quarterly", "annual"]);
+export const Frequency = z.enum(["realtime", "daily", "weekly", "monthly", "quarterly", "annual", "unstated"]);
 
 const Deployment = z.object({
   chain: Chain,
@@ -20,8 +21,20 @@ const Deployment = z.object({
     .object({
       ignoreMethods: z.array(z.string()).default([]),
       labels: z.record(z.string(), z.string()).default({}),
+      /** Centrifuge pool id. Hub and BalanceSheet are shared by every pool, so their events are filtered by it. */
+      poolId: z.string().regex(/^\d+$/).optional(),
     })
     .default({ ignoreMethods: [], labels: {} }),
+});
+
+/**
+ * One view call on the price contract. `args` are literal values, or `$value.<n>` for output n of the value call.
+ * `index` picks one output of a multi-output function.
+ */
+const FeedCall = z.object({
+  fn: z.string().startsWith("function "),
+  args: z.array(z.string()).default([]),
+  index: z.number().int().nonnegative().default(0),
 });
 
 const PriceReference = z.discriminatedUnion("type", [
@@ -33,6 +46,22 @@ const PriceReference = z.discriminatedUnion("type", [
     writer: z.enum(["eoa", "issuer-multisig", "single-provider", "oracle-network"]),
     dataOrigin: z.enum(["issuer", "fund-administrator", "custodian"]),
     cadenceSeconds: z.number().int().positive(),
+    /** The feed only updates on business days, so weekends don't count towards its age. */
+    businessDaysOnly: z.boolean().default(false),
+    /** How to read a feed that isn't Chainlink-style (`latestRoundData()` + `decimals()`). */
+    read: z.object({ value: FeedCall, updatedAt: FeedCall, decimals: z.number().int().nonnegative() }).optional(),
+    historyOnchain: z.boolean(),
+    source: Source,
+  }),
+  /** NAV computed by the token contract's own accounting (ERC-4626 vaults). Nothing to go stale, but someone can write it down. */
+  z.object({
+    type: z.literal("vault"),
+    provider: z.string(),
+    chain: Chain,
+    address: Address,
+    method: z.string(),
+    writer: z.enum(["eoa", "issuer-multisig", "governance", "none"]),
+    dataOrigin: z.enum(["issuer", "fund-administrator", "custodian"]),
     historyOnchain: z.boolean(),
     source: Source,
   }),
@@ -80,7 +109,7 @@ export const AssetSchema = z.object({
 
   access: z.object({
     investorType: Sourced(InvestorType),
-    minimumInvestment: Sourced(z.number()),
+    minimumInvestment: Disclosed(z.number()),
     transferRestricted: Sourced(z.boolean()),
   }),
 

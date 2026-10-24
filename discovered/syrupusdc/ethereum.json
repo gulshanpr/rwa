@@ -1,0 +1,468 @@
+{
+  "asset": "syrupusdc",
+  "block": 26176587,
+  "chain": "ethereum",
+  "contracts": {
+    "0x1bc47a0Dd0FdaB96E9eF982fdf1F34DC6207cfE3": {
+      "name": "MapleWithdrawalManager",
+      "permissions": [
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "upgrade",
+          "via": "MapleWithdrawalManager.upgrade · securityAdmin, no delay, to any version the governor registered on the WithdrawalManager factory (the pool delegate can also upgrade after a 7-day scheduled call)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xF95E5722226a1018d058CD757B75F1D10289e967",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x4A1c3F0D9aD0b3f9dA085bEBfc22dEA54263371b": {
+      "name": "LoanManager",
+      "permissions": [
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "allocate",
+          "via": "LoanManager.fund, rejectNewTerms, acceptNewTerms · pool delegate (only to loans whose borrower the governor or operationalAdmin approved)"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-price",
+          "via": "LoanManager.impairLoan, removeLoanImpairment · pool delegate or governor (marks a loan's value down or back up in the NAV)"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "set-price",
+          "via": "LoanManager.impairLoan, removeLoanImpairment · pool delegate or governor (marks a loan's value down or back up in the NAV)"
+        },
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "upgrade",
+          "via": "LoanManager.upgrade · securityAdmin, no delay, to any version the governor registered on the LoanManager factory (the pool delegate can also upgrade after a 7-day scheduled call)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x5b97c9DccE2693844b90Cea40ba1fD15Bf99Eb01",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x560B3A85Af1cEF113BB60105d0Cf21e1d05F91d4": {
+      "name": "MapleAaveStrategy",
+      "permissions": [
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "allocate",
+          "via": "MapleAaveStrategy.fundStrategy, withdrawFromStrategy · pool delegate or a STRATEGY_MANAGER instance registered in Globals"
+        },
+        {
+          "holder": "0xfB2C579c1D5f82C7b0f2a3479e5F9bC26bd22b62",
+          "power": "allocate",
+          "via": "MapleAaveStrategy.fundStrategy, withdrawFromStrategy · pool delegate or a STRATEGY_MANAGER instance registered in Globals"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-price",
+          "via": "MapleAaveStrategy.impairStrategy, deactivateStrategy, reactivateStrategy · pool delegate, governor or operationalAdmin (changes how the strategy's assets count in the NAV)"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "set-price",
+          "via": "MapleAaveStrategy.impairStrategy, deactivateStrategy, reactivateStrategy · pool delegate, governor or operationalAdmin (changes how the strategy's assets count in the NAV)"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "set-price",
+          "via": "MapleAaveStrategy.impairStrategy, deactivateStrategy, reactivateStrategy · pool delegate, governor or operationalAdmin (changes how the strategy's assets count in the NAV)"
+        },
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "upgrade",
+          "via": "MapleAaveStrategy.upgrade · securityAdmin, no delay, to any version the governor registered on the strategy factory (the pool delegate can also upgrade after a 7-day scheduled call)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xFc8F7F97165d446B02Cc95363d2cA31154BBe9F9",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x6ACEb4cAbA81Fa6a8065059f3A944fb066A10fAc": {
+      "name": "LoanManager",
+      "permissions": [
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "allocate",
+          "via": "LoanManager.fund, callPrincipal, removeCall +2 more · pool delegate (only to loans whose borrower the governor or operationalAdmin approved)"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-price",
+          "via": "LoanManager.impairLoan, removeLoanImpairment · pool delegate or governor (marks a loan's value down or back up in the NAV)"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "set-price",
+          "via": "LoanManager.impairLoan, removeLoanImpairment · pool delegate or governor (marks a loan's value down or back up in the NAV)"
+        },
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "upgrade",
+          "via": "LoanManager.upgrade · securityAdmin, no delay, to any version the governor registered on the LoanManager factory (the pool delegate can also upgrade after a 7-day scheduled call)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xbAD003DA1e107f537Ae2f687f5FE7a7aFFe9B241",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x7aD5fFa5fdF509E30186F4609c2f6269f4B6158F": {
+      "name": "MaplePoolManager",
+      "permissions": [
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "allocate",
+          "via": "MaplePoolManager.addStrategy · governor or operationalAdmin"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "allocate",
+          "via": "MaplePoolManager.setIsStrategy · pool delegate, governor or operationalAdmin (turns a strategy that can pull pool funds on or off)"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "allocate",
+          "via": "MaplePoolManager.setIsStrategy · pool delegate, governor or operationalAdmin (turns a strategy that can pull pool funds on or off)"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "allocate",
+          "via": "MaplePoolManager.addStrategy · governor or operationalAdmin"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "allocate",
+          "via": "MaplePoolManager.setIsStrategy · pool delegate, governor or operationalAdmin (turns a strategy that can pull pool funds on or off)"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-compliance",
+          "via": "MaplePoolManager.setLiquidityCap, setPoolPermissionManager · governor or operationalAdmin"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "set-compliance",
+          "via": "MaplePoolManager.setLiquidityCap, setPoolPermissionManager · governor or operationalAdmin"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-price",
+          "via": "MaplePoolManager.triggerDefault, finishCollateralLiquidation · pool delegate, governor or operationalAdmin (realizes loan losses into the NAV)"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "set-price",
+          "via": "MaplePoolManager.triggerDefault, finishCollateralLiquidation · pool delegate, governor or operationalAdmin (realizes loan losses into the NAV)"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "set-price",
+          "via": "MaplePoolManager.triggerDefault, finishCollateralLiquidation · pool delegate, governor or operationalAdmin (realizes loan losses into the NAV)"
+        },
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "upgrade",
+          "via": "MaplePoolManager.upgrade · securityAdmin, no delay, to any version the governor registered on the PoolManager factory (the pool delegate can also upgrade after a 7-day scheduled call)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xfE02Be1aD28EdFd8e3dD6F29C402B244C2A258B8",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x804a6F5F667170F545Bf14e5DDB48C70B788390C": {
+      "name": "MapleGlobals",
+      "permissions": [
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "admin",
+          "via": "MapleGlobals.setSecurityAdmin, setOperationalAdmin, setPendingGovernor +6 more · governor"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "admin",
+          "via": "MapleGlobals.setValidBorrower, setValidPoolDelegate, setValidInstanceOf +2 more · governor or operationalAdmin (approves borrowers, pool delegates and bots)"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "admin",
+          "via": "MapleGlobals.setValidBorrower, setValidPoolDelegate, setValidInstanceOf +2 more · governor or operationalAdmin (approves borrowers, pool delegates and bots)"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "pause",
+          "via": "MapleGlobals.setProtocolPause, setContractPause, setFunctionUnpause · governor or securityAdmin"
+        },
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "pause",
+          "via": "MapleGlobals.setProtocolPause, setContractPause, setFunctionUnpause · governor or securityAdmin"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-price",
+          "via": "MapleGlobals.setManualOverridePrice, setPriceOracle · governor (collateral price oracles used for liquidations)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0x9BeAbb1B6F3ad1DdB87b65148BA5Eb6102334956",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b": {
+      "name": "MaplePool",
+      "permissions": [],
+      "role": "token",
+      "verified": true
+    },
+    "0x859C9980931fa0A63765fD8EF2e29918Af5b038C": {
+      "name": "MapleSkyStrategy",
+      "permissions": [
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "allocate",
+          "via": "MapleSkyStrategy.setPsm · pool delegate, governor or operationalAdmin"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "allocate",
+          "via": "MapleSkyStrategy.fundStrategy, withdrawFromStrategy · pool delegate or a STRATEGY_MANAGER instance registered in Globals"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "allocate",
+          "via": "MapleSkyStrategy.setPsm · pool delegate, governor or operationalAdmin"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "allocate",
+          "via": "MapleSkyStrategy.setPsm · pool delegate, governor or operationalAdmin"
+        },
+        {
+          "holder": "0xfB2C579c1D5f82C7b0f2a3479e5F9bC26bd22b62",
+          "power": "allocate",
+          "via": "MapleSkyStrategy.fundStrategy, withdrawFromStrategy · pool delegate or a STRATEGY_MANAGER instance registered in Globals"
+        },
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "set-price",
+          "via": "MapleSkyStrategy.impairStrategy, deactivateStrategy, reactivateStrategy · pool delegate, governor or operationalAdmin (changes how the strategy's assets count in the NAV)"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "set-price",
+          "via": "MapleSkyStrategy.impairStrategy, deactivateStrategy, reactivateStrategy · pool delegate, governor or operationalAdmin (changes how the strategy's assets count in the NAV)"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "set-price",
+          "via": "MapleSkyStrategy.impairStrategy, deactivateStrategy, reactivateStrategy · pool delegate, governor or operationalAdmin (changes how the strategy's assets count in the NAV)"
+        },
+        {
+          "holder": "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818",
+          "power": "upgrade",
+          "via": "MapleSkyStrategy.upgrade · securityAdmin, no delay, to any version the governor registered on the strategy factory (the pool delegate can also upgrade after a 7-day scheduled call)"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xBBEe42621499005Ff0dDEF947BBDeFfBBeE77730",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xBe10aDcE8B6E3E02Db384E7FaDA5395DD113D8b3": {
+      "name": "MaplePoolPermissionManager",
+      "permissions": [
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "admin",
+          "via": "MaplePoolPermissionManager.setPermissionAdmin · admin or operationalAdmin"
+        },
+        {
+          "holder": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+          "power": "admin",
+          "via": "MaplePoolPermissionManager.setPermissionAdmin · admin or operationalAdmin"
+        },
+        {
+          "holder": "0x134cCaaA4F1e4552eC8aEcb9E4A2360dDcF8df76",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0x191ac16255f49F7C6cB2e3b2502064A805943849",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0x252ec5CF960C9D7CBA75D31A1e4150139eD7B5d5",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0x4575e7E9eA9e3C6132b2ea94A69E61d407708655",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0x4f6F1d5eFd38130120dd6e7f820E8F8048ccaA1B",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0x54b130c704919320E17F4F1Ffa4832A91AB29Dca",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setPoolPermissionLevel, setPoolBitmaps, setLenderAllowlist +1 more · pool delegate, admin or operationalAdmin (decides who can deposit, redeem and transfer syrupUSDC)"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setPoolPermissionLevel, setPoolBitmaps, setLenderAllowlist +1 more · pool delegate, admin or operationalAdmin (decides who can deposit, redeem and transfer syrupUSDC)"
+        },
+        {
+          "holder": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        },
+        {
+          "holder": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setPoolPermissionLevel, setPoolBitmaps, setLenderAllowlist +1 more · pool delegate, admin or operationalAdmin (decides who can deposit, redeem and transfer syrupUSDC)"
+        },
+        {
+          "holder": "0xF007476Bb27430795138C511F18F821e8D1e5Ee2",
+          "power": "set-compliance",
+          "via": "MaplePoolPermissionManager.setLenderBitmaps · permission admins, admin or operationalAdmin"
+        }
+      ],
+      "proxy": {
+        "implementation": "0xC3530358e54bC81EfCe4A2e12A898E996B091753",
+        "type": "custom"
+      },
+      "role": "service",
+      "verified": true
+    },
+    "0xE463cD473EcC1d1A4ecF20b62624D84DD20a8339": {
+      "name": "PoolManagerFactory",
+      "permissions": [
+        {
+          "holder": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+          "power": "upgrade",
+          "via": "MapleProxyFactory.registerImplementation, setDefaultVersion, enableUpgradePath · governor (decides which code MaplePoolManager can be upgraded to)"
+        }
+      ],
+      "role": "other",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x134cCaaA4F1e4552eC8aEcb9E4A2360dDcF8df76": {
+      "kind": "contract-unknown"
+    },
+    "0x191ac16255f49F7C6cB2e3b2502064A805943849": {
+      "kind": "contract-unknown"
+    },
+    "0x252ec5CF960C9D7CBA75D31A1e4150139eD7B5d5": {
+      "kind": "eoa"
+    },
+    "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b": {
+      "executors": [
+        "0x6D9F3a385796A5407C06a5BF18e903916548993e",
+        "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8"
+      ],
+      "kind": "timelock",
+      "minDelaySeconds": 259200,
+      "proposers": [
+        "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196"
+      ]
+    },
+    "0x4575e7E9eA9e3C6132b2ea94A69E61d407708655": {
+      "kind": "eoa"
+    },
+    "0x4f6F1d5eFd38130120dd6e7f820E8F8048ccaA1B": {
+      "kind": "eoa"
+    },
+    "0x54b130c704919320E17F4F1Ffa4832A91AB29Dca": {
+      "kind": "eoa"
+    },
+    "0x6b1A78C1943b03086F7Ee53360f9b0672bD60818": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x4E107C30a68C9fe7236F0091160198ddad074E4b",
+        "0x8Ce4D92CE97B4e970f95281C8Fd75c90d2808624",
+        "0x4109372c415E383814a73E1DE65fc631A93C1ED1",
+        "0x54cCAB4D3E6694A092B0Db186e5150B3669E3B74",
+        "0x44A6dd2749309691d0912258245de288FD3733CA",
+        "0x063087CFa971cC237d7Bf5810d7ce64aDF894FF8"
+      ],
+      "threshold": 3
+    },
+    "0xC1e18FFD8825FfB286D177DDEbeba345EC70B49f": {
+      "kind": "eoa"
+    },
+    "0xCe1cE7c7F436DCc4E28Bc8bf86115514d3DC34E8": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x57d1b1d5271390e161155A4594657fAcF05ccc7c",
+        "0x8be3Eb3C4F748F0Ec660B996ef7E1d44f5D89736",
+        "0x4024b08D3fFEF9F7bCED48C820E53edbC983307b",
+        "0xF5703815842E06cE68940FA64eAa5bf36817D827",
+        "0x7371Da5AC817C05547da65a84EACd72D653027AF"
+      ],
+      "threshold": 3
+    },
+    "0xF007476Bb27430795138C511F18F821e8D1e5Ee2": {
+      "kind": "contract-unknown"
+    },
+    "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xa16AbF89AB821f5AbFA0b6F83Cf3544693e3E72C",
+        "0x0f4430f1cEc6b976a9358EFfa95399EE8fc8BD40",
+        "0xF4b33586ee31DC6db89DA7Fb64b853E99F984B7F",
+        "0xF3869ff0C3c3C6B246C75DA983B192A4A6218EAC",
+        "0x96481CB0fCd7673254eBccC42DcE9B92da10ea04",
+        "0x04eBB8201BC767BD96932D33b12BD2EaA661E918",
+        "0x588C6eb6E68F3Cb03243835c1c67864C84dF85bD"
+      ],
+      "threshold": 4
+    },
+    "0xfB2C579c1D5f82C7b0f2a3479e5F9bC26bd22b62": {
+      "kind": "eoa"
+    }
+  },
+  "timestamp": "2026-10-12T13:07:11Z"
+}

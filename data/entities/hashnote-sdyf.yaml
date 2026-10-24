@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: hashnote-sdyf
+name: Hashnote International Short Duration Yield Fund Ltd.
+type: [issuer]
+jurisdiction: KY
+lei: 25490083NU09WKP5Z570

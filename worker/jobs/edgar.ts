@@ -1,6 +1,5 @@
-import { loadAssets } from "@/lib/data";
 import { raiseAlert } from "../alerts";
-import { fetchJson, getCheck, log, upsertCheck } from "../util";
+import { fetchJson, getCheck, log, publishedAssets, upsertCheck } from "../util";
 
 interface Submissions {
   name: string;
@@ -13,7 +12,7 @@ export async function edgarJob() {
     log("edgar", "skipped: set SEC_USER_AGENT (SEC requires a name and email)");
     return;
   }
-  for (const asset of loadAssets()) {
+  for (const asset of await publishedAssets()) {
     const sec = asset.legal.secFilings;
     if (sec.status !== "public") continue;
     const cik = sec.value.cik.padStart(10, "0");

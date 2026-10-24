@@ -1,11 +1,10 @@
-# Phase 0 review: research/buidl.md (2026-10-11).
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
 slug: buidl
 name: BlackRock USD Institutional Digital Liquidity Fund
 ticker: BUIDL
 assetClass: us-treasuries
 description: >
-  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash,
-  US Treasury bills, notes and repurchase agreements. Yield is paid monthly as new tokens.
+  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash, US Treasury bills, notes and repurchase agreements. Yield is paid monthly as new tokens.
 issuer: blackrock-buidl-fund-ltd
 manager: blackrock
 platform: securitize
@@ -34,8 +33,9 @@ access:
     value: qualified-purchaser
     source: { url: "https://cranedata.com/archives/all-articles/10236/", note: "ICA 3(c)(7), Reg D 506(c)", checkedAt: 2026-10-11 }
   minimumInvestment:
+    status: public
     value: 5000000
-    source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-11 }
+    source: { url: "https://cranedata.com/archives/all-articles/10236/", note: "Launch release: 'The Fund's initial investment minimum is $5 million.' Every Form D (2024-03-18, 2025-07-18, 2026-07-27) enters $100,000 as the minimum accepted from an outside investor, so the fund can accept less than the stated minimum.", checkedAt: 2026-10-24 }
   transferRestricted:
     value: true
     source: { url: "https://securitize.io/blackrock/buidl", note: "Disclaimer: transfer of shares is subject to limitations in the fund's Articles", checkedAt: 2026-10-11 }
@@ -131,7 +131,7 @@ exit:
       chain: ethereum
       address: "0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53"
       depthPctOfSupply: 0
-      source: { url: "https://etherscan.io/address/0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53", note: "availableLiquidity() = 0 at block 26,168,303", checkedAt: 2026-10-11 }
+      source: { url: "https://etherscan.io/address/0x31D3F59Ad4aAC0eeE2247c65EBE8Bf6E9E470a53", note: "The Redemption contract holds no USDC and has no availableLiquidity(). It pays out through its settlement() contract 0x57Dd4E92712b0fBC8d3f3e3645EebCf2600aCef0, whose availableLiquidity() = 0 and which has been paused since at least block 26,168,303 (still at 26,261,719).", checkedAt: 2026-10-24 }
 
 externalIds:
   defillama: blackrock-buidl

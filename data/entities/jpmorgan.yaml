@@ -1,0 +1,6 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: jpmorgan
+name: J.P. Morgan
+type: [custodian]
+jurisdiction: US
+website: https://www.jpmorgan.com

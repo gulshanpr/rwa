@@ -1,6 +1,7 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { getDb, hasDatabase, schema } from "@/db/client";
-import { loadAlerts, loadAssets, loadLive } from "./data";
+import { getSiteCatalog } from "./catalog";
+import { loadAlerts, loadLive } from "./data";
 import type { Asset, Chain } from "./schema/asset";
 import { AlertSchema, LiveSchema, type Alert, type DefiMarket, type Live } from "./schema/live";
 
@@ -87,7 +88,7 @@ export async function getLive(asset: Asset): Promise<Live | undefined> {
 export async function getAlerts(): Promise<{ sample: boolean; alerts: Alert[] }> {
   if (!hasDatabase()) return loadAlerts();
   try {
-    const known = new Set(loadAssets().map((a) => a.slug));
+    const known = new Set((await getSiteCatalog()).assets.map((a) => a.slug));
     const rows = await getDb().select().from(schema.alert).orderBy(desc(schema.alert.publishedAt)).limit(500);
     const alerts = rows
       .filter((r) => known.has(r.assetSlug))

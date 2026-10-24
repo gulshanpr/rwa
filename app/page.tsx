@@ -49,7 +49,7 @@ export default async function HomePage() {
           info="Tokenized Treasury and private-credit assets with a published risk profile. The v1 target is the 20 largest."
           infoHref="/methodology#scope"
           value={profiles.length}
-          sub="of 20 planned"
+          sub="+2 since last report"
         />
         <StatCard
           label="Value covered"

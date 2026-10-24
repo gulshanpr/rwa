@@ -1,0 +1,4 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: the-network-firm
+name: The Network Firm
+type: [auditor]

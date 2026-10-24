@@ -12,10 +12,10 @@ import {
   type Log,
   type PublicClient,
 } from "viem";
-import { arbitrum, avalanche, base, mainnet, optimism, polygon } from "viem/chains";
+import { arbitrum, avalanche, base, bsc, mainnet, optimism, polygon } from "viem/chains";
 import type { Chain } from "@/lib/schema/asset";
 
-const VIEM_CHAINS = { ethereum: mainnet, arbitrum, optimism, base, polygon, avalanche } as const;
+const VIEM_CHAINS = { ethereum: mainnet, arbitrum, optimism, base, polygon, avalanche, bsc } as const;
 
 const DEFAULT_RPCS: Record<Chain, string[]> = {
   ethereum: ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org"],
@@ -24,6 +24,7 @@ const DEFAULT_RPCS: Record<Chain, string[]> = {
   base: ["https://base-rpc.publicnode.com", "https://base.drpc.org"],
   polygon: ["https://polygon-bor-rpc.publicnode.com", "https://polygon.drpc.org"],
   avalanche: ["https://avalanche-c-chain-rpc.publicnode.com", "https://avalanche.drpc.org"],
+  bsc: ["https://bsc-rpc.publicnode.com", "https://bsc.drpc.org"],
 };
 
 /** Free public endpoints that serve history. dRPC's free plan rejects eth_getLogs ranges near 10,000 blocks. */
@@ -34,6 +35,7 @@ const DEFAULT_ARCHIVE_RPCS: Record<Chain, string> = {
   base: "https://base.drpc.org",
   polygon: "https://polygon.drpc.org",
   avalanche: "https://avalanche.drpc.org",
+  bsc: "https://bsc.drpc.org",
 };
 
 function envList(name: string): string[] | undefined {
@@ -139,7 +141,7 @@ async function explorerLogs(c: ChainClients, address: Address, event: AbiEvent, 
   for (;;) {
     const url = `${base}${sep}module=logs&action=getLogs&address=${address}&topic0=${topic0}&fromBlock=${from}&toBlock=${toBlock}`;
     const d = await withRetry(async () => {
-      const res = await fetch(url);
+      const res = await fetch(url, { headers: { "user-agent": "rwabeat" } });
       if (!res.ok) throw new Error(`log API ${res.status}`);
       const j = (await res.json()) as { status: string; message: string; result: ExplorerLog[] | string };
       if (j.status !== "1" && !/no records|no logs/i.test(j.message)) throw new Error(`log API: ${j.message} ${typeof j.result === "string" ? j.result : ""}`);

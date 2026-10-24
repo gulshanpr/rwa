@@ -1,0 +1,49 @@
+{
+  "asset": "mf-one",
+  "sample": false,
+  "asOf": "2026-10-14T10:48:14.323Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 58271522.99163844,
+      "priceUsd": 1.12956724,
+      "source": "totalSupply() · midas feed"
+    }
+  ],
+  "aum": {
+    "usd": 65821603.39626158,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C",
+    "value": 1.12956724,
+    "updatedAt": "2026-10-13T17:12:59.000Z"
+  },
+  "defiMarkets": [
+    {
+      "marketId": "0xef2c308b5abecf5c8750a1aa82b47c558005feb7a03f4f8e1ad682d71ac8d0ba",
+      "protocol": "morpho",
+      "name": "mF-ONE / USDC",
+      "chain": "ethereum",
+      "loanAsset": "USDC",
+      "lltv": 0.915,
+      "oracle": {
+        "address": "0x0cB1928EcA8783F05a07D9Ae2AfB33f38BFBEb78",
+        "type": "nav-feed",
+        "description": "Reads the issuer NAV feed 0x8D51…e68C, then discounts it by 7.7%."
+      },
+      "collateralUsd": 30968591.128151227,
+      "borrowUsd": 22557651.265697032,
+      "supplyUsd": 25391395.38636197,
+      "url": "https://app.morpho.org/ethereum/market/0xef2c308b5abecf5c8750a1aa82b47c558005feb7a03f4f8e1ad682d71ac8d0ba"
+    }
+  ],
+  "defiSource": {
+    "name": "Morpho API, Aave pools onchain",
+    "url": "https://app.morpho.org"
+  }
+}

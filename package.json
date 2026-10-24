@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "validate": "bun scripts/validate.ts",
+    "rwa": "bun scripts/rwa.ts",
+    "test": "bun test lib",
     "discover": "bun discovery/cli.ts",
     "worker": "bun worker/index.ts",
     "db:generate": "drizzle-kit generate",

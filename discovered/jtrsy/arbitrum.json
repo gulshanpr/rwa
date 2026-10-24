@@ -1,0 +1,410 @@
+{
+  "asset": "jtrsy",
+  "block": 514442727,
+  "chain": "arbitrum",
+  "contracts": {
+    "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
+      "name": "BalanceSheet",
+      "permissions": [
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0xf837a22883e004f705E0D7e1deE08e295Df30B27",
+          "power": "admin",
+          "via": "BalanceSheet.updateManager · auth (wards)"
+        },
+        {
+          "holder": "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710662), moves pool escrow assets"
+        },
+        {
+          "holder": "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710662), moves pool escrow assets"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "allocate",
+          "via": "BalanceSheet.withdraw, deposit · isManager(pool 281474976710662), moves pool escrow assets"
+        },
+        {
+          "holder": "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "burn-from",
+          "via": "BalanceSheet.revoke · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "force-transfer",
+          "via": "BalanceSheet.transferSharesFrom · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "mint",
+          "via": "BalanceSheet.issue · isManager(pool 281474976710662)"
+        },
+        {
+          "holder": "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710662), within one transaction"
+        },
+        {
+          "holder": "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710662), within one transaction"
+        },
+        {
+          "holder": "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae",
+          "power": "set-price",
+          "via": "BalanceSheet.overridePricePoolPerShare, overridePricePoolPerAsset · isManager(pool 281474976710662), within one transaction"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x21Cdcc686fECd9Fb0d3ee300E555C06497B55EcC": {
+      "name": "FullRestrictions",
+      "permissions": [
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "FullRestrictions.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "admin",
+          "via": "FullRestrictions.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "freeze",
+          "via": "FullRestrictions.updateRestriction · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "freeze",
+          "via": "FullRestrictions.updateRestriction · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "set-compliance",
+          "via": "FullRestrictions.trustedCall · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "set-compliance",
+          "via": "FullRestrictions.trustedCall · auth (wards)"
+        }
+      ],
+      "role": "service",
+      "verified": true
+    },
+    "0x8c213ee79581Ff4984583C6a801e5263418C4b86": {
+      "name": "Tranche",
+      "permissions": [
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "admin",
+          "via": "Tranche.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "admin",
+          "via": "Tranche.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "admin",
+          "via": "Tranche.deny, rely · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "burn-from",
+          "via": "Tranche.burn · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "burn-from",
+          "via": "Tranche.burn · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "burn-from",
+          "via": "Tranche.burn · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "force-transfer",
+          "via": "Tranche.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "force-transfer",
+          "via": "Tranche.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "force-transfer",
+          "via": "Tranche.authTransferFrom · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "mint",
+          "via": "Tranche.mint · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "mint",
+          "via": "Tranche.mint · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "mint",
+          "via": "Tranche.mint · auth (wards)"
+        },
+        {
+          "holder": "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e",
+          "power": "set-compliance",
+          "via": "Tranche.file · auth (wards)"
+        },
+        {
+          "holder": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+          "power": "set-compliance",
+          "via": "Tranche.file · auth (wards)"
+        },
+        {
+          "holder": "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB",
+          "power": "set-compliance",
+          "via": "Tranche.file · auth (wards)"
+        }
+      ],
+      "role": "token",
+      "verified": true
+    },
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6": {
+      "name": "ProtocolGuardian",
+      "permissions": [
+        {
+          "holder": "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x4d47a7a89478745200Bd51c26bA87664538Df541",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        }
+      ],
+      "role": "other",
+      "verified": true
+    }
+  },
+  "holders": {
+    "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf": {
+      "kind": "eoa"
+    },
+    "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155": {
+      "kind": "eoa"
+    },
+    "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
+      "controllers": [
+        "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb",
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6",
+        "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae"
+      ],
+      "kind": "contract",
+      "name": "BalanceSheet"
+    },
+    "0x2B0fb28ADE869C3076A87Bb6f787A3E616e67cfb": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0x7D260305B937242200b13DA96f2d2EFC5e36bEf8",
+        "0x3DD1667F98b95268230653AAB980d02243605E28",
+        "0xaE666E05800479F9967FAf2a43E94b05fdD85cB7",
+        "0xDa2a2Bf5442E8D157957d9B72A427ee52c923aD1",
+        "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+        "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9",
+        "0xc89D382ebc8Aff612A3493D3A07d2aA996726F3F"
+      ],
+      "threshold": 2
+    },
+    "0x4d47a7a89478745200Bd51c26bA87664538Df541": {
+      "kind": "eoa"
+    },
+    "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1": {
+      "kind": "eoa"
+    },
+    "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9": {
+      "kind": "eoa"
+    },
+    "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC": {
+      "kind": "eoa"
+    },
+    "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f": {
+      "controllers": [
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "Root"
+    },
+    "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a",
+        "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf",
+        "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9",
+        "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1",
+        "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F",
+        "0x4d47a7a89478745200Bd51c26bA87664538Df541",
+        "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155",
+        "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+        "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9"
+      ],
+      "threshold": 4
+    },
+    "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "MessageProcessor"
+    },
+    "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9": {
+      "kind": "eoa"
+    },
+    "0xB6c9aF6D9896C822be9E5F311Dd3eaD749aC3d85": {
+      "kind": "contract-unknown"
+    },
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6": {
+      "executors": [],
+      "kind": "timelock",
+      "minDelaySeconds": 172800,
+      "proposers": [
+        "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225"
+      ]
+    },
+    "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F": {
+      "kind": "eoa"
+    },
+    "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "Spoke"
+    },
+    "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "AsyncRequestManager"
+    },
+    "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xb193e82774d17301cA34c4f0B70F2f913449baBC",
+        "0xd757D6A02cD5af9AEF163D7eB8034f75ac22B553"
+      ],
+      "threshold": 1
+    },
+    "0xd55114BfE98a2ca16202Aa741BeE571765292616": {
+      "kind": "eoa"
+    },
+    "0xf837a22883e004f705E0D7e1deE08e295Df30B27": {
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "MessageDispatcher"
+    }
+  },
+  "timestamp": "2026-10-13T13:28:56Z"
+}
