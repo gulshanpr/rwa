@@ -1,0 +1,5 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: fasanara
+name: Fasanara Capital
+type: [manager]
+website: https://www.fasanara.com

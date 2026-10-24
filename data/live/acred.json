@@ -1,0 +1,43 @@
+{
+  "asset": "acred",
+  "sample": false,
+  "asOf": "2026-10-14T10:47:41.161Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 26061.347705,
+      "priceUsd": 1107.7905,
+      "source": "totalSupply() · redstone feed"
+    },
+    {
+      "chain": "avalanche",
+      "totalSupply": 4413.846004,
+      "priceUsd": 1107.7905,
+      "source": "totalSupply() · redstone feed"
+    },
+    {
+      "chain": "polygon",
+      "totalSupply": 818.632417,
+      "priceUsd": 1107.7905,
+      "source": "totalSupply() · redstone feed"
+    }
+  ],
+  "aum": {
+    "usd": 34667003.2910346,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0xD6BcbbC87bFb6c8964dDc73DC3EaE6d08865d51C",
+    "value": 1107.7905,
+    "updatedAt": "2026-10-13T21:47:11.000Z"
+  },
+  "defiMarkets": [],
+  "defiSource": {
+    "name": "Morpho API, Aave pools onchain",
+    "url": "https://app.morpho.org"
+  }
+}

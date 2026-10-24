@@ -8,16 +8,18 @@ import { centrifuge } from "./handlers/centrifuge";
 import { dsProtocol } from "./handlers/ds-protocol";
 import { hashnote } from "./handlers/hashnote";
 import { maplePool } from "./handlers/maple";
+import { midas } from "./handlers/midas";
 import { ondo } from "./handlers/ondo";
 import { oracleFeed } from "./handlers/oracle";
 import { ozStandard } from "./handlers/oz-access-control";
+import { pareto } from "./handlers/pareto";
 import { superstate } from "./handlers/superstate";
 import { clientsFor } from "./rpc";
 
 export const TOOL_VERSION = "discovery-0.2.0";
 
 /** Platforms with their own handler. Each maps the token, its oracle and the contracts they rely on. */
-const PLATFORMS: Record<string, (ctx: Context, token: Address) => Promise<unknown>> = { superstate, ondo, hashnote, centrifuge };
+const PLATFORMS: Record<string, (ctx: Context, token: Address) => Promise<unknown>> = { superstate, ondo, hashnote, centrifuge, pareto, midas };
 /** Blocks behind head, so a snapshot never lands on a block that later reorgs. */
 const CONFIRMATIONS = 12n;
 

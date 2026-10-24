@@ -29,19 +29,30 @@ async function fromSourcify(chainId: number, address: Address): Promise<Verified
   };
 }
 
-async function fromEtherscan(chainId: number, address: Address): Promise<VerifiedSource | undefined> {
-  const key = process.env.ETHERSCAN_API_KEY;
-  if (!key) return undefined;
-  const url = `https://api.etherscan.io/v2/api?chainid=${chainId}&module=contract&action=getsourcecode&address=${address}&apikey=${key}`;
-  const d = (await (await fetch(url)).json()) as { status: string; result: { ABI: string; ContractName: string; SourceCode: string }[] };
+function fromEtherscanBody(d: { status?: string; result?: { ABI?: string; ContractName?: string; SourceCode?: string }[] }): VerifiedSource | undefined {
   const r = d.result?.[0];
-  if (d.status !== "1" || !r || r.ABI.startsWith("Contract source code not verified")) return undefined;
-  let sources: Record<string, string> = { [`${r.ContractName}.sol`]: r.SourceCode };
-  if (r.SourceCode.startsWith("{{")) {
+  if (d.status !== "1" || !r?.ABI || !r.ContractName || r.ABI.startsWith("Contract source code not verified")) return undefined;
+  let sources: Record<string, string> = { [`${r.ContractName}.sol`]: r.SourceCode ?? "" };
+  if (r.SourceCode?.startsWith("{{")) {
     const json = JSON.parse(r.SourceCode.slice(1, -1)) as { sources: Record<string, { content: string }> };
     sources = Object.fromEntries(Object.entries(json.sources).map(([k, v]) => [k, v.content]));
   }
   return { verified: true, name: r.ContractName, abi: JSON.parse(r.ABI) as Abi, sources };
+}
+
+async function fromEtherscan(chainId: number, address: Address): Promise<VerifiedSource | undefined> {
+  const key = process.env.ETHERSCAN_API_KEY;
+  if (!key) return undefined;
+  const url = `https://api.etherscan.io/v2/api?chainid=${chainId}&module=contract&action=getsourcecode&address=${address}&apikey=${key}`;
+  return fromEtherscanBody(await (await fetch(url)).json());
+}
+
+/** Snowtrace and other explorers that Sourcify and Blockscout don't cover. No key. */
+async function fromRoutescan(chainId: number, address: Address): Promise<VerifiedSource | undefined> {
+  const url = `https://api.routescan.io/v2/network/mainnet/evm/${chainId}/etherscan/api?module=contract&action=getsourcecode&address=${address}`;
+  const res = await fetch(url);
+  if (!res.ok) return undefined;
+  return fromEtherscanBody(await res.json());
 }
 
 const BLOCKSCOUT: Record<number, string> = {
@@ -75,7 +86,7 @@ async function fromBlockscout(chainId: number, address: Address): Promise<Verifi
 /** Unverified results are re-checked after this long, in case the contract gets verified. */
 const RECHECK_UNVERIFIED_MS = 7 * 86_400_000;
 
-/** Verified ABI and source, from Sourcify or Blockscout (no key) or Etherscan V2 (needs ETHERSCAN_API_KEY). Cached on disk. */
+/** Verified ABI and source, from Sourcify, Blockscout, Routescan, or Etherscan V2 (needs ETHERSCAN_API_KEY). Cached on disk. */
 export async function verifiedSource(chainId: number, address: Address): Promise<VerifiedSource> {
   const rel = `sources/${chainId}/${address.toLowerCase()}.json`;
   const hit = readCache<VerifiedSource & { checkedAt?: number }>(rel);
@@ -83,6 +94,7 @@ export async function verifiedSource(chainId: number, address: Address): Promise
   const found =
     (await withRetry(() => fromSourcify(chainId, address)).catch(() => undefined)) ??
     (await withRetry(() => fromBlockscout(chainId, address), 3).catch(() => undefined)) ??
+    (await withRetry(() => fromRoutescan(chainId, address), 3).catch(() => undefined)) ??
     (await fromEtherscan(chainId, address).catch(() => undefined));
   writeCache(rel, found ?? { ...EMPTY, checkedAt: Date.now() });
   return found ?? EMPTY;

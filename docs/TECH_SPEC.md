@@ -171,7 +171,7 @@ access:
 
 serviceProviders:
   custodian:        { status: public, value: bny, source: { url: "...", checkedAt: 2026-10-05 } }
-  fundAdministrator:{ status: public, value: securitize-fund-services, source: { url: "...", checkedAt: 2026-10-05 } }
+  fundAdministrator:{ status: public, value: bny, source: { url: "...", checkedAt: 2026-10-05 } }
   auditor:          { status: public, value: pwc, source: { url: "...", checkedAt: 2026-10-05 } }
   transferAgent:    { status: public, value: securitize, source: { url: "...", checkedAt: 2026-10-05 } }
 
@@ -302,7 +302,7 @@ external_check    (asset_slug, source, key, value_json, ts)   // EDGAR, GLEIF, D
 | Morpho collateral exposure | **Morpho API** `POST https://api.morpho.org/graphql` (`markets` with `collateralAsset`, `oracle`, `lltv`, `state`) | GraphQL | Free | Hourly |
 | Aave exposure (incl. Horizon RWA market) | Aave V3 **`AaveProtocolDataProvider` / `UiPoolDataProvider`** onchain reads, or Aave's official API | Contract reads / API | Free | Hourly |
 | Euler, Pendle, Kamino (v2) | Their public APIs or subgraphs | REST/GraphQL | Free | Hourly |
-| AUM cross-check, attestation links seed | **DefiLlama free API** `https://api.llama.fi/rwa/current`, `/rwa/list` | REST, no key | Free | Daily |
+| AUM cross-check | **DefiLlama free API** `https://stablecoins.llama.fi/stablecoin/{id}` (`externalIds.defillamaStablecoin`; the old `api.llama.fi/rwa/*` routes return 404) | REST, no key | Free | Daily |
 | Prices cross-check | DefiLlama `coins.llama.fi/prices/current/{chain}:{address}` | REST | Free | Hourly |
 | SEC filings (Form D, N-CSR, etc.) | **SEC EDGAR** `https://data.sec.gov/submissions/CIK##########.json` (needs a `User-Agent` header with contact email) | REST | Free | Daily |
 | Legal entity data | **GLEIF API** `https://api.gleif.org/api/v1/lei-records/{lei}` | REST | Free | Weekly |

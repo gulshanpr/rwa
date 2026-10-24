@@ -1,7 +1,7 @@
 "use client";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { Menu, PanelLeft, PanelLeftClose, X } from "lucide-react";
+import { Menu, PanelLeft, PanelLeftClose, TriangleAlert, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { SearchItem } from "@/lib/profile";
@@ -26,6 +26,19 @@ export function AppShell({
 
   return (
     <div className="min-h-screen">
+      <div
+        role="note"
+        className="flex items-start justify-center gap-2 border-b border-accent/25 bg-accent-soft px-4 py-2 text-small text-fg"
+      >
+        <TriangleAlert className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+        <p>
+          <strong className="font-semibold">Under active development.</strong> We&apos;re continuously fixing and
+          improving the metrics and parameters, so scores and ratings may change.{" "}
+          <Link href="/changelog" className="text-accent underline underline-offset-2">
+            See changelog
+          </Link>
+        </p>
+      </div>
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface px-3 md:gap-4 md:px-5">
         <button
           type="button"

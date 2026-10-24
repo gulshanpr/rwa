@@ -28,6 +28,7 @@ const ABI = parseAbi([
   "function getDSService(uint256 serviceId) view returns (address)",
   "function getRole(address user) view returns (uint8)",
   "function contractOwner() view returns (address)",
+  "function owner() view returns (address)",
 ]);
 const ROLE_ADDED = parseAbiItem("event DSTrustServiceRoleAdded(address targetAddress, uint8 role, address sender)");
 const ROLE_REMOVED = parseAbiItem("event DSTrustServiceRoleRemoved(address targetAddress, uint8 role, address sender)");
@@ -69,7 +70,14 @@ export async function dsProtocol(ctx: Context, token: Address) {
   if (!trust) throw new Error(`ds-protocol: ${token} has no TrustService (getDSService(1) returned 0x0)`);
 
   const proxies = await Promise.all(services.map((s) => ctx.detectProxy(s.address)));
-  const owners = await Promise.all(services.map((s) => ctx.read<Address>(s.address, ABI, "contractOwner")));
+  // Older DS proxies expose contractOwner(). Newer UUPS services (the ACRED OnRamp) expose owner().
+  const owners = await Promise.all(
+    services.map(async (s) => {
+      const legacy = await ctx.read<Address>(s.address, ABI, "contractOwner");
+      if (legacy && legacy !== zeroAddress) return legacy;
+      return ctx.read<Address>(s.address, ABI, "owner");
+    }),
+  );
   const candidates = [...proxies.map((p) => p?.admin), ...owners].filter((a): a is Address => Boolean(a));
   const { byRole } = await replayRoles(ctx, trust, candidates);
 

@@ -1,0 +1,66 @@
+{
+  "asset": "falconx",
+  "sample": false,
+  "asOf": "2026-10-14T10:47:52.162Z",
+  "supply": [
+    {
+      "chain": "ethereum",
+      "totalSupply": 114326537.13288546,
+      "priceUsd": 1.115079,
+      "source": "totalSupply() · pareto feed"
+    }
+  ],
+  "aum": {
+    "usd": 127483120.69960077,
+    "source": {
+      "name": "Onchain supply × price (tracked chains only)",
+      "url": "https://defillama.com"
+    }
+  },
+  "oracle": {
+    "chain": "ethereum",
+    "address": "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d",
+    "value": 1.115079,
+    "updatedAt": "2026-10-13T16:08:23.000Z"
+  },
+  "defiMarkets": [
+    {
+      "marketId": "0xe83d72fa5b00dcd46d9e0e860d95aa540d5ec106da5833108a9f826f21f36f52",
+      "protocol": "morpho",
+      "name": "AA_FalconXUSDC / USDC",
+      "chain": "ethereum",
+      "loanAsset": "USDC",
+      "lltv": 0.77,
+      "oracle": {
+        "address": "0x52eA2C12734B5bB61e1edf52Bb0f01D9206493Fc",
+        "type": "nav-feed",
+        "description": "Reads the issuer NAV (0x433D…be4d) through the tranche adapter 0x5044…7dFf."
+      },
+      "collateralUsd": 12531165.395617777,
+      "borrowUsd": 6735431.371194043,
+      "supplyUsd": 7799207.741462112,
+      "url": "https://app.morpho.org/ethereum/market/0xe83d72fa5b00dcd46d9e0e860d95aa540d5ec106da5833108a9f826f21f36f52"
+    },
+    {
+      "marketId": "0xa44c2f20a875c1b62b31ca0f68ff46f816145e3f9a6fcb3eec931ce26f6079bc",
+      "protocol": "morpho",
+      "name": "AA_FalconXUSDC / AUSD",
+      "chain": "ethereum",
+      "loanAsset": "AUSD",
+      "lltv": 0.77,
+      "oracle": {
+        "address": "0x52eA2C12734B5bB61e1edf52Bb0f01D9206493Fc",
+        "type": "nav-feed",
+        "description": "Reads the issuer NAV (0x433D…be4d) through the tranche adapter 0x5044…7dFf."
+      },
+      "collateralUsd": 144.96026999999998,
+      "borrowUsd": 103.68358150364165,
+      "supplyUsd": 114.49886422775539,
+      "url": "https://app.morpho.org/ethereum/market/0xa44c2f20a875c1b62b31ca0f68ff46f816145e3f9a6fcb3eec931ce26f6079bc"
+    }
+  ],
+  "defiSource": {
+    "name": "Morpho API, Aave pools onchain",
+    "url": "https://app.morpho.org"
+  }
+}

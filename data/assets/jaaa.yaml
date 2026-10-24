@@ -1,0 +1,153 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: jaaa
+name: Janus Henderson Anemoy AAA CLO Fund
+ticker: JAAA
+assetClass: private-credit
+description: >
+  Tokenized shares of a BVI segregated portfolio holding AAA-rated CLO tranches, with Janus Henderson as sub-manager. Runs on the same Centrifuge V3 deployment as JTRSY. The same single wallet that sets JTRSY's price sets JAAA's NAV. That role used to be a 3-of-8 Safe. Subscriptions and redemptions are requests through ERC-7540 vaults. Solana and Stellar supply is backed by Ethereum escrows and is already inside the Ethereum figure. Plume, Monad and other non-tracked chains are not read.
+issuer: anemoy-capital-spc
+manager: anemoy-asset-management
+platform: centrifuge
+tokenStandard: custom
+priceModel: accumulating-nav
+
+deployments:
+  - chain: ethereum
+    token: "0x5a0F93D040De44e78F251b03c43be9CF317Dcf64"
+    discovery:
+      ignoreMethods: []
+      poolId: "281474976710663"
+      labels:
+        "0x7bf090b97f896fb77e852cc98aa52a8cb7dc02ec": JAAA hub manager (writes NAV; same key as JTRSY)
+        "0x42b71ced90c43c7ab3cfc5e975e9502884c2208f": JAAA balance-sheet manager (single wallet)
+        "0x02ebc43f723b4b5e433fe7edb6d9475f13f75bc7": JAAA balance-sheet manager Safe (2 of 7)
+        "0x5684d912f0eb115ff6538c680ff00a5088035bfa": JAAA balance-sheet manager Safe (3 of 4)
+        "0x9711730060c73ee7fcfe1890e8a0993858a7d225": Centrifuge ProtocolGuardian Safe
+        "0x7ed48c31f2fdc40d37407cbabf0870b2b688368f": Centrifuge Root (shared)
+        "0xec3582fcdc34078a4b7a8c75a5a3ae46f48525ab": Centrifuge Spoke (shared)
+        "0x12a110ce5f0fc871cc72bc7ecaf35cf39dd0f43e": Centrifuge BalanceSheet (shared)
+        "0xa4a7bb3831958463b3fe3e27a6a160f764341953": Centrifuge Hub (shared)
+  - chain: base
+    token: "0x5a0F93D040De44e78F251b03c43be9CF317Dcf64"
+    discovery: { poolId: "281474976710663" }
+  - chain: avalanche
+    token: "0x58f93d6b1ef2f44ec379cb975657c132cbed3b6b"
+    discovery: { poolId: "281474976710663" }
+  - chain: arbitrum
+    token: "0x58f93d6b1ef2f44ec379cb975657c132cbed3b6b"
+    discovery: { poolId: "281474976710663" }
+  - chain: bsc
+    token: "0x58F93d6b1EF2F44eC379Cb975657C132CBeD3B6b"
+    discovery: { poolId: "281474976710663" }
+
+access:
+  investorType:
+    value: non-us-professional
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "June 2026 factsheet. Non-US professional / qualified investors, KYC via Centrifuge.", checkedAt: 2026-10-14 }
+  minimumInvestment:
+    status: public
+    value: 500000
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "500,000 USDC.", checkedAt: 2026-10-14 }
+  transferRestricted:
+    value: true
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "FullRestrictions hook blocks non-members. The deJAAA wrapper exists for open DeFi use.", checkedAt: 2026-10-14 }
+
+serviceProviders:
+  custodian:
+    status: public
+    value: jpmorgan
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "June 2026 factsheet names J.P. Morgan. Vault Street says custody moved from Pershing/StoneX to J.P. Morgan in H1 2026. An Ethena governance post still names Pershing/StoneX.", checkedAt: 2026-10-14 }
+  fundAdministrator:
+    status: public
+    value: trident-trust
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Trident Trust (Cayman) calculates NAV. An Ethena post says Trident Trust (BVI).", checkedAt: 2026-10-14 }
+  auditor:
+    status: public
+    value: mha-cayman
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-14 }
+  transferAgent:
+    status: public
+    value: trident-trust
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "'Fund Administrator / Transfer Agent: Trident Trust Company (Cayman) Limited (registrar, NAV calculation, KYC/AML, whitelist)'. Onchain, the share token is the register.", checkedAt: 2026-10-24 }
+
+legal:
+  vehicleType:
+    status: public
+    value: Segregated portfolio of a BVI segregated portfolio company (open-ended BVI professional fund)
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'tokenized British Virgin Islands (BVI) professional fund', 'Open-ended BVI professional fund'. Anemoy Capital SPC Limited, incorporated in the BVI on 18 August 2023 (Vault Street). Same SPC and LEI as JTRSY.", checkedAt: 2026-10-24 }
+  jurisdiction:
+    status: public
+    value: British Virgin Islands (licensed by the BVI FSC)
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'Domicile British Virgin Islands (BVI)'. GLEIF also gives VG for the SPC. Only the administrator and auditor are Cayman entities.", checkedAt: 2026-10-24 }
+  lei:
+    status: public
+    value: 2549009CBJ86SM12V633
+    source: { url: "https://api.gleif.org/api/v1/lei-records/2549009CBJ86SM12V633", note: "LEI of Anemoy Capital SPC Limited. The JAAA segregated portfolio has no LEI of its own.", checkedAt: 2026-10-14 }
+  secFilings:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: No EDGAR filer for Anemoy.
+  offeringDocument:
+    status: not_public
+    searchedAt: 2026-10-14
+    note: The factsheet is public. Vault Street quotes a Portfolio Supplement, so investors receive it. The memorandum itself is not public.
+  auditedFinancials:
+    status: not_public
+    searchedAt: 2026-10-14
+  insolvency:
+    status: public
+    value: "Statutory segregation as a BVI segregated portfolio: 'BVI statutory segregation ring-fences the JAAA portfolio from every other portfolio of the SPC; the underlying CLO and cash positions are held in custody accounts with the fund as owner'. The memorandum warns that 'courts outside the BVI may not recognise the statutory segregation'. Quoted by Vault Street, not seen first-hand."
+    source: { url: "https://app.vaultstreet.com/research/jaaa", checkedAt: 2026-10-24 }
+
+pricing:
+  reference:
+    type: oracle
+    provider: centrifuge
+    chain: ethereum
+    address: "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB"
+    writer: eoa
+    dataOrigin: issuer
+    cadenceSeconds: 86400
+    businessDaysOnly: true
+    read:
+      decimals: 18
+      value: { fn: "function pricePoolPerShare(uint64, bytes16, bool) view returns (uint128)", args: ["281474976710663", "0x00010000000000070000000000000001", "false"] }
+      updatedAt: { fn: "function markersPricePoolPerShare(uint64, bytes16) view returns (uint64, uint64, uint64)", args: ["281474976710663", "0x00010000000000070000000000000001"], index: 0 }
+    historyOnchain: true
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Spoke pricePoolPerShare for pool 281474976710663, share class 0x00010000000000070000000000000001. Written by hub manager EOA 0x7bf0…02ec, the same key as JTRSY. That role previously sat with Safe 0x742d…be1e (3 of 8). Spoke maxSharePriceAge is 2^64−1, so vaults never reject a stale price. Vault Street says the key is a Fordefi MPC; that was not verified.", checkedAt: 2026-10-14 }
+
+verification:
+  methods:
+    - type: proof-of-asset
+      provider: chronicle
+      independent: true
+      assetLevel: true
+      frequency: daily
+      cryptographicallyVerifiable: true
+      onchain: true
+      feed: { chain: ethereum, address: "0x5D44916E0Db13EcD661b20Df4D645904E57589C8" }
+      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "Router readWithAge matched JAAA's NAV at review. Blockscout labels this contract ChronicleVAO_FakeWho_FAKEWAT_Router_1, which conflicts with Chronicle's docs. Aave Horizon does not read this router. Its getSourceOfAsset for JAAA is 0xF77f2537dba4ffD60f77fACdfB2c1706364fA03d (the LlamaGuard feed Vault Street cites). Horizon LTV is 81% and the liquidation threshold is 86%.", checkedAt: 2026-10-14 }
+
+exit:
+  redemption:
+    available:
+      value: true
+      source: { url: "https://docs.centrifuge.io/developer/protocol/guides/invest-into-a-vault/", note: "ERC-7540 requestRedeem on the USDC vault 0x4880799ee5200fc58da299e965df644fbf46780b, filled at NAV by the pool manager.", checkedAt: 2026-10-14 }
+    whoCanRedeem:
+      value: whitelisted-holders
+      source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-14 }
+    settlement:
+      status: public
+      value: T+1
+      source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: daily dealing, T+0 (10am ET cut-off) or T+1 (3pm ET). Vault Street quotes the Portfolio Supplement as contractual T+3. The public factsheet is what is scored. A $318.6M redemption on 2026-03-11 was paid.", checkedAt: 2026-10-14 }
+    gatesOrSuspension:
+      status: public
+      value: issuer-discretion
+      source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Portfolio Supplement as quoted by Vault Street (not seen first-hand): the board may suspend redemptions in its sole discretion. No instant redemption buffer was found.", checkedAt: 2026-10-14 }
+  instantLiquidity: []
+
+externalIds:
+  defillama: null
+  defillamaStablecoin: null
+  rwaxyz: JAAA
+  coingecko: janus-henderson-anemoy-aaa-clo-fund

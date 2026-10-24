@@ -118,7 +118,7 @@ verification:
       frequency: unstated
       cryptographicallyVerifiable: false
       onchain: false
-      source: { url: "https://maple.finance/insights/introducing-proof-of-reserves", note: "Per-loan collateral value with custodian confirmation, 'every cycle'. LlamaRisk: no Chainlink Proof-of-Reserve feed covers Maple's loan book.", checkedAt: 2026-10-12 }
+      source: { url: "https://maple.finance/insights/introducing-proof-of-reserves", note: "Per-loan collateral value with custodian confirmation, 'every cycle'. LlamaRisk: no Chainlink Proof-of-Reserve feed covers Maple's loan book. Unresolved: the announcement says PoR 'will launch'; no published report was confirmed.", checkedAt: 2026-10-12 }
 
 exit:
   redemption:
