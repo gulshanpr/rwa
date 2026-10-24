@@ -56,11 +56,11 @@ serviceProviders:
   custodian:
     status: public
     value: bny
-    source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "BNY Mellon through prime broker Marex Capital Markets ('segregated custodial accounts at our prime broker')", checkedAt: 2026-10-13 }
+    source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "BNY Mellon through prime broker Marex Capital Markets: 'Assets are protected through segregated custodial accounts at BNY Mellon'. Written in May 2024, before the Circle acquisition.", checkedAt: 2026-10-24 }
   fundAdministrator:
     status: public
     value: nav-fund-services
-    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "NAV Fund Services (Cayman) Ltd is administrator, registrar and transfer agent; NAV Consulting, Inc. calculates NAV", checkedAt: 2026-10-13 }
+    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "'Fund Administrator: NAV Consulting'. KYC/AML by NAV Consulting and LMO Consulting.", checkedAt: 2026-10-24 }
   auditor:
     status: public
     value: cohen-and-co
@@ -146,8 +146,8 @@ exit:
       label: USYC Teller (USDC from the treasury EOA)
       chain: ethereum
       address: "0xeE35F963BFC71b51eC95147f26c030D674ea30e6"
-      depthPctOfSupply: 1.6
-      source: { url: "https://usyc.docs.hashnote.com/overview/subscription-and-redemption", note: "totalAssets = min(treasury USDC 42.4M, allowance 38.3M) = $38.3M, about 1.6% of supply. The treasury is EOA 0x5126…5ec5 and the allowance is revocable. The BSC Cross Chain Teller was not measured.", checkedAt: 2026-10-13 }
+      depthPctOfSupply: 1.4
+      source: { url: "https://usyc.docs.hashnote.com/overview/subscription-and-redemption", note: "At block 26,261,719: totalAssets = min(treasury USDC 32.4M, allowance 37.9M) = $32.4M, about 1.4% of the ~$2.37B supply across Ethereum and BSC. The treasury is EOA 0x5126…5ec5 and the allowance is revocable. The BSC Cross Chain Teller was not measured.", checkedAt: 2026-10-24 }
 
 externalIds:
   defillama: circle-usyc

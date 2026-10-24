@@ -30,7 +30,7 @@ deployments:
 access:
   investorType:
     value: non-us-professional
-    source: { url: "https://midas.app/mfone", note: "KYC'd eligible investors. The offering document is not public, so the exact legal category is not confirmed. Prohibited persons can be excluded at Midas's discretion.", checkedAt: 2026-10-14 }
+    source: { url: "https://midas.app/mfone", note: "KYC'd eligible investors. The offering document is not public, so the exact legal category is not confirmed. Prohibited persons can be excluded at Midas's discretion. Unresolved: rwa.xyz (2026-10-24) also lists 'U.S. Accredited Investor' as eligible.", checkedAt: 2026-10-14 }
   minimumInvestment:
     status: unknown
     note: Deposit vault minMTokenAmountForFirstDeposit() returned 148000 (18-decimal raw units) at review. That is not a confirmed currency minimum. Fiat redemption minimum is 1,000.
@@ -80,8 +80,8 @@ legal:
     searchedAt: 2026-10-14
   insolvency:
     status: public
-    value: "Claims are subordinated (qualified subordination). The redemption amount is a hypothetical best-efforts liquidation net of fees and may differ from the oracle price. Midas docs, as summarized publicly, say a holder can lose the entire claim."
-    source: { url: "https://www.findas.org/tokenomics-review/the-tokenomics-of-midas-mf-one-mf-one", checkedAt: 2026-10-14 }
+    value: "Claims are subordinated (qualified subordination). The redemption amount is a hypothetical best-efforts liquidation net of fees and may differ from the oracle price. Holders have no legal or beneficial interest in the underlying assets."
+    source: { url: "https://www.findas.org/tokenomics-review/the-tokenomics-of-midas-mf-one-mf-one", checkedAt: 2026-10-24 }
 
 pricing:
   reference:
@@ -119,7 +119,7 @@ exit:
     settlement:
       status: public
       value: T+2
-      source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard path is T+2 or longer. Instant redemption is separate.", checkedAt: 2026-10-14 }
+      source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard path is T+2 or longer. Instant redemption is separate. Unresolved: The Block's launch coverage (2025-06-27) describes a quarterly liquidity framework alongside instant redemption; the offering terms were not available to confirm which applies.", checkedAt: 2026-10-14 }
     minimum:
       value: 1
       source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Onchain redemption minimum is 1 mF-ONE. Fiat redemption minimum is 1,000.", checkedAt: 2026-10-14 }

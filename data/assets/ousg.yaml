@@ -48,7 +48,7 @@ serviceProviders:
   fundAdministrator:
     status: public
     value: nav-fund-services
-    source: { url: "https://10k.nyxshcon.org/risk/ondo-ousg", note: "NAV Consulting, per a secondary source only; not seen on an Ondo page", checkedAt: 2026-10-13 }
+    source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/trust-and-transparency", note: "'our fund administrator (NAV Consulting) has direct, read-only access to all of the Fund's accounts daily'. Ondo reconciles its own daily NAV against NAV Consulting's.", checkedAt: 2026-10-24 }
   auditor:
     status: not_public
     searchedAt: 2026-10-13
@@ -130,7 +130,7 @@ exit:
     gatesOrSuspension:
       status: public
       value: stated-limits
-      source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "OndoRateLimiter: $50M per 24h global redemptions, $100M subscriptions; larger amounts go through non-instant requests. pauseRedeem/pauseSubscribe are held by a 1-of-9 Safe (0x2e55…a2cc). Fund-level suspension terms are in the non-public offering documents.", checkedAt: 2026-10-13 }
+      source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/instant-limits", note: "OndoRateLimiter 0x98db…003c at block 26,261,719: globalRedemptionLimits $50M and globalSubscriptionLimits $100M per 24h. The docs page says $50M for both, plus $25M per investor per 24h (per-investor limits not read onchain). Larger amounts go through non-instant requests. pauseRedeem/pauseSubscribe are held by a 1-of-9 Safe (0x2e55…a2cc). Fund-level suspension terms are in the non-public offering documents.", checkedAt: 2026-10-24 }
   instantLiquidity:
     - type: offramp-contract
       label: OUSG InstantManager (USDC, through OndoTokenRouter)

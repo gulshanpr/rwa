@@ -141,8 +141,8 @@ exit:
       label: Superstate RedemptionIdle (USDC)
       chain: ethereum
       address: "0x4c21B7577C8FE8b0B0669165ee7C8f67fa1454Cf"
-      depthPctOfSupply: 0
-      source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "USDC balance $0.013862 at block 26,183,016: effectively empty, so instant redemption depends on Superstate topping it up. Owner and ProxyAdmin owner: EOA 0x8cf4…0765.", checkedAt: 2026-10-13 }
+      depthPctOfSupply: 1.1
+      source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "USDC balance $5.97M at block 26,261,719, about 1.1% of the ~$522M AUM (46.4M USTB at NAV $11.256). It was $0.013862 at block 26,183,016, so the balance swings with Superstate's top-ups. Owner and ProxyAdmin owner: EOA 0x8cf4…0765.", checkedAt: 2026-10-24 }
 
 externalIds:
   defillama: invesco-ustb

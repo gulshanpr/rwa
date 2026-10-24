@@ -4,7 +4,7 @@ name: Janus Henderson Anemoy AAA CLO Fund
 ticker: JAAA
 assetClass: private-credit
 description: >
-  Tokenized shares of a Cayman segregated portfolio holding AAA-rated CLO tranches, with Janus Henderson as sub-manager. Runs on the same Centrifuge V3 deployment as JTRSY. The same single wallet that sets JTRSY's price sets JAAA's NAV. That role used to be a 3-of-8 Safe. Subscriptions and redemptions are requests through ERC-7540 vaults. Solana and Stellar supply is backed by Ethereum escrows and is already inside the Ethereum figure. Plume, Monad and other non-tracked chains are not read.
+  Tokenized shares of a BVI segregated portfolio holding AAA-rated CLO tranches, with Janus Henderson as sub-manager. Runs on the same Centrifuge V3 deployment as JTRSY. The same single wallet that sets JTRSY's price sets JAAA's NAV. That role used to be a 3-of-8 Safe. Subscriptions and redemptions are requests through ERC-7540 vaults. Solana and Stellar supply is backed by Ethereum escrows and is already inside the Ethereum figure. Plume, Monad and other non-tracked chains are not read.
 issuer: anemoy-capital-spc
 manager: anemoy-asset-management
 platform: centrifuge
@@ -66,19 +66,19 @@ serviceProviders:
     value: mha-cayman
     source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-14 }
   transferAgent:
-    status: not_public
-    searchedAt: 2026-10-14
-    note: Trident Trust keeps the registers and calculates NAV. It is not separately named as transfer agent. Onchain, the share token is the register.
+    status: public
+    value: trident-trust
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "'Fund Administrator / Transfer Agent: Trident Trust Company (Cayman) Limited (registrar, NAV calculation, KYC/AML, whitelist)'. Onchain, the share token is the register.", checkedAt: 2026-10-24 }
 
 legal:
   vehicleType:
     status: public
-    value: Segregated portfolio of a Cayman Islands segregated portfolio company
-    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Anemoy Capital SPC Ltd. Same LEI as the JTRSY portfolio's parent.", checkedAt: 2026-10-14 }
+    value: Segregated portfolio of a BVI segregated portfolio company (open-ended BVI professional fund)
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'tokenized British Virgin Islands (BVI) professional fund', 'Open-ended BVI professional fund'. Anemoy Capital SPC Limited, incorporated in the BVI on 18 August 2023 (Vault Street). Same SPC and LEI as JTRSY.", checkedAt: 2026-10-24 }
   jurisdiction:
     status: public
-    value: Cayman Islands
-    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-14 }
+    value: British Virgin Islands (licensed by the BVI FSC)
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'Domicile British Virgin Islands (BVI)'. GLEIF also gives VG for the SPC. Only the administrator and auditor are Cayman entities.", checkedAt: 2026-10-24 }
   lei:
     status: public
     value: 2549009CBJ86SM12V633
@@ -95,8 +95,9 @@ legal:
     status: not_public
     searchedAt: 2026-10-14
   insolvency:
-    status: unknown
-    note: The factsheet describes a Cayman segregated portfolio. No public memorandum was read for what happens if the issuer fails.
+    status: public
+    value: "Statutory segregation as a BVI segregated portfolio: 'BVI statutory segregation ring-fences the JAAA portfolio from every other portfolio of the SPC; the underlying CLO and cash positions are held in custody accounts with the fund as owner'. The memorandum warns that 'courts outside the BVI may not recognise the statutory segregation'. Quoted by Vault Street, not seen first-hand."
+    source: { url: "https://app.vaultstreet.com/research/jaaa", checkedAt: 2026-10-24 }
 
 pricing:
   reference:

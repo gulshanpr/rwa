@@ -31,9 +31,9 @@ access:
     value: non-us-professional
     source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Non-US professional investors. Onchain allowlist is KeyringIdleWhitelist policy 18.", checkedAt: 2026-10-14 }
   minimumInvestment:
-    status: not_public
-    searchedAt: 2026-10-14
-    note: A subscription minimum was not found. Redemptions have a 250,000 USDC minimum.
+    status: public
+    value: 250000
+    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "'Min. investment: 250,000 USDC'. Redemptions have the same 250,000 USDC minimum.", checkedAt: 2026-10-24 }
   transferRestricted:
     value: true
     source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", note: "Keyring whitelist. isWalletAllowed must pass before a deposit.", checkedAt: 2026-10-14 }
