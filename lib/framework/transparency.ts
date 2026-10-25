@@ -1,18 +1,15 @@
-import type { Asset } from "../schema/asset";
-import type { AssetProfile, Framework, Report } from "./schema";
-import { rateCategory, type CategoryResult, type Color, type Finding } from "./types";
-
-type Frequency = Asset["verification"]["methods"][number]["frequency"];
+import type { Asset, Frequency, FreshnessClass, Report } from "../schema/asset";
+import { rateCategory, type CategoryResult, type Check, type Color } from "./types";
 
 /** Framework §5: "Freshness should fit the asset". The slowest update that still counts as fresh. */
-export const FRESHNESS_TARGET: Record<AssetProfile, Frequency> = {
+export const FRESHNESS_TARGET: Record<FreshnessClass, Frequency> = {
   "tbill-mmf": "daily",
   "short-duration-credit": "weekly",
   "private-credit": "monthly",
   "real-estate": "quarterly",
 };
 
-export const PROFILE_LABELS: Record<AssetProfile, string> = {
+export const PROFILE_LABELS: Record<FreshnessClass, string> = {
   "tbill-mmf": "a T-bill or money market fund",
   "short-duration-credit": "short-duration credit",
   "private-credit": "private credit",
@@ -21,7 +18,7 @@ export const PROFILE_LABELS: Record<AssetProfile, string> = {
 
 const FREQUENCY_RANK: Record<Frequency, number> = { realtime: 0, daily: 1, weekly: 2, monthly: 3, quarterly: 4, annual: 5, unstated: 6 };
 
-export function isFresh(frequency: Frequency, profile: AssetProfile): boolean {
+export function isFresh(frequency: Frequency, profile: FreshnessClass): boolean {
   return FREQUENCY_RANK[frequency] <= FREQUENCY_RANK[FRESHNESS_TARGET[profile]];
 }
 
@@ -32,7 +29,7 @@ export interface ReportTests {
   verified: boolean;
 }
 
-export function reportTests(r: Report, profile: AssetProfile): ReportTests {
+export function reportTests(r: Report, profile: FreshnessClass): ReportTests {
   return {
     independent: r.dataSource !== "issuer",
     position: r.granularity === "position",
@@ -48,18 +45,18 @@ function reportColor(t: ReportTests): Color {
 
 const COLOR_ORDER: Record<Color, number> = { green: 0, yellow: 1, red: 2 };
 
-export function bestReport(fw: Framework): Report | undefined {
-  const profile = fw.profile.value;
+export function bestReport(asset: Asset): Report | undefined {
+  const profile = asset.freshnessClass.value;
   const score = (r: Report) => {
     const t = reportTests(r, profile);
     return COLOR_ORDER[reportColor(t)] * 10 - Object.values(t).filter(Boolean).length;
   };
-  return [...fw.transparency.reports].sort((a, b) => score(a) - score(b))[0];
+  return [...asset.transparency.reports].sort((a, b) => score(a) - score(b))[0];
 }
 
 /** Framework §5: onchain data is a separate badge, not part of the rating. */
-export function hasOnchainData(fw: Framework): boolean {
-  return fw.transparency.reports.some((r) => r.onchain);
+export function hasOnchainData(asset: Asset): boolean {
+  return asset.transparency.reports.some((r) => r.onchain);
 }
 
 const SOURCE_TEXT: Record<Report["dataSource"], string> = {
@@ -75,15 +72,15 @@ const GRANULARITY_TEXT: Record<Report["granularity"], string> = {
   position: "every position",
 };
 
-export function rateTransparency(fw: Framework): CategoryResult {
-  const t = fw.transparency;
-  const profile = fw.profile.value;
-  const findings: Finding[] = [];
+export function rateTransparency(asset: Asset): CategoryResult {
+  const t = asset.transparency;
+  const profile = asset.freshnessClass.value;
+  const findings: Check[] = [];
   const context = t.constraints.map((c) => `Kept private: ${c.what}. Reason: ${c.reason}. Shared with ${c.sharedWith}.`);
-  const add = (id: string, color: Finding["color"], text: string, extra: Partial<Finding> = {}) =>
+  const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `transparency.${id}`, color, text, ...extra });
 
-  const best = bestReport(fw);
+  const best = bestReport(asset);
   if (!best) {
     add("none", "red", "There's no meaningful public disclosure of what backs the token.");
     return rateCategory("transparency", findings, context, "");

@@ -11,18 +11,19 @@ import {
 } from "./schema/discovered";
 import { EntitySchema, type Entity } from "./schema/entity";
 import { AlertsFileSchema, LiveSchema, type Alert, type Live } from "./schema/live";
+import { MeasuredSchema, type Measured } from "./schema/measured";
 
 const ROOT = process.cwd();
 
-export function readYaml(file: string): unknown {
+function readYaml(file: string): unknown {
   return YAML.parse(fs.readFileSync(file, "utf8"));
 }
 
-export function readJson(file: string): unknown {
+function readJson(file: string): unknown {
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
-export function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown, file: string): z.output<S> {
+function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown, file: string): z.output<S> {
   const result = schema.safeParse(value);
   if (!result.success) {
     throw new Error(`Invalid data in ${path.relative(ROOT, file)}:\n${z.prettifyError(result.error)}`);
@@ -31,7 +32,7 @@ export function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown, fil
 }
 
 // Data folders are included in server output via outputFileTracingIncludes in next.config.ts.
-export function listFiles(dir: string, ext: string): string[] {
+function listFiles(dir: string, ext: string): string[] {
   const abs = path.join(/*turbopackIgnore: true*/ ROOT, dir);
   if (!fs.existsSync(abs)) return [];
   return fs
@@ -86,6 +87,12 @@ export function loadLive(slug: string): Live | undefined {
   const file = path.join(ROOT, `data/live/${slug}.json`);
   if (!fs.existsSync(file)) return undefined;
   return parseOrThrow(LiveSchema, readJson(file), file);
+}
+
+export function loadMeasured(slug: string): Measured | undefined {
+  const file = path.join(ROOT, `data/measured/${slug}.json`);
+  if (!fs.existsSync(file)) return undefined;
+  return parseOrThrow(MeasuredSchema, readJson(file), file);
 }
 
 let alertsCache: { sample: boolean; alerts: Alert[] } | undefined;

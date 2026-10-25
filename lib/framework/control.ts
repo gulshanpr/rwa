@@ -1,33 +1,10 @@
 import type { Asset } from "../schema/asset";
-import type { Discovered, Power } from "../schema/discovered";
+import type { Discovered } from "../schema/discovered";
 import { formatDelay } from "../format";
-import { analyzePowers, type PowerRow, type ResolvedHolder } from "../scoring/control";
-import type { Framework } from "./schema";
-import { rateCategory, type CategoryResult, type Finding } from "./types";
+import { analyzePowers, POWER_VERBS, type PowerRow, type ResolvedHolder } from "./permissions";
+import { rateCategory, type CategoryResult, type Check } from "./types";
 
-/** Red when a single key holds them (framework §4: "a single key can mint, freeze or upgrade"). */
-export const SINGLE_KEY_RED: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "allocate", "admin", "freeze"];
-export const CRITICAL: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "allocate", "admin"];
 export const AUDIT_MAX_AGE_MONTHS = 24;
-
-const VERBS: Record<Power, string> = {
-  upgrade: "replace the contract code",
-  mint: "create new tokens",
-  "force-transfer": "move tokens out of any wallet",
-  "burn-from": "destroy tokens in any wallet",
-  "set-price": "change the onchain price",
-  allocate: "move the assets backing the token",
-  admin: "grant or revoke every other role",
-  freeze: "freeze a holder's tokens",
-  pause: "pause all transfers",
-  "set-compliance": "change who may hold the token",
-  unclassified: "call an unreviewed function",
-};
-
-/** A 1-of-n Safe is a single key: any one signer can act alone. */
-export function isSingleKey(h: ResolvedHolder): boolean {
-  return h.holderClass === "eoa" || h.holderClass === "unknown" || h.safe?.threshold === 1;
-}
 
 const multisig = (h: ResolvedHolder) => (h.safe ? `A ${h.safe.threshold}-of-${h.safe.owners} multisig` : "A multisig");
 
@@ -36,37 +13,34 @@ function monthsSince(date: string, now: Date): number {
   return (now.getUTCFullYear() - d.getUTCFullYear()) * 12 + (now.getUTCMonth() - d.getUTCMonth());
 }
 
-export function powerFindings(rows: PowerRow[]): Finding[] {
-  const out = new Map<string, Finding>();
-  const put = (f: Finding) => {
+/** One finding per power and issue, from the weakest holder (rows come sorted that way). */
+export function powerFindings(rows: PowerRow[]): Check[] {
+  const out = new Map<string, Check>();
+  const put = (f: Check) => {
     if (!out.has(f.id)) out.set(f.id, f);
   };
   for (const r of rows) {
-    if (r.criticality === "unclassified") continue;
     const h = r.holder;
-    const critical = CRITICAL.includes(r.power);
-    if (isSingleKey(h)) {
+    const verb = POWER_VERBS[r.power];
+    if (r.issue === "single-key" && (r.color === "red" || r.color === "yellow"))
       put({
         id: `control.single-key.${r.power}`,
-        color: SINGLE_KEY_RED.includes(r.power) ? "red" : "yellow",
-        text: `A single key can ${VERBS[r.power]}${h.delaySeconds > 0 ? ` after a ${formatDelay(h.delaySeconds)} delay` : ""}.`,
+        color: r.color,
+        text: `A single key can ${verb}${h.delaySeconds > 0 ? ` after a ${formatDelay(h.delaySeconds)} delay` : ""}.`,
       });
-    } else if (critical && h.holderClass === "weak-safe") {
-      put({ id: `control.weak-multisig.${r.power}`, color: "yellow", text: `${multisig(h)} can ${VERBS[r.power]}: few signers need to agree.` });
-    } else if (critical && h.delaySeconds === 0) {
-      put({ id: `control.no-timelock.${r.power}`, color: "yellow", text: `${multisig(h)} can ${VERBS[r.power]} with no timelock.` });
-    }
-    if (h.modulesEnabled)
+    else if (r.issue === "weak-multisig") put({ id: `control.weak-multisig.${r.power}`, color: "yellow", text: `${multisig(h)} can ${verb}: few signers need to agree.` });
+    else if (r.issue === "no-timelock") put({ id: `control.no-timelock.${r.power}`, color: "yellow", text: `${multisig(h)} can ${verb} with no timelock.` });
+    if (h.modulesEnabled && r.criticality !== "unclassified")
       put({ id: `control.safe-module.${h.address}`, color: "yellow", text: "A Safe module can act without the signers' approval." });
   }
   return [...out.values()];
 }
 
-export function rateControl(asset: Asset, fw: Framework, discovered: Discovered[], now: Date): CategoryResult {
-  const c = fw.control;
-  const findings: Finding[] = [];
+export function rateControl(asset: Asset, discovered: Discovered[], now: Date): CategoryResult {
+  const c = asset.control;
+  const findings: Check[] = [];
   const context: string[] = [];
-  const add = (id: string, color: Finding["color"], text: string, extra: Partial<Finding> = {}) =>
+  const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `control.${id}`, color, text, ...extra });
 
   if (discovered.length === 0) add("discovery", "unknown", "Admin powers haven't been read from the chain yet.", { worstCase: "red" });

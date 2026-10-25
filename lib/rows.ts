@@ -1,6 +1,13 @@
-import type { Chain, AssetClass } from "./schema/asset";
+import { CATEGORY_LABELS, CATEGORY_ORDER, type CategoryId, type Color, type Rating } from "./framework";
+import type { Stage } from "./framework/stages";
 import { ASSET_CLASSES, getProfiles, type AssetProfile, type Flag } from "./profile";
-import { SLICE_ORDER, SLICE_LABELS, type SliceColor, type SliceId } from "./scoring/types";
+import type { AssetClass, Chain } from "./schema/asset";
+
+export interface CategoryCell {
+  rating: Rating;
+  floor?: Color;
+  headline: string;
+}
 
 export interface AssetRow {
   slug: string;
@@ -11,7 +18,10 @@ export interface AssetRow {
   assetClassLabel: string;
   aumUsd: number | null;
   chains: Chain[];
-  slices: Record<SliceId, { color: SliceColor; headline: string }>;
+  categories: Record<CategoryId, CategoryCell>;
+  /** null: below Stage 0. */
+  stage: Stage | null;
+  onchainData: boolean;
   flags: Flag[];
   singleKeyPowers: number;
   oracleAgeSeconds: number | null;
@@ -20,6 +30,7 @@ export interface AssetRow {
 }
 
 export function toRow(p: AssetProfile): AssetRow {
+  const { rating } = p;
   return {
     slug: p.asset.slug,
     ticker: p.asset.ticker,
@@ -29,14 +40,19 @@ export function toRow(p: AssetProfile): AssetRow {
     assetClassLabel: ASSET_CLASSES[p.asset.assetClass].label,
     aumUsd: p.stats.aumUsd ?? null,
     chains: p.asset.deployments.map((d) => d.chain),
-    slices: Object.fromEntries(
-      SLICE_ORDER.map((s) => [s, { color: p.score.slices[s].color, headline: p.score.slices[s].headline }]),
-    ) as AssetRow["slices"],
+    categories: Object.fromEntries(
+      CATEGORY_ORDER.map((c) => {
+        const r = rating.categories[c];
+        return [c, { rating: r.rating, ...(r.floor ? { floor: r.floor } : {}), headline: r.headline }];
+      }),
+    ) as AssetRow["categories"],
+    stage: rating.stage.stage,
+    onchainData: rating.onchainData,
     flags: p.flags,
     singleKeyPowers: p.stats.singleKeyPowers,
     oracleAgeSeconds: p.stats.oracle?.ageSeconds ?? null,
     defiCollateralUsd: p.stats.defiCollateralUsd,
-    topRisk: p.score.risks[0]?.text ?? null,
+    topRisk: rating.risks[0]?.text ?? null,
   };
 }
 
@@ -44,23 +60,25 @@ export async function assetRows(): Promise<AssetRow[]> {
   return (await getProfiles()).map(toRow);
 }
 
-export interface SliceDistribution {
-  slice: SliceId;
+export const RATINGS: Rating[] = ["green", "yellow", "red", "unverified", "not-assessed"];
+
+export interface CategoryDistribution {
+  category: CategoryId;
   label: string;
-  byValue: Record<SliceColor, number>;
-  byCount: Record<SliceColor, number>;
+  byValue: Record<Rating, number>;
+  byCount: Record<Rating, number>;
 }
 
-export function sliceDistribution(rows: AssetRow[]): SliceDistribution[] {
-  return SLICE_ORDER.map((slice) => {
-    const byValue = { green: 0, yellow: 0, red: 0, grey: 0 };
-    const byCount = { green: 0, yellow: 0, red: 0, grey: 0 };
+export function categoryDistribution(rows: AssetRow[]): CategoryDistribution[] {
+  return CATEGORY_ORDER.map((category) => {
+    const byValue = Object.fromEntries(RATINGS.map((r) => [r, 0])) as Record<Rating, number>;
+    const byCount = { ...byValue };
     for (const r of rows) {
-      const c = r.slices[slice].color;
-      byValue[c] += r.aumUsd ?? 0;
-      byCount[c] += 1;
+      const rating = r.categories[category].rating;
+      byValue[rating] += r.aumUsd ?? 0;
+      byCount[rating] += 1;
     }
-    return { slice, label: SLICE_LABELS[slice], byValue, byCount };
+    return { category, label: CATEGORY_LABELS[category], byValue, byCount };
   });
 }
 
@@ -73,7 +91,9 @@ export function rowsToCsv(rows: AssetRow[]): string {
     "asset_class",
     "aum_usd",
     "chains",
-    ...SLICE_ORDER.map((s) => `${s}_color`),
+    ...CATEGORY_ORDER.map((c) => `${c}_rating`),
+    "stage",
+    "onchain_data",
     "single_key_powers",
     "oracle_age_seconds",
     "defi_collateral_usd",
@@ -89,7 +109,9 @@ export function rowsToCsv(rows: AssetRow[]): string {
       r.assetClass,
       r.aumUsd ?? "",
       r.chains.join(";"),
-      ...SLICE_ORDER.map((s) => r.slices[s].color),
+      ...CATEGORY_ORDER.map((c) => r.categories[c].rating),
+      r.stage ?? "none",
+      r.onchainData,
       r.singleKeyPowers,
       r.oracleAgeSeconds ?? "",
       r.defiCollateralUsd,

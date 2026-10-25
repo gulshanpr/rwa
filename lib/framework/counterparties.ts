@@ -1,5 +1,6 @@
-import type { EntityFacts, Framework, Rail, Role } from "./schema";
-import { rateCategory, type CategoryResult, type Finding } from "./types";
+import type { Asset, Rail, Role } from "../schema/asset";
+import type { Entity } from "../schema/entity";
+import { rateCategory, type CategoryResult, type Check } from "./types";
 
 export const RAIL_LABELS: Record<Rail, string> = {
   "usd-wire": "USD wire",
@@ -26,13 +27,13 @@ const TIER_TEXT = {
   "global-network": "a member of a major international audit network",
 } as const;
 
-export function rateCounterparties(fw: Framework, facts: Map<string, EntityFacts>, names: Record<string, string>): CategoryResult {
-  const c = fw.counterparties;
-  const findings: Finding[] = [];
+export function rateCounterparties(asset: Asset, entities: Map<string, Entity>): CategoryResult {
+  const c = asset.counterparties;
+  const findings: Check[] = [];
   const context: string[] = [];
-  const add = (id: string, color: Finding["color"], text: string, extra: Partial<Finding> = {}) =>
+  const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `counterparties.${id}`, color, text, ...extra });
-  const name = (slug: string) => names[slug] ?? facts.get(slug)?.name ?? slug;
+  const name = (slug: string) => entities.get(slug)?.name ?? slug;
   const affiliated = (role: Role) => c.affiliated.value.includes(role);
 
   for (const [role, item] of [
@@ -57,7 +58,7 @@ export function rateCounterparties(fw: Framework, facts: Map<string, EntityFacts
       add(role, "red", text, { source: c.affiliated.source });
       continue;
     }
-    const f = facts.get(item.value);
+    const f = entities.get(item.value);
     if (!f?.regulated) add(role, "unknown", `${who}'s regulatory status isn't recorded.`, { worstCase: "yellow", source: item.source });
     else if (!f.regulated.value) add(role, "yellow", `The ${label}, ${who}, isn't a regulated firm.`, { source: f.regulated.source });
     else add(role, "green", `Independent, regulated ${label}: ${who}${f.regulator ? ` (${f.regulator})` : ""}.`, { source: item.source });
@@ -68,7 +69,7 @@ export function rateCounterparties(fw: Framework, facts: Map<string, EntityFacts
   else if (auditor.status === "unknown") add("auditor", "unknown", "We couldn't confirm who audits the fund.", { worstCase: "red" });
   else {
     const who = name(auditor.value);
-    const tier = facts.get(auditor.value)?.auditorTier;
+    const tier = entities.get(auditor.value)?.auditorTier;
     if (affiliated("auditor")) add("auditor", "red", `The auditor, ${who}, is part of the issuer's group.`, { source: c.affiliated.source });
     else if (!tier) add("auditor", "unknown", `We couldn't confirm that ${who} is a recognized audit firm.`, { worstCase: "yellow", source: auditor.source });
     else if (tier.value === "other") add("auditor", "yellow", `The auditor, ${who}, is a small firm outside the major networks.`, { source: tier.source });
@@ -87,6 +88,7 @@ export function rateCounterparties(fw: Framework, facts: Map<string, EntityFacts
   } else add("rails", "green", `Settles by ${rails.map((r) => RAIL_LABELS[r]).join(", ")}.`, { source: c.settlementRails.source });
 
   c.dependencies.forEach((d, i) => add(`dependency-${i}`, "yellow", d.what, { source: d.source }));
+  if (c.transferAgent.status === "public") context.push(`Transfer agent: ${name(c.transferAgent.value)}${affiliated("transfer-agent") ? " (issuer's group)" : ""}.`);
   for (const o of c.operators) context.push(`${o.role}: ${o.name}.`);
 
   return rateCategory(

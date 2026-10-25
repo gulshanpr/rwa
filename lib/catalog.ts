@@ -129,6 +129,7 @@ export function entityFromRow(row: typeof schema.entity.$inferSelect): Entity {
     ...(row.jurisdiction ? { jurisdiction: row.jurisdiction } : {}),
     ...(row.lei ? { lei: row.lei } : {}),
     ...(row.website ? { website: row.website } : {}),
+    ...((row.facts as Record<string, unknown> | null) ?? {}),
   });
 }
 

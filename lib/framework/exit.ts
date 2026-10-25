@@ -1,8 +1,7 @@
 import type { Asset } from "../schema/asset";
 import { formatUsd } from "../format";
-import { settlementDays } from "../scoring/exit";
-import type { Framework, Measured } from "./schema";
-import { rateCategory, type CategoryResult, type Finding } from "./types";
+import type { Measured } from "../schema/measured";
+import { rateCategory, type CategoryResult, type Check } from "./types";
 
 /** An exit path counts as real liquidity when it can take a sell of this size. */
 export const REAL_LIQUIDITY_USD = 5_000_000;
@@ -26,11 +25,15 @@ export interface ExitLiquidity {
   instantUnknown: boolean;
 }
 
-export function exitLiquidity(fw: Framework, measured: Measured | undefined): ExitLiquidity {
+export function settlementDays(settlement: string): number {
+  return Number(settlement.replace("T+", ""));
+}
+
+export function exitLiquidity(asset: Asset, measured: Measured | undefined): ExitLiquidity {
   const dexUsd = Math.max(0, ...(measured?.dex.quotes ?? []).filter((q) => q.routed && (q.slippagePct ?? 100) <= MAX_SLIPPAGE_PCT).map((q) => q.sizeUsd));
   let instantUsd: number | undefined;
   let instantUnknown = false;
-  for (const f of fw.exit.instant) {
+  for (const f of asset.exit.instant) {
     const cap = f.dailyCapUsd.status === "public" ? f.dailyCapUsd.value : Infinity;
     // With funding unknown, a small cap still settles it: the facility can't pay more than the cap.
     if (f.fundedUsd.status !== "public" && cap >= REAL_LIQUIDITY_USD) {
@@ -42,14 +45,14 @@ export function exitLiquidity(fw: Framework, measured: Measured | undefined): Ex
   return { dexUsd, instantUsd, instantUnknown };
 }
 
-export function rateExit(asset: Asset, fw: Framework, measured: Measured | undefined): CategoryResult {
+export function rateExit(asset: Asset, measured: Measured | undefined): CategoryResult {
   const r = asset.exit.redemption;
-  const x = fw.exit;
-  const findings: Finding[] = [];
+  const x = asset.exit;
+  const findings: Check[] = [];
   const context: string[] = [];
-  const add = (id: string, color: Finding["color"], text: string, extra: Partial<Finding> = {}) =>
+  const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `exit.${id}`, color, text, ...extra });
-  const liquidity = exitLiquidity(fw, measured);
+  const liquidity = exitLiquidity(asset, measured);
   const tradesAtAll = hasMarket(measured);
 
   if (!r.available.value) add("no-redemption", tradesAtAll ? "yellow" : "red", tradesAtAll ? "There's no redemption; the only exit is selling." : "There's no redemption and no secondary market.", { source: r.available.source });
@@ -109,7 +112,7 @@ export function rateExit(asset: Asset, fw: Framework, measured: Measured | undef
     add("liquidity", "yellow", `Instant liquidity is thin: ${liquidity.dexUsd > 0 ? `${formatUsd(liquidity.dexUsd)} on DEXs` : instant > 0 ? `${formatUsd(instant)} instant redemption` : "DEX sells lose more than 1% even at $1M"}.`);
   else add("liquidity", "yellow", "No instant or secondary liquidity: every exit goes through issuer redemption.");
 
-  if (x.minimumUsd.status === "public") context.push(`Minimum redemption ${formatUsd(x.minimumUsd.value)}.`);
+  if (x.minimumUsd.status === "public" && x.minimumUsd.value > 0) context.push(`Minimum redemption ${formatUsd(x.minimumUsd.value)}.`);
   if (x.feeBps.status === "public" && x.feeBps.value > 0) context.push(`Redemption fee ${x.feeBps.value / 100}%.`);
   for (const f of x.instant) {
     const funded = f.fundedUsd.status === "public" ? formatUsd(f.fundedUsd.value) : "unknown";

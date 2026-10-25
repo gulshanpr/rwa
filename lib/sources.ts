@@ -1,6 +1,5 @@
 import { explorerAddress } from "./chains";
 import type { AssetProfile } from "./profile";
-import type { TabId } from "./scoring/types";
 
 export interface CitedSource {
   field: string;
@@ -10,18 +9,35 @@ export interface CitedSource {
   checkedAt?: string;
 }
 
+/** Asset page tabs, in display order. `null` is the overview. */
+export type TabId =
+  | "overview"
+  | "underlying"
+  | "counterparties"
+  | "control"
+  | "transparency"
+  | "pricing"
+  | "exit"
+  | "legal"
+  | "defi"
+  | "history"
+  | "sources";
+
 const SECTION_TABS: Record<string, TabId> = {
   access: "overview",
-  serviceProviders: "disclosure",
-  legal: "disclosure",
+  legal: "legal",
+  freshnessClass: "transparency",
+  underlying: "underlying",
+  counterparties: "counterparties",
+  control: "control",
+  transparency: "transparency",
   pricing: "pricing",
-  verification: "verification",
   exit: "exit",
 };
 
 function humanize(path: string[]): string {
   return path
-    .filter((p) => !/^\d+$/.test(p) && p !== "source")
+    .filter((p) => !/^\d+$/.test(p) && p !== "source" && p !== "value")
     .map((p) => p.replace(/([A-Z])/g, " $1").toLowerCase())
     .join(" › ");
 }
@@ -45,8 +61,8 @@ function walk(value: unknown, path: string[], out: { path: string[]; source: Cit
   for (const [k, v] of Object.entries(obj)) walk(v, [...path, k], out);
 }
 
-export function collectSources(profile: AssetProfile): Record<TabId, CitedSource[]> {
-  const groups = {} as Record<TabId, CitedSource[]>;
+export function collectSources(profile: AssetProfile): Partial<Record<TabId, CitedSource[]>> {
+  const groups: Partial<Record<TabId, CitedSource[]>> = {};
   const push = (tab: TabId, s: CitedSource) => (groups[tab] ??= []).push(s);
 
   const curated: { path: string[]; source: CitedSource }[] = [];
@@ -56,6 +72,11 @@ export function collectSources(profile: AssetProfile): Record<TabId, CitedSource
   if (profile.live) {
     push("overview", { field: "value (AUM)", url: profile.live.aum.source.url, note: profile.live.aum.source.name, checkedAt: profile.live.asOf.slice(0, 10) });
     push("defi", { field: "lending markets", url: profile.live.defiSource.url, note: profile.live.defiSource.name, checkedAt: profile.live.asOf.slice(0, 10) });
+  }
+  if (profile.measured) {
+    const asOf = profile.measured.asOf.slice(0, 10);
+    if (profile.measured.holders) push("exit", { field: "top holders", url: profile.measured.holders.source, note: "Top 10 wallets on Ethereum", checkedAt: asOf });
+    push("exit", { field: "DEX sell quotes", url: profile.measured.dex.source, note: "$1M, $5M and $10M sells into USDC, against NAV", checkedAt: asOf });
   }
   for (const s of profile.snapshots) {
     for (const [address, c] of Object.entries(s.discovered.contracts)) {

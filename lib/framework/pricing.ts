@@ -1,14 +1,14 @@
-import type { Asset } from "../schema/asset";
+import type { Asset, FreshnessClass } from "../schema/asset";
 import type { Live } from "../schema/live";
 import { formatDuration } from "../format";
-import { oracleAge } from "../scoring/pricing";
-import type { Framework, Measured } from "./schema";
+import type { Measured } from "../schema/measured";
+import { oracleAge } from "../oracle";
 import { hasMarket } from "./exit";
 import { PROFILE_LABELS } from "./transparency";
-import { rateCategory, type CategoryResult, type Finding } from "./types";
+import { rateCategory, type CategoryResult, type Check } from "./types";
 
 /** Seconds between updates that still count as fresh, per profile (same bar as Transparency). */
-export const PRICE_CADENCE_MAX: Record<Framework["profile"]["value"], number> = {
+export const PRICE_CADENCE_MAX: Record<FreshnessClass, number> = {
   "tbill-mmf": 86400,
   "short-duration-credit": 7 * 86400,
   "private-credit": 31 * 86400,
@@ -19,13 +19,13 @@ export const MAX_DISCOUNT_PCT = 2;
 
 const ORIGIN_TEXT = { issuer: "the issuer", "fund-administrator": "the fund administrator", custodian: "the custodian" } as const;
 
-export function ratePricing(asset: Asset, fw: Framework, live: Live | undefined, measured: Measured | undefined): CategoryResult {
+export function ratePricing(asset: Asset, live: Live | undefined, measured: Measured | undefined): CategoryResult {
   const ref = asset.pricing.reference;
-  const p = fw.pricing;
-  const profile = fw.profile.value;
-  const findings: Finding[] = [];
+  const p = asset.pricing;
+  const profile = asset.freshnessClass.value;
+  const findings: Check[] = [];
   const context: string[] = [];
-  const add = (id: string, color: Finding["color"], text: string, extra: Partial<Finding> = {}) =>
+  const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `pricing.${id}`, color, text, ...extra });
 
   if (ref.type === "none") {

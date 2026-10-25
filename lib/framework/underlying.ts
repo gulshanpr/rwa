@@ -1,5 +1,5 @@
-import type { Framework, HoldingType } from "./schema";
-import { rateCategory, type CategoryResult, type Finding } from "./types";
+import type { Asset, HoldingType } from "../schema/asset";
+import { rateCategory, type CategoryResult, type Check } from "./types";
 
 /** Counted as "short-dated government debt, cash, or repo backed by government debt". */
 export const GOVERNMENT_TYPES: HoldingType[] = ["cash", "government-bills", "government-notes", "government-repo", "government-mmf", "stablecoin"];
@@ -39,11 +39,11 @@ function monthsBetween(from: string, to: Date): number {
   return (to.getUTCFullYear() - a.getUTCFullYear()) * 12 + (to.getUTCMonth() - a.getUTCMonth());
 }
 
-export function rateUnderlying(fw: Framework, now: Date): CategoryResult {
-  const u = fw.underlying;
-  const findings: Finding[] = [];
+export function rateUnderlying(asset: Asset, now: Date): CategoryResult {
+  const u = asset.underlying;
+  const findings: Check[] = [];
   const context: string[] = [];
-  const add = (id: string, color: Finding["color"], text: string, extra: Partial<Finding> = {}) =>
+  const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `underlying.${id}`, color, text, ...extra });
 
   if (u.holdings.status !== "public") {
