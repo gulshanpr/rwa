@@ -19,7 +19,8 @@ const VIEM_CHAINS = { ethereum: mainnet, arbitrum, optimism, base, polygon, aval
 
 const DEFAULT_RPCS: Record<Chain, string[]> = {
   ethereum: ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org"],
-  arbitrum: ["https://arbitrum-one-rpc.publicnode.com", "https://arbitrum.drpc.org"],
+  // PublicNode and dRPC free tiers only serve eth_getLogs for the last ~100 Arbitrum blocks (~25s); the official RPC serves history.
+  arbitrum: ["https://arb1.arbitrum.io/rpc", "https://arbitrum-one-rpc.publicnode.com", "https://arbitrum.drpc.org"],
   optimism: ["https://optimism-rpc.publicnode.com", "https://optimism.drpc.org"],
   base: ["https://base-rpc.publicnode.com", "https://base.drpc.org"],
   polygon: ["https://polygon-bor-rpc.publicnode.com", "https://polygon.drpc.org"],

@@ -255,86 +255,98 @@ async function supplyFor(asset: Asset, chain: Chain, token: Address) {
 
 export async function watcherJob() {
   const chains = [...new Set((await catalog()).assets.flatMap((a) => a.deployments.map((d) => d.chain)))];
+  // One chain's RPC failing must not stop the others from being watched.
+  const failed: string[] = [];
   for (const chain of chains) {
-    const { client } = clientsFor(chain);
-    const { addresses, events } = await watchList(chain);
-    if (addresses.size === 0) continue;
-    const watchedAddresses = [...addresses.keys()].map((a) => getAddress(a));
-    const confirmed = (await client.getBlockNumber()) - CONFIRMATIONS[chain];
-    const end = process.env.WATCH_END_BLOCK ? BigInt(process.env.WATCH_END_BLOCK) : undefined;
-    const head = end !== undefined && end < confirmed ? end : confirmed;
-    const cursorName = `watcher:${chain}`;
-    const saved = await getCursor(cursorName);
-    // First run starts at the confirmed head; set WATCH_START_BLOCK to backfill.
-    let from = saved ? BigInt(saved) + 1n : BigInt(process.env.WATCH_START_BLOCK ?? head);
-    if (from > head) continue;
-    const blockTimes = new Map<bigint, Date>();
-    let matched = 0;
-
-    while (from <= head) {
-      const to = from + CHUNK - 1n < head ? from + CHUNK - 1n : head;
-      const logs: Log[] = [];
-      for (let i = 0; i < watchedAddresses.length; i += ADDRESS_BATCH) {
-        logs.push(...(await client.getLogs({ address: watchedAddresses.slice(i, i + ADDRESS_BATCH), fromBlock: from, toBlock: to })));
-      }
-      logs.sort((a, b) => Number(a.blockNumber! - b.blockNumber!) || a.logIndex! - b.logIndex!);
-      const decoded = logs.map((l) => decode(l, events));
-      // A ward relied and denied in the same transaction (deployment scripts) changes nothing.
-      const wardKey = (l: Log, user: unknown) => `${l.transactionHash}|${l.address.toLowerCase()}|${String(user).toLowerCase()}`;
-      const relied = new Set(logs.flatMap((l, i) => (decoded[i]?.name === "Rely" ? [wardKey(l, decoded[i]!.args.user)] : [])));
-      const netZero = new Set(logs.flatMap((l, i) => (decoded[i]?.name === "Deny" && relied.has(wardKey(l, decoded[i]!.args.user)) ? [wardKey(l, decoded[i]!.args.user)] : [])));
-      for (const [i, l] of logs.entries()) {
-        const ev = decoded[i];
-        if (!ev) continue;
-        if ((ev.name === "Rely" || ev.name === "Deny") && netZero.has(wardKey(l, ev.args.user))) continue;
-        const watched = addresses.get(l.address.toLowerCase())!;
-        const { asset } = watched;
-        let amountRule = AMOUNT_EVENTS[ev.name];
-        if (ev.name === "Transfer") {
-          if (!watched.transferMints) continue;
-          if (ev.args.from === zeroAddress) amountRule = { kind: "mint", field: "value", verb: "minted" };
-          else if (ev.args.to === zeroAddress) amountRule = { kind: "burn", field: "value", verb: "burned" };
-          else continue;
-        }
-        const poolId = asset.deployments.find((d) => d.chain === chain)?.discovery.poolId;
-        if (poolId && ev.args.poolId !== undefined && String(ev.args.poolId) !== poolId) continue;
-        const block = l.blockNumber!;
-        if (!blockTimes.has(block)) blockTimes.set(block, new Date(Number((await client.getBlock({ blockNumber: block })).timestamp) * 1000));
-        const ts = blockTimes.get(block)!;
-
-        const [row] = await getDb()
-          .insert(schema.chainEvent)
-          .values({ assetSlug: asset.slug, chain, block: Number(block), txHash: l.transactionHash!, logIndex: l.logIndex!, contract: getAddress(l.address), eventName: ev.name, argsJson: toJson(ev.args), ts })
-          .onConflictDoNothing()
-          .returning({ id: schema.chainEvent.id });
-        if (!row) continue;
-        matched++;
-
-        const base = { id: `${chain}-${l.transactionHash}-${l.logIndex}`, asset: asset.slug, chain, contract: getAddress(l.address), txHash: l.transactionHash!, block: Number(block), publishedAt: ts.toISOString(), eventId: row.id };
-        const rule = RULES[ev.name];
-        if (rule) {
-          await raiseAlert({ ...base, severity: rule.severity, kind: rule.kind, title: rule.title(watched.name, ev.args), consequence: rule.consequence });
-          continue;
-        }
-        const amount = amountRule;
-        const deployment = asset.deployments.find((d) => d.chain === chain && d.token.toLowerCase() === l.address.toLowerCase());
-        if (amount && deployment) {
-          const { supply, decimals } = await supplyFor(asset, chain, getAddress(deployment.token));
-          const value = Number(formatUnits(BigInt(String(ev.args[amount.field] ?? 0)), decimals));
-          if (value / supply > LARGE_SUPPLY_SHARE || value > LARGE_USD) {
-            await raiseAlert({
-              ...base,
-              severity: "medium",
-              kind: amount.kind,
-              title: `${value.toLocaleString("en-US", { maximumFractionDigits: 0 })} ${asset.ticker} ${amount.verb} on ${chain}`,
-              consequence: `${((value / supply) * 100).toFixed(1)}% of the ${chain} supply. Large mints or burns usually match subscriptions or redemptions; check against reported AUM.`,
-            });
-          }
-        }
-      }
-      await setCursor(cursorName, to.toString());
-      from = to + 1n;
+    try {
+      await watchChain(chain);
+    } catch (e) {
+      failed.push(chain);
+      log("watcher", `${chain} FAILED: ${e instanceof Error ? e.message.split("\n")[0] : String(e)}`);
     }
-    log("watcher", `${chain} ${addresses.size} address(es) up to block ${head}, ${matched} new event(s)`);
   }
+  if (failed.length) throw new Error(`chain(s) failed: ${failed.join(", ")}`);
+}
+
+async function watchChain(chain: Chain) {
+  const { client } = clientsFor(chain);
+  const { addresses, events } = await watchList(chain);
+  if (addresses.size === 0) return;
+  const watchedAddresses = [...addresses.keys()].map((a) => getAddress(a));
+  const confirmed = (await client.getBlockNumber()) - CONFIRMATIONS[chain];
+  const end = process.env.WATCH_END_BLOCK ? BigInt(process.env.WATCH_END_BLOCK) : undefined;
+  const head = end !== undefined && end < confirmed ? end : confirmed;
+  const cursorName = `watcher:${chain}`;
+  const saved = await getCursor(cursorName);
+  // First run starts at the confirmed head; set WATCH_START_BLOCK to backfill.
+  let from = saved ? BigInt(saved) + 1n : BigInt(process.env.WATCH_START_BLOCK ?? head);
+  if (from > head) return;
+  const blockTimes = new Map<bigint, Date>();
+  let matched = 0;
+
+  while (from <= head) {
+    const to = from + CHUNK - 1n < head ? from + CHUNK - 1n : head;
+    const logs: Log[] = [];
+    for (let i = 0; i < watchedAddresses.length; i += ADDRESS_BATCH) {
+      logs.push(...(await client.getLogs({ address: watchedAddresses.slice(i, i + ADDRESS_BATCH), fromBlock: from, toBlock: to })));
+    }
+    logs.sort((a, b) => Number(a.blockNumber! - b.blockNumber!) || a.logIndex! - b.logIndex!);
+    const decoded = logs.map((l) => decode(l, events));
+    // A ward relied and denied in the same transaction (deployment scripts) changes nothing.
+    const wardKey = (l: Log, user: unknown) => `${l.transactionHash}|${l.address.toLowerCase()}|${String(user).toLowerCase()}`;
+    const relied = new Set(logs.flatMap((l, i) => (decoded[i]?.name === "Rely" ? [wardKey(l, decoded[i]!.args.user)] : [])));
+    const netZero = new Set(logs.flatMap((l, i) => (decoded[i]?.name === "Deny" && relied.has(wardKey(l, decoded[i]!.args.user)) ? [wardKey(l, decoded[i]!.args.user)] : [])));
+    for (const [i, l] of logs.entries()) {
+      const ev = decoded[i];
+      if (!ev) continue;
+      if ((ev.name === "Rely" || ev.name === "Deny") && netZero.has(wardKey(l, ev.args.user))) continue;
+      const watched = addresses.get(l.address.toLowerCase())!;
+      const { asset } = watched;
+      let amountRule = AMOUNT_EVENTS[ev.name];
+      if (ev.name === "Transfer") {
+        if (!watched.transferMints) continue;
+        if (ev.args.from === zeroAddress) amountRule = { kind: "mint", field: "value", verb: "minted" };
+        else if (ev.args.to === zeroAddress) amountRule = { kind: "burn", field: "value", verb: "burned" };
+        else continue;
+      }
+      const poolId = asset.deployments.find((d) => d.chain === chain)?.discovery.poolId;
+      if (poolId && ev.args.poolId !== undefined && String(ev.args.poolId) !== poolId) continue;
+      const block = l.blockNumber!;
+      if (!blockTimes.has(block)) blockTimes.set(block, new Date(Number((await client.getBlock({ blockNumber: block })).timestamp) * 1000));
+      const ts = blockTimes.get(block)!;
+
+      const [row] = await getDb()
+        .insert(schema.chainEvent)
+        .values({ assetSlug: asset.slug, chain, block: Number(block), txHash: l.transactionHash!, logIndex: l.logIndex!, contract: getAddress(l.address), eventName: ev.name, argsJson: toJson(ev.args), ts })
+        .onConflictDoNothing()
+        .returning({ id: schema.chainEvent.id });
+      if (!row) continue;
+      matched++;
+
+      const base = { id: `${chain}-${l.transactionHash}-${l.logIndex}`, asset: asset.slug, chain, contract: getAddress(l.address), txHash: l.transactionHash!, block: Number(block), publishedAt: ts.toISOString(), eventId: row.id };
+      const rule = RULES[ev.name];
+      if (rule) {
+        await raiseAlert({ ...base, severity: rule.severity, kind: rule.kind, title: rule.title(watched.name, ev.args), consequence: rule.consequence });
+        continue;
+      }
+      const amount = amountRule;
+      const deployment = asset.deployments.find((d) => d.chain === chain && d.token.toLowerCase() === l.address.toLowerCase());
+      if (amount && deployment) {
+        const { supply, decimals } = await supplyFor(asset, chain, getAddress(deployment.token));
+        const value = Number(formatUnits(BigInt(String(ev.args[amount.field] ?? 0)), decimals));
+        if (value / supply > LARGE_SUPPLY_SHARE || value > LARGE_USD) {
+          await raiseAlert({
+            ...base,
+            severity: "medium",
+            kind: amount.kind,
+            title: `${value.toLocaleString("en-US", { maximumFractionDigits: 0 })} ${asset.ticker} ${amount.verb} on ${chain}`,
+            consequence: `${((value / supply) * 100).toFixed(1)}% of the ${chain} supply. Large mints or burns usually match subscriptions or redemptions; check against reported AUM.`,
+          });
+        }
+      }
+    }
+    await setCursor(cursorName, to.toString());
+    from = to + 1n;
+  }
+  log("watcher", `${chain} ${addresses.size} address(es) up to block ${head}, ${matched} new event(s)`);
 }
