@@ -24,7 +24,7 @@ The goal: **adding an asset on a platform we already know (syrupUSDT, another Se
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │ FRAMEWORK (code, changes rarely, versioned in the changelog)            │
-│  zod schemas · power types · scoring rules · discovery primitives ·     │
+│  zod schemas · power types · rating rules · discovery primitives ·      │
 │  template interpreter · worker jobs · UI                                │
 ├─────────────────────────────────────────────────────────────────────────┤
 │ TEMPLATES (data in Postgres, one per platform or token standard)        │
@@ -33,7 +33,7 @@ The goal: **adding an asset on a platform we already know (syrupUSDT, another Se
 ├─────────────────────────────────────────────────────────────────────────┤
 │ ASSETS (data in Postgres, one record per asset)                         │
 │  curated facts with sources · deployments · template + parameters ·     │
-│  discovery snapshots · live data · alerts · research notes · hand scores│
+│  discovery snapshots · live data · alerts · research notes              │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -79,10 +79,10 @@ Each field that today is a `Sourced`/`Disclosed` value in YAML becomes one `fact
 
 - **History for free.** A correction inserts a new row and sets `superseded_at` on the old one. "What did we say about syrupUSDC's LEI on 1 Oct?" is a query.
 - **One generic form.** The admin form is generated from `AssetSchema`: every path is a field with value, status, source URL and checked date. No per-asset UI.
-- **Gap and staleness reports across all assets.** "Every fact with `checked_at` older than 90 days" or "every asset where `serviceProviders.auditor` is unknown" is one SQL query (TECH_SPEC §10 asked for this).
-- **The same validation.** Loading an asset assembles current facts into the existing `AssetSchema` shape and parses it with zod. Scoring and pages don't change.
+- **Gap and staleness reports across all assets.** "Every fact with `checked_at` older than 90 days" or "every asset where `counterparties.auditor` is unknown" is one SQL query (TECH_SPEC §10 asked for this).
+- **The same validation.** Loading an asset assembles current facts into the existing `AssetSchema` shape and parses it with zod. Ratings and pages don't change.
 
-Arrays whose items carry their own sources (`verification.methods`, `exit.instantLiquidity`) are a single fact whose value is the array.
+Arrays whose items carry their own sources (`transparency.reports`, `control.audits`, `exit.instant`) are a single fact whose value is the array. Entity facts for Counterparties (`regulated`, `regulator`, `auditorTier`) live in the `entity.facts` column (migration `0003_entity_facts`).
 
 ### 3.2 What happens to the Git files
 
@@ -102,8 +102,8 @@ Sync rules:
 - After an edit in `/admin` (step 4), the admin action runs the export and opens a pull request, so Git never silently drifts.
 - If both sides changed the same field, the last import or export wins. `bun rwa check` lists every difference before you run either.
 | `research/*.md` | `research_note` rows. Free text stays free text, but it is attached to the asset and shown in admin |
-| `HAND_SCORES` in tests | `hand_score` rows. `bun rwa check` compares engine output with hand scores for every asset |
-| Unit tests on scoring rules | Stay in code. They test the framework, not assets |
+| Expected ratings in `lib/framework/framework.test.ts` | Stay in code for now. The `hand_score` table held the six-slice rosette's colors and is no longer used |
+| Unit tests on framework rules | Stay in code. They test the framework, not assets |
 
 ### 3.3 Keeping the trust properties the PRD promised
 
@@ -233,10 +233,10 @@ No code, no files. This is the acceptance test for the migration: **add syrupUSD
 | `discovery/` | Keep `context.ts`, `rpc.ts`, `sources.ts`, `powers.ts`. Add `template.ts` (zod schema for templates) and `interpret.ts`. `handlers/*.ts` become templates and are deleted once their output matches |
 | `discovery/cli.ts` | Writes snapshots to the database instead of files (`--file` keeps the old behaviour for debugging) |
 | `worker/watcher.ts` | `RULES` and `AMOUNT_EVENTS` come from the asset's template (merged with `base`) |
-| `scripts/validate.ts` | Becomes `bun rwa check`: parse every published asset, list gaps and stale facts, compare engine scores with `hand_score` |
+| `scripts/validate.ts` | Becomes `bun rwa check`: parse every published asset, list gaps and stale facts, compare engine ratings with the expected ones |
 | Auth for `/admin` | One admin account. Simplest option: GitHub OAuth restricted to your user. `proxy.ts` blocks `/admin/**` otherwise |
 
-The scoring engine, the schemas and every public page stay as they are. They already take an `Asset`, `Discovered[]` and `Live`; only where those come from changes.
+The rating engine, the schemas and every public page stay as they are. They already take an `Asset`, `Discovered[]` and `Live`; only where those come from changes.
 
 ## 7. Migration plan
 
