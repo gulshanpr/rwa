@@ -13,6 +13,8 @@ Independent, open-source risk profiles for tokenized real-world assets, rated wi
 
 Curated facts and discovery snapshots live in Postgres too (tables `asset`, `fact`, `entity`, `discovery_snapshot`, …), with the files above kept in sync as a Git copy. See `docs/SYSTEM_DESIGN.md`. The web app, worker and discovery CLI read Postgres when `DATABASE_URL` is set and the catalog has been imported, and fall back to the files (and `data/live/*.json`) otherwise.
 
+`next build` always reads the Git copy (catalog, `data/live/*.json` and alerts), even when `DATABASE_URL` is set, so a deploy is reproducible from its commit and cannot fail because Postgres holds catalog data imported by another branch or is slow to reach from the build machine. Pages still use the database at runtime through ISR. Set `CATALOG_SOURCE=files` or `CATALOG_SOURCE=db` to force one source.
+
 ## Commands
 
 ```bash

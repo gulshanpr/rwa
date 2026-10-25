@@ -1,6 +1,6 @@
 import { asc, desc, eq, isNull } from "drizzle-orm";
 import { cache } from "react";
-import { getDb, hasDatabase, schema } from "@/db/client";
+import { getDb, readsFromDatabase, schema } from "@/db/client";
 import { loadAssets, loadDiscovered, loadEntities, type DiscoverySnapshot } from "./data";
 import { AssetSchema, type Asset } from "./schema/asset";
 import { DiscoveredSchema } from "./schema/discovered";
@@ -184,13 +184,13 @@ export function catalogFromFiles(): Catalog {
 }
 
 export async function getCatalog(opts: { includeDrafts?: boolean } = {}): Promise<Catalog> {
-  if (!hasDatabase()) return catalogFromFiles();
+  if (!readsFromDatabase()) return catalogFromFiles();
   try {
     const fromDb = await catalogFromDb(opts);
     if (fromDb) return fromDb;
     console.warn("catalog: DATABASE_URL is set but the catalog tables are empty; reading data/ files. Run `bun rwa import`.");
   } catch (e) {
-    console.error("catalog: falling back to data/ files:", e);
+    console.error(`catalog: falling back to data/ files: ${e instanceof Error ? e.message : e}`);
   }
   return catalogFromFiles();
 }

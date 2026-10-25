@@ -18,7 +18,7 @@ Two kinds of data, handled differently:
                 └───────────────▲──────────────────────────────┬─────────────────────────────────┘
                                 │ PR (CLI output)              │ read at build time
                  ┌──────────────┴─────────┐          ┌─────────▼──────────┐
- RPC / Etherscan │ packages/discovery     │          │ packages/scoring   │
+ RPC / Etherscan │ packages/discovery     │          │ packages/framework │
  ───────────────►│ (CLI, runs nightly in  │          │ (pure functions)   │
                  │  GitHub Actions)       │          └─────────┬──────────┘
                  └────────────────────────┘                    │
@@ -68,12 +68,14 @@ rwabeat/
 │   │   │   ├── asset-classes/[class]/page.tsx  # treasuries, private-credit
 │   │   │   ├── assets/[slug]/
 │   │   │   │   ├── page.tsx                    # Overview tab
+│   │   │   │   ├── underlying/page.tsx         # one tab per risk category
+│   │   │   │   ├── legal/page.tsx
+│   │   │   │   ├── counterparties/page.tsx
 │   │   │   │   ├── control/page.tsx
+│   │   │   │   ├── transparency/page.tsx
 │   │   │   │   ├── pricing/page.tsx
-│   │   │   │   ├── defi/page.tsx
-│   │   │   │   ├── verification/page.tsx
 │   │   │   │   ├── exit/page.tsx
-│   │   │   │   ├── disclosure/page.tsx
+│   │   │   │   ├── defi/page.tsx
 │   │   │   │   ├── history/page.tsx
 │   │   │   │   └── sources/page.tsx
 │   │   │   ├── entities/[slug]/page.tsx        # v2
@@ -82,7 +84,7 @@ rwabeat/
 │   │   │   └── api/                            # JSON/CSV export, RSS
 │   │   ├── components/
 │   │   │   ├── layout/        # Sidebar, Topbar, Breadcrumb, CommandSearch
-│   │   │   ├── risk/          # Rosette, SliceBadge, RiskList, StageBadge
+│   │   │   ├── risk/          # Rosette, RiskDot, RiskList, CategoryCard, StageCard
 │   │   │   ├── data/          # StatCard, DataTable, KeyFactsCard, SourceLink
 │   │   │   ├── charts/        # AreaChart, DonutChart, Sparkline
 │   │   │   └── permissions/   # PermissionGraph, RoleTable, AddressChip
@@ -95,7 +97,7 @@ rwabeat/
 │   ├── schema/                # zod schemas + inferred types
 │   ├── config/                # loads + validates YAML, exposes typed `assets`, `entities`
 │   ├── discovery/             # CLI: contract discovery + handlers
-│   ├── scoring/               # pure scoring functions + "what can go wrong" text generation
+│   ├── framework/             # pure rating functions per category, stages, "what can go wrong"
 │   ├── db/                    # Drizzle schema + migrations
 │   └── shared/                # chain registry, address utils, formatting
 ├── data/
@@ -182,31 +184,17 @@ legal:
   secFilings:    { status: public, value: { cik: "0002013810", forms: [D] }, source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002013810", checkedAt: 2026-10-05 } }
   offeringDocument: { status: not_public, searchedAt: 2026-10-05, note: "Available to investors only" }
   auditedFinancials: { status: not_public, searchedAt: 2026-10-05 }
-  insolvency:    { status: unknown }   # legal slice not assessed in v1
+  insolvency:    { status: unknown }   # Legal Claim: not assessed yet
 
-verification:
-  methods:
-    - type: proof-of-asset        # attestation | audit | proof-of-reserve | proof-of-asset | self-reported
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily            # realtime | daily | weekly | monthly | quarterly | annual
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0x..." }
-      source: { url: "https://chroniclelabs.org/dashboard/proof-of-asset", checkedAt: 2026-10-05 }
+freshnessClass: { value: tbill-mmf, source: { ... } }   # sets the freshness bar for Transparency and Pricing
 
-exit:
-  redemption:
-    available: { value: true, source: { url: "...", checkedAt: 2026-10-05 } }
-    whoCanRedeem: { value: whitelisted-holders, source: { url: "...", checkedAt: 2026-10-05 } }
-    settlement: { value: "T+0", source: { url: "...", checkedAt: 2026-10-05 } }
-    gatesOrSuspension: { status: unknown }
-  instantLiquidity:
-    - type: offramp-contract      # e.g. USDC redemption facility
-      address: "0x..."
-      chain: ethereum
-      source: { url: "...", checkedAt: 2026-10-05 }
+# One section per risk category. Full field list: lib/schema/asset.ts; rules: docs/FRAMEWORK_SPEC.md.
+underlying:     # holdings (dated report or mandate), WAM, credit quality, secured %, largest borrower, track record
+counterparties: # custodian, fundAdministrator, auditor, transferAgent (entity slugs), affiliated roles, settlement rails, dependencies
+control:        # audits, bug bounty, powers documented, signer independence, chains and bridges
+transparency:   # reports: data source, granularity, frequency, verifiability, onchain feed; event reporting; constraints
+pricing:        # reference (oracle | vault | none), staleness detectable, how losses reach the price, secondary discount
+exit:           # redemption terms, dealing, notice, lock-up, daily cap, minimum, fee, liquidators, instant facilities
 
 externalIds:
   defillama: "..."
@@ -259,7 +247,7 @@ website: https://www.bny.com
 
 ### 4.5 Canonical power types
 
-Scoring works on normalized powers, not contract-specific function names:
+Control works on normalized powers, not contract-specific function names:
 
 | Power | Meaning | Criticality |
 |---|---|---|
@@ -317,100 +305,11 @@ external_check    (asset_slug, source, key, value_json, ts)   // EDGAR, GLEIF, D
 - Cache Etherscan source/ABI responses in `.cache/etherscan/<chainId>/<address>.json`. They rarely change; invalidate when an `Upgraded` event fires.
 - Store a `lastProcessedBlock` per (chain, contract) so log scans are incremental.
 
-## 6. Scoring engine
+## 6. Rating engine
 
-`packages/scoring` exports pure functions: `scoreAsset(curated, discovered, live) → AssetScore`. No I/O. Fully unit-tested.
+`lib/framework` exports pure functions: `rateAsset({ asset, discovered, live, measured, entities }) → FrameworkRating`, with one result per risk category, the "what can go wrong" list, the stage, and the onchain-data badge. No I/O. Fully unit-tested.
 
-```ts
-type SliceColor = "green" | "yellow" | "red" | "grey";
-interface SliceResult {
-  slice: "control" | "pricing" | "verification" | "exit" | "disclosure" | "legal";
-  color: SliceColor;
-  headline: string;          // "A single EOA can mint tokens"
-  reasons: Reason[];         // each links to evidence (contract, tx, url)
-}
-```
-
-### 6.1 Control
-
-Evaluate every **critical** and **high** power across all deployments. Take the worst holder.
-
-Holder classification:
-- `eoa`: a single key.
-- `safe(m/n)`: multisig. "Strong" if `m ≥ 3` and `m/n ≥ 0.5`. Otherwise "weak".
-- `timelock(d)`: wraps another holder; inherits its proposer's class, plus delay `d`.
-- `contract-unknown`: an unverified or unrecognized contract → treated as `eoa` (worst case) until labeled.
-- `immutable`: power does not exist (no proxy, renounced).
-
-| Color | Rule |
-|---|---|
-| **Red** | Any critical power held by an `eoa` or `contract-unknown`, **or** any critical power held by a weak Safe with no timelock. |
-| **Yellow** | Critical powers held by strong Safes **without** timelock, **or** upgrade delay < 7 days, **or** high powers held by an EOA. |
-| **Green** | `upgrade` is immutable or behind a timelock ≥ 7 days controlled by a strong Safe, **and** `mint`/`force-transfer`/`set-price` are held by strong Safes or timelocked, **and** no high powers held by EOAs. |
-
-Note shown on the page: *For regulated securities, freeze and force-transfer powers are often legally required. This slice scores who holds them and what checks exist, not whether they exist.*
-
-### 6.2 Pricing
-
-Applies to the price source used by the issuer and the main DeFi integrations.
-
-| Color | Rule |
-|---|---|
-| **Red** | Price written by an EOA, **or** no onchain price/NAV reference, **or** last update older than 3× the expected cadence. |
-| **Yellow** | Price written by an issuer-controlled multisig or a single provider relaying issuer-reported NAV; updates on schedule. |
-| **Green** | Independent oracle network, data sourced from a fund administrator or custodian (not the issuer), updates at least daily, history onchain. |
-
-For `stable-nav` tokens (fixed $1), score the NAV verification feed if there is one; if DeFi markets hardcode $1, show a **yellow** flag "DeFi markets assume $1 with no onchain NAV check".
-
-### 6.3 Verification (Chronicle's five tests)
-
-For the best verification method, count how many are true: `independent`, `assetLevel`, `frequency ≤ daily`, `cryptographicallyVerifiable`, `onchain`.
-
-| Color | Rule |
-|---|---|
-| **Green** | 5 of 5 |
-| **Yellow** | 3–4 of 5 |
-| **Red** | 0–2 of 5, or self-reported only |
-
-Credit: *"Five tests adapted from Chronicle Labs, 'The Transparency Gap in Onchain Finance' (Oct 2026)."*
-
-### 6.4 Exit
-
-| Color | Rule |
-|---|---|
-| **Green** | Documented redemption at T+1 or faster for all eligible holders, **and** an onchain instant-liquidity path (redemption contract or DEX liquidity ≥ 2% of supply at ≤ 1% slippage). |
-| **Yellow** | Documented redemption at T+5 or faster, but no instant path; or instant path exists but documentation is incomplete. |
-| **Red** | No documented redemption, redemption > T+5, or redemption can be suspended at issuer discretion with no stated limits. |
-
-### 6.5 Disclosure
-
-Six checks, each `public` / `not_public` / `unknown`: **legal entity + jurisdiction**, **custodian named**, **fund administrator named**, **auditor named**, **offering document public**, **audited financials public**.
-
-| Color | Rule |
-|---|---|
-| **Green** | ≥ 5 public |
-| **Yellow** | 3–4 public |
-| **Red** | ≤ 2 public |
-
-`unknown` counts as not public, and the page shows "We couldn't find this. Can you? Open a PR."
-
-### 6.6 Legal & insolvency
-Always `grey` in v1: *"Not assessed. We don't yet evaluate bankruptcy remoteness or holder claims. See what is disclosed in the Disclosure tab."*
-
-### 6.7 "What can go wrong" generator
-Map each red/yellow reason to a template:
-
-```ts
-const templates = {
-  "control.eoa.mint":   (r) => `A single key (${short(r.holder)}) can create unlimited new ${r.ticker} tokens, diluting holders.`,
-  "control.eoa.upgrade":(r) => `A single key can replace the token's code at any time, with no delay.`,
-  "pricing.stale":      (r) => `The onchain price hasn't updated in ${humanize(r.age)}; lending markets may misprice it.`,
-  "exit.no-instant":    ()  => `There's no onchain way to exit instantly; redemption goes through the issuer.`,
-  // ...
-};
-```
-
-Sort by severity (red first, then critical power first). Show top 5 on the overview.
+The categories, states (green, yellow, red, unverified, not assessed), thresholds and stage requirements are in [FRAMEWORK_SPEC.md](./FRAMEWORK_SPEC.md); the reasoning behind them is in [framework.md](./framework.md).
 
 ## 7. Discovery engine
 
@@ -531,8 +430,8 @@ Every alert also triggers a re-run of discovery for that asset, so the risk page
 - Screener: server-rendered initial table + client-side TanStack filtering. 20–100 rows, so no pagination needed.
 
 ### 9.2 Public JSON/CSV (v1 read-only)
-- `GET /api/assets` — list with slice colors and key metrics
-- `GET /api/assets/[slug]` — full profile (curated + discovered + scores)
+- `GET /api/assets` — list with category ratings, stage and key metrics
+- `GET /api/assets/[slug]` — full profile (curated + discovered + live + measured + ratings)
 - `GET /api/assets/[slug].csv`
 - `GET /api/alerts?asset=&severity=&since=`
 
@@ -541,7 +440,7 @@ Cache with `Cache-Control: s-maxage=300`.
 ## 10. Quality and testing
 
 - **Schema validation in CI:** every YAML must parse with zod; every `public` field must have a source.
-- **Scoring unit tests:** fixtures for each rule (EOA mint → red, 3/5 Safe + 7d timelock → green, etc.).
+- **Framework unit tests:** fixtures for each rule (single-key mint → red, 4/7 Safe + 7d timelock → green, etc.), plus the expected ratings for every committed asset.
 - **Discovery fork tests:** run handlers against an Anvil fork at a pinned block; snapshot the output.
 - **Link checker:** weekly job flags dead source URLs.
 - **Staleness check:** CI warns when any curated field's `checkedAt` is older than 90 days.

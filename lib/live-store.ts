@@ -1,5 +1,5 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
-import { getDb, hasDatabase, schema } from "@/db/client";
+import { getDb, readsFromDatabase, schema } from "@/db/client";
 import { getSiteCatalog } from "./catalog";
 import { loadAlerts, loadLive } from "./data";
 import type { Asset, Chain } from "./schema/asset";
@@ -76,7 +76,7 @@ async function liveFromDb(asset: Asset): Promise<Live | undefined> {
 }
 
 export async function getLive(asset: Asset): Promise<Live | undefined> {
-  if (!hasDatabase()) return loadLive(asset.slug);
+  if (!readsFromDatabase()) return loadLive(asset.slug);
   try {
     return (await liveFromDb(asset)) ?? loadLive(asset.slug);
   } catch (e) {
@@ -86,7 +86,7 @@ export async function getLive(asset: Asset): Promise<Live | undefined> {
 }
 
 export async function getAlerts(): Promise<{ sample: boolean; alerts: Alert[] }> {
-  if (!hasDatabase()) return loadAlerts();
+  if (!readsFromDatabase()) return loadAlerts();
   try {
     const known = new Set((await getSiteCatalog()).assets.map((a) => a.slug));
     const rows = await getDb().select().from(schema.alert).orderBy(desc(schema.alert.publishedAt)).limit(500);
