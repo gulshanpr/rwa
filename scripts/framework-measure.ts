@@ -1,6 +1,6 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { loadAssets, loadLive } from "@/lib/data";
-import { MeasuredSchema, type Measured } from "@/lib/framework/schema";
+import { MeasuredSchema, type Measured } from "@/lib/schema/measured";
 import { fetchJson } from "@/worker/util";
 
 // Measures what the framework's Exit category needs from the market: the top-10 holder share and DEX
@@ -67,7 +67,7 @@ async function measure(slug: string, token: string, navUsd: number): Promise<Mea
 }
 
 const only = process.argv.slice(2);
-mkdirSync("data/framework/measured", { recursive: true });
+mkdirSync("data/measured", { recursive: true });
 for (const asset of loadAssets().filter((a) => only.length === 0 || only.includes(a.slug))) {
   const d = asset.deployments.find((x) => x.chain === "ethereum");
   const nav = loadLive(asset.slug)?.supply.find((s) => s.chain === "ethereum")?.priceUsd;
@@ -76,7 +76,7 @@ for (const asset of loadAssets().filter((a) => only.length === 0 || only.include
     continue;
   }
   const m = await measure(asset.slug, d.token, nav);
-  writeFileSync(`data/framework/measured/${asset.slug}.json`, `${JSON.stringify(m, null, 2)}\n`);
+  writeFileSync(`data/measured/${asset.slug}.json`, `${JSON.stringify(m, null, 2)}\n`);
   const q = m.dex.quotes.map((x) => (x.routed ? `$${x.sizeUsd / 1e6}M ${x.slippagePct}%` : `$${x.sizeUsd / 1e6}M no route`)).join(", ");
   console.log(`${asset.slug}: top10 ${m.holders?.top10Pct}% · ${q}`);
 }

@@ -65,7 +65,7 @@ function assetForYaml(a: Asset): unknown {
 }
 
 function entityForYaml(e: Entity): unknown {
-  return { slug: e.slug, name: e.name, type: e.type, jurisdiction: e.jurisdiction, lei: e.lei, website: e.website };
+  return { slug: e.slug, name: e.name, type: e.type, jurisdiction: e.jurisdiction, lei: e.lei, website: e.website, regulated: e.regulated, regulator: e.regulator, auditorTier: e.auditorTier };
 }
 
 async function runImport() {

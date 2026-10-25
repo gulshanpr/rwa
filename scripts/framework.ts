@@ -1,6 +1,5 @@
-import { loadAssets, loadDiscovered, loadEntities, loadLive } from "@/lib/data";
+import { loadAssets, loadDiscovered, loadEntities, loadLive, loadMeasured } from "@/lib/data";
 import { rateAsset, CATEGORY_LABELS, CATEGORY_ORDER, type FrameworkRating, type Rating } from "@/lib/framework";
-import { loadEntityFacts, loadFrameworks, loadMeasured } from "@/lib/framework/data";
 
 // Rates every asset with the RWAbeat framework (docs/framework.md) and prints the result.
 // Usage: bun framework [slug ...] [--json]
@@ -12,29 +11,18 @@ const only = args.filter((a) => !a.startsWith("--"));
 const SHORT: Record<Rating, string> = { green: "green", yellow: "yellow", red: "red", unverified: "unverified", "not-assessed": "—" };
 
 export function rateAll(): FrameworkRating[] {
-  const frameworks = loadFrameworks();
-  const facts = loadEntityFacts();
-  const names = Object.fromEntries([...loadEntities().values()].map((e) => [e.slug, e.name]));
+  const entities = loadEntities();
   return loadAssets()
     .filter((a) => only.length === 0 || only.includes(a.slug))
-    .flatMap((asset) => {
-      const framework = frameworks.get(asset.slug);
-      if (!framework) {
-        console.error(`${asset.slug}: no data/framework/assets/${asset.slug}.yaml`);
-        return [];
-      }
-      return [
-        rateAsset({
-          asset,
-          framework,
-          discovered: loadDiscovered(asset).map((s) => s.discovered),
-          live: loadLive(asset.slug),
-          measured: loadMeasured(asset.slug),
-          entityFacts: facts,
-          entityNames: names,
-        }),
-      ];
-    });
+    .map((asset) =>
+      rateAsset({
+        asset,
+        discovered: loadDiscovered(asset).map((s) => s.discovered),
+        live: loadLive(asset.slug),
+        measured: loadMeasured(asset.slug),
+        entities,
+      }),
+    );
 }
 
 const ratings = rateAll();
