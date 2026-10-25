@@ -23,7 +23,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: { default: `${SITE.name} · Tokenized assets, risk-checked`, template: `%s · ${SITE.name}` },
   description: SITE.description,
-  alternates: { types: { "application/rss+xml": "/api/alerts.rss" } },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

@@ -77,20 +77,6 @@ export function SidebarNav({ variant, onNavigate }: { variant: SidebarVariant; o
           </ul>
         </div>
       ))}
-      <a
-        href={repoNewIssueUrl("Correction: ")}
-        target="_blank"
-        rel="noreferrer"
-        title="Suggest a correction"
-        className={cn(
-          "mt-auto flex items-center gap-2 rounded-control border border-line px-3 py-2.5 text-small text-fg-muted hover:border-line-strong hover:text-fg",
-          variant !== "full" && "justify-center px-0",
-          variant === "responsive" && "xl:expanded:justify-start xl:expanded:px-3",
-        )}
-      >
-        <GitPullRequest className="size-4 shrink-0" aria-hidden />
-        <span className={labelClass}>Suggest a correction</span>
-      </a>
     </nav>
   );
 }

@@ -1,4 +1,3 @@
-import { Rss } from "lucide-react";
 import { AlertsFeed } from "@/components/alerts/alerts-feed";
 import { SampleBanner } from "@/components/data/sample-banner";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -23,12 +22,6 @@ export default async function AlertsPage() {
             mints and burns, and stale oracles.
           </p>
         </div>
-        <a
-          href="/api/alerts.rss"
-          className="inline-flex items-center gap-1.5 rounded-control border border-line bg-surface px-3 py-1.5 text-small text-fg-muted hover:border-line-strong hover:text-fg"
-        >
-          <Rss className="size-3.5" /> RSS
-        </a>
       </div>
       {sample && <SampleBanner />}
       <AlertsFeed alerts={alerts} tickers={tickers} />

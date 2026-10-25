@@ -15,9 +15,6 @@ export function Footer() {
           <a href={SITE.repoUrl} target="_blank" rel="noreferrer" className="hover:text-fg">
             GitHub
           </a>
-          <a href="/api/alerts.rss" className="hover:text-fg">
-            RSS
-          </a>
           <a href="/api/assets" className="hover:text-fg">
             Open data (JSON)
           </a>
