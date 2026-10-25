@@ -29,16 +29,20 @@ deployments:
         "0xa4a7bb3831958463b3fe3e27a6a160f764341953": Centrifuge Hub (shared)
   - chain: base
     token: "0x5a0F93D040De44e78F251b03c43be9CF317Dcf64"
-    discovery: { poolId: "281474976710663" }
+    discovery:
+      poolId: "281474976710663"
   - chain: avalanche
     token: "0x58f93d6b1ef2f44ec379cb975657c132cbed3b6b"
-    discovery: { poolId: "281474976710663" }
+    discovery:
+      poolId: "281474976710663"
   - chain: arbitrum
     token: "0x58f93d6b1ef2f44ec379cb975657c132cbed3b6b"
-    discovery: { poolId: "281474976710663" }
+    discovery:
+      poolId: "281474976710663"
   - chain: bsc
     token: "0x58F93d6b1EF2F44eC379Cb975657C132CBeD3B6b"
-    discovery: { poolId: "281474976710663" }
+    discovery:
+      poolId: "281474976710663"
 
 access:
   investorType:
@@ -51,24 +55,6 @@ access:
   transferRestricted:
     value: true
     source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "FullRestrictions hook blocks non-members. The deJAAA wrapper exists for open DeFi use.", checkedAt: 2026-10-14 }
-
-serviceProviders:
-  custodian:
-    status: public
-    value: jpmorgan
-    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "June 2026 factsheet names J.P. Morgan. Vault Street says custody moved from Pershing/StoneX to J.P. Morgan in H1 2026. An Ethena governance post still names Pershing/StoneX.", checkedAt: 2026-10-14 }
-  fundAdministrator:
-    status: public
-    value: trident-trust
-    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Trident Trust (Cayman) calculates NAV. An Ethena post says Trident Trust (BVI).", checkedAt: 2026-10-14 }
-  auditor:
-    status: public
-    value: mha-cayman
-    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-14 }
-  transferAgent:
-    status: public
-    value: trident-trust
-    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "'Fund Administrator / Transfer Agent: Trident Trust Company (Cayman) Limited (registrar, NAV calculation, KYC/AML, whitelist)'. Onchain, the share token is the register.", checkedAt: 2026-10-24 }
 
 legal:
   vehicleType:
@@ -99,6 +85,119 @@ legal:
     value: "Statutory segregation as a BVI segregated portfolio: 'BVI statutory segregation ring-fences the JAAA portfolio from every other portfolio of the SPC; the underlying CLO and cash positions are held in custody accounts with the fund as owner'. The memorandum warns that 'courts outside the BVI may not recognise the statutory segregation'. Quoted by Vault Street, not seen first-hand."
     source: { url: "https://app.vaultstreet.com/research/jaaa", checkedAt: 2026-10-24 }
 
+freshnessClass:
+  value: short-duration-credit
+  source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Floating-rate AAA CLO tranches with daily liquidity.", checkedAt: 2026-10-25 }
+
+underlying:
+  holdings:
+    status: public
+    value:
+      asOf: 2026-08-03
+      items:
+        - type: structured-credit
+          pct: 97.7
+          label: AAA CLO tranches (36 positions)
+        - type: cash
+          pct: 2.3
+          label: Cash and other
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "36 AAA CLO tranche positions, $671.4M attested market value; $15.5M cash/other of $686.9M AUM (3 Aug 2026).", checkedAt: 2026-10-25 }
+  wamDays:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Fund WAL not disclosed. Floating rate; the JAAA ETF's effective duration is 0.09 to 0.24 years.
+  creditQuality:
+    status: public
+    value: investment-grade
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "AAA-rated CLOs: 100% AAA (June 2026 factsheet).", checkedAt: 2026-10-25 }
+  securedPct:
+    status: public
+    value: 97.7
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Senior CLO tranches, secured by pools of mostly below-investment-grade corporate loans.", checkedAt: 2026-10-25 }
+  largestObligorPct:
+    status: public
+    value: 4.9
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "ARES 2022-ALF2A, $33.0M, 4.9% of the CLO book. Top-3 manager families hold 29.5% (3 Aug 2026).", checkedAt: 2026-10-25 }
+  obligors:
+    status: public
+    value: 36
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "36 CLO tranche positions across 23 ticker families.", checkedAt: 2026-10-25 }
+  trackRecord:
+    value: { since: 2025-07-01, losses: [] }
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Inception July 2025. Worst drawdown 0.22% (March 2026), recovered in 22 days. No default.", checkedAt: 2026-10-25 }
+
+counterparties:
+  custodian:
+    status: public
+    value: jpmorgan
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Custodian: J. P. Morgan", checkedAt: 2026-10-25 }
+  fundAdministrator:
+    status: public
+    value: trident-trust
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Administrator: Trident Trust (Cayman)", checkedAt: 2026-10-25 }
+  auditor:
+    status: public
+    value: mha-cayman
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Auditor: MHA Cayman", checkedAt: 2026-10-25 }
+  transferAgent:
+    status: public
+    value: trident-trust
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "'Fund Administrator / Transfer Agent: Trident Trust Company (Cayman) Limited (registrar, NAV calculation, KYC/AML, whitelist)'. Onchain, the share token is the register.", checkedAt: 2026-10-24 }
+  affiliated:
+    value: []
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-25 }
+  settlementRails:
+    value: [usdc, usdt, other-stablecoin]
+    source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Ethereum vaults in USDC, USDT, AUSD and USAT.", checkedAt: 2026-10-25 }
+  operators:
+    - role: Sub-investment manager
+      name: Janus Henderson Investors
+      source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", checkedAt: 2026-10-25 }
+    - role: Tokenization platform
+      name: Centrifuge
+      source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", checkedAt: 2026-10-25 }
+
+control:
+  audits:
+    - auditor: Sherlock
+      scope: Centrifuge V3.1.0 deployment verification
+      date: 2026-02-01
+      source: { url: "https://app.vaultstreet.com/research/jaaa", note: "v3.1.0 verified by Sherlock (Feb 2026); BurraSec reviewed v3.3; Certora formal verification began Aug 2026.", checkedAt: 2026-10-25 }
+  bugBounty:
+    status: public
+    value: { platform: Cantina, maxUsd: 250000 }
+    source: { url: "https://app.vaultstreet.com/research/jaaa", checkedAt: 2026-10-25 }
+  powersDocumented:
+    value: true
+    source: { url: "https://developer.centrifuge.io/developer/security/overview/", note: "Root, ProtocolGuardian, OpsGuardian, hub managers and balance sheet managers are documented.", checkedAt: 2026-10-25 }
+  signersIndependent:
+    status: not_public
+    searchedAt: 2026-10-25
+  chains:
+    - chain: ethereum, base, arbitrum, avalanche, bsc
+      mechanism: native+bridge
+      provider: Centrifuge messaging (LayerZero, Axelar, Wormhole, Chainlink adapters)
+      source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", checkedAt: 2026-10-25 }
+    - chain: solana, stellar
+      mechanism: bridged
+      provider: Ethereum escrow
+      source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Backed by Ethereum escrow wallets with no code; no separate audit.", checkedAt: 2026-10-25 }
+
+transparency:
+  reports:
+    - name: Chronicle Proof of Asset
+      provider: chronicle
+      dataSource: custodian
+      granularity: position
+      frequency: daily
+      verifiability: cryptographic
+      onchain: true
+      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "Router 0x5D44…89C8; holdings view on the Chronicle dashboard. Current tranche ratings are not in the holdings report.", checkedAt: 2026-10-25 }
+      feed: { chain: ethereum, address: "0x5D44916E0Db13EcD661b20Df4D645904E57589C8" }
+  eventReporting:
+    status: unknown
+    note: Only asked for private credit.
+
 pricing:
   reference:
     type: oracle
@@ -111,22 +210,19 @@ pricing:
     businessDaysOnly: true
     read:
       decimals: 18
-      value: { fn: "function pricePoolPerShare(uint64, bytes16, bool) view returns (uint128)", args: ["281474976710663", "0x00010000000000070000000000000001", "false"] }
-      updatedAt: { fn: "function markersPricePoolPerShare(uint64, bytes16) view returns (uint64, uint64, uint64)", args: ["281474976710663", "0x00010000000000070000000000000001"], index: 0 }
+      value: { fn: "function pricePoolPerShare(uint64, bytes16, bool) view returns (uint128)", args: [ "281474976710663", "0x00010000000000070000000000000001", "false" ] }
+      updatedAt:
+        fn: function markersPricePoolPerShare(uint64, bytes16) view returns (uint64, uint64, uint64)
+        args: [ "281474976710663", "0x00010000000000070000000000000001" ]
+        index: 0
     historyOnchain: true
     source: { url: "https://docs.centrifuge.io/developer/protocol/deployments/", note: "Spoke pricePoolPerShare for pool 281474976710663, share class 0x00010000000000070000000000000001. Written by hub manager EOA 0x7bf0…02ec, the same key as JTRSY. That role previously sat with Safe 0x742d…be1e (3 of 8). Spoke maxSharePriceAge is 2^64−1, so vaults never reject a stale price. Vault Street says the key is a Fordefi MPC; that was not verified.", checkedAt: 2026-10-14 }
-
-verification:
-  methods:
-    - type: proof-of-asset
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0x5D44916E0Db13EcD661b20Df4D645904E57589C8" }
-      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "Router readWithAge matched JAAA's NAV at review. Blockscout labels this contract ChronicleVAO_FakeWho_FAKEWAT_Router_1, which conflicts with Chronicle's docs. Aave Horizon does not read this router. Its getSourceOfAsset for JAAA is 0xF77f2537dba4ffD60f77fACdfB2c1706364fA03d (the LlamaGuard feed Vault Street cites). Horizon LTV is 81% and the liquidation threshold is 86%.", checkedAt: 2026-10-14 }
+  stalenessDetectable:
+    value: true
+    source: { url: "https://etherscan.io/address/0xEC3582fcDC34078a4B7a8c75a5a3AE46f48525aB", note: "pricePoolPerShare returns computedAt. The vaults themselves never reject a stale price.", checkedAt: 2026-10-25 }
+  lossRecognition:
+    value: next-nav
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Daily NAV; the March 2026 drawdown showed up the same week.", checkedAt: 2026-10-25 }
 
 exit:
   redemption:
@@ -144,7 +240,33 @@ exit:
       status: public
       value: issuer-discretion
       source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Portfolio Supplement as quoted by Vault Street (not seen first-hand): the board may suspend redemptions in its sole discretion. No instant redemption buffer was found.", checkedAt: 2026-10-14 }
-  instantLiquidity: []
+  dealing:
+    value: daily
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Daily subscriptions and redemptions; contractual settlement is three business days.", checkedAt: 2026-10-25 }
+  noticeDays:
+    status: public
+    value: 0
+    source: { url: "https://app.vaultstreet.com/research/jaaa", checkedAt: 2026-10-25 }
+  lockupDays:
+    status: public
+    value: 0
+    source: { url: "https://app.vaultstreet.com/research/jaaa", checkedAt: 2026-10-25 }
+  dailyCapUsd:
+    status: public
+    value: null
+    source: { url: "https://app.vaultstreet.com/research/jaaa", note: "'No formal daily limits, gates, or swing pricing.'", checkedAt: 2026-10-25 }
+  minimumUsd:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/JAAA", checkedAt: 2026-10-25 }
+  feeBps:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/JAAA", checkedAt: 2026-10-25 }
+  liquidators:
+    value: allowlisted
+    source: { url: "https://etherscan.io/token/0x5a0F93D040De44e78F251b03c43be9CF317Dcf64", note: "FullRestrictions hook blocks non-members. Aave Horizon holds JAAA; a permissionless deJAAA wrapper exists separately.", checkedAt: 2026-10-25 }
+  instant: []
 
 externalIds:
   defillama: null

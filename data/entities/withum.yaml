@@ -4,3 +4,7 @@ name: WithumSmith+Brown, PC
 type: [auditor]
 jurisdiction: US
 website: https://www.withum.com
+
+auditorTier:
+  value: pcaob-registered
+  source: { url: "https://www.withum.com/service/audit-assurance/", note: "Audits SEC-registered funds, which requires PCAOB registration.", checkedAt: 2026-10-25 }

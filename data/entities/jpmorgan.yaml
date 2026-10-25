@@ -4,3 +4,8 @@ name: J.P. Morgan
 type: [custodian]
 jurisdiction: US
 website: https://www.jpmorgan.com
+
+regulated:
+  value: true
+  source: { url: "https://www.federalreserve.gov/supervisionreg/large-financial-institutions.htm", note: "JPMorgan Chase Bank, N.A. is a national bank supervised by the OCC; the holding company is in the Fed's LISCC portfolio.", checkedAt: 2026-10-25 }
+regulator: OCC and Federal Reserve

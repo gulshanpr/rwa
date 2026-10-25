@@ -14,16 +14,17 @@ import {
 import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3, Download } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { RiskDot } from "@/components/risk/risk-dot";
 import { Rosette } from "@/components/risk/rosette";
-import { SliceDot } from "@/components/risk/slice-dot";
+import { StageBadge } from "@/components/risk/stage-card";
 import { Segmented } from "@/components/ui/segmented";
 import { Tag } from "@/components/ui/tag";
 import { CHAINS } from "@/lib/chains";
 import { formatDuration, formatUsd } from "@/lib/format";
+import { CATEGORY_LABELS, CATEGORY_ORDER, CATEGORY_SHORT, RATING_RANK, type CategoryId, type Rating } from "@/lib/framework/types";
 import type { AssetRow } from "@/lib/rows";
 import type { Chain } from "@/lib/schema/asset";
-import { SLICE_LABELS, SLICE_ORDER, type SliceColor, type SliceId } from "@/lib/scoring/types";
-import { cn } from "@/lib/ui";
+import { cn, RISK_WORD, ratingWord } from "@/lib/ui";
 
 const features = tableFeatures({
   rowSortingFeature,
@@ -32,15 +33,6 @@ const features = tableFeatures({
   sortFns: { alphanumeric: sortFn_alphanumeric, text: sortFn_text },
 });
 
-const RANK: Record<SliceColor, number> = { grey: 0, green: 1, yellow: 2, red: 3 };
-const SHORT: Record<SliceId, string> = {
-  control: "Ctrl",
-  pricing: "Price",
-  verification: "Verif",
-  exit: "Exit",
-  disclosure: "Discl",
-  legal: "Legal",
-};
 
 const helper = createColumnHelper<typeof features, AssetRow>();
 
@@ -69,22 +61,33 @@ const columns = helper.columns([
     meta: { align: "center" },
     cell: (info) => (
       <span className="inline-flex">
-        <Rosette slices={info.row.original.slices} size="sm" ticker={info.row.original.ticker} />
+        <Rosette slices={info.row.original.categories} size="sm" ticker={info.row.original.ticker} />
       </span>
     ),
   }),
-  ...SLICE_ORDER.map((slice) =>
-    helper.accessor((r) => RANK[r.slices[slice].color], {
-      id: slice,
-      header: SHORT[slice],
-      meta: { align: "center", title: SLICE_LABELS[slice] },
-      cell: (info) => (
-        <span title={`${SLICE_LABELS[slice]}: ${info.row.original.slices[slice].headline}`}>
-          <SliceDot color={info.row.original.slices[slice].color} />
-        </span>
-      ),
+  ...CATEGORY_ORDER.map((category) =>
+    helper.accessor((r) => RATING_RANK[r.categories[category].rating], {
+      id: category,
+      header: CATEGORY_SHORT[category],
+      meta: { align: "center", title: CATEGORY_LABELS[category] },
+      cell: (info) => {
+        const c = info.row.original.categories[category];
+        return <RiskDot color={c.rating} title={`${CATEGORY_LABELS[category]}: ${ratingWord(c)}. ${c.headline}`} />;
+      },
     }),
   ),
+  helper.accessor((r) => r.stage ?? -1, {
+    id: "stage",
+    header: "Stage",
+    meta: { title: "Stage: how much holders have to trust the issuer" },
+    cell: (info) => <StageBadge stage={info.row.original.stage} />,
+  }),
+  helper.accessor((r) => (r.onchainData ? 1 : 0), {
+    id: "onchainData",
+    header: "Onchain data",
+    meta: { align: "center", title: "Holdings or reserve data published onchain (a badge, not part of any rating)" },
+    cell: (info) => (info.row.original.onchainData ? "Yes" : <span className="text-fg-subtle">No</span>),
+  }),
   helper.accessor((r) => r.chains.join(", "), {
     id: "chains",
     header: "Chains",
@@ -118,10 +121,11 @@ const columns = helper.columns([
 
 type ColumnMeta = { align?: "left" | "right" | "center"; title?: string };
 type ClassFilter = "all" | "us-treasuries" | "private-credit";
-type Toggle = "eoa" | "collateral" | "stale";
+type Toggle = "eoa" | "staged" | "collateral" | "stale";
 
 const TOGGLES: { id: Toggle; label: string; test: (r: AssetRow) => boolean }[] = [
-  { id: "eoa", label: "Has EOA critical power", test: (r) => r.singleKeyPowers > 0 },
+  { id: "eoa", label: "Single-key critical power", test: (r) => r.singleKeyPowers > 0 },
+  { id: "staged", label: "Stage 0 or above", test: (r) => r.stage !== null },
   { id: "collateral", label: "Used as collateral", test: (r) => r.defiCollateralUsd > 0 },
   { id: "stale", label: "Price stale > 24h", test: (r) => r.flags.some((f) => f.id === "price-stale") },
 ];
@@ -132,8 +136,8 @@ const selectClass =
 export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; defaultClass?: ClassFilter }) {
   const [assetClass, setAssetClass] = useState<ClassFilter>(defaultClass);
   const [chain, setChain] = useState<Chain | "all">("all");
-  const [slice, setSlice] = useState<SliceId>("control");
-  const [sliceColor, setSliceColor] = useState<SliceColor | "any">("any");
+  const [category, setCategory] = useState<CategoryId>("control");
+  const [rating, setRating] = useState<Rating | "any">("any");
   const [toggles, setToggles] = useState<Set<Toggle>>(new Set());
 
   const chains = useMemo(() => [...new Set(rows.flatMap((r) => r.chains))], [rows]);
@@ -143,13 +147,18 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
         (r) =>
           (assetClass === "all" || r.assetClass === assetClass) &&
           (chain === "all" || r.chains.includes(chain)) &&
-          (sliceColor === "any" || r.slices[slice].color === sliceColor) &&
+          (rating === "any" || r.categories[category].rating === rating) &&
           TOGGLES.every((t) => !toggles.has(t.id) || t.test(r)),
       ),
-    [rows, assetClass, chain, slice, sliceColor, toggles],
+    [rows, assetClass, chain, category, rating, toggles],
   );
 
-  const table = useTable({ features, columns, data, initialState: { sorting: [{ id: "aum", desc: true }] } });
+  const table = useTable({
+    features,
+    columns,
+    data,
+    initialState: { sorting: [{ id: "aum", desc: true }], columnVisibility: { legal: false, chains: false } },
+  });
 
   const flip = (id: Toggle) =>
     setToggles((prev) => {
@@ -181,25 +190,21 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
           ))}
         </select>
         <div className="flex items-center gap-1">
-          <select aria-label="Slice" className={selectClass} value={slice} onChange={(e) => setSlice(e.target.value as SliceId)}>
-            {SLICE_ORDER.map((s) => (
-              <option key={s} value={s}>
-                {SLICE_LABELS[s]}
+          <select aria-label="Risk category" className={selectClass} value={category} onChange={(e) => setCategory(e.target.value as CategoryId)}>
+            {CATEGORY_ORDER.map((c) => (
+              <option key={c} value={c}>
+                {CATEGORY_LABELS[c]}
               </option>
             ))}
           </select>
           <span className="text-small text-fg-subtle">is</span>
-          <select
-            aria-label="Slice color"
-            className={selectClass}
-            value={sliceColor}
-            onChange={(e) => setSliceColor(e.target.value as SliceColor | "any")}
-          >
-            <option value="any">any color</option>
-            <option value="green">green</option>
-            <option value="yellow">yellow</option>
-            <option value="red">red</option>
-            <option value="grey">not assessed</option>
+          <select aria-label="Rating" className={selectClass} value={rating} onChange={(e) => setRating(e.target.value as Rating | "any")}>
+            <option value="any">any rating</option>
+            {(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => (
+              <option key={r} value={r}>
+                {RISK_WORD[r].toLowerCase()}
+              </option>
+            ))}
           </select>
         </div>
         {TOGGLES.map((t) => (
@@ -333,7 +338,7 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
         {table.getRowModel().rows.map(({ original: r }) => (
           <li key={r.slug} className="p-4">
             <Link href={`/assets/${r.slug}`} className="flex items-start gap-3">
-              <Rosette slices={r.slices} size="sm" ticker={r.ticker} />
+              <Rosette slices={r.categories} size="sm" ticker={r.ticker} />
               <div className="min-w-0 flex-1">
                 <p className="text-body">
                   <span className="font-semibold">{r.ticker}</span> <span className="text-fg-muted">{r.manager}</span>
@@ -342,10 +347,11 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                   {r.aumUsd !== null ? formatUsd(r.aumUsd) : "—"} · {r.assetClassLabel}
                 </p>
               </div>
+              <StageBadge stage={r.stage} />
             </Link>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label font-normal text-fg-muted">
-              {SLICE_ORDER.map((s) => (
-                <SliceDot key={s} color={r.slices[s].color} label={SHORT[s]} />
+              {CATEGORY_ORDER.map((c) => (
+                <RiskDot key={c} color={r.categories[c].rating} label={CATEGORY_SHORT[c]} title={ratingWord(r.categories[c])} />
               ))}
             </div>
             {r.flags.length > 0 && (

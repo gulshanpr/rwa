@@ -3,3 +3,7 @@ slug: mha-cayman
 name: MHA Cayman
 type: [auditor]
 jurisdiction: KY
+
+auditorTier:
+  value: global-network
+  source: { url: "https://www.mha.co.uk/locations/cayman-islands", note: "Part of MHA, the UK member of Baker Tilly International. Authorised to audit CIMA-registered funds. No PCAOB registration found.", checkedAt: 2026-10-25 }

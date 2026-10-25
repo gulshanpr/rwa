@@ -45,24 +45,6 @@ access:
     value: true
     source: { url: "https://etherscan.io/address/0x17418038ecF73BA4026c4f428547BF099706F27B", note: "DS Protocol compliance service. Transfers need an allowed wallet.", checkedAt: 2026-10-14 }
 
-serviceProviders:
-  custodian:
-    status: public
-    value: first-citizens
-    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Securitize Capital LLC Form ADV, Schedule D 7.B.(1), private fund 805-2083739898: custodians First-Citizens Bank & Trust Company (Silicon Valley Bank division) and Paxos Trust Company. rwa.xyz (via findas.org) names BNY Mellon, which the Apollo N-CSR names as custodian of the underlying Apollo Diversified Credit Fund, so the two likely describe different layers.", checkedAt: 2026-10-24 }
-  fundAdministrator:
-    status: public
-    value: securitize-fund-services
-    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", checkedAt: 2026-10-14 }
-  auditor:
-    status: public
-    value: withum
-    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", note: "Also named in the Form ADV excerpt on privatefunddata.com.", checkedAt: 2026-10-14 }
-  transferAgent:
-    status: public
-    value: securitize
-    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", checkedAt: 2026-10-14 }
-
 legal:
   vehicleType:
     status: public
@@ -90,6 +72,129 @@ legal:
   insolvency:
     status: unknown
 
+freshnessClass:
+  value: private-credit
+  source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Feeder into Apollo Diversified Credit Fund (direct lending, performing credit, asset-backed).", checkedAt: 2026-10-25 }
+
+underlying:
+  holdings:
+    status: public
+    value:
+      asOf: 2026-06-30
+      items:
+        - type: secured-loans
+          pct: 97.1
+          label: Senior secured loans (via Apollo Diversified Credit Fund)
+        - type: other
+          pct: 2.9
+          label: Other credit
+    source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", note: "Master fund N-CSRS at 2026-06-30: 97.1% senior secured, 87.6% floating rate; direct lending 68%, performing credit 27%, asset-backed 5%; 29.1% leverage; duration 1.0 years.", checkedAt: 2026-10-25 }
+  wamDays:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Weighted average life not stated; average duration 1.0 years.
+  securedPct:
+    status: public
+    value: 97.1
+    source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", checkedAt: 2026-10-25 }
+  largestObligorPct:
+    status: public
+    value: 1.6
+    source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", note: "Kronos I UK Ltd, 1.6% of the portfolio; top 10 about 12%.", checkedAt: 2026-10-25 }
+  obligors:
+    status: public
+    value: 247
+    source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", note: "247 portfolio companies.", checkedAt: 2026-10-25 }
+  trackRecord:
+    value: { since: 2025-01-29, losses: [] }
+    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", note: "ACRED launched 2025-01-29; the master fund reports since 2017. No loss event found.", checkedAt: 2026-10-25 }
+
+counterparties:
+  custodian:
+    status: public
+    value: first-citizens
+    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "rwa.xyz: Silicon Valley Bank (a division of First Citizens). Form ADV: First Citizens Bank & Trust.", checkedAt: 2026-10-25 }
+  fundAdministrator:
+    status: public
+    value: securitize-fund-services
+    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Fund administrator: Securitize Fund Services", checkedAt: 2026-10-25 }
+  auditor:
+    status: public
+    value: withum
+    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Auditor: WithumSmith+Brown", checkedAt: 2026-10-25 }
+  transferAgent:
+    status: public
+    value: securitize
+    source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", checkedAt: 2026-10-14 }
+  affiliated:
+    value: [fund-administrator, transfer-agent]
+    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Asset manager Securitize Capital; administrator Securitize Fund Services; transfer agent Securitize. Same group.", checkedAt: 2026-10-25 }
+  settlementRails:
+    value: [usdc]
+    source: { url: "https://etherscan.io/address/0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B", note: "Subscriptions through the SecuritizeOnRamp in USDC. No other rail documented.", checkedAt: 2026-10-14 }
+  operators:
+    - role: Underlying manager
+      name: Apollo (Apollo Diversified Credit Fund)
+      source: { url: "https://app.rwa.xyz/assets/ACRED", checkedAt: 2026-10-25 }
+    - role: Prime broker
+      name: Coinbase Prime
+      source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Form ADV via privatefunddata.com (research notes); not shown on rwa.xyz", checkedAt: 2026-10-14 }
+  dependencies:
+    - name: Apollo Diversified Credit Fund
+      what: Everything sits in one master fund; ACRED can only pay out what Apollo's quarterly repurchase offers return.
+      source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", checkedAt: 2026-10-25 }
+
+control:
+  audits:
+    - auditor: Halborn
+      scope: Securitize DSToken contracts
+      date: 2025-10-08
+      source: { url: "https://www.halborn.com/audits/securitize/dstoken-e07b34", checkedAt: 2026-10-25 }
+  bugBounty:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: No Securitize bug bounty found.
+  powersDocumented:
+    value: false
+    source: { url: "https://github.com/securitize-io/DSTokenInterfaces", note: "No Securitize admin-power documentation.", checkedAt: 2026-10-25 }
+  signersIndependent:
+    status: not_public
+    searchedAt: 2026-10-25
+  chains:
+    - chain: ethereum, avalanche, polygon, ink, sei, solana, aptos
+      mechanism: native+bridge
+      provider: Wormhole
+      source: { url: "https://wormhole.com/case-studies/securitize", note: "Securitize moves its DS tokens between chains through Wormhole.", checkedAt: 2026-10-25 }
+
+transparency:
+  reports:
+    - name: Apollo Diversified Credit Fund annual report (N-CSR)
+      provider: apollo
+      dataSource: issuer
+      granularity: position
+      frequency: annual
+      verifiability: audit
+      onchain: false
+      source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001676197", note: "Full schedule of investments; the annual report is audited, the semi-annual one is not.", checkedAt: 2026-10-25 }
+    - name: RedStone ACRED NAV feed
+      provider: redstone
+      dataSource: issuer
+      granularity: nav
+      frequency: daily
+      verifiability: self-reported
+      onchain: true
+      source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "Relays the NAV from Securitize's own administrator.", checkedAt: 2026-10-25 }
+      feed: { chain: ethereum, address: "0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c" }
+  eventReporting:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: No commitment to report defaults outside the periodic filings.
+  constraints:
+    - what: The feeder's own holdings and offering memorandum
+      reason: Private 506(c) offering
+      sharedWith: eligible investors
+      source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002056038", checkedAt: 2026-10-25 }
+
 pricing:
   reference:
     type: oracle
@@ -101,18 +206,12 @@ pricing:
     cadenceSeconds: 86400
     historyOnchain: false
     source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "RedStone ACRED_FUNDAMENTAL (EthereumPriceFeedAcredFundamentalWithoutRoundsV1), read by RedStoneNavProvider 0x8fac01686d4c7444c31152aac025b45cb0a95ccd. The contract name says rounds are not stored. The OnRamp owner (the same single wallet that owns the token) can swap that provider. The feed proxy is owned by Safe 0x6906…4472, 2 of 3, with no timelock.", checkedAt: 2026-10-14 }
-
-verification:
-  methods:
-    - type: attestation
-      provider: redstone
-      independent: true
-      assetLevel: false
-      frequency: daily
-      cryptographicallyVerifiable: false
-      onchain: true
-      feed: { chain: ethereum, address: "0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c" }
-      source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "No Chronicle proof-of-asset or Chainlink proof-of-reserve was found. The feed relays an administrator NAV. Independent, daily and onchain; not asset-level and not a cryptographic reserve proof.", checkedAt: 2026-10-14 }
+  stalenessDetectable:
+    value: true
+    source: { url: "https://etherscan.io/address/0xd6bcbbc87bfb6c8964ddc73dc3eae6d08865d51c", note: "RedStone feed returns updatedAt.", checkedAt: 2026-10-25 }
+  lossRecognition:
+    value: next-nav
+    source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", note: "The master fund strikes NAV daily.", checkedAt: 2026-10-25 }
 
 exit:
   redemption:
@@ -130,7 +229,30 @@ exit:
       status: public
       value: stated-limits
       source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "Repurchase offers are at least 5% of shares and can be prorated. No separate suspension clause was read in a public offering memorandum.", checkedAt: 2026-10-14 }
-  instantLiquidity: []
+  dealing:
+    value: quarterly
+    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Redemption time: Quarterly. The master fund offers to repurchase at least 5% of shares a quarter and may prorate.", checkedAt: 2026-10-25 }
+  noticeDays:
+    status: not_public
+    searchedAt: 2026-10-25
+  lockupDays:
+    status: not_public
+    searchedAt: 2026-10-25
+  dailyCapUsd:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Quarterly windows only.
+  minimumUsd:
+    status: not_public
+    searchedAt: 2026-10-25
+  feeBps:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/ACRED", checkedAt: 2026-10-25 }
+  liquidators:
+    value: allowlisted
+    source: { url: "https://etherscan.io/address/0x17418038ecF73BA4026c4f428547BF099706F27B", note: "DS Protocol compliance service: only registered wallets can receive ACRED.", checkedAt: 2026-10-25 }
+  instant: []
 
 externalIds:
   defillama: null

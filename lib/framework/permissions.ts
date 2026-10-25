@@ -1,12 +1,15 @@
-import type { Discovered, Holder, Power } from "../schema/discovered";
 import type { Chain } from "../schema/asset";
+import type { Discovered, Holder, Power } from "../schema/discovered";
 import { formatDelay, formatDuration } from "../format";
-import { sliceFromReasons, type Reason, type SliceColor, type SliceResult } from "./types";
+import type { Tone } from "./types";
 
-export const SEVEN_DAYS = 7 * 86400;
+// Who holds each privileged power, resolved through proxy admins, timelocks and controlling contracts
+// down to the account that signs. Control (control.ts) rates the result.
 
 export const CRITICAL_POWERS: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "allocate", "admin"];
 export const HIGH_POWERS: Power[] = ["freeze", "pause", "set-compliance"];
+/** Red when a single key holds them (framework §4: "a single key can mint, freeze or upgrade"). */
+export const SINGLE_KEY_RED: Power[] = [...CRITICAL_POWERS, "freeze"];
 
 export type Criticality = "critical" | "high" | "unclassified";
 
@@ -30,32 +33,19 @@ export const POWER_LABELS: Record<Power, string> = {
   unclassified: "Unclassified",
 };
 
-function powerVerb(power: Power, ticker: string): string {
-  switch (power) {
-    case "upgrade":
-      return "replace the token's code";
-    case "mint":
-      return `create new ${ticker} tokens`;
-    case "force-transfer":
-      return "move tokens out of any holder's wallet";
-    case "burn-from":
-      return "destroy tokens in any holder's wallet";
-    case "set-price":
-      return "change the onchain price or NAV";
-    case "allocate":
-      return "lend out or move the assets backing the token";
-    case "freeze":
-      return "freeze a specific holder's tokens";
-    case "pause":
-      return "pause all transfers";
-    case "set-compliance":
-      return "change who is allowed to hold the token";
-    case "admin":
-      return "grant or revoke every other role";
-    case "unclassified":
-      return "call an unreviewed privileged function";
-  }
-}
+export const POWER_VERBS: Record<Power, string> = {
+  upgrade: "replace the contract code",
+  mint: "create new tokens",
+  "force-transfer": "move tokens out of any wallet",
+  "burn-from": "destroy tokens in any wallet",
+  "set-price": "change the onchain price",
+  allocate: "move the assets backing the token",
+  admin: "grant or revoke every other role",
+  freeze: "freeze a holder's tokens",
+  pause: "pause all transfers",
+  "set-compliance": "change who may hold the token",
+  unclassified: "call an unreviewed function",
+};
 
 export type HolderClass = "eoa" | "strong-safe" | "weak-safe" | "unknown";
 
@@ -79,6 +69,11 @@ const CLASS_RANK: Record<HolderClass, number> = { "strong-safe": 1, "weak-safe":
 
 export function isStrongSafe(threshold: number, owners: number): boolean {
   return threshold >= 3 && threshold / owners >= 0.5;
+}
+
+/** EOAs, unknown contracts and 1-of-n Safes: any one signer can act alone. */
+export function isSingleKey(h: ResolvedHolder): boolean {
+  return h.holderClass === "eoa" || h.holderClass === "unknown" || h.safe?.threshold === 1;
 }
 
 export function holderLabel(holder: Holder | undefined): string {
@@ -157,6 +152,9 @@ export function resolveHolder(discovered: Discovered, address: string, depth = 0
   }
 }
 
+/** What's wrong with how a power is held, worst first. */
+export type PowerIssue = "single-key" | "weak-multisig" | "no-timelock";
+
 export interface PowerRow {
   id: string;
   chain: Chain;
@@ -167,38 +165,29 @@ export interface PowerRow {
   via: string;
   holder: ResolvedHolder;
   checks: string;
-  color: SliceColor;
-  reasonKey?: string;
+  /** grey: unclassified, needs manual review. */
+  color: Tone;
+  issue?: PowerIssue;
 }
 
-function evaluate(power: Power, h: ResolvedHolder): { color: SliceColor; key?: string } {
+function evaluate(power: Power, h: ResolvedHolder): { color: Tone; issue?: PowerIssue } {
   const criticality = criticalityOf(power);
   if (criticality === "unclassified") return { color: "grey" };
-  const singleKey = h.holderClass === "eoa" || h.holderClass === "unknown";
-
-  if (criticality === "critical") {
-    if (singleKey) return { color: "red", key: "eoa" };
-    if (h.holderClass === "weak-safe" && h.delaySeconds === 0) return { color: "red", key: "weak-safe" };
-    if (power === "upgrade") {
-      if (h.delaySeconds === 0) return { color: "yellow", key: "no-delay" };
-      if (h.delaySeconds < SEVEN_DAYS) return { color: "yellow", key: "short-delay" };
-      if (h.holderClass !== "strong-safe") return { color: "yellow", key: "weak-safe-timelock" };
-      return { color: "green" };
-    }
-    if (h.delaySeconds === 0) return { color: "yellow", key: "no-delay" };
-    return { color: "green" };
-  }
-
-  if (singleKey) return { color: "yellow", key: "eoa" };
+  if (isSingleKey(h)) return { color: SINGLE_KEY_RED.includes(power) ? "red" : "yellow", issue: "single-key" };
+  if (criticality === "critical" && h.holderClass === "weak-safe") return { color: "yellow", issue: "weak-multisig" };
+  if (criticality === "critical" && h.delaySeconds === 0) return { color: "yellow", issue: "no-timelock" };
   return { color: "green" };
 }
 
 function checksText(power: Power, h: ResolvedHolder): string {
   if (criticalityOf(power) === "unclassified") return "Needs review";
-  if (h.holderClass === "eoa" || h.holderClass === "unknown") return "None";
+  if (isSingleKey(h)) return h.delaySeconds > 0 ? `${formatDelay(h.delaySeconds)} delay, single key` : "None";
   if (h.delaySeconds > 0) return `${formatDelay(h.delaySeconds)} delay`;
   return "No delay";
 }
+
+const ISSUE_RANK: Record<PowerIssue, number> = { "single-key": 0, "weak-multisig": 1, "no-timelock": 2 };
+const TONE_RANK: Record<Tone, number> = { red: 0, yellow: 1, green: 2, grey: 3 };
 
 export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
   const rows: PowerRow[] = [];
@@ -206,7 +195,6 @@ export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
     for (const [contract, c] of Object.entries(d.contracts)) {
       c.permissions.forEach((p, i) => {
         const holder = resolveHolder(d, p.holder);
-        const { color, key } = evaluate(p.power, holder);
         rows.push({
           id: `${d.chain}-${contract}-${i}`,
           chain: d.chain,
@@ -217,75 +205,15 @@ export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
           via: p.via,
           holder,
           checks: checksText(p.power, holder),
-          color,
-          reasonKey: key,
+          ...evaluate(p.power, holder),
         });
       });
     }
   }
   const order = [...CRITICAL_POWERS, ...HIGH_POWERS, "unclassified"];
-  // Within a power, the weakest holder first, so it leads the reasons.
-  const colors = ["red", "yellow", "green"];
-  const keys = ["eoa", "weak-safe", "no-delay", "short-delay", "weak-safe-timelock"];
-  const keyRank = (k?: string) => (k && keys.includes(k) ? keys.indexOf(k) : keys.length);
+  // Within a power, the weakest holder first, so it leads the findings.
+  const issueRank = (k?: PowerIssue) => (k ? ISSUE_RANK[k] : 3);
   return rows.sort(
-    (a, b) => order.indexOf(a.power) - order.indexOf(b.power) || colors.indexOf(a.color) - colors.indexOf(b.color) || keyRank(a.reasonKey) - keyRank(b.reasonKey),
-  );
-}
-
-function reasonText(row: PowerRow, ticker: string): string {
-  const verb = powerVerb(row.power, ticker);
-  const s = row.holder.safe;
-  const multisig = s ? `A ${s.threshold}-of-${s.owners} multisig` : "A multisig";
-  switch (row.reasonKey) {
-    case "eoa":
-      return `A single key can ${verb}.`;
-    case "weak-safe":
-      return `${multisig} can ${verb} with no delay.`;
-    case "no-delay":
-      return row.power === "upgrade"
-        ? "Upgrades take effect immediately (no timelock)."
-        : `${multisig} can ${verb} with no delay.`;
-    case "short-delay":
-      return `Upgrades have only a ${formatDelay(row.holder.delaySeconds)} delay, less than 7 days to react.`;
-    case "weak-safe-timelock":
-      return `Upgrades are timelocked but controlled by ${multisig.toLowerCase()} below our strength bar.`;
-    default:
-      return `${multisig} can ${verb}.`;
-  }
-}
-
-export function scoreControl(rows: PowerRow[], ticker: string): SliceResult {
-  const reasons = new Map<string, Reason>();
-  for (const row of rows) {
-    if (row.color === "red" || row.color === "yellow") {
-      const id = `control.${row.reasonKey}.${row.power}`;
-      if (!reasons.has(id)) {
-        reasons.set(id, {
-          id,
-          slice: "control",
-          color: row.color,
-          text: reasonText(row, ticker),
-          critical: row.criticality === "critical",
-          evidence: { tab: "control", anchor: `power-${row.id}`, label: `${POWER_LABELS[row.power]} power` },
-        });
-      }
-    }
-    if (row.holder.modulesEnabled) {
-      const id = `control.safe-modules.${row.holder.address}`;
-      reasons.set(id, {
-        id,
-        slice: "control",
-        color: "yellow",
-        text: "A Safe module can act without the signers' approval.",
-        critical: row.criticality === "critical",
-        evidence: { tab: "control", anchor: `power-${row.id}`, label: "Safe modules" },
-      });
-    }
-  }
-  return sliceFromReasons(
-    "control",
-    [...reasons.values()],
-    "Critical powers are timelocked and held by strong multisigs.",
+    (a, b) => order.indexOf(a.power) - order.indexOf(b.power) || TONE_RANK[a.color] - TONE_RANK[b.color] || issueRank(a.issue) - issueRank(b.issue),
   );
 }

@@ -36,24 +36,6 @@ access:
     value: true
     source: { url: "https://docs.superstate.com/investors/tokenized-funds/available-funds/invesco-ustb", note: "Every transfer, mint, subscribe, bridge and redeem checks the allowlist. The token reads AllowlistV4 0xBcBC2b4F…8D1f (allowlist() at block 26,183,016).", checkedAt: 2026-10-13 }
 
-serviceProviders:
-  custodian:
-    status: public
-    value: bny
-    source: { url: "https://superstate.com/assets/ustb", note: "UMB Bank until the March 2026 Invesco partnership", checkedAt: 2026-10-13 }
-  fundAdministrator:
-    status: public
-    value: nav-fund-services
-    source: { url: "https://superstate.com/assets/ustb", note: "NAV Fund Services / NAV Consulting, Inc., the NAV calculation agent", checkedAt: 2026-10-13 }
-  auditor:
-    status: public
-    value: pwc
-    source: { url: "https://superstate.com/assets/ustb", note: "Ernst & Young until March 2026", checkedAt: 2026-10-13 }
-  transferAgent:
-    status: public
-    value: superstate
-    source: { url: "https://superstate.com/assets/ustb", note: "Superstate Services LLC", checkedAt: 2026-10-13 }
-
 legal:
   vehicleType:
     status: public
@@ -81,7 +63,111 @@ legal:
   insolvency:
     status: not_public
     searchedAt: 2026-10-13
-    note: "A separate series of a statutory trust. Only a secondary source (Yearn curation report) claims 'bankruptcy remoteness from Superstate Inc.'; no primary-document quote found."
+    note: A separate series of a statutory trust. Only a secondary source (Yearn curation report) claims 'bankruptcy remoteness from Superstate Inc.'; no primary-document quote found.
+
+freshnessClass:
+  value: tbill-mmf
+  source: { url: "https://superstate.com/assets/ustb", note: "Short-duration Treasury bill fund.", checkedAt: 2026-10-25 }
+
+underlying:
+  holdings:
+    status: public
+    value:
+      asOf: 2026-09-21
+      items:
+        - type: government-bills
+          pct: 99.59
+          label: T-bills (35 positions)
+        - type: cash
+          pct: 0.41
+    source: { url: "https://superstate.com/assets/ustb", note: "Holdings table 'As of 09/21/2026': 35 U.S. Treasury Bills summing to 99.59% of the fund; the rest is cash.", checkedAt: 2026-10-25 }
+  wamDays:
+    status: public
+    value: 87
+    source: { url: "https://superstate.com/assets/ustb", note: "Computed by RWAbeat from the 35 positions' maturities and weights on 2026-09-21 (86.6 days).", checkedAt: 2026-10-25 }
+  trackRecord:
+    value: { since: 2024-01-02, losses: [] }
+    source: { url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0002004367", note: "First Form D 2024-01-02. No loss or NAV drop found.", checkedAt: 2026-10-25 }
+
+counterparties:
+  custodian:
+    status: public
+    value: bny
+    source: { url: "https://superstate.com/assets/ustb", note: "Custodian: The Bank of New York Mellon (replaced UMB Bank in March 2026; rwa.xyz still shows UMB).", checkedAt: 2026-10-25 }
+  fundAdministrator:
+    status: public
+    value: nav-fund-services
+    source: { url: "https://superstate.com/assets/ustb", note: "NAV calculation agent: NAV Fund Services", checkedAt: 2026-10-25 }
+  auditor:
+    status: public
+    value: pwc
+    source: { url: "https://superstate.com/assets/ustb", note: "Auditor: PricewaterhouseCoopers LLP (replaced Ernst & Young).", checkedAt: 2026-10-25 }
+  transferAgent:
+    status: public
+    value: superstate
+    source: { url: "https://superstate.com/assets/ustb", note: "Superstate Services LLC", checkedAt: 2026-10-13 }
+  affiliated:
+    value: [transfer-agent]
+    source: { url: "https://superstate.com/assets/ustb", note: "Transfer agent is Superstate Services LLC, the sponsor's own SEC-registered transfer agent.", checkedAt: 2026-10-25 }
+  settlementRails:
+    value: [usd-wire, usdc]
+    source: { url: "https://superstate.com/assets/ustb", note: "Redemption timing: Same-day. Immediate for USDC; 1pm ET cutoff for USD.", checkedAt: 2026-10-25 }
+  operators:
+    - role: Investment manager
+      name: Invesco Advisers, Inc.
+      source: { url: "https://superstate.com/assets/ustb", checkedAt: 2026-10-25 }
+    - role: Transfer agent
+      name: Superstate Services LLC
+      source: { url: "https://superstate.com/assets/ustb", checkedAt: 2026-10-25 }
+
+control:
+  audits:
+    - auditor: "0xMacro"
+      scope: Superstate AllowlistV3
+      date: 2025-07-31
+      source: { url: "https://0xmacro.com/library/audits/superstate-9", note: "Most recent of the 0xMacro reports that covers the USTB stack; reports 10 and 11 cover equity tokens.", checkedAt: 2026-10-25 }
+  bugBounty:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Superstate's investor security page says it has no formal reward policy.
+  powersDocumented:
+    value: false
+    source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "Docs cover minting, allowlist changes and forced burns by the 'Superstate Admin Address', but not upgrades, pausing or the oracle.", checkedAt: 2026-10-25 }
+  signersIndependent:
+    status: not_public
+    searchedAt: 2026-10-25
+  chains:
+    - chain: ethereum
+      mechanism: native
+      provider: Superstate
+      source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "Issued by Superstate on each chain; crosschain moves are an issuer burn and mint, not a third-party bridge.", checkedAt: 2026-10-25 }
+    - chain: solana, plume
+      mechanism: native
+      provider: Superstate
+      source: { url: "https://docs.superstate.com/investors/smart-contracts", checkedAt: 2026-10-25 }
+
+transparency:
+  reports:
+    - name: Chronicle Proof of Asset
+      provider: chronicle
+      dataSource: custodian
+      granularity: position
+      frequency: daily
+      verifiability: cryptographic
+      onchain: true
+      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "Router 0xDf8d…f254 is live; its age advanced about every 23.7h, weekends included (checked 2026-10-13).", checkedAt: 2026-10-25 }
+      feed: { chain: ethereum, address: "0xDf8deCbDB89C95297ee6ef816Bd8A7B66973f254" }
+    - name: Superstate holdings page
+      provider: superstate
+      dataSource: issuer
+      granularity: position
+      frequency: unstated
+      verifiability: self-reported
+      onchain: false
+      source: { url: "https://superstate.com/assets/ustb", note: "Line-item T-bill holdings, 'As of 09/21/2026' when checked on 2026-10-25.", checkedAt: 2026-10-25 }
+  eventReporting:
+    status: unknown
+    note: Only asked for private credit.
 
 pricing:
   reference:
@@ -96,29 +182,18 @@ pricing:
     read:
       decimals: 6
       value: { fn: "function latestRoundData() view returns (uint80, int256, uint256, uint256, uint80)", index: 1 }
-      updatedAt: { fn: "function checkpoints(uint256) view returns (uint64, uint64, uint128)", args: ["$value.0"], index: 1 }
+      updatedAt:
+        fn: function checkpoints(uint256) view returns (uint64, uint64, uint128)
+        args: [$value.0]
+        index: 1
     historyOnchain: true
     source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "SuperstateOracle; owner EOA 0x4b1d…1395 posts one checkpoint per business day (NAV/S from NAV Fund Services). latestRoundData() extrapolates between checkpoints and returns the current block time as updatedAt, so freshness is read from checkpoints(roundId).effectiveAt. Each checkpoint may move at most maximumAcceptablePriceDelta ($1.00, about 9%); the oracle reverts if the newest checkpoint is over 5 days old.", checkedAt: 2026-10-13 }
-
-verification:
-  methods:
-    - type: proof-of-asset
-      provider: chronicle
-      independent: true
-      assetLevel: true
-      frequency: daily
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0xDf8deCbDB89C95297ee6ef816Bd8A7B66973f254" }
-      source: { url: "https://docs.chroniclelabs.org/Products/proofOfAsset/integratingPOAs/routers", note: "ChronicleVAO_Superstate_USTB_Router_2. readWithAge() sampled over 10 days to 2026-10-13: the age advanced about every 23.7h including weekends (11.231 → 11.2399), so the feed is live and daily. Blockscout mislabels the router. Independence and method are Chronicle's own claims; Yearn's July 2026 report said nothing was attested onchain.", checkedAt: 2026-10-13 }
-    - type: self-reported
-      provider: superstate
-      independent: false
-      assetLevel: true
-      frequency: unstated
-      cryptographicallyVerifiable: false
-      onchain: false
-      source: { url: "https://superstate.com/assets/ustb", note: "Issuer-published line-item holdings snapshot", checkedAt: 2026-10-13 }
+  stalenessDetectable:
+    value: false
+    source: { url: "https://github.com/superstateinc/onchain-redemptions/blob/5986d9b692aff3a333d6042361af0d31521a78f0/src/oracle/SuperstateOracle.sol", note: "SuperstateOracle extrapolates between checkpoints and returns the current block time as updatedAt. It only reverts once the latest checkpoint is 5 days old.", checkedAt: 2026-10-25 }
+  lossRecognition:
+    value: next-nav
+    source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "One NAV checkpoint per business day.", checkedAt: 2026-10-25 }
 
 exit:
   redemption:
@@ -135,14 +210,44 @@ exit:
     gatesOrSuspension:
       status: not_public
       searchedAt: 2026-10-13
-      note: "Only 'subject to available liquidity' is public. Any further gates would be in the offering memorandum (portal only). The RedemptionIdle owner EOA 0x8cf4…0765 can pause it."
-  instantLiquidity:
-    - type: offramp-contract
-      label: Superstate RedemptionIdle (USDC)
+      note: Only 'subject to available liquidity' is public. Any further gates would be in the offering memorandum (portal only). The RedemptionIdle owner EOA 0x8cf4…0765 can pause it.
+  dealing:
+    value: continuous
+    source: { url: "https://superstate.com/assets/ustb", note: "Immediate for USDC, same-day for USD.", checkedAt: 2026-10-25 }
+  noticeDays:
+    status: public
+    value: 0
+    source: { url: "https://superstate.com/assets/ustb", checkedAt: 2026-10-25 }
+  lockupDays:
+    status: public
+    value: 0
+    source: { url: "https://superstate.com/assets/ustb", note: "'liquidity each market day'; no lock-up stated.", checkedAt: 2026-10-25 }
+  dailyCapUsd:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: USDC redemptions are 'subject to available liquidity'.
+  minimumUsd:
+    status: not_public
+    searchedAt: 2026-10-25
+  feeBps:
+    status: public
+    value: 0
+    source: { url: "https://etherscan.io/address/0x4c21b7577c8fe8b0b0669165ee7c8f67fa1454cf", note: "RedemptionIdle fee = 0", checkedAt: 2026-10-13 }
+  liquidators:
+    value: allowlisted
+    source: { url: "https://docs.superstate.com/investors/tokenized-funds/available-funds/invesco-ustb", note: "Every transfer checks the allowlist. Aave Horizon holds USTB with permissioned liquidators.", checkedAt: 2026-10-25 }
+  instant:
+    - label: Superstate RedemptionIdle (USDC)
       chain: ethereum
-      address: "0x4c21B7577C8FE8b0B0669165ee7C8f67fa1454Cf"
-      depthPctOfSupply: 1.1
-      source: { url: "https://docs.superstate.com/investors/smart-contracts", note: "USDC balance $5.97M at block 26,261,719, about 1.1% of the ~$522M AUM (46.4M USTB at NAV $11.256). It was $0.013862 at block 26,183,016, so the balance swings with Superstate's top-ups. Owner and ProxyAdmin owner: EOA 0x8cf4…0765.", checkedAt: 2026-10-24 }
+      address: "0x4c21b7577c8fe8b0b0669165ee7c8f67fa1454cf"
+      dailyCapUsd:
+        status: not_public
+        searchedAt: 2026-10-13
+      fundedUsd:
+        status: public
+        value: 0.01
+        source: { url: "https://etherscan.io/address/0x4c21b7577c8fe8b0b0669165ee7c8f67fa1454cf", note: "USDC.balanceOf = 0.013862 at block 26,183,016.", checkedAt: 2026-10-13 }
+      feeBps: 0
 
 externalIds:
   defillama: invesco-ustb

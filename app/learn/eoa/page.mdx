@@ -18,4 +18,4 @@ We call `eth_getCode` on the address. If there is no code, it's an EOA. Contract
 A single key that can mint, upgrade, or seize is the most direct path to losing collateral value. It's the first thing to check before listing a token.
 </Callout>
 
-On RWABeat, any critical power held by an EOA makes the Control slice **red**. A high power such as freeze or pause held by an EOA makes it **yellow**. Operational keys for freezing are common at regulated issuers; the question is what they can do and who watches them.
+On RWABeat, a critical power or freeze held by an EOA makes the Control rating **red**. Pause or a compliance change held by an EOA makes it **yellow**. A 1-of-n multisig counts as a single key, since any one signer can act alone. Operational keys for freezing are common at regulated issuers; the question is what they can do and who watches them.

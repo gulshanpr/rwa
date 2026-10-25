@@ -1,8 +1,7 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { InfoTip } from "@/components/ui/info-tip";
-import { SliceDot } from "@/components/risk/slice-dot";
-import type { SliceColor } from "@/lib/scoring/types";
-import { cn } from "@/lib/ui";
+import { RiskDot } from "@/components/risk/risk-dot";
+import { cn, type RiskVisual } from "@/lib/ui";
 
 export function StatCard({
   label,
@@ -22,7 +21,7 @@ export function StatCard({
   valueTitle?: string;
   sub?: React.ReactNode;
   delta?: { value: string; direction: "up" | "down"; suffix?: string };
-  status?: { color: SliceColor; label: string };
+  status?: { color: RiskVisual; label: string };
   className?: string;
 }) {
   return (
@@ -44,7 +43,7 @@ export function StatCard({
           {delta.suffix && <span className="ml-1 text-fg-subtle">{delta.suffix}</span>}
         </div>
       )}
-      {status && <SliceDot color={status.color} label={<span className="text-label text-fg-muted">{status.label}</span>} className="mt-1" />}
+      {status && <RiskDot color={status.color} label={<span className="text-label text-fg-muted">{status.label}</span>} className="mt-1" />}
     </div>
   );
 }

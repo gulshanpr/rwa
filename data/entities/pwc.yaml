@@ -3,3 +3,7 @@ slug: pwc
 name: PwC
 type: [auditor]
 website: https://www.pwc.com
+
+auditorTier:
+  value: big-four
+  source: { url: "https://www.pwc.com/gx/en/about.html", checkedAt: 2026-10-25 }

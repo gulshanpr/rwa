@@ -4,3 +4,8 @@ name: The Bank of New York Mellon
 type: [custodian, fund-administrator]
 jurisdiction: US
 website: https://www.bny.com
+
+regulated:
+  value: true
+  source: { url: "https://www.federalreserve.gov/supervisionreg/large-financial-institutions.htm", note: "The Bank of New York Mellon is a New York state-chartered bank; its holding company is in the Fed's LISCC portfolio.", checkedAt: 2026-10-25 }
+regulator: Federal Reserve and NYDFS

@@ -3,7 +3,7 @@ import { getDb, schema } from "@/db/client";
 import { clientsFor } from "@/discovery/rpc";
 import type { Chain, PriceReference } from "@/lib/schema/asset";
 import { formatDuration } from "@/lib/format";
-import { feedAgeSeconds } from "@/lib/scoring/pricing";
+import { feedAgeSeconds } from "@/lib/oracle";
 import { raiseAlert } from "../alerts";
 import { log, publishedAssets } from "../util";
 

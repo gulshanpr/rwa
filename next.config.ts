@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/*": ["./data/**/*", "./discovered/**/*"],
   },
+  // Tabs from the six-slice rosette, renamed in framework v1.0.
+  redirects() {
+    return [
+      { source: "/assets/:slug/verification", destination: "/assets/:slug/transparency", permanent: true },
+      { source: "/assets/:slug/disclosure", destination: "/assets/:slug/counterparties", permanent: true },
+    ];
+  },
 };
 
 const withMDX = createMDX({

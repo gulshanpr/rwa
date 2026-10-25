@@ -1,0 +1,92 @@
+{
+  "asset": "syrupusdc",
+  "asOf": "2026-10-25T09:16:26.637Z",
+  "holders": {
+    "chain": "ethereum",
+    "count": 3325,
+    "top10Pct": 84.79,
+    "top": [
+      {
+        "address": "0xb6dD7ae22C9922AFEe0642f9Ac13e58633f715A2",
+        "name": "ALMProxy",
+        "isContract": true,
+        "pct": 41.26
+      },
+      {
+        "address": "0x20B79D39Bd44dEee4F89B1e9d0e3b945fde06491",
+        "name": "LockReleaseTokenPool",
+        "isContract": true,
+        "pct": 27.43
+      },
+      {
+        "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+        "name": "Morpho",
+        "isContract": true,
+        "pct": 6.52
+      },
+      {
+        "address": "0x3c9Ea5C4Fec2A77E23Dd82539f4414266Fe8f757",
+        "isContract": true,
+        "pct": 4
+      },
+      {
+        "address": "0x1f7357a0154E3F2C63bd63BAbc315689Ab32eD6D",
+        "isContract": false,
+        "pct": 2.41
+      },
+      {
+        "address": "0x50611c809b7e35BcEe35ffec7f81bf2a763e191a",
+        "name": "SafeProxy",
+        "isContract": true,
+        "pct": 0.92
+      },
+      {
+        "address": "0xFE4a829408B7F576522DCB7D607c312A034248c5",
+        "isContract": true,
+        "pct": 0.66
+      },
+      {
+        "address": "0x0B7e89Ea00d57454F28198c4BF7575c269e72971",
+        "name": "AMM",
+        "isContract": true,
+        "pct": 0.59
+      },
+      {
+        "address": "0x0015d0931DF217d0DE2920505C2a816f28aAB570",
+        "isContract": false,
+        "pct": 0.52
+      },
+      {
+        "address": "0xAeAe3319f670f1F7aA18b42f9d5f3452F4ee69e6",
+        "isContract": false,
+        "pct": 0.48
+      }
+    ],
+    "source": "https://eth.blockscout.com/token/0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b?tab=holders"
+  },
+  "dex": {
+    "chain": "ethereum",
+    "navUsd": 1.1873569044017802,
+    "quotes": [
+      {
+        "sizeUsd": 1000000,
+        "routed": true,
+        "outUsd": 999755,
+        "slippagePct": 0.02
+      },
+      {
+        "sizeUsd": 5000000,
+        "routed": true,
+        "outUsd": 3665343,
+        "slippagePct": 26.69
+      },
+      {
+        "sizeUsd": 10000000,
+        "routed": true,
+        "outUsd": 3664848,
+        "slippagePct": 63.35
+      }
+    ],
+    "source": "https://kyberswap.com"
+  }
+}
