@@ -19,9 +19,9 @@ export const CATEGORY_SHORT: Record<CategoryId, string> = {
   underlying: "Backing",
   legal: "Legal",
   counterparties: "Parties",
-  control: "Ctrl",
-  transparency: "Transp",
-  pricing: "Price",
+  control: "Control",
+  transparency: "Transp.",
+  pricing: "Pricing",
   exit: "Exit",
 };
 

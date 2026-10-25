@@ -16,7 +16,7 @@ export function AlertCard({ alert, ticker, compact = false }: { alert: Alert; ti
         <RelativeTime iso={alert.publishedAt} className="font-normal text-fg-subtle" />
         <Link
           href={`/assets/${alert.asset}`}
-          className="ml-auto rounded-[6px] border border-line px-1.5 py-px font-medium text-fg-muted hover:border-line-strong hover:text-fg"
+          className="ml-auto rounded-[3px] border border-line px-1.5 py-px font-medium text-fg-muted hover:border-line-strong hover:text-fg"
         >
           {ticker}
         </Link>

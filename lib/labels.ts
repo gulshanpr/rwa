@@ -30,6 +30,14 @@ export const WHO_CAN_REDEEM_LABELS: Record<Asset["exit"]["redemption"]["whoCanRe
 
 export const PROTOCOL_LABELS = { morpho: "Morpho", aave: "Aave", euler: "Euler" } as const;
 
+const LEGAL_SUFFIX = /,?\s+(Inc\.?|LLC|L\.?P\.?|Ltd\.?|Limited|SPC|GmbH)$/i;
+const ROLE_SUFFIX = /\s+((Financial|Asset|Capital|Investment)\s+)?(Management|Advisers|Advisors)$/i;
+
+/** "BlackRock Financial Management, Inc." → "BlackRock", for tables where the legal name doesn't fit. */
+export function shortEntityName(name: string): string {
+  return name.replace(LEGAL_SUFFIX, "").replace(ROLE_SUFFIX, "") || name;
+}
+
 export const FRESHNESS_LABELS: Record<Asset["freshnessClass"]["value"], string> = {
   "tbill-mmf": "T-bill or money market fund",
   "short-duration-credit": "Short-duration credit",

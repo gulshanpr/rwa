@@ -73,7 +73,7 @@ Charts: a 10-color categorical palette that **excludes** pure red/green/amber so
 
 ### 2.3 Spacing, radius, shadow
 - 4px grid. Card padding 20px (desktop), 16px (mobile). Gap between cards 16px.
-- Radius: 8px (inputs, pills), 12px (cards).
+- Radius: 4px (inputs, pills), 6px (cards).
 - Shadow: none by default; `0 1px 2px rgba(16,24,40,0.05)` on cards; popovers `0 8px 24px rgba(16,24,40,0.12)`.
 
 ## 3. Layout
@@ -123,31 +123,36 @@ Charts: a 10-color categorical palette that **excludes** pure red/green/amber so
 ### 4.1 Home
 
 ```
-Tokenized assets, risk-checked.
+Tokenized assets, risk-checked.                                        Live data updated 2h ago  [⤓ CSV]
 Independent, open-source risk profiles for tokenized real-world assets. Every fact sourced.
 
-[Assets tracked]  [Value covered]   [Value with single-key       [Value at Stage 0        [Alerts (7d)]
-     20             $17.3B           critical powers]             or above]
-                    ▲ 2.1% 30d        $X.XB · 18%                  $5.1B · 29%              7
+[Value tracked]           [Single-key critical powers]  [At Stage 0 or above]      [Alerts, last 7 days]
+ $7.32B                    $7.19B                        $6.00B                      1
+ 10 assets · 5 treasuries  ██████████████░ 98% of value  ████████████░░ 82% of value 1 medium
 
-┌─ Risk overview ──────────────────────────────────── [By value | By count] ─┐
-│ Stacked horizontal bars, one per category:                                 │
-│ Underlying Asset ███████green████ ███yellow███ ██red██                      │
-│ Legal Claim      ████████████████ grey: not assessed ███████████           │
-│ Counterparties   ...                                                       │
-│ Control          ...                                                       │
-│ Transparency     ...                                                       │
-│ Pricing          ...                                                       │
-│ Exit             ██green██ ███yellow███ ░░unverified░░ ██red██              │
-└────────────────────────────────────────────────────────────────────────────┘
+┌─ Risk overview ───────────── [By value | By count] ─┐  ┌─ Market share ─ [Platform | Issuer | Class] ─┐
+│                                               Red   │  │ Hashnote (Circle) ████████████  $2.37B  32%  │
+│ Underlying Asset ████green███ ██yellow █ ░░░░░  2%  │  │ Securitize        ███████████   $2.20B  30%  │
+│ Legal Claim      ░░░░░░░ not assessed ░░░░░░░   —   │  │ Maple Finance     ████          $984.8M 13%  │
+│ …                                                   │  │ …  (tail past 8 rows folds into "Other")     │
+│ ■ Green ■ Yellow ■ Red ▨ Unverified ▨ Not assessed  │  └──────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────┘
 
-┌─ Assets ──────────────────────────────────────────────────── [Treasuries | Credit | All] ─┐   ┌─ Latest alerts ─────┐
-│ # Asset         Issuer   Value   Rosette Asset Parties Ctrl Transp Price Exit Stage  Flags │   │ ● CRITICAL 2h ago   │
-│ 1 USYC  Circle… Circle   $3.11B  (mini)  ●     ●       ●    ●      ●     ●    Stage 0      │   │ USTB ProxyAdmin     │
-│ 2 BENJI …       Franklin $2.35B  (mini)  ●     ●       ●    ●      ●     ○    No stage     │   │ owner changed       │
-│ …                                                                                  │   │ ● HIGH 1d ago …     │
-└────────────────────────────────────────────────────────────────────────────────────┘   └─────────────────────┘
+┌─ Assets · ranked by value ───────────────────────────────────────────── [All | Treasuries | Credit] ─┐
+│ #  Asset                               Value · share  Backing Parties Control Transp. Pricing Exit  Stage   │
+│ 1  (rosette) USYC  Circle USYC         $2.37B          ●       ●       ●       ●       ●      ◌    Stage 0 › │
+│              Hashnote · Treasuries     ▬▬──── 32%                                                          │
+│ …                                                                                                          │
+│ ● Green ● Yellow ● Red ◌ Unverified                       Flags, chains and DeFi exposure in the screener → │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ Latest alerts ─────────────────────────────────────────────────────────────────────── View all ─┐
+│ ○ MEDIUM · 4d ago   21,500,000 BUIDL burned on ethereum                                    BUIDL │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
+
+- Every chart mark has a hover/focus tooltip (`ChartTooltip`): the risk bars list value, share and asset count per rating; a rating dot shows the category headline; a market-share bar lists the assets in that group. Each also has a visible number (the Red column, share labels) so the tooltip never gates a value.
+- The home table stays a summary that fits without horizontal scroll: issuer and class sit under the ticker (issuer shortened with `shortEntityName`), the rosette takes the logo slot, and flags, chains and DeFi data live in the screener. Below `md` the table becomes a card list.
 
 ### 4.2 Asset page: Overview tab
 
@@ -233,7 +238,7 @@ Graph styling: nodes are cards (12px radius) with a type icon; edges labeled wit
 - **Sources:** every source cited on the page, grouped by tab, with `checkedAt` dates.
 
 ### 4.5 Screener
-Full-width TanStack table. Columns toggleable (one per category, stage, onchain data). Filters above the table: asset class, chain, rating per category, "single-key critical power", "Stage 0 or above", "used as collateral", "price stale". Download CSV button on the right (matching rwa.xyz's placement).
+Full-width TanStack table. The asset column (rosette, ticker, issuer · class) is sticky so wide column sets scroll under it. Default columns: asset, value, the six rated categories, stage, and flags (the worst flag plus "+n", the rest in a tooltip). Class, issuer, Legal Claim, onchain data, chains, DeFi collateral and oracle age are toggleable under Columns. Two filter rows above the table: asset class, chain, rating per category, with Columns and Download CSV on the right (matching rwa.xyz's placement); then "Only show" chips for "single-key critical power", "Stage 0 or above", "used as collateral", "price stale".
 
 ### 4.6 Alerts
 Two-column: filter rail (severity, asset, chain, kind) + feed of alert cards. Each card: severity dot, title, asset chip, time ago, one-line consequence, link to tx on explorer, and "View change" (discovery diff).

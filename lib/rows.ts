@@ -14,6 +14,7 @@ export interface AssetRow {
   ticker: string;
   name: string;
   manager: string;
+  platform: string;
   assetClass: AssetClass;
   assetClassLabel: string;
   aumUsd: number | null;
@@ -36,6 +37,7 @@ export function toRow(p: AssetProfile): AssetRow {
     ticker: p.asset.ticker,
     name: p.asset.name,
     manager: p.entities.manager?.name ?? p.asset.manager,
+    platform: p.entities.platform?.name ?? p.asset.platform,
     assetClass: p.asset.assetClass,
     assetClassLabel: ASSET_CLASSES[p.asset.assetClass].label,
     aumUsd: p.stats.aumUsd ?? null,
@@ -80,6 +82,25 @@ export function categoryDistribution(rows: AssetRow[]): CategoryDistribution[] {
     }
     return { category, label: CATEGORY_LABELS[category], byValue, byCount };
   });
+}
+
+export interface Share {
+  label: string;
+  value: number;
+  tickers: string[];
+}
+
+/** Tracked value grouped by `key`, largest first. */
+export function valueBy(rows: AssetRow[], key: (r: AssetRow) => string): Share[] {
+  const groups = new Map<string, Share>();
+  for (const r of rows) {
+    const label = key(r);
+    const g = groups.get(label) ?? { label, value: 0, tickers: [] };
+    g.value += r.aumUsd ?? 0;
+    g.tickers.push(r.ticker);
+    groups.set(label, g);
+  }
+  return [...groups.values()].sort((a, b) => b.value - a.value);
 }
 
 export function rowsToCsv(rows: AssetRow[]): string {
