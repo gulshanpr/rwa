@@ -1,0 +1,9 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: clear-street
+name: Clear Street LLC
+type: [custodian]
+
+regulated:
+  value: true
+  source: { url: "https://brokercheck.finra.org/firm/summary/288933", note: "SEC-registered broker-dealer, FINRA and SIPC member (CRD 288933, per a third-party page; not opened).", checkedAt: 2026-10-25 }
+regulator: SEC and FINRA

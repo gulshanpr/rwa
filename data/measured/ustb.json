@@ -1,0 +1,90 @@
+{
+  "asset": "ustb",
+  "asOf": "2026-10-25T09:16:33.825Z",
+  "holders": {
+    "chain": "ethereum",
+    "count": 78,
+    "top10Pct": 83.88,
+    "top": [
+      {
+        "address": "0x0A4956A93FA13c34b84f5720b5499Da9193fcf0d",
+        "isContract": false,
+        "pct": 30.1
+      },
+      {
+        "address": "0x569D7dccBF6923350521ecBC28A555A500c4f0Ec",
+        "name": "TransparentUpgradeableProxy",
+        "isContract": true,
+        "pct": 13.9
+      },
+      {
+        "address": "0xf2E3826923FDc5ebb7586F91Fe116B9Be7D4E1A5",
+        "isContract": false,
+        "pct": 9.72
+      },
+      {
+        "address": "0x235Adf84139701024eDbA844EbF76FA7eeD98A0c",
+        "isContract": false,
+        "pct": 6.31
+      },
+      {
+        "address": "0xDbA942a872c5AF6F10Fbb3BB897dE11C48529c29",
+        "isContract": false,
+        "pct": 5.34
+      },
+      {
+        "address": "0xbd02c51150a4Ab6Ce97B9de2025644594F3E75B8",
+        "name": "WalletSimple",
+        "isContract": true,
+        "pct": 4.78
+      },
+      {
+        "address": "0xF144ea4C2ebcE40bFc956DC1E76dac9dD3364A2D",
+        "isContract": false,
+        "pct": 4.18
+      },
+      {
+        "address": "0x5fbAa3A3B489199338fbD85F7E3D444dc0504F33",
+        "name": "TransparentUpgradeableProxy",
+        "isContract": true,
+        "pct": 3.45
+      },
+      {
+        "address": "0x1FcC47Ee0F19CA0f07F8b987F0aD32ac204C03a7",
+        "isContract": false,
+        "pct": 3.43
+      },
+      {
+        "address": "0xD886E890C05Bec13a3164891A6227E2F25f1F0E7",
+        "isContract": false,
+        "pct": 2.67
+      }
+    ],
+    "source": "https://eth.blockscout.com/token/0x43415eB6ff9DB7E26A15b704e7A3eDCe97d31C4e?tab=holders"
+  },
+  "dex": {
+    "chain": "ethereum",
+    "navUsd": 11.244259,
+    "quotes": [
+      {
+        "sizeUsd": 1000000,
+        "routed": true,
+        "outUsd": 2853,
+        "slippagePct": 99.71
+      },
+      {
+        "sizeUsd": 5000000,
+        "routed": true,
+        "outUsd": 3221,
+        "slippagePct": 99.94
+      },
+      {
+        "sizeUsd": 10000000,
+        "routed": true,
+        "outUsd": 3278,
+        "slippagePct": 99.97
+      }
+    ],
+    "source": "https://kyberswap.com"
+  }
+}

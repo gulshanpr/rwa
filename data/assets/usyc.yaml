@@ -52,24 +52,6 @@ access:
     value: true
     source: { url: "https://developers.circle.com/tokenized/usyc/smart-contracts", note: "transfer/transferFrom call authority.canCall on sender and receiver; role 0 (investor) has the transfer capability. 127 addresses held role 0 on Ethereum at review.", checkedAt: 2026-10-13 }
 
-serviceProviders:
-  custodian:
-    status: public
-    value: bny
-    source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "BNY Mellon through prime broker Marex Capital Markets: 'Assets are protected through segregated custodial accounts at BNY Mellon'. Written in May 2024, before the Circle acquisition.", checkedAt: 2026-10-24 }
-  fundAdministrator:
-    status: public
-    value: nav-fund-services
-    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "'Fund Administrator: NAV Consulting'. KYC/AML by NAV Consulting and LMO Consulting.", checkedAt: 2026-10-24 }
-  auditor:
-    status: public
-    value: cohen-and-co
-    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "Annual audit; no report published", checkedAt: 2026-10-13 }
-  transferAgent:
-    status: public
-    value: nav-fund-services
-    source: { url: "https://kitchen.steakhouse.financial/p/usyc", note: "Per the offering summary, 'the share register must follow the blockchain'", checkedAt: 2026-10-13 }
-
 legal:
   vehicleType:
     status: public
@@ -100,6 +82,99 @@ legal:
     value: "Claimed bankruptcy-remote: 'All investments in iSDYF are held bankruptcy-remote at our custodian, BNY Mellon, via primebroker, Marex … resolution of the iSDYF fund would be independent of any resolution or bankruptcy of Hashnote.' Written before the Circle acquisition."
     source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", checkedAt: 2026-10-13 }
 
+freshnessClass:
+  value: tbill-mmf
+  source: { url: "https://developers.circle.com/tokenized/usyc/overview", note: "Short-duration Treasuries and reverse repo, earning about the overnight rate.", checkedAt: 2026-10-25 }
+
+underlying:
+  holdings:
+    status: public
+    value:
+      asOf: 2026-10-25
+      basis: mandate
+      items:
+        - type: government-bills
+          pct: 100
+          label: T-bills and Treasury reverse repo
+    source: { url: "https://app.rwa.xyz/assets/USYC", note: "'USYC provides exposure to short duration US Treasuries and Reverse Repo on US Treasuries.' The issuer's price reports give only fund-level principal and interest; no holdings list or weights are public.", checkedAt: 2026-10-25 }
+  wamDays:
+    status: not_public
+    searchedAt: 2026-10-25
+  trackRecord:
+    value: { since: 2023-03-17, losses: [] }
+    source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Fund incorporated 2023-03-17. Price reports rise steadily; no drop found.", checkedAt: 2026-10-25 }
+
+counterparties:
+  custodian:
+    status: public
+    value: bny
+    source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "Assets held at BNY Mellon through prime broker Marex (2024 statement, before the Circle acquisition).", checkedAt: 2026-10-25 }
+  fundAdministrator:
+    status: public
+    value: nav-fund-services
+    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "Fund Administrator: NAV Consulting", checkedAt: 2026-10-25 }
+  auditor:
+    status: public
+    value: cohen-and-co
+    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "Auditor: Cohen and Company. rwa.xyz lists Valaston International instead.", checkedAt: 2026-10-25 }
+  transferAgent:
+    status: public
+    value: nav-fund-services
+    source: { url: "https://kitchen.steakhouse.financial/p/usyc", note: "Per the offering summary, 'the share register must follow the blockchain'", checkedAt: 2026-10-13 }
+  affiliated:
+    value: []
+    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", checkedAt: 2026-10-25 }
+  settlementRails:
+    value: [usdc]
+    source: { url: "https://developers.circle.com/tokenized/usyc/overview", note: "Subscriptions and redemptions are in USDC.", checkedAt: 2026-10-25 }
+  operators:
+    - role: Prime broker
+      name: Marex
+      source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", checkedAt: 2026-10-25 }
+    - role: Bank
+      name: Customers Bank
+      source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", checkedAt: 2026-10-25 }
+
+control:
+  audits:
+    - auditor: Unnamed firm
+      scope: USYC contracts
+      date: 2024-03-01
+      source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "'USYC was last audited in March, 2024'; the report isn't published. Etherscan shows no audit for the current implementation.", checkedAt: 2026-10-25 }
+  bugBounty:
+    status: unknown
+    note: Circle runs a HackerOne program; whether USYC is in scope isn't public.
+  powersDocumented:
+    value: false
+    source: { url: "https://developers.circle.com/tokenized/usyc/smart-contracts", note: "Lists contract addresses only; no roles or powers.", checkedAt: 2026-10-25 }
+  signersIndependent:
+    status: not_public
+    searchedAt: 2026-10-25
+  chains:
+    - chain: ethereum
+      mechanism: native+bridge
+      provider: Circle CCTP, a TokenManagerProxy (likely Axelar)
+      source: { url: "https://developers.circle.com/tokenized/usyc/smart-contracts", note: "Both hold unlimited minter allowances on the Ethereum token.", checkedAt: 2026-10-25 }
+    - chain: bsc, arc, solana
+      mechanism: native
+      provider: Circle
+      source: { url: "https://developers.circle.com/tokenized/usyc/smart-contracts", checkedAt: 2026-10-25 }
+
+transparency:
+  reports:
+    - name: Hashnote price reports
+      provider: hashnote
+      dataSource: issuer
+      granularity: nav
+      frequency: daily
+      verifiability: self-reported
+      onchain: true
+      source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Fund-level principal, interest and balance, posted by the fund-admin key. No holdings list or third-party attestation found.", checkedAt: 2026-10-25 }
+      feed: { chain: ethereum, address: "0x74f2199AEb743f68f05943e5715A33EaF2b61f53" }
+  eventReporting:
+    status: unknown
+    note: Only asked for private credit.
+
 pricing:
   reference:
     type: oracle
@@ -112,18 +187,12 @@ pricing:
     businessDaysOnly: true
     historyOnchain: true
     source: { url: "https://usyc.docs.hashnote.com/overview/token-price", note: "GenericNextPriceAggregator (UUPS, 18 decimals), read by the Tellers. transmit() is callable only by PriceReporter 0x9fde…23d7, whose transmitCall is restricted to the fund admin (EOA 0xdbe0…800d, which sent the last report). Updates once per business day around 9am ET; none on weekends or US Federal holidays. The legacy SDYCAggregatorProxy 0x4c48…8b3e, owned by the same EOA, is the feed Usual reads.", checkedAt: 2026-10-13 }
-
-verification:
-  methods:
-    - type: self-reported
-      provider: hashnote
-      independent: false
-      assetLevel: false
-      frequency: daily
-      cryptographicallyVerifiable: false
-      onchain: true
-      feed: { chain: ethereum, address: "0x74f2199AEb743f68f05943e5715A33EaF2b61f53" }
-      source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Issuer-posted NAV oracle and price API with fund-level principal, interest and balance only. No Chronicle PoA or Chainlink PoR feed found.", checkedAt: 2026-10-13 }
+  stalenessDetectable:
+    value: true
+    source: { url: "https://usyc.docs.hashnote.com/overview/token-price", note: "latestRoundData returns the report's updatedAt.", checkedAt: 2026-10-25 }
+  lossRecognition:
+    value: next-nav
+    source: { url: "https://usyc.docs.hashnote.com/overview/token-price", note: "Price set once per business day after the prime broker reports.", checkedAt: 2026-10-25 }
 
 exit:
   redemption:
@@ -141,13 +210,43 @@ exit:
       status: not_public
       searchedAt: 2026-10-13
       note: Fund-level suspension terms are in the offering memorandum, which is not public. Onchain, the fund-admin EOA can pause Entitlements (blocks every transfer and redemption) and set per-account limits instantly.
-  instantLiquidity:
-    - type: offramp-contract
-      label: USYC Teller (USDC from the treasury EOA)
+  dealing:
+    value: continuous
+    source: { url: "https://developers.circle.com/tokenized/usyc/overview", note: "Teller redeems 24/7, atomically, while treasury liquidity lasts.", checkedAt: 2026-10-25 }
+  noticeDays:
+    status: public
+    value: 0
+    source: { url: "https://developers.circle.com/tokenized/usyc/overview", checkedAt: 2026-10-25 }
+  lockupDays:
+    status: public
+    value: 0
+    source: { url: "https://developers.circle.com/tokenized/usyc/overview", checkedAt: 2026-10-25 }
+  dailyCapUsd:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Per-account limits are set by the fund admin; 'If you require more liquidity on a specific day, please contact us'.
+  minimumUsd:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/USYC", checkedAt: 2026-10-25 }
+  feeBps:
+    status: public
+    value: 0
+    source: { url: "https://usyc.docs.hashnote.com/overview/fees", note: "3 bps on redemptions above $1M a day.", checkedAt: 2026-10-25 }
+  liquidators:
+    value: allowlisted
+    source: { url: "https://developers.circle.com/tokenized/usyc/overview", note: "Transfers check the Entitlements allowlist on both sides. Aave Horizon's aUSYC holds the custodian role.", checkedAt: 2026-10-25 }
+  instant:
+    - label: USYC Teller (USDC from the Circle treasury wallet)
       chain: ethereum
       address: "0xeE35F963BFC71b51eC95147f26c030D674ea30e6"
-      depthPctOfSupply: 1.4
-      source: { url: "https://usyc.docs.hashnote.com/overview/subscription-and-redemption", note: "At block 26,261,719: totalAssets = min(treasury USDC 32.4M, allowance 37.9M) = $32.4M, about 1.4% of the ~$2.37B supply across Ethereum and BSC. The treasury is EOA 0x5126…5ec5 and the allowance is revocable. The BSC Cross Chain Teller was not measured.", checkedAt: 2026-10-24 }
+      dailyCapUsd:
+        status: not_public
+        searchedAt: 2026-10-13
+      fundedUsd:
+        status: public
+        value: 38304339
+        source: { url: "https://etherscan.io/address/0xeE35F963BFC71b51eC95147f26c030D674ea30e6", note: "totalAssets = min(treasury USDC 42.43M, allowance 38.30M); topped up by hand.", checkedAt: 2026-10-13 }
 
 externalIds:
   defillama: circle-usyc

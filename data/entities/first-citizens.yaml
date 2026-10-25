@@ -4,3 +4,8 @@ name: First Citizens Bank & Trust
 type: [custodian]
 jurisdiction: US
 website: https://www.firstcitizens.com
+
+regulated:
+  value: true
+  source: { url: "https://banks.data.fdic.gov/bankfind-suite/bankfind?name=First%20Citizens%20Bank", note: "First-Citizens Bank & Trust Company, an FDIC-insured state bank. Silicon Valley Bank, named by rwa.xyz for ACRED, is a division of it.", checkedAt: 2026-10-25 }
+regulator: FDIC and NC Commissioner of Banks
