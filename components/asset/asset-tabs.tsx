@@ -4,14 +4,17 @@ import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { cn } from "@/lib/ui";
 
+// The seven risk categories in framework order, then supporting data.
 const TABS = [
   { segment: null, label: "Overview" },
+  { segment: "underlying", label: "Underlying" },
+  { segment: "legal", label: "Legal" },
+  { segment: "counterparties", label: "Counterparties" },
   { segment: "control", label: "Control" },
+  { segment: "transparency", label: "Transparency" },
   { segment: "pricing", label: "Pricing" },
-  { segment: "defi", label: "DeFi exposure" },
-  { segment: "verification", label: "Verification" },
   { segment: "exit", label: "Exit" },
-  { segment: "disclosure", label: "Disclosure" },
+  { segment: "defi", label: "DeFi exposure" },
   { segment: "history", label: "History" },
   { segment: "sources", label: "Sources" },
 ] as const;

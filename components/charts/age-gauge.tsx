@@ -1,5 +1,5 @@
 import { formatDuration } from "@/lib/format";
-import type { OracleAge } from "@/lib/scoring/pricing";
+import type { OracleAge } from "@/lib/oracle";
 
 const MAX_RATIO = 4;
 

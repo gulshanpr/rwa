@@ -8,8 +8,7 @@ import { Card } from "@/components/ui/card";
 import { getAlerts } from "@/lib/live-store";
 import { formatPct, formatUsd, formatUsdFull } from "@/lib/format";
 import { getProfiles } from "@/lib/profile";
-import { assetRows, sliceDistribution } from "@/lib/rows";
-import { bestMethod, passCount } from "@/lib/scoring/verification";
+import { assetRows, categoryDistribution } from "@/lib/rows";
 import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
@@ -24,12 +23,7 @@ export default async function HomePage() {
   const has30d = profiles.length > 0 && profiles.every((p) => p.live?.aum.usd30dAgo !== undefined);
   const total30d = profiles.reduce((s, p) => s + (p.live?.aum.usd30dAgo ?? 0), 0);
   const eoaValue = profiles.filter((p) => p.stats.singleKeyPowers > 0).reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
-  const verifiedValue = profiles
-    .filter((p) => {
-      const best = bestMethod(p.asset);
-      return best && passCount(best) === 5;
-    })
-    .reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
+  const stagedValue = profiles.filter((p) => p.rating.stage.stage !== null).reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
   const weekAgo = Date.now() - 7 * 86400 * 1000;
   const alerts7d = alerts.filter((a) => new Date(a.publishedAt).getTime() >= weekAgo).length;
   const delta = total30d ? total / total30d - 1 : 0;
@@ -61,17 +55,17 @@ export default async function HomePage() {
         />
         <StatCard
           label="Value with single-key critical powers"
-          info="Value of assets where one key (EOA) or unrecognized contract can upgrade, mint, seize, burn, reprice, or grant roles."
+          info="Value of assets where one key (an EOA, an unrecognized contract or a 1-of-n multisig) can upgrade, mint, seize, burn, reprice, move the backing assets, or grant roles."
           infoHref="/methodology#control"
           value={formatUsd(eoaValue)}
           sub={`· ${share(eoaValue)}`}
         />
         <StatCard
-          label="Value passing all 5 verification tests"
-          info="Independent, asset-level, daily, verifiable and onchain reserve data. Tests adapted from Chronicle Labs."
-          infoHref="/methodology#verification"
-          value={formatUsd(verifiedValue)}
-          sub={`· ${share(verifiedValue)}`}
+          label="Value at Stage 0 or above"
+          info="Holdings described, issuer, custodian, administrator and auditor named, legal structure documented, and contracts verified: the minimum to reach a stage."
+          infoHref="/methodology#stages"
+          value={formatUsd(stagedValue)}
+          sub={`· ${share(stagedValue)}`}
         />
         <StatCard
           label="Alerts (7d)"
@@ -82,8 +76,8 @@ export default async function HomePage() {
       </div>
 
       <div className="grid gap-4">
-        <RiskOverview data={sliceDistribution(rows)} />
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <RiskOverview data={categoryDistribution(rows)} />
+        <div className="grid gap-4 2xl:grid-cols-[minmax(0,1fr)_340px]">
           <AssetsTable rows={rows} />
           <Card
             title="Latest alerts"

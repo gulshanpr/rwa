@@ -1,7 +1,6 @@
-import type { SliceColor } from "@/lib/scoring/types";
-import { cn, RISK_DOT, RISK_SOFT } from "@/lib/ui";
+import { cn, RISK_DOT, RISK_SOFT, type RiskVisual } from "@/lib/ui";
 
-type Variant = "neutral" | "accent" | `risk-${SliceColor}`;
+type Variant = "neutral" | "accent" | `risk-${RiskVisual}`;
 
 export function Tag({
   children,
@@ -14,7 +13,7 @@ export function Tag({
   className?: string;
   title?: string;
 }) {
-  const risk = variant.startsWith("risk-") ? (variant.slice(5) as SliceColor) : undefined;
+  const risk = variant.startsWith("risk-") ? (variant.slice(5) as RiskVisual) : undefined;
   return (
     <span
       title={title}

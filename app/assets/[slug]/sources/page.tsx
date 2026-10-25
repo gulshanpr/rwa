@@ -4,19 +4,20 @@ import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { tabMetadata } from "@/lib/asset-meta";
 import { formatDate } from "@/lib/format";
 import { getProfile } from "@/lib/profile";
-import type { TabId } from "@/lib/scoring/types";
-import { collectSources } from "@/lib/sources";
+import { collectSources, type TabId } from "@/lib/sources";
 
 export const generateMetadata = tabMetadata("Sources");
 
 const TAB_TITLES: Record<TabId, string> = {
   overview: "Overview",
+  underlying: "Underlying Asset",
+  legal: "Legal Claim",
+  counterparties: "Counterparties",
   control: "Control",
+  transparency: "Transparency",
   pricing: "Pricing",
-  defi: "DeFi exposure",
-  verification: "Verification",
   exit: "Exit",
-  disclosure: "Disclosure",
+  defi: "DeFi exposure",
   history: "History",
   sources: "Sources",
 };
@@ -26,7 +27,7 @@ export default async function SourcesPage({ params }: PageProps<"/assets/[slug]/
   const profile = (await getProfile(slug)) ?? notFound();
   const groups = collectSources(profile);
   const order = (Object.keys(TAB_TITLES) as TabId[]).filter((t) => groups[t]?.length);
-  const total = order.reduce((n, t) => n + groups[t].length, 0);
+  const total = order.reduce((n, t) => n + (groups[t]?.length ?? 0), 0);
 
   return (
     <div className="grid gap-4">
@@ -45,7 +46,7 @@ export default async function SourcesPage({ params }: PageProps<"/assets/[slug]/
               </tr>
             </thead>
             <tbody>
-              {groups[tab].map((s, i) => (
+              {groups[tab]?.map((s, i) => (
                 <Tr key={`${s.field}-${i}`}>
                   <Td className="whitespace-nowrap first-letter:uppercase">{s.field}</Td>
                   <Td className="max-w-md">

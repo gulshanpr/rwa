@@ -5,12 +5,13 @@ import { AssetTabs } from "@/components/asset/asset-tabs";
 import { SampleBanner } from "@/components/data/sample-banner";
 import { StatCard } from "@/components/data/stat-card";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { STAGE_NAMES } from "@/components/risk/stage-card";
 import { Tag } from "@/components/ui/tag";
 import { formatDuration, formatPct, formatUsd, formatUsdFull } from "@/lib/format";
+import { POWER_LABELS } from "@/lib/framework/permissions";
 import { INVESTOR_LABELS } from "@/lib/labels";
 import { ASSET_CLASSES, getProfile, getProfiles } from "@/lib/profile";
-import { POWER_LABELS } from "@/lib/scoring/control";
-import type { SliceColor } from "@/lib/scoring/types";
+import type { RiskVisual } from "@/lib/ui";
 
 export const dynamicParams = false;
 export const revalidate = 300;
@@ -25,11 +26,11 @@ export async function generateMetadata({ params }: LayoutProps<"/assets/[slug]">
   if (!p) return {};
   return {
     title: `${p.asset.ticker} risk profile`,
-    description: `${p.asset.name}: ${p.score.risks[0]?.text ?? p.asset.description}`,
+    description: `${p.asset.name}: ${p.rating.risks[0]?.text ?? p.asset.description}`,
   };
 }
 
-const FRESHNESS: Record<string, { color: SliceColor; label: string }> = {
+const FRESHNESS: Record<string, { color: RiskVisual; label: string }> = {
   "on-schedule": { color: "green", label: "On schedule" },
   late: { color: "yellow", label: "Late" },
   stale: { color: "red", label: "Stale" },
@@ -38,7 +39,8 @@ const FRESHNESS: Record<string, { color: SliceColor; label: string }> = {
 export default async function AssetLayout({ children, params }: LayoutProps<"/assets/[slug]">) {
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
-  const { asset, stats, entities } = profile;
+  const { asset, stats, entities, rating } = profile;
+  const stage = rating.stage;
   const cls = ASSET_CLASSES[asset.assetClass];
 
   return (
@@ -67,6 +69,11 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
               <Tag>{cls.label}</Tag>
               <Tag>{INVESTOR_LABELS[asset.access.investorType.value]} only</Tag>
               {asset.access.transferRestricted.value && <Tag>Transfer-restricted</Tag>}
+              {rating.onchainData && (
+                <Tag variant="accent" title="Holdings or reserve data is published onchain. Shown as a badge, not part of any rating.">
+                  Onchain data
+                </Tag>
+              )}
               <span className="text-small text-fg-muted">
                 Issued by {entities.manager?.name ?? asset.manager} · Platform {entities.platform?.name ?? asset.platform}
               </span>
@@ -107,14 +114,19 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
           }
         />
         <StatCard
-          label="Admin roles"
-          info="Number of privileged powers (upgrade, mint, freeze, pause…) found on the token and its service contracts."
-          infoHref="/methodology#control"
-          value={stats.adminRoles}
+          label="Stage"
+          info="How much holders have to trust the issuer: 0 Disclosed, 1 Protected, 2 Trust-minimized. Each stage builds on the last."
+          infoHref="/methodology#stages"
+          value={stage.stage === null ? "None" : `Stage ${stage.stage}`}
+          status={
+            stage.stage === null
+              ? { color: "red", label: "Below Stage 0: key facts not disclosed" }
+              : { color: "grey", label: stage.pendingLegal ? `${STAGE_NAMES[stage.stage]} · next stage needs legal review` : STAGE_NAMES[stage.stage] }
+          }
         />
         <StatCard
           label="Single-key powers"
-          info="Critical powers (upgrade, mint, force-transfer, burn, set price, grant roles) that a single key (EOA) or unrecognized contract can use."
+          info="Critical powers (upgrade, mint, force-transfer, burn, set price, allocate, grant roles) that a single key can use: an EOA, an unrecognized contract, or a 1-of-n multisig."
           infoHref="/methodology#control"
           value={stats.singleKeyPowers}
           status={

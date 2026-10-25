@@ -4,6 +4,16 @@ export const metadata = { title: "Changelog" };
 
 Changes to the framework, scoring rules and data. Every entry links to the pull request that made it once the repository is public.
 
+## Framework v1.0, 25 Oct 2026
+
+- Replaced the six-slice rosette with the RWAbeat framework: seven risk categories (Underlying Asset, Legal Claim, Counterparties, Control, Transparency, Pricing, Exit) and Stages 0 to 2. See the [methodology](/methodology).
+- New rating state: **unverified**, when a fact isn't public and could make the rating worse. Legal Claim stays not assessed until a legal reviewer joins, so no asset can pass Stage 0 yet.
+- Verification became Transparency: graded ladders instead of five pass/fail tests, freshness that depends on the asset type, and onchain data shown as a separate badge.
+- Disclosure became Counterparties: providers are rated on independence and regulation, not just on being named. Settlement rails and other critical dependencies count too.
+- Control: freeze held by a single key is now red, a 1-of-n multisig counts as a single key, and audits, documented powers and bridges are checked.
+- Exit: whitelisted-only redemption, daily caps, notice periods and liquidator access are rated. DEX depth is measured for $1M, $5M and $10M sells, with top-10 holder concentration alongside.
+- Data: every asset profile gained holdings, maturity and credit facts, audits and bug bounties, transparency reports, and exit terms. Service-provider regulation and auditor tier live on the entity files. Old fields only the rosette used were removed.
+
 ## Framework v0.3, 13 Oct 2026
 
 - Pricing: feeds that only update on business days (fund NAVs) don't count weekends towards their age, for both the freshness check and the stale-price alert.
