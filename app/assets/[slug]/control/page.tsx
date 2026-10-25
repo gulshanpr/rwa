@@ -1,33 +1,83 @@
 import { Info } from "lucide-react";
 import { notFound } from "next/navigation";
 import { AddressChip, type AddressKind } from "@/components/data/address-chip";
+import { SourceMarker } from "@/components/data/source-marker";
 import { ControlExplorer } from "@/components/permissions/control-explorer";
-import { RiskList } from "@/components/risk/risk-list";
-import { SliceDot } from "@/components/risk/slice-dot";
+import { CategoryCard } from "@/components/risk/category-card";
+import { RiskDot } from "@/components/risk/risk-dot";
 import { Card } from "@/components/ui/card";
 import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { Tag } from "@/components/ui/tag";
 import { CHAINS } from "@/lib/chains";
 import { formatDate, formatNumber } from "@/lib/format";
 import { tabMetadata } from "@/lib/asset-meta";
+import { POWER_LABELS } from "@/lib/framework/permissions";
 import { buildControlGraph } from "@/lib/graph";
 import { addressLabel, getProfile } from "@/lib/profile";
-import { POWER_LABELS } from "@/lib/scoring/control";
 import { repoFileUrl } from "@/lib/site";
 import { RISK_WORD } from "@/lib/ui";
 
 export const generateMetadata = tabMetadata("Control");
 
+const MECHANISM = { native: "Issued natively", "native+bridge": "Native, and a bridge can mint", bridged: "Bridged copy" } as const;
+
 export default async function ControlPage({ params }: PageProps<"/assets/[slug]/control">) {
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
-  const { asset, powers, score } = profile;
+  const { asset, powers, rating } = profile;
+  const c = asset.control;
 
   return (
     <div className="grid gap-4">
-      <Card title="Control findings" description={score.slices.control.headline}>
-        <RiskList reasons={score.slices.control.reasons} slug={slug} />
-      </Card>
+      <CategoryCard result={rating.categories.control} slug={slug} />
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card title="Audits and bug bounty">
+          {c.audits.length === 0 ? (
+            <p className="text-small text-fg-muted">No smart contract audit is published.</p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {[...c.audits]
+                .sort((a, b) => b.date.localeCompare(a.date))
+                .map((a) => (
+                  <li key={`${a.auditor}-${a.date}`} className="flex items-start justify-between gap-3 py-2 first:pt-0 last:pb-0">
+                    <span className="text-small text-fg">
+                      <span className="font-medium">{a.auditor}</span> · {a.scope}
+                      <SourceMarker source={a.source} />
+                    </span>
+                    <span className="text-small whitespace-nowrap text-fg-muted">{formatDate(a.date)}</span>
+                  </li>
+                ))}
+            </ul>
+          )}
+          <p className="mt-3 text-small text-fg-muted">
+            {c.bugBounty.status === "public" ? (
+              <>
+                Bug bounty on {c.bugBounty.value.platform}, up to ${formatNumber(c.bugBounty.value.maxUsd)}.
+                <SourceMarker source={c.bugBounty.source} />
+              </>
+            ) : (
+              "No public bug bounty found."
+            )}
+          </p>
+        </Card>
+        <Card title="Chains and bridges" description="Holders on a bridged chain also depend on the bridge.">
+          <ul className="divide-y divide-line">
+            {c.chains.map((ch) => (
+              <li key={ch.chain} className="flex items-start justify-between gap-3 py-2 first:pt-0 last:pb-0">
+                <span className="text-small font-medium text-fg first-letter:uppercase">
+                  {ch.chain}
+                  <SourceMarker source={ch.source} />
+                </span>
+                <span className="text-right text-small text-fg-muted">
+                  {MECHANISM[ch.mechanism]}
+                  {ch.provider ? ` · ${ch.provider}` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
 
       {profile.snapshots.map((snapshot) => {
         const chain = snapshot.discovered.chain;
@@ -88,7 +138,7 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
                         </Td>
                         <Td className="whitespace-nowrap text-fg-muted">{r.checks}</Td>
                         <Td>
-                          <SliceDot
+                          <RiskDot
                             color={r.color}
                             label={<span className="text-fg-muted">{r.color === "grey" ? "Needs review" : RISK_WORD[r.color]}</span>}
                           />
@@ -103,8 +153,9 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
               </Table>
               <p className="mt-3 flex items-start gap-2 text-small text-fg-muted">
                 <Info className="mt-0.5 size-4 shrink-0 text-fg-subtle" aria-hidden />
-                For regulated securities, freeze and force-transfer powers are often legally required. This slice scores
-                who holds them and what checks exist, not whether they exist.
+                For regulated securities, freeze and force-transfer powers are often legally required. Control rates who
+                holds them and what checks exist, not whether they exist. A single key holding a critical power or freeze is
+                red; a multisig with no timelock is yellow.
               </p>
               <p className="mt-2 text-label font-normal text-fg-subtle">
                 Discovered at block {formatNumber(snapshot.discovered.block)} · {formatDate(snapshot.discovered.timestamp)} ·

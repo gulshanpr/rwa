@@ -3,3 +3,8 @@ slug: nav-fund-services
 name: NAV Fund Services (NAV Consulting, Inc.)
 type: [fund-administrator, transfer-agent]
 website: https://navconsulting.net
+
+regulated:
+  value: true
+  source: { url: "https://www.cima.ky/upimages/commonfiles/1562953224ListofMutualFundAdmins-30June2019_1562953224.pdf", note: "NAV Fund Services (Cayman) Ltd., CIMA licence 13973, full licence since 2007-09-24. Latest list found is from 2019.", checkedAt: 2026-10-25 }
+regulator: CIMA

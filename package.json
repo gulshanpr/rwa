@@ -8,6 +8,8 @@
     "start": "next start",
     "validate": "bun scripts/validate.ts",
     "rwa": "bun scripts/rwa.ts",
+    "framework": "bun scripts/framework.ts",
+    "framework:measure": "bun scripts/framework-measure.ts",
     "test": "bun test lib",
     "discover": "bun discovery/cli.ts",
     "worker": "bun worker/index.ts",

@@ -4,3 +4,7 @@ name: Securitize Fund Services, LLC
 type: [fund-administrator]
 jurisdiction: US
 website: https://securitize.io
+
+regulated:
+  value: false
+  source: { url: "https://www.crowdfundinsider.com/2025/04/238558-securitize-announces-acquisition-of-mg-stovers-fund-administration-business/", note: "No separate registration found for Securitize Fund Services, LLC (searched 2026-10-25). Its sister companies are an SEC-registered transfer agent and broker-dealer.", checkedAt: 2026-10-25 }

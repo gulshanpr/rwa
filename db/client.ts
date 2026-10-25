@@ -10,6 +10,18 @@ export function hasDatabase(): boolean {
   return Boolean(process.env.DATABASE_URL);
 }
 
+/**
+ * Whether site pages read Postgres (catalog, live data, alerts) or the Git copy under data/.
+ * A production build reads the Git copy: it is reproducible from the commit, cannot fail because
+ * Postgres holds data imported by another branch, and avoids one full database load per prerendered
+ * page. Pages still use the database at runtime through ISR. `CATALOG_SOURCE=files|db` overrides this.
+ */
+export function readsFromDatabase(): boolean {
+  if (process.env.CATALOG_SOURCE === "files") return false;
+  if (process.env.CATALOG_SOURCE === "db") return hasDatabase();
+  return process.env.NEXT_PHASE !== "phase-production-build" && hasDatabase();
+}
+
 export function getDb(): Db {
   if (!instance) {
     const url = process.env.DATABASE_URL;

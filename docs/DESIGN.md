@@ -126,24 +126,25 @@ Charts: a 10-color categorical palette that **excludes** pure red/green/amber so
 Tokenized assets, risk-checked.
 Independent, open-source risk profiles for tokenized real-world assets. Every fact sourced.
 
-[Assets tracked]  [Value covered]   [Value with EOA-controlled   [Value passing all 5     [Alerts (7d)]
-     20             $17.3B           critical powers]             verification tests]
+[Assets tracked]  [Value covered]   [Value with single-key       [Value at Stage 0        [Alerts (7d)]
+     20             $17.3B           critical powers]             or above]
                     ▲ 2.1% 30d        $X.XB · 18%                  $5.1B · 29%              7
 
 ┌─ Risk overview ──────────────────────────────────── [By value | By count] ─┐
-│ Stacked horizontal bars, one per slice:                                    │
-│ Control       ███████green████ ███yellow███ ██red██                         │
-│ Pricing       ...                                                          │
-│ Verification  ...                                                          │
-│ Exit          ...                                                          │
-│ Disclosure    ...                                                          │
-│ Legal         ████████████████ grey: not assessed ███████████              │
+│ Stacked horizontal bars, one per category:                                 │
+│ Underlying Asset ███████green████ ███yellow███ ██red██                      │
+│ Legal Claim      ████████████████ grey: not assessed ███████████           │
+│ Counterparties   ...                                                       │
+│ Control          ...                                                       │
+│ Transparency     ...                                                       │
+│ Pricing          ...                                                       │
+│ Exit             ██green██ ███yellow███ ░░unverified░░ ██red██              │
 └────────────────────────────────────────────────────────────────────────────┘
 
-┌─ Assets ───────────────────────────────────────────── [Treasuries | Credit | All] ─┐   ┌─ Latest alerts ─────┐
-│ # Asset            Issuer     Value    Rosette  Ctrl Price Verif Exit Discl  Flags │   │ ● CRITICAL 2h ago   │
-│ 1 USYC  Circle…    Circle     $3.11B   (mini)   ●    ●     ●     ●    ●     EOA  │   │ USTB ProxyAdmin     │
-│ 2 BENJI …          Franklin   $2.35B   (mini)   ●    ●     ●     ●    ●          │   │ owner changed       │
+┌─ Assets ──────────────────────────────────────────────────── [Treasuries | Credit | All] ─┐   ┌─ Latest alerts ─────┐
+│ # Asset         Issuer   Value   Rosette Asset Parties Ctrl Transp Price Exit Stage  Flags │   │ ● CRITICAL 2h ago   │
+│ 1 USYC  Circle… Circle   $3.11B  (mini)  ●     ●       ●    ●      ●     ●    Stage 0      │   │ USTB ProxyAdmin     │
+│ 2 BENJI …       Franklin $2.35B  (mini)  ●     ●       ●    ●      ●     ○    No stage     │   │ owner changed       │
 │ …                                                                                  │   │ ● HIGH 1d ago …     │
 └────────────────────────────────────────────────────────────────────────────────────┘   └─────────────────────┘
 ```
@@ -157,29 +158,31 @@ Home / Treasuries / BUIDL
 Tokenized money market fund investing in cash, US T-bills and repo.
 [U.S. Treasuries] [Qualified purchasers] [Transfer-restricted]   Issued by BlackRock · Platform Securitize
 
-[Value ⓘ]    [Admin roles ⓘ]   [Single-key powers ⓘ]   [Oracle age ⓘ]   [Used as DeFi collateral ⓘ]
- $2.25B        9                 0                       3h 12m            $41.2M · 3 markets
- ▼ 20% 30d                                               ● on schedule
+[Value ⓘ]    [Stage ⓘ]         [Single-key powers ⓘ]   [Oracle age ⓘ]   [Used as DeFi collateral ⓘ]
+ $2.25B        Stage 0           0                       3h 12m            $41.2M · 3 markets
+ ▼ 20% 30d     Disclosed                                 ● on schedule
 
-Overview | Control | Pricing | DeFi exposure | Verification | Exit | Disclosure | History | Sources
+Overview | Underlying | Legal | Counterparties | Control | Transparency | Pricing | Exit | DeFi exposure | History | Sources
 ─────────
 
 ┌─ Risk rosette ──────────────────┐  ┌─ What can go wrong ─────────────────────────────────────────┐
-│                                 │  │ ● Upgrades take effect immediately (no timelock).         ↗ │
-│        (hexagonal rosette)      │  │ ● DeFi markets price BUIDL at a fixed $1.                 ↗ │
-│   Control ● yellow              │  │ ● Offering memorandum is not public.                      ↗ │
-│   Pricing ● yellow              │  │ ● Redemption runs through the issuer only.                ↗ │
-│   Verification ● green          │  │                                                            │
-│   Exit ● yellow                 │  │ Legal & insolvency: not assessed yet. What we know →      │
-│   Disclosure ● yellow           │  └────────────────────────────────────────────────────────────┘
-│   Legal ○ not assessed          │
-└─────────────────────────────────┘
+│                                 │  │ ● A single key can replace the contract code.     Control ↗ │
+│  (seven-wedge rosette; striped  │  │ ● BNY is both custodian and administrator.  Counterparties ↗│
+│   wedges are unverified)        │  │ ○ The settlement time isn't public.                  Exit ↗ │
+│   Underlying Asset ● green      │  │ ● The NAV comes from the issuer.                  Pricing ↗ │
+│   Legal Claim ○ not assessed    │  │                                                            │
+│   Counterparties ● yellow       │  │ Legal Claim: not assessed yet. What we know →             │
+│   Control ● red                 │  └────────────────────────────────────────────────────────────┘
+│   Transparency ● green          │
+│   Pricing ● yellow              │  ┌─ Stage 0 · Disclosed ──────────────────────────────────────┐
+│   Exit ◌ unverified ≥ yellow    │  │ Stage 0 ✓✓✓✓ · Stage 1 – legal ✓ ✗ ✗ ✗ · Stage 2 – ✗ ✗ ✗ ✗ │
+└─────────────────────────────────┘  └────────────────────────────────────────────────────────────┘
 
 ┌─ Key facts ──────────────────────────┐  ┌─ Service providers ──────────────────────┐
 │ Vehicle       BVI fund         [src] │  │ Custodian           BNY            [src] │
 │ Jurisdiction  British Virgin Is. [src]│  │ Fund administrator  Securitize     [src] │
 │ LEI           5299…YK24  ✓ GLEIF [src]│  │ Auditor             PwC            [src] │
-│ SEC CIK       0002013810 (Form D)[src]│  │ Verification        Chronicle PoA  [src] │
+│ SEC CIK       0002013810 (Form D)[src]│  │ Holdings reporting  Chronicle PoA  [src] │
 │ Min. investment  $5,000,000      [src]│  └─────────────────────────────────────────┘
 └──────────────────────────────────────┘
 
@@ -211,7 +214,7 @@ Overview | Control | Pricing | DeFi exposure | Verification | Exit | Disclosure 
 │ Pause           High         Timelock 2d → Safe    2-day delay      ● green  │
 │ Unclassified    —            0x…  `setRegistry()`  Needs review     ○ grey   │
 └──────────────────────────────────────────────────────────────────────────────┘
-ⓘ For regulated securities, freeze and force-transfer are often legally required. We score who holds them and what checks apply.
+ⓘ For regulated securities, freeze and force-transfer are often legally required. We rate who holds them and what checks apply.
 Discovered at block 23,500,000 · 5 Oct 2026 · View raw JSON on GitHub ↗
 ```
 
@@ -220,14 +223,17 @@ Graph styling: nodes are cards (12px radius) with a type icon; edges labeled wit
 ### 4.4 Other tabs (brief)
 - **Pricing:** card with current price/NAV, source contract, signer(s), update cadence, an **age gauge** (green within cadence, amber 1–3×, red > 3×), and a 30-day line chart of the NAV with update points.
 - **DeFi exposure:** table of markets (protocol logo, chain, loan asset, LLTV, oracle used, collateral USD, borrowed USD, utilization) + donut by protocol. Flag rows whose oracle hardcodes the price.
-- **Verification:** five-test checklist (independent, asset-level, daily, verifiable, onchain) as rows with ✓/✗ and source; "Adapted from Chronicle Labs" credit line.
-- **Exit:** redemption facts (who, how fast, minimums, gates) + instant-liquidity paths with depth.
-- **Disclosure:** six-item checklist; `not_public` items show "Searched on 5 Oct 2026. Found it? Open a PR."
+- **Every category tab** opens with a category card: rating tag, the question it answers, every check (passed ones too) with its source, and context notes that don't change the rating.
+- **Underlying:** holdings table (dated report or mandate), maturity and credit facts, track record.
+- **Legal:** "not assessed" with the questions it will cover, plus legal structure and public records.
+- **Counterparties:** providers table (independent of issuer, regulated or auditor tier), settlement rails, other dependencies.
+- **Transparency:** reports table on the four ladders with ✓/✗ per column and the report that counts marked; event reporting; data kept private for a reason. "Adapted from Chronicle Labs" credit line.
+- **Exit:** redemption terms, liquidator access, top-holder concentration, instant facilities, and measured DEX sells of $1M / $5M / $10M.
 - **History:** timeline of alerts and discovery diffs (vertical timeline, icon by severity).
 - **Sources:** every source cited on the page, grouped by tab, with `checkedAt` dates.
 
 ### 4.5 Screener
-Full-width TanStack table. Columns toggleable. Filters as pills above the table: asset class, chain, slice color per slice, "has EOA critical power", "used as collateral", "price stale". Download CSV button on the right (matching rwa.xyz's placement).
+Full-width TanStack table. Columns toggleable (one per category, stage, onchain data). Filters above the table: asset class, chain, rating per category, "single-key critical power", "Stage 0 or above", "used as collateral", "price stale". Download CSV button on the right (matching rwa.xyz's placement).
 
 ### 4.6 Alerts
 Two-column: filter rail (severity, asset, chain, kind) + feed of alert cards. Each card: severity dot, title, asset chip, time ago, one-line consequence, link to tx on explorer, and "View change" (discovery diff).
@@ -240,8 +246,9 @@ Docs layout: left table of contents, MDX content with max-width 720px, right "On
 | Component | Notes |
 |---|---|
 | `StatCard` | Label + ⓘ tooltip, value (`stat` size, tabular), optional delta (▲/▼ colored), optional status dot |
-| `Rosette` | SVG hexagon with 6 wedges; wedge fill = risk color; hover shows slice headline; `size="sm"` (24px, for tables) and `size="lg"` (220px) |
-| `SliceDot` | 8px dot + optional label; colors from risk palette; grey ring for not assessed |
+| `Rosette` | SVG circle with 7 wedges, one per category, Underlying Asset at the top; solid risk color, stripes in the floor color for unverified, grey hatch for not assessed; hover shows the headline; `size="sm"` (24px, for tables, no SVG patterns) and `size="lg"` (220px) |
+| `RiskDot` | 8px dot + optional label; solid risk colors, dashed ring for unverified, light grey for not assessed, grey ring for neutral |
+| `StageCard` / `StageBadge` | Stage title and the three-stage checklist (✓ met, ✗ not met, – legal, not assessed); pill for tables |
 | `RiskList` | Ordered list of risks with severity dot, sentence, and evidence link ↗ |
 | `SourceMarker` | Tiny superscript `[src]` or link icon; hover popover shows URL/tx, note, checkedAt |
 | `AddressChip` | Mono short address `0x7712…2AEc`, type icon (🔑 EOA, 🔐 Safe m/n, ⏱ timelock, 📄 contract), copy button, explorer link, optional label ("BlackRock ops Safe") |

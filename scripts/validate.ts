@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { loadAlerts, loadAssets, loadDiscovered, loadEntities, loadLive } from "@/lib/data";
+import { loadAlerts, loadAssets, loadDiscovered, loadEntities, loadLive, loadMeasured } from "@/lib/data";
 
 const STALE_DAYS = 90;
 const errors: string[] = [];
@@ -28,11 +28,12 @@ function run() {
       ["manager", asset.manager],
       ["platform", asset.platform],
     ];
-    for (const [role, item] of Object.entries(asset.serviceProviders)) {
-      if (item.status === "public") refs.push([`serviceProviders.${role}`, item.value]);
+    const { custodian, fundAdministrator, auditor, transferAgent } = asset.counterparties;
+    for (const [role, item] of Object.entries({ custodian, fundAdministrator, auditor, transferAgent })) {
+      if (item.status === "public") refs.push([`counterparties.${role}`, item.value]);
     }
     if (asset.pricing.reference.type !== "none") refs.push(["pricing.reference.provider", asset.pricing.reference.provider]);
-    asset.verification.methods.forEach((m, i) => refs.push([`verification.methods[${i}].provider`, m.provider]));
+    asset.transparency.reports.forEach((r, i) => refs.push([`transparency.reports[${i}].provider`, r.provider]));
     for (const [field, slug] of refs) {
       if (!entities.has(slug)) errors.push(`${file}: ${field} "${slug}" has no data/entities/${slug}.yaml`);
     }
@@ -43,6 +44,7 @@ function run() {
     }
     loadDiscovered(asset);
     loadLive(asset.slug);
+    loadMeasured(asset.slug);
 
     const dates: { path: string; date: string }[] = [];
     walkDates(asset, asset.slug, dates);
@@ -52,6 +54,14 @@ function run() {
     }
   }
 
+  for (const e of entities.values()) {
+    const dates: { path: string; date: string }[] = [];
+    walkDates(e, e.slug, dates);
+    const cutoff = Date.now() - STALE_DAYS * 86400 * 1000;
+    for (const d of dates) {
+      if (new Date(d.date).getTime() < cutoff) warnings.push(`data/entities/${e.slug}.yaml: ${d.path} = ${d.date} is older than ${STALE_DAYS} days. Re-check the source.`);
+    }
+  }
   return assets.length;
 }
 

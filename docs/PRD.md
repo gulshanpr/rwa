@@ -30,13 +30,13 @@ Inspiration tweet: *"Is there an RWA transparency dashboard anywhere? i.e. legal
 ### Goals (v1)
 1. Publish a per-asset **risk profile** for the 20 largest tokenized Treasury and private-credit assets (the same sample as Chronicle's report, so results are comparable).
 2. Make every data point **sourced**: a link, a contract call, or a transaction hash, plus the date it was checked.
-3. Score five objectively checkable **risk slices** shown as a rosette.
+3. Rate seven **risk categories** (the RWAbeat framework, [framework.md](./framework.md)) shown as a rosette, plus a **stage**.
 4. Automatically **discover onchain permissions** and **alert** on changes.
 5. Show **DeFi exposure**: where each token is used as collateral and how it's priced there.
 6. Be **open source**, with data and methodology in a public Git repo that anyone can challenge via pull request.
 
 ### Non-goals (v1)
-- Legal opinions or bankruptcy-remoteness verdicts. The legal slice is shown as **"Not assessed"** until there's a qualified contributor.
+- Legal opinions or bankruptcy-remoteness verdicts. The Legal Claim category is shown as **"Not assessed"** until there's a qualified contributor.
 - Investment ratings (AAA–D), price predictions, or buy/sell signals.
 - Market analytics already done well elsewhere: holder breakdowns, flows, volumes. Link to rwa.xyz/DefiLlama instead.
 - Non-EVM chains (Solana, Stellar, Aptos, XRPL). Planned for later.
@@ -59,27 +59,25 @@ Primary user for v1: **risk curators**. If they use it, everyone else follows.
 1. **Facts over opinions.** Score only what can be checked. Mark everything else as unknown.
 2. **Every number has a source.** No source, no data.
 3. **Unknown is a finding.** "Offering memorandum not publicly available" is shown, not hidden.
-4. **Green doesn't mean safe.** Slices describe specific risks, not overall quality.
+4. **Green doesn't mean safe.** Each category describes one kind of risk, not overall quality.
 5. **Independence.** No issuer payments for listings or scores. Issuers may submit corrections publicly.
 6. **Explain like a teammate.** Every risk has a one-sentence plain-English consequence ("A single key can mint unlimited tokens").
 
-## 6. Risk framework v1: the rosette
+## 6. Risk framework: RWAbeat
 
-Six slices. Five are scored green / yellow / red. The sixth (legal) is grey "Not assessed" in v1. Exact scoring rules are in [TECH_SPEC.md §6](./TECH_SPEC.md#6-scoring-engine).
+Seven categories, each rated green, yellow, red, or **unverified** when the facts aren't public. The article is [framework.md](./framework.md); exact rules and thresholds are in [FRAMEWORK_SPEC.md](./FRAMEWORK_SPEC.md).
 
-| # | Slice | Question it answers | Source of truth |
-|---|---|---|---|
-| 1 | **Control** | Who can upgrade, mint, pause, freeze, or force-transfer, and with what checks? | Onchain discovery |
-| 2 | **Pricing** | Where does the onchain price/NAV come from, how fresh is it, and who signs it? | Oracle contracts |
-| 3 | **Verification** | Is reserve data independent, asset-level, daily, verifiable, onchain? (Chronicle's five tests) | Attestation reports, oracle feeds |
-| 4 | **Exit** | Can holders redeem or sell, how fast, and who is allowed? | Issuer docs, onchain liquidity |
-| 5 | **Disclosure** | Are the key documents and service providers publicly named? | Issuer site, SEC EDGAR, GLEIF |
-| 6 | **Legal & insolvency** | What happens to holders if the issuer fails? | *Not assessed in v1* |
+| Category | Question it answers |
+|---|---|
+| **Underlying Asset** | What backs the token, and how likely is it to lose value? |
+| **Legal Claim** | If the issuer goes bankrupt, do holders still own the assets? *Not assessed until a legal contributor joins.* |
+| **Counterparties** | Which offchain companies could fail, even if the asset is fine? |
+| **Control** | Who can freeze, mint, pause or upgrade, and what stops them? |
+| **Transparency** | Can you see what backs the token, and trust that data? |
+| **Pricing** | Is the onchain price right, fresh, and hard to manipulate? |
+| **Exit** | How fast can a holder, or a liquidator, get out? |
 
-### Stages (v2, after framework is stable)
-- **Stage 0 — "Trust us":** any red slice.
-- **Stage 1 — "Verify us":** no red in Control, Pricing, or Verification, and at least 4 of 6 disclosures public.
-- **Stage 2 — "Prove it":** all scored slices green, plus the legal slice assessed and green.
+**Stages** answer how much holders have to trust the issuer: Stage 0 Disclosed, Stage 1 Protected, Stage 2 Trust-minimized. Stage 1 and 2 include legal checks, so no asset passes Stage 0 until Legal Claim is assessed.
 
 ## 7. Features
 
@@ -87,14 +85,14 @@ Six slices. Five are scored green / yellow / red. The sixth (legal) is grey "Not
 
 **F1. Asset risk page.** One page per asset with:
 - Header: name, ticker, issuer, manager, asset class, chains, tags (e.g. "Qualified Purchasers only").
-- Stat row: AUM (from DefiLlama, attributed), # admin roles, # EOAs with critical powers, oracle freshness, DeFi collateral value.
-- **Rosette** with each slice's color and one-line reason.
-- **"What can go wrong"**: auto-generated plain-English list of the top risks, each linked to its evidence.
-- Tabs: Overview · Control · Pricing · DeFi Exposure · Verification · Exit · Disclosure · History · Sources.
+- Stat row: AUM (from DefiLlama, attributed), stage, # single-key critical powers, oracle freshness, DeFi collateral value.
+- **Rosette** with each category's rating and one-line reason, and the **stage** checklist.
+- **"What can go wrong"**: auto-generated plain-English list of the top risks, each linked to its category.
+- Tabs: Overview · Underlying · Legal · Counterparties · Control · Transparency · Pricing · Exit · DeFi Exposure · History · Sources.
 
 **F2. Permission discovery and graph.** For each token contract: proxy type, implementation, upgrade admin, roles and their holders, multisig owners and thresholds, timelock delays. Rendered as a graph (token → role → holder → signers) and a table.
 
-**F3. Risk screener.** Sortable/filterable table of all assets with slice dots, AUM, chains, and key flags (e.g. "EOA can upgrade", "Price stale > 24h").
+**F3. Risk screener.** Sortable/filterable table of all assets with category dots, stage, AUM, chains, and key flags (e.g. "Single key can upgrade", "Price stale > 24h").
 
 **F4. DeFi exposure.** Per asset: list of lending markets where it's collateral (Morpho first, then Aave incl. Horizon, Euler), with loan asset, LLTV/LTV, oracle used, collateral supplied (USD), borrowed (USD).
 
@@ -107,12 +105,11 @@ Six slices. Five are scored green / yellow / red. The sixth (legal) is grey "Not
 ### 7.2 v2
 - Compare view (2–4 assets side by side).
 - Entity pages: issuers, custodians, fund administrators, oracle providers, multisigs ("this Safe controls $2B across 3 tokens").
-- Stages.
 - Multi-chain deployments per asset, with cross-chain consistency checks (does each chain's deployment have the same controls?).
 - Issuer right-of-reply section on each asset page.
 
 ### 7.3 v3
-- Legal & insolvency slice, with a legal contributor.
+- Legal Claim category, with a legal contributor (it also unlocks Stage 1 and 2).
 - Non-EVM chains (Solana first).
 - More asset classes (tokenized stocks, commodities, real estate).
 - Public API.
@@ -164,7 +161,7 @@ None. It's a public good. Funding via grants and donations: Ethereum Foundation,
 
 ## 13. Legal disclaimer (site-wide)
 
-> RWABeat provides information for educational purposes only. It is not investment, legal, tax, or financial advice, and it is not a credit rating. Data may be incomplete or wrong; always verify with the linked primary sources. Risk slices describe specific, checkable properties and do not indicate overall safety.
+> RWABeat provides information for educational purposes only. It is not investment, legal, tax, or financial advice, and it is not a credit rating. Data may be incomplete or wrong; always verify with the linked primary sources. Each risk category describes one kind of risk and does not indicate overall safety.
 
 ## 14. Open questions
 

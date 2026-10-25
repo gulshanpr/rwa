@@ -2,111 +2,121 @@ export const metadata = { title: "Methodology" };
 
 # Methodology
 
-RWABeat shows what can go wrong with a tokenized real-world asset: who controls the token, what it depends on, and what is (and isn't) disclosed. This page is the full framework. It is versioned in Git; every change is listed in the [changelog](/changelog).
+RWABeat asks what a lender or curator asks before accepting a tokenized real-world asset: what can go wrong, how much would I lose, and how fast can I get out? Every rating on the site maps back to this page. It is versioned in Git; every change is listed in the [changelog](/changelog).
 
 <Callout title="In plain English">
-We only score things anyone can check: a contract call, a transaction, or a public document. Everything else is shown as unknown, and unknown is a finding.
+RWA risk = risk of the real asset + risk of the wrapper around it + risk of getting out. We rate seven risks, each green, yellow or red, and show "unverified" when the facts aren't public instead of guessing.
 </Callout>
 
 ## Principles
 
-1. **Facts over opinions.** Score only what can be checked. Mark everything else as unknown.
-2. **Every number has a source.** No source, no data.
-3. **Unknown is a finding.** "Offering memorandum not publicly available" is shown, not hidden.
-4. **Green doesn't mean safe.** Slices describe specific risks, not overall quality.
-5. **Independence.** No issuer payments for listings or scores. Issuers may submit corrections publicly.
+1. **No single score.** You see all seven ratings and the stage, so you can tell exactly which part is weak.
+2. **Asset-class aware.** A T-bill fund and a private credit pool aren't held to the same freshness bar.
+3. **Unknown is its own state.** If a fact isn't public, the rating says "unverified" rather than guessing.
+4. **Every rating has evidence.** Each check links to the document, contract or onchain data behind it.
+5. **Disclosure constraints are context, not a penalty.** Data kept private for a real legal reason is shown as such.
+6. **Green doesn't mean safe.** Each category describes one kind of risk, not overall quality.
+7. **Independence.** No issuer pays for a listing or a rating. Issuers may challenge a rating with evidence.
 
 ## Scope
 
-v1 covers the 20 largest tokenized Treasury and private-credit assets, the same sample as Chronicle Labs' October 2026 report, so results are comparable. Only EVM deployments are covered for now. Stablecoins, tokenized stocks and non-EVM chains come later.
+v1 covers tokenized Treasury and private-credit assets on EVM chains. Stablecoins, tokenized stocks and non-EVM chains come later.
 
 ## Data
 
-There are three kinds of data, handled differently:
-
 | Kind | Examples | Where it lives |
 |---|---|---|
-| **Curated** | Issuer, custodian, documents, redemption terms | YAML files in Git, changed by pull request |
+| **Curated** | Holdings, providers, audits, redemption terms | `data/assets` and `data/entities` in Git, every fact with a source |
 | **Discovered** | Proxy admins, roles, Safe signers, timelock delays | JSON snapshots in Git, written by the discovery tool |
 | **Live** | Prices, oracle age, DeFi exposure, alerts | Database, refreshed by scheduled jobs |
+| **Measured** | Top holders, DEX sell quotes | `data/measured`, refreshed by `bun framework:measure` |
 
-The risk assessment (curated + discovered) is fully reproducible from the Git repository. Asset value (AUM) comes from DefiLlama, with attribution, and is cross-checked against `totalSupply × price`.
+Asset value (AUM) comes from DefiLlama, with attribution, cross-checked against `totalSupply × price`.
 
-<Callout title="Preview status" tone="neutral">
-The site is in preview. BUIDL is the first profile. Its permissions are read from chain by the discovery tool every night; changes open a pull request for review. Supply, oracle age, DeFi exposure and alerts are refreshed by scheduled jobs.
-</Callout>
+## Ratings
 
-## The rosette
-
-Six slices. Five are scored green, yellow or red. The sixth, legal and insolvency, is grey ("not assessed") in v1.
-
-| Slice | Question it answers |
+| Category | Question it answers |
 |---|---|
-| Control | Who can upgrade, mint, pause, freeze, or force-transfer, and with what checks? |
-| Pricing | Where does the onchain price or NAV come from, how fresh is it, and who signs it? |
-| Verification | Is reserve data independent, asset-level, daily, verifiable and onchain? |
-| Exit | Can holders redeem or sell, how fast, and who is allowed? |
-| Disclosure | Are the key documents and service providers publicly named? |
-| Legal & insolvency | What happens to holders if the issuer fails? *Not assessed in v1.* |
+| Underlying Asset | What backs the token, and how likely is it to lose value? |
+| Legal Claim | If the issuer goes bankrupt, do holders still own the assets? *Not assessed yet.* |
+| Counterparties | Which offchain companies could fail, even if the asset is fine? |
+| Control | Who can freeze, mint, pause or upgrade, and what stops them? |
+| Transparency | Can you see what backs the token, and trust that data? |
+| Pricing | Is the onchain price right, fresh, and hard to manipulate? |
+| Exit | How fast can a holder, or a liquidator, get out? |
+
+Each category runs a set of checks. A known red check makes the category **red**. Otherwise, if a check couldn't be made because the fact isn't public, and the answer could make things worse, the category is **unverified**, shown with the worst color we could confirm ("unverified, at least yellow"). Legal Claim is **not assessed** until a legal reviewer joins.
+
+Some checks depend on the asset type. Data and prices have to be at least this fresh:
+
+| Rated as | Freshness that counts |
+|---|---|
+| T-bill or money market fund | Daily |
+| Short-duration credit | Weekly |
+| Private credit | Monthly, plus defaults reported as they happen |
+| Real estate | Quarterly |
+
+## Underlying Asset
+
+- **Green:** at least 95% government debt, government repo or cash, and short-dated (weighted average maturity of a year or less; a fund holding only bills, repo and cash qualifies).
+- **Yellow:** private credit that is investment grade or mostly senior secured, spread across borrowers, with a year of history.
+- **Red:** the largest borrower is over 20% of the pool or there are fewer than 10 borrowers; mostly unsecured, sub-investment-grade loans; less than a year of history; or losses passed to holders in the last three years.
+
+## Legal Claim
+
+Not assessed yet. It will check the structure (regulated fund, bankruptcy-remote SPV or direct issuer liability), what the token legally is, whether it is the official ownership record, the jurisdiction, an independent trustee or board, and regulatory status. The Legal tab shows the public records in the meantime.
+
+## Counterparties
+
+- **Green:** an independent, regulated custodian and administrator, a recognized auditor (Big Four, PCAOB-registered, or a major international network), and no single point of failure.
+- **Yellow:** an unregulated custodian or administrator, a small auditor, one firm acting as both custodian and administrator, a single settlement rail (for example USDC only), or another company the product can't run without.
+- **Red:** the issuer's own group holds or administers the assets, there is no audit, or the custodian or administrator isn't disclosed.
 
 ## Control
 
-We look at every **critical** and **high** power across all deployments and take the worst holder.
+We read every privileged power from chain, follow proxy admins, timelocks and controlling contracts down to the account that signs, and take the weakest holder of each power. Critical powers are upgrade, mint, force-transfer, burn from a holder, set price, allocate (move the backing assets) and granting roles. High powers are freeze, pause and changing compliance rules.
 
-| Power | Meaning | Criticality |
-|---|---|---|
-| `upgrade` | Change contract logic | Critical |
-| `mint` | Create new tokens | Critical |
-| `force-transfer` | Move tokens out of a holder's wallet | Critical |
-| `burn-from` | Destroy tokens in a holder's wallet | Critical |
-| `set-price` | Write the NAV or price used onchain, including marking a vault's loans or strategies as impaired | Critical |
-| `allocate` | Lend out or move the assets backing the token (fund loans, move money into strategies) | Critical |
-| `admin` | Grant or revoke other roles | Critical |
-| `freeze` | Block a specific address | High |
-| `pause` | Stop all transfers | High |
-| `set-compliance` | Change allowlist or compliance rules | High |
+- **Red:** a single key (an EOA, an unrecognized contract, or a 1-of-n multisig) holds a critical power or can freeze; there is no published audit; or a contract's source isn't verified.
+- **Yellow:** a single key can pause or change compliance rules; a critical power sits with a multisig that has no timelock or few required signers; a Safe module can bypass the signers; admin powers aren't documented by the issuer; the latest audit is over two years old; or the token depends on a bridge on some chain.
+- **Green:** powers limited and documented, held by independent multisigs behind a timelock, and recently audited.
 
-Holders are classified as: a single key (**EOA**); a **Safe** multisig, "strong" if it needs at least 3 signers and at least half of all signers; a **timelock**, which takes the class of its proposer plus its delay; or an **unknown contract**, treated as a single key until labeled.
+For regulated securities, freeze and force-transfer are often legally required. We rate who holds them and what checks exist, not whether they exist. Privileged functions no handler recognizes are listed for manual review and don't change the rating.
 
-- **Red:** any critical power held by a single key or unknown contract, or by a weak Safe with no timelock.
-- **Yellow:** critical powers held by strong Safes without a timelock, an upgrade delay under 7 days, or high powers held by a single key.
-- **Green:** upgrades are impossible or behind a 7-day+ timelock controlled by a strong Safe, other critical powers are held by strong Safes behind a timelock, and no single key holds a high power.
+## Transparency
 
-Privileged functions that no handler recognizes are listed as **unclassified** for manual review, so nothing is silently ignored. They don't change the color.
+We rate the best public report on four ladders: who the data comes from (issuer, administrator, custodian, independent firm), how detailed it is (a single NAV, a breakdown, every position), how fresh it is for the asset type, and how it can be verified (self-reported, attestation, audit, cryptographic).
 
-For regulated securities, freeze and force-transfer powers are often legally required. This slice scores who holds them and what checks exist, not whether they exist.
+- **Green:** data from a third party, every position, fresh enough, and at least attested.
+- **Yellow:** a third-party attestation or audit, but only aggregate numbers, data from the issuer itself, or updates too slow for the asset.
+- **Red:** self-reported only, or no meaningful disclosure.
+
+**Onchain data** is a separate badge, not part of the rating: data published onchain helps automation, but public offchain data is still transparent to a person. Ladders adapted from Chronicle Labs, "The Transparency Gap in Onchain Finance" (Oct 2026).
 
 ## Pricing
 
-- **Red:** a single key writes the price, there is no onchain price or NAV, or the last update is older than 3× the expected cadence.
-- **Yellow:** an issuer-controlled multisig or a single provider relaying issuer-reported NAV writes the price, or the update is late (1–3× cadence).
-- **Green:** an independent oracle network publishes data from a fund administrator or custodian at least daily, with history onchain.
+- **Red:** no NAV feed (a stable token is then simply assumed to be worth $1); a single key writes the price or can write a vault's NAV down; updates slower than the asset's freshness bar; a feed older than three times its cadence; or consumers can't tell when the price is stale.
+- **Yellow:** NAV published by the issuer with no independent check, an issuer multisig publishing the price, write-downs reaching the price late, a traded token whose discount to NAV isn't tracked or has exceeded 2%, or a lending market hardcoding $1.
+- **Green:** NAV from an independent administrator or custodian, delivered by an oracle with visible staleness, and losses reflected promptly.
 
-Funds that strike NAV on business days only don't publish on weekends, so for those feeds weekends don't count towards the age.
-
-For vault tokens (ERC-4626) the NAV is the contract's own accounting, so there is no feed to go stale. We score who can move it instead: **red** if a single key can write it down or back up (for example by marking a loan impaired), **yellow** if an issuer multisig can, or if the numbers are the issuer's own accounting rather than a fund administrator's or custodian's.
-
-For stable $1 tokens, we also check how DeFi markets price the token. If a lending market hardcodes $1, the slice gets a yellow flag: *DeFi markets assume $1 with no onchain NAV check.*
-
-## Verification
-
-For the best verification method we count five tests: **independent**, **asset-level**, **at least daily**, **cryptographically verifiable**, **onchain**. Green is 5 of 5, yellow is 3–4, red is 0–2 or self-reported only.
-
-Five tests adapted from Chronicle Labs, "The Transparency Gap in Onchain Finance" (Oct 2026).
+Funds that strike NAV on business days only don't count weekends towards the price's age.
 
 ## Exit
 
-- **Green:** documented redemption at T+1 or faster for all eligible holders, plus an onchain instant-liquidity path (a redemption contract, or DEX liquidity of at least 2% of supply at ≤ 1% slippage).
-- **Yellow:** documented redemption at T+5 or faster but no instant path, or the documentation is incomplete. Unpublished suspension or gating terms count as incomplete.
-- **Red:** no documented redemption, redemption slower than T+5, or redemptions can be suspended at the issuer's discretion with no stated limits.
+- **Red:** redemptions can be suspended at the issuer's discretion; settlement takes more than five business days; redemptions only run monthly or quarterly; a notice period over a week; a lock-up; liquidators can't legally hold the token; or no redemption and no market.
+- **Yellow:** redemption for allowlisted holders only, settlement in two to five days, weekly dealing, a daily cap, liquidators limited to an allowlist, or no instant path that can take $5M.
+- **Green:** redemption in a day or less with no discretionary gates, a real instant path (a $5M DEX sell within 1% of NAV, or an instant redemption facility that can pay $5M today), and any liquidator can hold the token.
 
-## Disclosure
+For a curator, the real liquidation window is the exit time, not a few minutes. A rough rule: max LTV ≈ 1 − (worst price drop during the exit time + slippage + liquidation bonus).
 
-Six checks, each public, not public, or unknown: legal entity and jurisdiction, custodian named, fund administrator named, auditor named, offering document public, audited financials public. Green is 5 or more public, yellow is 3–4, red is 2 or fewer. Unknown counts as not public.
+## Stages
 
-## Legal
+Stages answer one question: how much do you have to trust the issuer? Each builds on the last.
 
-Always grey in v1. We don't yet evaluate bankruptcy remoteness or holder claims. The Disclosure tab shows which documents are public so you can read them yourself.
+- **Stage 0, Disclosed:** what the token holds is described publicly; the issuer, custodian, administrator and auditor are named; the legal structure is documented; smart contracts are verified.
+- **Stage 1, Protected:** a bankruptcy-remote structure; an independent custodian and administrator; holdings independently verified at a pace that fits the asset; admin powers held by a multisig with a documented policy; a documented redemption path.
+- **Stage 2, Trust-minimized:** an independent trustee; holdings data anyone can verify; admin changes behind a timelock so holders can exit first; an exit that works without the issuer and lets liquidators hold the token; pricing from an independent source.
+
+Bankruptcy remoteness and the trustee are legal checks. Until they're assessed, no asset can pass Stage 0, and the asset page says when an asset is held back only by them.
 
 ## DeFi exposure
 
@@ -118,4 +128,4 @@ We watch every contract in the discovery snapshots. Upgrades, admin changes and 
 
 ## Disclaimer
 
-RWABeat provides information for educational purposes only. It is not investment, legal, tax, or financial advice, and it is not a credit rating. Data may be incomplete or wrong; always verify with the linked primary sources. Risk slices describe specific, checkable properties and do not indicate overall safety.
+RWABeat ratings are for information only. They are not investment, legal, tax, or financial advice, not a credit rating, and not an endorsement of any asset. Data may be incomplete or wrong; always verify with the linked primary sources. Each category describes one kind of risk and does not indicate overall safety.

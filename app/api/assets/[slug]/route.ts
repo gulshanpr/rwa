@@ -13,7 +13,8 @@ function exportProfile(p: AssetProfile) {
   return {
     sample: p.sample,
     asset: p.asset,
-    score: p.score,
+    rating: p.rating,
+    measured: p.measured ?? null,
     stats: p.stats,
     flags: p.flags,
     powers: p.powers,

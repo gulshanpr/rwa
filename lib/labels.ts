@@ -29,3 +29,10 @@ export const WHO_CAN_REDEEM_LABELS: Record<Asset["exit"]["redemption"]["whoCanRe
 };
 
 export const PROTOCOL_LABELS = { morpho: "Morpho", aave: "Aave", euler: "Euler" } as const;
+
+export const FRESHNESS_LABELS: Record<Asset["freshnessClass"]["value"], string> = {
+  "tbill-mmf": "T-bill or money market fund",
+  "short-duration-credit": "Short-duration credit",
+  "private-credit": "Private credit",
+  "real-estate": "Real estate",
+};

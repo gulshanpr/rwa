@@ -2,8 +2,8 @@ import type { AddressKind } from "@/components/data/address-chip";
 import { formatDuration } from "./format";
 import { addressLabel, type AssetProfile } from "./profile";
 import type { Chain } from "./schema/asset";
-import { holderLabel, POWER_LABELS, type PowerRow } from "./scoring/control";
-import { worstColor, type SliceColor } from "./scoring/types";
+import { holderLabel, POWER_LABELS, type PowerRow } from "./framework/permissions";
+import type { Tone } from "./framework/types";
 
 export type GraphNode = {
   id: string;
@@ -19,7 +19,7 @@ export interface GraphEdge {
   source: string;
   target: string;
   label: string;
-  color: SliceColor;
+  color: Tone;
   critical: boolean;
 }
 
@@ -33,6 +33,9 @@ export interface AccountRow {
 }
 
 const id = (a: string) => a.toLowerCase();
+
+const TONE_RANK: Record<Tone, number> = { grey: 0, green: 1, yellow: 2, red: 3 };
+const worstTone = (tones: Tone[]): Tone => tones.reduce<Tone>((w, t) => (TONE_RANK[t] > TONE_RANK[w] ? t : w), "grey");
 
 export function buildControlGraph(profile: AssetProfile, chain: Chain) {
   const snapshot = profile.snapshots.find((s) => s.discovered.chain === chain);
@@ -126,7 +129,7 @@ export function buildControlGraph(profile: AssetProfile, chain: Chain) {
       : {
           ...e,
           label: [...new Set(r.map((x) => POWER_LABELS[x.power].toLowerCase()))].join(", "),
-          color: worstColor(r.map((x) => x.color), "grey"),
+          color: worstTone(r.map((x) => x.color)),
           critical: r.some((x) => x.criticality === "critical"),
         },
   );

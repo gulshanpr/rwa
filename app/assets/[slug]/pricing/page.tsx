@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 import { AgeGauge } from "@/components/charts/age-gauge";
 import { AddressChip } from "@/components/data/address-chip";
 import { EmptyUnknown } from "@/components/data/empty-unknown";
-import { FactList } from "@/components/data/fact-list";
-import { RiskList } from "@/components/risk/risk-list";
-import { SliceDot } from "@/components/risk/slice-dot";
+import { disclosedFact, FactList } from "@/components/data/fact-list";
+import { CategoryCard } from "@/components/risk/category-card";
+import { RiskDot } from "@/components/risk/risk-dot";
 import { Card } from "@/components/ui/card";
 import { Table, Td, Th, Tr } from "@/components/ui/table";
 import { Tag } from "@/components/ui/tag";
@@ -30,6 +30,12 @@ const VAULT_WRITER_LABELS = {
   none: "Nobody; it follows the contract's accounting",
 } as const;
 
+const LOSS_LABELS = {
+  immediate: "At once",
+  "next-nav": "At the next NAV strike",
+  delayed: "Later than they happen",
+} as const;
+
 const ORIGIN_LABELS = {
   issuer: "Issuer (self-reported)",
   "fund-administrator": "Fund administrator",
@@ -39,16 +45,29 @@ const ORIGIN_LABELS = {
 export default async function PricingPage({ params }: PageProps<"/assets/[slug]/pricing">) {
   const { slug } = await params;
   const profile = (await getProfile(slug)) ?? notFound();
-  const { asset, score, stats, live } = profile;
+  const { asset, rating, stats, live } = profile;
   const entityName = (s: string) => nameOf(profile, s);
-  const ref = asset.pricing.reference;
+  const p = asset.pricing;
+  const ref = p.reference;
   const age = stats.oracle;
 
   return (
     <div className="grid gap-4">
-      <Card title="Pricing findings" description={score.slices.pricing.headline}>
-        <RiskList reasons={score.slices.pricing.reasons} slug={slug} />
-      </Card>
+      <CategoryCard result={rating.categories.pricing} slug={slug}>
+        <div className="mt-4 border-t border-line pt-4">
+          <FactList
+            facts={[
+              ...(ref.type === "oracle"
+                ? [{ label: "Staleness visible to consumers", value: p.stalenessDetectable.value ? "Yes" : "No", source: p.stalenessDetectable.source }]
+                : []),
+              { label: "Write-downs reach the price", value: LOSS_LABELS[p.lossRecognition.value], source: p.lossRecognition.source },
+              ...(p.secondaryDiscount
+                ? [disclosedFact("Largest discount to NAV", p.secondaryDiscount, (v) => `${v.maxPct}% (${v.window})`)]
+                : []),
+            ]}
+          />
+        </div>
+      </CategoryCard>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Onchain price reference">
@@ -105,7 +124,7 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
             <div className="space-y-4">
               <div className="flex items-baseline gap-3">
                 <span className="tnum text-stat text-fg">{formatDuration(age.ageSeconds)}</span>
-                <SliceDot
+                <RiskDot
                   color={age.freshness === "on-schedule" ? "green" : age.freshness === "late" ? "yellow" : "red"}
                   label={<span className="text-small text-fg-muted">{age.freshness === "on-schedule" ? "On schedule" : age.freshness === "late" ? "Late" : "Stale"}</span>}
                 />

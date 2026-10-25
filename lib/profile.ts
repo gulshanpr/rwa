@@ -1,14 +1,16 @@
 import { cache } from "react";
 import { getSiteCatalog, type Catalog } from "./catalog";
 import type { DiscoverySnapshot } from "./data";
+import { loadMeasured } from "./data";
+import { rateAsset, type FrameworkRating, type Tone } from "./framework";
+import { analyzePowers, holderLabel, isSingleKey, lookupHolder, type PowerRow } from "./framework/permissions";
 import { getAlerts, getLive } from "./live-store";
+import { oracleAge, type OracleAge } from "./oracle";
 import type { Asset, AssetClass } from "./schema/asset";
 import type { Power } from "./schema/discovered";
 import type { Entity } from "./schema/entity";
 import type { Alert, Live } from "./schema/live";
-import { scoreAsset, type AssetScore, type SliceColor } from "./scoring";
-import { analyzePowers, holderLabel, lookupHolder, type PowerRow } from "./scoring/control";
-import { oracleAge, type OracleAge } from "./scoring/pricing";
+import type { Measured } from "./schema/measured";
 import { formatUsd, shortAddress } from "./format";
 
 export const ASSET_CLASSES: Record<AssetClass, { label: string; short: string; path: string }> = {
@@ -23,7 +25,7 @@ export function assetClassFromPath(p: string): AssetClass | undefined {
 export interface Flag {
   id: "eoa-upgrade" | "eoa-critical" | "eoa-high" | "no-upgrade-timelock" | "price-stale" | "defi-fixed" | "unclassified";
   label: string;
-  color: SliceColor;
+  color: Tone;
 }
 
 export interface AssetStats {
@@ -44,9 +46,12 @@ export interface AssetProfile {
   entities: { issuer?: Entity; manager?: Entity; platform?: Entity };
   /** Display names for every entity slug, so pages can name custodians, auditors and providers. */
   entityNames: Record<string, string>;
+  /** Every entity by slug, for regulation and auditor details. */
+  entityInfo: Record<string, Entity>;
   snapshots: DiscoverySnapshot[];
   live?: Live;
-  score: AssetScore;
+  measured?: Measured;
+  rating: FrameworkRating;
   powers: PowerRow[];
   stats: AssetStats;
   flags: Flag[];
@@ -57,17 +62,17 @@ export function nameOf(profile: AssetProfile, slug: string): string {
   return profile.entityNames[slug] ?? slug;
 }
 
-const isSingleKey = (r: PowerRow) => r.holder.holderClass === "eoa" || r.holder.holderClass === "unknown";
-
 function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetStats): Flag[] {
   const flags: Flag[] = [];
-  if (powers.some((r) => r.power === "upgrade" && isSingleKey(r)))
-    flags.push({ id: "eoa-upgrade", label: "EOA can upgrade", color: "red" });
-  else if (powers.some((r) => r.criticality === "critical" && isSingleKey(r)))
-    flags.push({ id: "eoa-critical", label: "EOA critical power", color: "red" });
-  if (powers.some((r) => r.criticality === "high" && isSingleKey(r)))
-    flags.push({ id: "eoa-high", label: "EOA can freeze/pause", color: "yellow" });
-  if (powers.some((r) => r.power === "upgrade" && !isSingleKey(r) && r.holder.delaySeconds === 0))
+  const single = (r: PowerRow) => isSingleKey(r.holder);
+  if (powers.some((r) => r.power === "upgrade" && single(r)))
+    flags.push({ id: "eoa-upgrade", label: "Single key can upgrade", color: "red" });
+  else if (powers.some((r) => r.criticality === "critical" && single(r)))
+    flags.push({ id: "eoa-critical", label: "Single-key critical power", color: "red" });
+  const high = powers.filter((r) => r.criticality === "high" && single(r));
+  if (high.length > 0)
+    flags.push({ id: "eoa-high", label: "Single key can freeze/pause", color: high.some((r) => r.power === "freeze") ? "red" : "yellow" });
+  if (powers.some((r) => r.power === "upgrade" && !single(r) && r.holder.delaySeconds === 0))
     flags.push({ id: "no-upgrade-timelock", label: "No upgrade timelock", color: "yellow" });
   if (stats.oracle && stats.oracle.scheduledAgeSeconds > 86400)
     flags.push({ id: "price-stale", label: "Price stale > 24h", color: "red" });
@@ -83,14 +88,15 @@ function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, al
   const snapshots = catalog.snapshots.get(asset.slug) ?? [];
   const discovered = snapshots.map((s) => s.discovered);
   const powers = analyzePowers(discovered);
-  const score = scoreAsset(asset, discovered, live);
+  const measured = loadMeasured(asset.slug);
+  const rating = rateAsset({ asset, discovered, live, measured, entities });
 
   const stats: AssetStats = {
     aumUsd: live?.aum.usd,
     aumDelta30d: live?.aum.usd30dAgo ? live.aum.usd / live.aum.usd30dAgo - 1 : undefined,
     adminRoles: powers.filter((r) => r.criticality !== "unclassified").length,
-    singleKeyPowers: powers.filter((r) => r.criticality === "critical" && isSingleKey(r)).length,
-    singleKeyOther: powers.filter((r) => r.criticality === "high" && isSingleKey(r)).map((r) => r.power),
+    singleKeyPowers: powers.filter((r) => r.criticality === "critical" && isSingleKey(r.holder)).length,
+    singleKeyOther: powers.filter((r) => r.criticality === "high" && isSingleKey(r.holder)).map((r) => r.power),
     oracle: oracleAge(asset, live),
     defiCollateralUsd: live?.defiMarkets.reduce((s, m) => s + m.collateralUsd, 0) ?? 0,
     defiBorrowUsd: live?.defiMarkets.reduce((s, m) => s + m.borrowUsd, 0) ?? 0,
@@ -106,9 +112,11 @@ function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, al
       platform: entities.get(asset.platform),
     },
     entityNames: Object.fromEntries([...entities.values()].map((e) => [e.slug, e.name])),
+    entityInfo: Object.fromEntries(entities),
     snapshots,
     live,
-    score,
+    measured,
+    rating,
     powers,
     stats,
     flags: computeFlags(powers, live, stats),

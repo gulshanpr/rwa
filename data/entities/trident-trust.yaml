@@ -3,3 +3,8 @@ slug: trident-trust
 name: Trident Trust
 type: [fund-administrator, transfer-agent]
 website: https://www.tridenttrust.com
+
+regulated:
+  value: true
+  source: { url: "https://caymanfinance.ky/member/trident-trust/", note: "Cayman office holds a CIMA mutual fund administrator licence and a trust licence. The legal entity isn't named on the page.", checkedAt: 2026-10-25 }
+regulator: CIMA

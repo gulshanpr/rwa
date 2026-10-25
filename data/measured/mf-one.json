@@ -1,0 +1,89 @@
+{
+  "asset": "mf-one",
+  "asOf": "2026-10-25T09:16:07.871Z",
+  "holders": {
+    "chain": "ethereum",
+    "count": 31,
+    "top10Pct": 97.8,
+    "top": [
+      {
+        "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+        "name": "Morpho",
+        "isContract": true,
+        "pct": 47.01
+      },
+      {
+        "address": "0x9Db5B0B081E2202fb588cbD541B01b77f45Cfe2d",
+        "isContract": false,
+        "pct": 45.2
+      },
+      {
+        "address": "0xfC4313B59a5Bc5EC84a4987E8a18eF1Bad666B49",
+        "isContract": true,
+        "pct": 1.32
+      },
+      {
+        "address": "0x9475FFF502a9D64c2ad7C61C8f92165CABaD5954",
+        "isContract": true,
+        "pct": 1.31
+      },
+      {
+        "address": "0x0e193a20352A7bD5D4058152F0641447f0E5667a",
+        "isContract": false,
+        "pct": 0.72
+      },
+      {
+        "address": "0x44b0440e35c596e858cEA433D0d82F5a985fD19C",
+        "name": "TransparentUpgradeableProxy",
+        "isContract": true,
+        "pct": 0.57
+      },
+      {
+        "address": "0xD032Ae98974063Aa4F24d65358f947EE198E4944",
+        "isContract": true,
+        "pct": 0.49
+      },
+      {
+        "address": "0x370897fDABaB2C6D701e70CFd5461C1AEE5371a7",
+        "isContract": false,
+        "pct": 0.42
+      },
+      {
+        "address": "0x989815b9103bC20df9DC0F7c6540dc38dc62FEBF",
+        "isContract": false,
+        "pct": 0.38
+      },
+      {
+        "address": "0xDb21bBb6F72f86E5c2eb580C3d14ED2535D77CF4",
+        "isContract": false,
+        "pct": 0.38
+      }
+    ],
+    "source": "https://eth.blockscout.com/token/0x238a700eD6165261Cf8b2e544ba797BC11e466Ba?tab=holders"
+  },
+  "dex": {
+    "chain": "ethereum",
+    "navUsd": 1.12956724,
+    "quotes": [
+      {
+        "sizeUsd": 1000000,
+        "routed": true,
+        "outUsd": 3337,
+        "slippagePct": 99.67
+      },
+      {
+        "sizeUsd": 5000000,
+        "routed": true,
+        "outUsd": 3420,
+        "slippagePct": 99.93
+      },
+      {
+        "sizeUsd": 10000000,
+        "routed": true,
+        "outUsd": 3452,
+        "slippagePct": 99.97
+      }
+    ],
+    "source": "https://kyberswap.com"
+  }
+}

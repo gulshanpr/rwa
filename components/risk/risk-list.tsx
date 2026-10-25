@@ -1,32 +1,49 @@
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import type { Reason } from "@/lib/scoring/types";
-import { SliceDot } from "./slice-dot";
+import Link from "next/link";
+import { SourceMarker } from "@/components/data/source-marker";
+import { CATEGORY_LABELS, CATEGORY_TABS, type Finding } from "@/lib/framework/types";
+import { RiskDot } from "./risk-dot";
 
-export function evidenceHref(slug: string, reason: Reason): string {
-  const tab = reason.evidence.tab === "overview" ? "" : `/${reason.evidence.tab}`;
-  return `/assets/${slug}${tab}${reason.evidence.anchor ? `#${reason.evidence.anchor}` : ""}`;
-}
+const visual = (f: Finding) => (f.color === "unknown" ? "unverified" : f.color);
 
-export function RiskList({ reasons, slug, limit }: { reasons: Reason[]; slug: string; limit?: number }) {
-  const shown = limit ? reasons.slice(0, limit) : reasons;
-  if (shown.length === 0) {
-    return <p className="text-small text-fg-muted">No yellow or red findings.</p>;
-  }
+/**
+ * Findings with their color. On the overview (`linkCategory`) each one links to its category tab;
+ * inside a tab, passed checks are shown too, so the reader sees what was checked.
+ */
+export function RiskList({
+  findings,
+  slug,
+  limit,
+  linkCategory = false,
+  empty = "No yellow or red findings.",
+}: {
+  findings: Finding[];
+  slug: string;
+  limit?: number;
+  linkCategory?: boolean;
+  empty?: string;
+}) {
+  const shown = limit ? findings.slice(0, limit) : findings;
+  if (shown.length === 0) return <p className="text-small text-fg-muted">{empty}</p>;
   return (
     <ol className="divide-y divide-line">
-      {shown.map((r) => (
-        <li key={r.id} className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0">
-          <SliceDot color={r.color} className="mt-1.5" />
-          <p className="min-w-0 flex-1 text-body text-fg">{r.text}</p>
-          <Link
-            href={evidenceHref(slug, r)}
-            className="inline-flex shrink-0 items-center gap-0.5 text-label text-accent hover:underline"
-            aria-label={`Evidence: ${r.evidence.label}`}
-          >
-            Evidence
-            <ArrowUpRight className="size-3.5" />
-          </Link>
+      {shown.map((f) => (
+        <li key={f.id} className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0">
+          <RiskDot color={visual(f)} title={f.color === "unknown" ? `Not public: could be ${f.worstCase ?? "red"}` : undefined} className="mt-1.5" />
+          <p className="min-w-0 flex-1 text-body text-fg">
+            {f.text}
+            {!linkCategory && f.source && <SourceMarker source={f.source} />}
+          </p>
+          {linkCategory && (
+            <Link
+              href={`/assets/${slug}/${CATEGORY_TABS[f.category]}`}
+              className="inline-flex shrink-0 items-center gap-0.5 text-label text-accent hover:underline"
+              aria-label={`${CATEGORY_LABELS[f.category]}: details`}
+            >
+              {CATEGORY_LABELS[f.category]}
+              <ArrowUpRight className="size-3.5" />
+            </Link>
+          )}
         </li>
       ))}
     </ol>

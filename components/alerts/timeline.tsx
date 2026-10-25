@@ -1,11 +1,11 @@
 import { RelativeTime } from "@/components/data/relative-time";
-import type { SliceColor } from "@/lib/scoring/types";
+import type { Tone } from "@/lib/framework/types";
 import { cn, RISK_DOT } from "@/lib/ui";
 
 export interface TimelineItem {
   id: string;
   date: string;
-  color: SliceColor;
+  color: Tone;
   badge: string;
   title: string;
   body?: string;

@@ -5,13 +5,13 @@ import { catalog } from "../util";
 
 export type OracleType = "fixed" | "nav-feed" | "market";
 
-// Feeds that carry the issuer's NAV for this asset: the curated reference, PoR feeds,
+// Feeds that carry the issuer's NAV for this asset: the curated reference, transparency report feeds,
 // and every contract discovery tagged with role "oracle".
 export async function navFeeds(asset: Asset, chain: Chain): Promise<Set<string>> {
   const out = new Set<string>();
   const ref = asset.pricing.reference;
   if ((ref.type === "oracle" || ref.type === "vault") && ref.address && ref.chain === chain) out.add(ref.address.toLowerCase());
-  for (const m of asset.verification.methods) if (m.feed?.chain === chain) out.add(m.feed.address.toLowerCase());
+  for (const r of asset.transparency.reports) if (r.feed?.chain === chain) out.add(r.feed.address.toLowerCase());
   for (const s of (await catalog()).snapshots.get(asset.slug) ?? []) {
     if (s.discovered.chain !== chain) continue;
     for (const [addr, c] of Object.entries(s.discovered.contracts)) if (c.role === "oracle") out.add(addr.toLowerCase());

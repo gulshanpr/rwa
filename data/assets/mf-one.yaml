@@ -38,22 +38,6 @@ access:
     value: false
     source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "The token blocks only blacklisted addresses. Deposit and redemption vaults require the greenlist. Secondary transfers between non-blacklisted wallets are open.", checkedAt: 2026-10-14 }
 
-serviceProviders:
-  custodian:
-    status: not_public
-    searchedAt: 2026-10-14
-    note: rwa.xyz has a custodian field and no name was read from it.
-  fundAdministrator:
-    status: not_public
-    searchedAt: 2026-10-14
-  auditor:
-    status: not_public
-    searchedAt: 2026-10-14
-    note: Midas Software GmbH's statutory auditor (Dirk Stresska, Ausborn & Partner) is named in the final terms of a different Midas product. That is not treated as the mF-ONE auditor.
-  transferAgent:
-    status: not_public
-    searchedAt: 2026-10-14
-
 legal:
   vehicleType:
     status: public
@@ -80,8 +64,105 @@ legal:
     searchedAt: 2026-10-14
   insolvency:
     status: public
-    value: "Claims are subordinated (qualified subordination). The redemption amount is a hypothetical best-efforts liquidation net of fees and may differ from the oracle price. Holders have no legal or beneficial interest in the underlying assets."
+    value: Claims are subordinated (qualified subordination). The redemption amount is a hypothetical best-efforts liquidation net of fees and may differ from the oracle price. Holders have no legal or beneficial interest in the underlying assets.
     source: { url: "https://www.findas.org/tokenomics-review/the-tokenomics-of-midas-mf-one-mf-one", checkedAt: 2026-10-24 }
+
+freshnessClass:
+  value: private-credit
+  source: { url: "https://www.findas.org/tokenomics-review/the-tokenomics-of-midas-mf-one-mf-one", note: "Fasanara's F-ONE strategy: fintech receivables, SME lending, real-estate credit, delta-neutral digital strategies.", checkedAt: 2026-10-25 }
+
+underlying:
+  holdings:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Only the strategy categories are public, with no weights, positions or dates.
+  wamDays:
+    status: not_public
+    searchedAt: 2026-10-25
+  creditQuality:
+    status: not_public
+    searchedAt: 2026-10-25
+  securedPct:
+    status: not_public
+    searchedAt: 2026-10-25
+  largestObligorPct:
+    status: not_public
+    searchedAt: 2026-10-25
+  obligors:
+    status: not_public
+    searchedAt: 2026-10-25
+  trackRecord:
+    value: { since: 2025-06-20, losses: [] }
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Inception 2025-06-20. No loss event found.", checkedAt: 2026-10-25 }
+
+counterparties:
+  custodian:
+    status: not_public
+    searchedAt: 2026-10-25
+  fundAdministrator:
+    status: not_public
+    searchedAt: 2026-10-25
+  auditor:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: The only auditor found (Ausborn & Partner) belongs to a different Midas product.
+  transferAgent:
+    status: not_public
+    searchedAt: 2026-10-14
+  affiliated:
+    value: []
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "No providers are named.", checkedAt: 2026-10-25 }
+  settlementRails:
+    value: [usdc, usd-wire]
+    source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "USDC vaults; fiat redemption with an extra 0.1% fee.", checkedAt: 2026-10-14 }
+  operators:
+    - role: Strategy manager
+      name: Fasanara Capital
+      source: { url: "https://app.rwa.xyz/assets/mF-ONE", checkedAt: 2026-10-25 }
+    - role: Portfolio monitoring
+      name: 1Token
+      source: { url: "https://docs.midas.app/transparency/oracle-architecture", checkedAt: 2026-10-25 }
+  dependencies:
+    - name: Fasanara Capital
+      what: Holders get Fasanara's strategy through a Midas certificate, so both Midas and Fasanara have to perform.
+      source: { url: "https://www.findas.org/tokenomics-review/the-tokenomics-of-midas-mf-one-mf-one", checkedAt: 2026-10-25 }
+
+control:
+  audits:
+    - auditor: Côme Du Crest
+      scope: Midas mToken min balance
+      date: 2026-07-01
+      source: { url: "https://docs.midas.app/resources/audits", note: "Latest of the Midas audits (Sherlock, Halborn, Hacken, Côme Du Crest).", checkedAt: 2026-10-25 }
+  bugBounty:
+    status: public
+    value: { platform: Cantina, maxUsd: 500000 }
+    source: { url: "https://cantina.xyz/bounties/d77405e5-99ce-4ba5-846c-885820b030e1", note: "Started 2026-03-23; also on Sherlock.", checkedAt: 2026-10-25 }
+  powersDocumented:
+    value: true
+    source: { url: "https://docs.midas.app/resources/audits", note: "Midas docs describe the minter, burner, pauser and token-management roles.", checkedAt: 2026-10-25 }
+  signersIndependent:
+    status: not_public
+    searchedAt: 2026-10-25
+  chains:
+    - chain: ethereum
+      mechanism: native
+      provider: Midas
+      source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "The registry lists mF-ONE on Ethereum only.", checkedAt: 2026-10-25 }
+
+transparency:
+  reports:
+    - name: Midas Attestation Engine
+      provider: midas
+      dataSource: issuer
+      granularity: nav
+      frequency: weekly
+      verifiability: attestation
+      onchain: true
+      source: { url: "https://docs.midas.app/transparency/the-midas-attestation-engine", note: "Fasanara's NAV email is notarized with vlayer and checked by LlamaRisk and Canary; 100 reports since launch, latest 2026-10-09.", checkedAt: 2026-10-25 }
+      feed: { chain: ethereum, address: "0x2D6e9F608807436DE5D9603B00Abe3FEd1Bc809d" }
+  eventReporting:
+    status: not_public
+    searchedAt: 2026-10-25
 
 pricing:
   reference:
@@ -95,18 +176,12 @@ pricing:
     businessDaysOnly: true
     historyOnchain: true
     source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "CustomAggregatorFeed mF-ONE/USD, 8 decimals. setRoundDataSafe caps each update at 0.4% and waits at least an hour. setRoundData, held by the same wallet, skips the cap. The vault DataFeed 0xcf4e49f5e750af8f2f9aa1642b68e5839d9c1c00 accepts the answer for 30 days and bounds it between 0.90 and 1.23. Docs say two co-signers review updates offchain; the onchain writer is one wallet. Morpho does not read this feed directly. Its oracle uses CustomAggregatorV3CompatibleFeedDiscounted 0x4386307a07C4de7Ba11B4F4ec3e1f37BBE95dC99, whose underlyingFeed is this contract, with a 7.7% discount.", checkedAt: 2026-10-14 }
-
-verification:
-  methods:
-    - type: attestation
-      provider: midas
-      independent: true
-      assetLevel: false
-      frequency: weekly
-      cryptographicallyVerifiable: true
-      onchain: true
-      feed: { chain: ethereum, address: "0x2D6e9F608807436DE5D9603B00Abe3FEd1Bc809d" }
-      source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "Midas Attestation Engine. NAV email is notarised with vlayer and checked by LlamaRisk and Canary. The NAV still originates with Fasanara. Asset-level custodian PDFs are described with placeholder IPFS links, so asset-level is not counted. The latest report at review was 2026-10-09, about four days old, so the daily test fails.", checkedAt: 2026-10-14 }
+  stalenessDetectable:
+    value: true
+    source: { url: "https://etherscan.io/address/0x8D51DBC85cEef637c97D02bdaAbb5E274850e68C", note: "CustomAggregatorFeed returns updatedAt.", checkedAt: 2026-10-25 }
+  lossRecognition:
+    value: next-nav
+    source: { url: "https://docs.midas.app/transparency/oracle-architecture", note: "Roughly daily NAV updates on business days.", checkedAt: 2026-10-25 }
 
 exit:
   redemption:
@@ -120,20 +195,49 @@ exit:
       status: public
       value: T+2
       source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard path is T+2 or longer. Instant redemption is separate. Unresolved: The Block's launch coverage (2025-06-27) describes a quarterly liquidity framework alongside instant redemption; the offering terms were not available to confirm which applies.", checkedAt: 2026-10-14 }
-    minimum:
-      value: 1
-      source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Onchain redemption minimum is 1 mF-ONE. Fiat redemption minimum is 1,000.", checkedAt: 2026-10-14 }
     gatesOrSuspension:
       status: not_public
       searchedAt: 2026-10-14
       note: The vault admin can pause any vault function and the token pauser can freeze transfers. The legal suspension wording is not public. Docs say pauses are multisig-authorised; onchain, a single wallet holds the pause role.
-  instantLiquidity:
-    - type: offramp-contract
-      label: Instant redemption into mTBILL (1% fee)
+  dealing:
+    value: continuous
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Instant redemption (1% fee); standard fee-free redemption in 2 business days (1 to 7 per Midas).", checkedAt: 2026-10-25 }
+  noticeDays:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", checkedAt: 2026-10-25 }
+  lockupDays:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Instant redemption is available; no lock-up stated.", checkedAt: 2026-10-25 }
+  dailyCapUsd:
+    status: not_public
+    searchedAt: 2026-10-25
+    note: Legal suspension wording isn't public.
+  minimumUsd:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", checkedAt: 2026-10-25 }
+  feeBps:
+    status: public
+    value: 0
+    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard redemption is fee-free; instant costs 1%.", checkedAt: 2026-10-25 }
+  liquidators:
+    value: anyone
+    source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "The token only blocks blacklisted addresses. Morpho holds 47% of supply as collateral.", checkedAt: 2026-10-25 }
+  instant:
+    - label: Midas instant redemption (paid via mTBILL)
       chain: ethereum
       address: "0x44b0440e35c596e858cEA433D0d82F5a985fD19C"
-      depthPctOfSupply: 9
-      source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "instantFee is 1%. Daily limit 30,000,000 mF-ONE. At review the vault held about 6.03M mTBILL and 0 USDC, roughly 9% of AUM. A second redemption vault 0x375e…bb48 has no daily limit.", checkedAt: 2026-10-14 }
+      dailyCapUsd:
+        status: public
+        value: 33900000
+        source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Daily limit 30,000,000 mF-ONE at a 1.1296 NAV.", checkedAt: 2026-10-14 }
+      fundedUsd:
+        status: public
+        value: 6490000
+        source: { url: "https://etherscan.io/address/0x569D7dccBF6923350521ecBC28A555A500c4f0Ec", note: "6,028,048.85 mTBILL held by the mTBILL redemption vault (2026-10-14), at $1.076 per mTBILL (CoinGecko, 2026-10-25).", checkedAt: 2026-10-25 }
+      feeBps: 100
 
 externalIds:
   defillama: null
