@@ -14,15 +14,15 @@ import { AlertsFileSchema, LiveSchema, type Alert, type Live } from "./schema/li
 
 const ROOT = process.cwd();
 
-function readYaml(file: string): unknown {
+export function readYaml(file: string): unknown {
   return YAML.parse(fs.readFileSync(file, "utf8"));
 }
 
-function readJson(file: string): unknown {
+export function readJson(file: string): unknown {
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
-function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown, file: string): z.output<S> {
+export function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown, file: string): z.output<S> {
   const result = schema.safeParse(value);
   if (!result.success) {
     throw new Error(`Invalid data in ${path.relative(ROOT, file)}:\n${z.prettifyError(result.error)}`);
@@ -31,7 +31,7 @@ function parseOrThrow<S extends z.ZodType>(schema: S, value: unknown, file: stri
 }
 
 // Data folders are included in server output via outputFileTracingIncludes in next.config.ts.
-function listFiles(dir: string, ext: string): string[] {
+export function listFiles(dir: string, ext: string): string[] {
   const abs = path.join(/*turbopackIgnore: true*/ ROOT, dir);
   if (!fs.existsSync(abs)) return [];
   return fs
