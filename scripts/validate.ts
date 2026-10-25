@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { loadAlerts, loadAssets, loadDiscovered, loadEntities, loadLive } from "@/lib/data";
+import { loadEntityFacts, loadFrameworks, loadMeasured } from "@/lib/framework/data";
 
 const STALE_DAYS = 90;
 const errors: string[] = [];
@@ -52,7 +53,31 @@ function run() {
     }
   }
 
+  validateFramework(assets.map((a) => a.slug), entities);
   return assets.length;
+}
+
+/** data/framework: one file per asset, entity references resolve, sources aren't stale. */
+function validateFramework(slugs: string[], entities: Map<string, unknown>) {
+  const frameworks = loadFrameworks();
+  const facts = loadEntityFacts();
+  for (const slug of slugs) if (!frameworks.has(slug)) errors.push(`data/framework/assets/${slug}.yaml is missing`);
+  for (const [slug, fw] of frameworks) {
+    const file = `data/framework/assets/${slug}.yaml`;
+    if (!slugs.includes(slug)) errors.push(`${file}: no data/assets/${slug}.yaml`);
+    const { custodian, fundAdministrator, auditor } = fw.counterparties;
+    for (const [role, item] of Object.entries({ custodian, fundAdministrator, auditor })) {
+      if (item.status === "public" && !entities.has(item.value) && !facts.get(item.value)?.name)
+        errors.push(`${file}: counterparties.${role} "${item.value}" has no data/entities file and no name in data/framework/entities.yaml`);
+    }
+    loadMeasured(slug);
+    const dates: { path: string; date: string }[] = [];
+    walkDates(fw, slug, dates);
+    const cutoff = Date.now() - STALE_DAYS * 86400 * 1000;
+    for (const d of dates) {
+      if (new Date(d.date).getTime() < cutoff) warnings.push(`${file}: ${d.path} = ${d.date} is older than ${STALE_DAYS} days. Re-check the source.`);
+    }
+  }
 }
 
 let count = 0;
