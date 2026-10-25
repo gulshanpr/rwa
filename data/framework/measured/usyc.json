@@ -1,0 +1,89 @@
+{
+  "asset": "usyc",
+  "asOf": "2026-10-25T09:16:41.531Z",
+  "holders": {
+    "chain": "ethereum",
+    "count": 25,
+    "top10Pct": 99.99,
+    "top": [
+      {
+        "address": "0xB1a6ac52a21435C744b5B4129b07E6c44bCd629b",
+        "name": "SafeProxy",
+        "isContract": true,
+        "pct": 40
+      },
+      {
+        "address": "0xdd82875f0840AAD58a455A70B88eEd9F59ceC7c7",
+        "name": "GnosisSafeProxy",
+        "isContract": true,
+        "pct": 27.11
+      },
+      {
+        "address": "0x866c9a77d8Ab71d2874703e80cb7aD809b301e8e",
+        "isContract": false,
+        "pct": 9.67
+      },
+      {
+        "address": "0xeA9767f5AdeD872dE492541Aa2021d06238a5DE8",
+        "isContract": false,
+        "pct": 9.38
+      },
+      {
+        "address": "0x4e67722883AD992182e83b79Bf06A93972963caC",
+        "isContract": false,
+        "pct": 7.94
+      },
+      {
+        "address": "0xc7125DA07a7110049eCC68F43BF10DE4d45CA84e",
+        "isContract": false,
+        "pct": 2.01
+      },
+      {
+        "address": "0xed96e247655361031aEE6514cD1b89C7141b59D5",
+        "isContract": false,
+        "pct": 1.44
+      },
+      {
+        "address": "0xb3525a7D5bAC0a2Fe946b4fA9da0a3f951b64A58",
+        "isContract": false,
+        "pct": 1.1
+      },
+      {
+        "address": "0x19FF1184FA488AcFBcD26eb978E13854BfDBAC68",
+        "isContract": false,
+        "pct": 1.06
+      },
+      {
+        "address": "0x72FA53e74f96a7fFb78b644D113eD878ACB7bF63",
+        "isContract": false,
+        "pct": 0.28
+      }
+    ],
+    "source": "https://eth.blockscout.com/token/0x136471a34f6ef19fE571EFFC1CA711fdb8E49f2b?tab=holders"
+  },
+  "dex": {
+    "chain": "ethereum",
+    "navUsd": 1.140167194461229,
+    "quotes": [
+      {
+        "sizeUsd": 1000000,
+        "routed": true,
+        "outUsd": 431,
+        "slippagePct": 99.96
+      },
+      {
+        "sizeUsd": 5000000,
+        "routed": true,
+        "outUsd": 432,
+        "slippagePct": 99.99
+      },
+      {
+        "sizeUsd": 10000000,
+        "routed": true,
+        "outUsd": 432,
+        "slippagePct": 100
+      }
+    ],
+    "source": "https://kyberswap.com"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "asset": "acred",
+  "asOf": "2026-10-25T09:15:24.256Z",
+  "holders": {
+    "chain": "ethereum",
+    "count": 19,
+    "top10Pct": 99.64,
+    "top": [
+      {
+        "address": "0xbb543C77436645C8b95B64eEc39E3C0d48D4842b",
+        "isContract": false,
+        "pct": 88.41
+      },
+      {
+        "address": "0x466B8672Ba88Ddfa9A537f4190DAE41042f04E99",
+        "isContract": false,
+        "pct": 7.09
+      },
+      {
+        "address": "0x859aD36F2FeDe3a4aC008b7d3B99b6c3DB9c12A4",
+        "isContract": false,
+        "pct": 0.99
+      },
+      {
+        "address": "0xA088F02Ec0eCB376513F61437012e4995Eb12296",
+        "isContract": true,
+        "pct": 0.88
+      },
+      {
+        "address": "0xe825C0a8F2160ED69B4e19A3E79B88AA9EC6E991",
+        "isContract": false,
+        "pct": 0.87
+      },
+      {
+        "address": "0xCc7de9099a8f4371F381F8F59561F79a69a72476",
+        "isContract": false,
+        "pct": 0.69
+      },
+      {
+        "address": "0xf27E7a63fCf9a716B5D7e20c2F0A7fF98680D4E0",
+        "isContract": false,
+        "pct": 0.18
+      },
+      {
+        "address": "0xA497d6D4f906fe1F92606D29d8f5f56C5Fe393e2",
+        "isContract": true,
+        "pct": 0.18
+      },
+      {
+        "address": "0x74d85d04C158C984Ad114381C413A6ED01BCEa63",
+        "isContract": false,
+        "pct": 0.18
+      },
+      {
+        "address": "0x6690EA5674cb71B70e9368c05B4D060b6E37f2c3",
+        "isContract": false,
+        "pct": 0.17
+      }
+    ],
+    "source": "https://eth.blockscout.com/token/0x17418038ecF73BA4026c4f428547BF099706F27B?tab=holders"
+  },
+  "dex": {
+    "chain": "ethereum",
+    "navUsd": 1107.7905,
+    "quotes": [
+      {
+        "sizeUsd": 1000000,
+        "routed": false
+      },
+      {
+        "sizeUsd": 5000000,
+        "routed": false
+      },
+      {
+        "sizeUsd": 10000000,
+        "routed": false
+      }
+    ],
+    "source": "https://kyberswap.com"
+  }
+}

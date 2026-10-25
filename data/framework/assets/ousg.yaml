@@ -1,0 +1,69 @@
+asset: ousg
+profile: { value: tbill-mmf, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Fund of tokenized Treasury money funds.", checkedAt: 2026-10-25 } }
+
+underlying:
+  holdings:
+    status: public
+    value:
+      asOf: 2026-09-30
+      items:
+        - { type: government-mmf, pct: 47.33, label: "State Street SWEEP" }
+        - { type: government-mmf, pct: 31.85, label: "BlackRock BUIDL" }
+        - { type: government-mmf, pct: 12.92, label: "Franklin BENJI" }
+        - { type: government-mmf, pct: 6.91, label: "Fidelity FYOXX" }
+        - { type: stablecoin, pct: 0.94, label: "USDC" }
+    source: { url: "https://10k.nyxshcon.org/risk/ondo-ousg", note: "Holdings table from ondo.finance/ousg, around 2026-09-30 / 10-01. The product page FAQ still says 'mostly BUIDL'.", checkedAt: 2026-10-25 }
+  wamDays: { status: not_public, searchedAt: 2026-10-25, note: "OUSG holds money funds; their own WAMs are not aggregated." }
+  trackRecord: { value: { since: 2023-02-06, losses: [] }, source: { url: "https://riadefi.com/tokenized-assets/programs/ondo-ousg/", note: "First sale 2023-02-06. No NAV drop found.", checkedAt: 2026-10-25 } }
+
+counterparties:
+  custodian: { status: public, value: clear-street, source: { url: "https://app.rwa.xyz/assets/OUSG", note: "Custodian: Clear Street LLC. Crypto custodian: Coinbase Custody. Not stated on Ondo's own pages.", checkedAt: 2026-10-25 } }
+  fundAdministrator: { status: public, value: nav-fund-services, source: { url: "https://app.rwa.xyz/assets/OUSG", note: "Fund administrator: NAV Fund Services", checkedAt: 2026-10-25 } }
+  auditor: { status: not_public, searchedAt: 2026-10-25, note: "Ondo says financial audits are 'shared with authorized requesting parties' and doesn't name the firm." }
+  affiliated: { value: [], source: { url: "https://docs.ondo.finance/trust-and-security", note: "The general partner, Ondo I GP LLC, runs KYC/AML; no custody or administration role is held by Ondo.", checkedAt: 2026-10-25 } }
+  settlementRails: { value: [usdc, pyusd, other-stablecoin, usd-wire], source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "'We currently support redeeming to USDC, PYUSD, RLUSD, or USD bank wire.'", checkedAt: 2026-10-25 } }
+  operators:
+    - { role: "USDC/USD exchange", name: "Coinbase Prime", source: { url: "https://docs.ondo.finance/addresses", checkedAt: 2026-10-25 } }
+  dependencies:
+    - { name: "Underlying tokenized funds", what: "Almost everything sits in four other tokenized funds (SWEEP, BUIDL, BENJI, FYOXX), each with its own custodian and admin keys.", source: { url: "https://10k.nyxshcon.org/risk/ondo-ousg", checkedAt: 2026-10-25 } }
+
+control:
+  audits:
+    - { auditor: Spearbit, scope: "Ondo Funds and USDY (Ethereum)", date: 2025-03-01, source: { url: "https://docs.ondo.finance/audits", note: "March 2025 Spearbit audit is the latest listed for Ondo Funds on Ethereum.", checkedAt: 2026-10-25 } }
+  bugBounty: { status: public, value: { platform: Immunefi, maxUsd: 1000000 }, source: { url: "https://immunefi.com/bug-bounty/ondofinance/information/", checkedAt: 2026-10-25 } }
+  powersDocumented: { value: false, source: { url: "https://docs.ondo.finance/trust-and-security", note: "Trust page describes the fund structure but no onchain admin roles or multisig policy.", checkedAt: 2026-10-25 } }
+  signersIndependent: { status: not_public, searchedAt: 2026-10-25 }
+  chains:
+    - { chain: "ethereum, polygon, solana, xrpl", mechanism: native, provider: "Ondo", source: { url: "https://docs.ondo.finance/addresses", note: "Each chain has its own issuance contracts; no bridge for OUSG.", checkedAt: 2026-10-25 } }
+
+transparency:
+  reports:
+    - name: Ondo holdings table
+      provider: ondo
+      dataSource: issuer
+      granularity: position
+      frequency: daily
+      verifiability: self-reported
+      onchain: false
+      source: { url: "https://ondo.finance/ousg", note: "Holdings by underlying fund, 'As of' the prior business day. No third-party attestation found.", checkedAt: 2026-10-25 }
+  eventReporting: { status: unknown, note: "Only asked for private credit." }
+
+pricing:
+  stalenessDetectable: { value: true, source: { url: "https://etherscan.io/address/0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe#code", note: "getPriceData() returns the price timestamp.", checkedAt: 2026-10-25 } }
+  lossRecognition: { value: next-nav, source: { url: "https://etherscan.io/address/0x0502c5ae08E7CD64fe1AEDA7D6e229413eCC6abe#code", note: "Daily price, bounded against the SHV ETF.", checkedAt: 2026-10-25 } }
+
+exit:
+  dealing: { value: continuous, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Instant 24/7 mint and redeem; non-instant requests on business days.", checkedAt: 2026-10-25 } }
+  noticeDays: { status: public, value: 0, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", checkedAt: 2026-10-25 } }
+  lockupDays: { status: public, value: 0, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Instant redemption from the first day.", checkedAt: 2026-10-25 } }
+  dailyCapUsd: { status: public, value: null, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/instant-limits", note: "The $50M/day limit applies to instant redemptions; larger amounts go through non-instant requests.", checkedAt: 2026-10-25 } }
+  minimumUsd: { status: public, value: 5000, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "$5,000 instant; $50K non-instant.", checkedAt: 2026-10-25 } }
+  feeBps: { status: public, value: 0, source: { url: "https://app.rwa.xyz/assets/OUSG", checkedAt: 2026-10-25 } }
+  liquidators: { value: allowlisted, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Only onboarded investors can redeem, transfer or receive OUSG.", checkedAt: 2026-10-25 } }
+  instant:
+    - label: OUSG InstantManager
+      chain: ethereum
+      address: "0x93358db73B6cd4b98D89c8F5f230E81a95c2643a"
+      dailyCapUsd: { status: public, value: 50000000, source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/instant-limits", note: "$50M global instant-redemption limit per 24 hours.", checkedAt: 2026-10-25 } }
+      fundedUsd: { status: not_public, searchedAt: 2026-10-25, note: "USDC behind the router comes from the underlying funds; not measured." }
+      feeBps: 0

@@ -1,0 +1,64 @@
+asset: falconx
+profile: { value: private-credit, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Monthly-epoch credit facility to FalconX.", checkedAt: 2026-10-25 } }
+
+underlying:
+  holdings:
+    status: public
+    value:
+      asOf: 2026-10-14
+      items:
+        - { type: secured-loans, pct: 100, label: "Credit line to FalconX, collateral held offchain" }
+    source: { url: "https://artifacts.llama.fi/pdf-exports/0b2211d5-c314-4e7a-97d3-42c6cbf37e7f.pdf", note: "USDC is lent to the FalconX borrower wallet to fund prime-brokerage credit lines; collateral sits with FalconX. The junior tranche has zero supply onchain.", checkedAt: 2026-10-25 }
+  wamDays: { status: not_public, searchedAt: 2026-10-25 }
+  creditQuality: { status: not_public, searchedAt: 2026-10-25 }
+  securedPct: { status: not_public, searchedAt: 2026-10-25, note: "'Transaction-level collateral' is described, but its size isn't." }
+  largestObligorPct: { status: public, value: 100, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "'Institutional credit lines managed by FalconX': one borrower.", checkedAt: 2026-10-25 } }
+  obligors: { status: public, value: 1, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 } }
+  trackRecord: { value: { since: 2025-07-10, losses: [] }, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Inception 2025-07-10. No write-off found; a negative 7-day APY seen on 2026-10-14 is unexplained.", checkedAt: 2026-10-25 } }
+
+counterparties:
+  custodian: { status: not_public, searchedAt: 2026-10-25 }
+  fundAdministrator: { status: not_public, searchedAt: 2026-10-25 }
+  auditor: { status: not_public, searchedAt: 2026-10-25 }
+  affiliated: { value: [], source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "No providers are named.", checkedAt: 2026-10-25 } }
+  settlementRails: { value: [usdc], source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", checkedAt: 2026-10-25 } }
+  operators:
+    - { role: "Curator", name: "M11 Credit", source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 } }
+    - { role: "Platform", name: "Pareto", source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 } }
+  dependencies:
+    - { name: "FalconX", what: "FalconX is the only borrower and also holds the collateral.", source: { url: "https://artifacts.llama.fi/pdf-exports/0b2211d5-c314-4e7a-97d3-42c6cbf37e7f.pdf", checkedAt: 2026-10-25 } }
+
+control:
+  audits:
+    - { auditor: Sherlock, scope: "Idle Pareto update (credit vaults)", date: 2025-08-01, source: { url: "https://audits.sherlock.xyz/watson/0x52", note: "Collaborative audit, August 2025; an earlier Idle credit vault contest ran in December 2024.", checkedAt: 2026-10-25 } }
+  bugBounty: { status: public, value: { platform: Immunefi, maxUsd: 50000 }, source: { url: "https://immunefi.com/bug-bounty/pareto/information/", checkedAt: 2026-10-25 } }
+  powersDocumented: { value: false, source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", note: "Docs list addresses only; no admin roles described.", checkedAt: 2026-10-25 } }
+  signersIndependent: { status: not_public, searchedAt: 2026-10-25 }
+  chains:
+    - { chain: ethereum, mechanism: native, provider: Pareto, source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", checkedAt: 2026-10-25 } }
+
+transparency:
+  reports:
+    - name: Pareto vault reporting
+      provider: pareto
+      dataSource: issuer
+      granularity: nav
+      frequency: monthly
+      verifiability: self-reported
+      onchain: true
+      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Interest reported by the borrower and set at each epoch; no independent attestation found.", checkedAt: 2026-10-25 }
+  eventReporting: { status: not_public, searchedAt: 2026-10-25 }
+
+pricing:
+  stalenessDetectable: { value: false, source: { url: "https://etherscan.io/address/0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d", note: "The tranche price getter carries no timestamp; it only changes at epoch end.", checkedAt: 2026-10-25 } }
+  lossRecognition: { value: next-nav, source: { url: "https://etherscan.io/address/0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d", note: "Write-offs land at the next monthly epoch.", checkedAt: 2026-10-25 } }
+
+exit:
+  dealing: { value: monthly, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Monthly (calendar).", checkedAt: 2026-10-25 } }
+  noticeDays: { status: public, value: 31, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "'31-day notice period for redemptions applies. Early exit available (when applicable).'", checkedAt: 2026-10-25 } }
+  lockupDays: { status: not_public, searchedAt: 2026-10-25 }
+  dailyCapUsd: { status: not_public, searchedAt: 2026-10-25 }
+  minimumUsd: { status: public, value: 250000, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 } }
+  feeBps: { status: public, value: 0, source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 } }
+  liquidators: { value: anyone, source: { url: "https://eth.blockscout.com/address/0xC26A6Fa2C37b38E549a4a1807543801Db684f99C?tab=contract", note: "IdleCDOTranche is a plain ERC-20 with no transfer hook; only deposits are KYC-gated. Morpho holds 9.5% of supply.", checkedAt: 2026-10-25 } }
+  instant: []
