@@ -4,6 +4,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Footer } from "@/components/layout/footer";
 import { searchIndex } from "@/lib/profile";
 import { SITE } from "@/lib/site";
+import { SIDEBAR_SCRIPT } from "@/lib/sidebar";
 import { THEME_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: SIDEBAR_SCRIPT }} />
       </head>
       <body>
         <AppShell footer={<Footer />} searchItems={await searchIndex()}>

@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant expanded (&:where(html:not(.sidebar-collapsed) *));
 
 :root {
+  --sidebar-w: 15rem;
   --bg: #f7f8fa;
   --surface: #ffffff;
   --surface-muted: #f2f4f7;
