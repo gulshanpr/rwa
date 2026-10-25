@@ -25,8 +25,13 @@ export interface SaveResult {
   factsRemoved: string[];
 }
 
+function entityFacts(e: Entity): Record<string, unknown> | null {
+  const facts = { regulated: e.regulated, regulator: e.regulator, auditorTier: e.auditorTier };
+  return Object.values(facts).some((v) => v !== undefined) ? JSON.parse(JSON.stringify(facts)) : null;
+}
+
 export async function saveEntity(e: Entity): Promise<boolean> {
-  const row = { slug: e.slug, name: e.name, types: e.type, jurisdiction: e.jurisdiction ?? null, lei: e.lei ?? null, website: e.website ?? null };
+  const row = { slug: e.slug, name: e.name, types: e.type, jurisdiction: e.jurisdiction ?? null, lei: e.lei ?? null, website: e.website ?? null, facts: entityFacts(e) };
   const [old] = await getDb().select().from(s.entity).where(eq(s.entity.slug, e.slug));
   if (old && stableJson({ ...old, createdAt: 0, updatedAt: 0 }) === stableJson({ ...row, createdAt: 0, updatedAt: 0 })) return false;
   await getDb()
@@ -113,11 +118,4 @@ export async function saveResearchNote(slug: string, section: string, bodyMd: st
     .values({ assetSlug: slug, section, bodyMd, enteredBy: by })
     .onConflictDoUpdate({ target: [s.researchNote.assetSlug, s.researchNote.section], set: { bodyMd, enteredBy: by, createdAt: sql`now()` } });
   return true;
-}
-
-export async function saveHandScore(slug: string, slice: string, color: string, reason: string, by: string) {
-  await getDb()
-    .insert(s.handScore)
-    .values({ assetSlug: slug, slice, color, reason, enteredBy: by })
-    .onConflictDoUpdate({ target: [s.handScore.assetSlug, s.handScore.slice], set: { color, reason, enteredBy: by, updatedAt: new Date() } });
 }

@@ -12,6 +12,8 @@ export const entity = pgTable("entity", {
   jurisdiction: text("jurisdiction"),
   lei: text("lei"),
   website: text("website"),
+  /** Counterparties facts: regulated, regulator, auditorTier (EntitySchema). */
+  facts: jsonb("facts"),
   createdAt: ts("created_at").notNull().defaultNow(),
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
