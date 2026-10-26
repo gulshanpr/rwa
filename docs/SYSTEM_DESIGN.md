@@ -92,7 +92,7 @@ Decision (13 Oct 2026): **Postgres is where data is edited, and the YAML/JSON in
 |---|---|
 | `data/assets/*.yaml`, `data/entities/*.yaml` | Second copy. `bun rwa export` writes them from Postgres in the hand-written style; `bun rwa import` loads edits made in Git |
 | `discovered/**` | Second copy of the latest approved `discovery_snapshot` per asset and chain. The discovery CLI writes both |
-| `data/live/*.json` | Kept for now as the fallback when there is no database. To be removed once the deployed site always has one |
+| `data/live/*.json` | Removed (27 Oct 2026): live data and alerts are read only from Postgres. The framework tests keep a frozen copy in `lib/framework/fixtures/live/` |
 
 Sync rules:
 

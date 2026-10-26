@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { loadAlerts, loadAssets, loadDiscovered, loadEntities, loadLive, loadMeasured } from "@/lib/data";
+import { loadAssets, loadDiscovered, loadEntities, loadMeasured } from "@/lib/data";
 
 const STALE_DAYS = 90;
 const errors: string[] = [];
@@ -19,7 +19,6 @@ function walkDates(value: unknown, at: string, out: { path: string; date: string
 function run() {
   const assets = loadAssets();
   const entities = loadEntities();
-  loadAlerts();
 
   for (const asset of assets) {
     const file = `data/assets/${asset.slug}.yaml`;
@@ -43,7 +42,6 @@ function run() {
       if (!fs.existsSync(path.join(process.cwd(), rel))) warnings.push(`${file}: no discovery snapshot at ${rel}. Run: bun run discover ${asset.slug}`);
     }
     loadDiscovered(asset);
-    loadLive(asset.slug);
     loadMeasured(asset.slug);
 
     const dates: { path: string; date: string }[] = [];

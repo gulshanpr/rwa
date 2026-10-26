@@ -1,15 +1,12 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
 import { getDb, hasDatabase, schema } from "@/db/client";
 import { getSiteCatalog } from "./catalog";
-import { loadAlerts, loadLive } from "./data";
 import type { Asset, Chain } from "./schema/asset";
 import { AlertSchema, LiveSchema, type Alert, type DefiMarket, type Live } from "./schema/live";
 
-// Live data and alerts come from Postgres when DATABASE_URL is set (the worker writes there),
-// otherwise from the JSON files in data/live/. Unlike the catalog, which a production build reads from Git
-// (readsFromDatabase), they are read from Postgres during a build too: the Git copy is a stale sample, and a
-// fresh deploy would otherwise show it until each page revalidates.
-const readsLiveFromDatabase = () => hasDatabase() && process.env.CATALOG_SOURCE !== "files";
+// Live data and alerts exist only in Postgres (the worker writes them). Unlike the catalog, which a production
+// build reads from Git (readsFromDatabase), they are read from Postgres during a build too. Without a database,
+// or when a read fails, pages render without them.
 const building = () => process.env.NEXT_PHASE === "phase-production-build";
 
 const DAY = 86_400_000;
@@ -82,34 +79,34 @@ async function liveFromDb(asset: Asset): Promise<Live | undefined> {
 // One read per asset per build instead of one per prerendered page.
 const liveDuringBuild = new Map<string, Promise<Live | undefined>>();
 export function getLive(asset: Asset): Promise<Live | undefined> {
-  if (!readsLiveFromDatabase()) return Promise.resolve(loadLive(asset.slug));
-  if (!building()) return liveOrFile(asset);
-  if (!liveDuringBuild.has(asset.slug)) liveDuringBuild.set(asset.slug, liveOrFile(asset));
+  if (!hasDatabase()) return Promise.resolve(undefined);
+  if (!building()) return liveOrNone(asset);
+  if (!liveDuringBuild.has(asset.slug)) liveDuringBuild.set(asset.slug, liveOrNone(asset));
   return liveDuringBuild.get(asset.slug)!;
 }
 
-async function liveOrFile(asset: Asset): Promise<Live | undefined> {
+async function liveOrNone(asset: Asset): Promise<Live | undefined> {
   try {
-    return (await liveFromDb(asset)) ?? loadLive(asset.slug);
+    return await liveFromDb(asset);
   } catch (e) {
-    console.error(`live data for ${asset.slug}: falling back to JSON:`, e);
-    return loadLive(asset.slug);
+    console.error(`live data for ${asset.slug}:`, e);
+    return undefined;
   }
 }
 
 // The known-slug filter keeps alerts for assets another branch imported off the site.
-let alertsDuringBuild: Promise<{ sample: boolean; alerts: Alert[] }> | undefined;
-export function getAlerts(): Promise<{ sample: boolean; alerts: Alert[] }> {
-  if (!readsLiveFromDatabase()) return Promise.resolve(loadAlerts());
+let alertsDuringBuild: Promise<Alert[]> | undefined;
+export function getAlerts(): Promise<Alert[]> {
+  if (!hasDatabase()) return Promise.resolve([]);
   if (building()) return (alertsDuringBuild ??= alertsFromDb());
   return alertsFromDb();
 }
 
-async function alertsFromDb(): Promise<{ sample: boolean; alerts: Alert[] }> {
+async function alertsFromDb(): Promise<Alert[]> {
   try {
     const known = new Set((await getSiteCatalog()).assets.map((a) => a.slug));
     const rows = await getDb().select().from(schema.alert).orderBy(desc(schema.alert.publishedAt)).limit(500);
-    const alerts = rows
+    return rows
       .filter((r) => known.has(r.assetSlug))
       .map((r) =>
         AlertSchema.parse({
@@ -127,9 +124,8 @@ async function alertsFromDb(): Promise<{ sample: boolean; alerts: Alert[] }> {
           publishedAt: r.publishedAt.toISOString(),
         }),
       );
-    return { sample: false, alerts };
   } catch (e) {
-    console.error("alerts: falling back to JSON:", e);
-    return loadAlerts();
+    console.error("alerts:", e);
+    return [];
   }
 }

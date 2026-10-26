@@ -1,5 +1,4 @@
 import { AlertsFeed } from "@/components/alerts/alerts-feed";
-import { SampleBanner } from "@/components/data/sample-banner";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { getAlerts } from "@/lib/live-store";
 import { getProfiles } from "@/lib/profile";
@@ -8,7 +7,7 @@ export const metadata = { title: "Alerts" };
 export const revalidate = 300;
 
 export default async function AlertsPage() {
-  const { alerts, sample } = (await getAlerts());
+  const alerts = await getAlerts();
   const tickers = Object.fromEntries((await getProfiles()).map((p) => [p.asset.slug, p.asset.ticker]));
 
   return (
@@ -23,7 +22,6 @@ export default async function AlertsPage() {
           </p>
         </div>
       </div>
-      {sample && <SampleBanner />}
       <AlertsFeed alerts={alerts} tickers={tickers} />
     </>
   );
