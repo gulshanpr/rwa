@@ -22,7 +22,7 @@ const SEVERITIES: AlertSeverity[] = ["critical", "high", "medium", "low"];
 export default async function HomePage() {
   const profiles = (await getProfiles());
   const rows = await assetRows();
-  const { alerts, sample: alertsSample } = (await getAlerts());
+  const alerts = await getAlerts();
   const tickers = new Map(profiles.map((p) => [p.asset.slug, p.asset.ticker]));
 
   const total = profiles.reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
@@ -54,7 +54,7 @@ export default async function HomePage() {
           )}
         </div>
       </div>
-      {(profiles.some((p) => p.sample) || alertsSample) && <SampleBanner />}
+      {profiles.some((p) => p.sample) && <SampleBanner />}
 
       <div className="mb-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

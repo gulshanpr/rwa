@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GitPullRequest } from "lucide-react";
-import { repoNewIssueUrl } from "@/lib/site";
 import { cn } from "@/lib/ui";
 import { NAV } from "./nav";
 

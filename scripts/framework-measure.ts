@@ -1,5 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
-import { loadAssets, loadLive } from "@/lib/data";
+import { closeDb } from "@/db/client";
+import { loadAssets } from "@/lib/data";
+import { getLive } from "@/lib/live-store";
 import { MeasuredSchema, type Measured } from "@/lib/schema/measured";
 import { fetchJson } from "@/worker/util";
 
@@ -70,7 +72,7 @@ const only = process.argv.slice(2);
 mkdirSync("data/measured", { recursive: true });
 for (const asset of loadAssets().filter((a) => only.length === 0 || only.includes(a.slug))) {
   const d = asset.deployments.find((x) => x.chain === "ethereum");
-  const nav = loadLive(asset.slug)?.supply.find((s) => s.chain === "ethereum")?.priceUsd;
+  const nav = (await getLive(asset))?.supply.find((s) => s.chain === "ethereum")?.priceUsd;
   if (!d || !nav) {
     console.log(`${asset.slug}: skipped (no Ethereum deployment or live price)`);
     continue;
@@ -80,3 +82,4 @@ for (const asset of loadAssets().filter((a) => only.length === 0 || only.include
   const q = m.dex.quotes.map((x) => (x.routed ? `$${x.sizeUsd / 1e6}M ${x.slippagePct}%` : `$${x.sizeUsd / 1e6}M no route`)).join(", ");
   console.log(`${asset.slug}: top10 ${m.holders?.top10Pct}% · ${q}`);
 }
+await closeDb();

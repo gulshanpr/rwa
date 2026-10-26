@@ -22,7 +22,6 @@ const DefiMarket = z.object({
 
 export const LiveSchema = z.object({
   asset: z.string(),
-  sample: z.boolean().default(false),
   asOf: z.iso.datetime(),
   supply: z.array(
     z.object({
@@ -82,11 +81,6 @@ export const AlertSchema = z.object({
   block: z.number().int().optional(),
   url: z.url().optional(),
   publishedAt: z.iso.datetime(),
-});
-
-export const AlertsFileSchema = z.object({
-  sample: z.boolean().default(false),
-  alerts: z.array(AlertSchema),
 });
 
 export type Live = z.infer<typeof LiveSchema>;

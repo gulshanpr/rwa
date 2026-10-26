@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const asset = params.get("asset");
   const severity = params.get("severity");
   const since = params.get("since");
-  const { alerts, sample } = (await getAlerts());
+  const alerts = await getAlerts();
 
   const filtered = alerts.filter(
     (a) =>
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       (!since || a.publishedAt >= since),
   );
   return Response.json(
-    { sample, alerts: filtered },
+    { alerts: filtered },
     { headers: { "Cache-Control": "s-maxage=300, stale-while-revalidate=3600" } },
   );
 }

@@ -11,9 +11,9 @@ Independent, open-source risk profiles for tokenized real-world assets, rated wi
 | 2 | Market measurements (top-10 holders, DEX sells of $1M / $5M / $10M) | `data/measured/<slug>.json` | `bun framework:measure` |
 | 3 | Live data (supply, AUM, oracle age, DeFi markets) and alerts | Postgres | `bun run worker`, every 15 min via `.github/workflows/live.yml` |
 
-Curated facts and discovery snapshots live in Postgres too (tables `asset`, `fact`, `entity`, `discovery_snapshot`, …), with the files above kept in sync as a Git copy. See `docs/SYSTEM_DESIGN.md`. The web app, worker and discovery CLI read Postgres when `DATABASE_URL` is set and the catalog has been imported, and fall back to the files (and `data/live/*.json`) otherwise.
+Curated facts and discovery snapshots live in Postgres too (tables `asset`, `fact`, `entity`, `discovery_snapshot`, …), with the files above kept in sync as a Git copy. See `docs/SYSTEM_DESIGN.md`. The web app, worker and discovery CLI read Postgres when `DATABASE_URL` is set and the catalog has been imported, and fall back to the files otherwise. Live data and alerts exist only in Postgres; without a database the site shows none.
 
-`next build` always reads the Git copy (catalog, `data/live/*.json` and alerts), even when `DATABASE_URL` is set, so a deploy is reproducible from its commit and cannot fail because Postgres holds catalog data imported by another branch or is slow to reach from the build machine. Pages still use the database at runtime through ISR. Set `CATALOG_SOURCE=files` or `CATALOG_SOURCE=db` to force one source.
+`next build` always reads the catalog from the Git copy, even when `DATABASE_URL` is set, so a deploy is reproducible from its commit and cannot fail because Postgres holds catalog data imported by another branch. Pages still use the database at runtime through ISR. Set `CATALOG_SOURCE=files` or `CATALOG_SOURCE=db` to force one source. Live data and alerts are read from Postgres during the build too.
 
 ## Commands
 

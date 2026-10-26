@@ -1,8 +1,11 @@
 import { describe, expect, test } from "bun:test";
-import { loadAssets, loadDiscovered, loadEntities, loadLive, loadMeasured } from "../data";
+import fs from "node:fs";
+import path from "node:path";
+import { loadAssets, loadDiscovered, loadEntities, loadMeasured } from "../data";
 import { AssetSchema, type Asset } from "../schema/asset";
 import type { Discovered, Holder, Power } from "../schema/discovered";
 import type { Entity } from "../schema/entity";
+import { LiveSchema } from "../schema/live";
 import type { Measured } from "../schema/measured";
 import { rateControl } from "./control";
 import { rateCounterparties } from "./counterparties";
@@ -301,6 +304,9 @@ const EXPECTED: Record<string, Partial<Record<CategoryId, Rating>> & { stage: 0 
   usyc: { underlying: "green", counterparties: "yellow", control: "red", transparency: "red", pricing: "red", exit: "unverified", stage: 0 },
 };
 
+// Live data (supply, oracle, lending markets) frozen on 2026-10-14, so expected ratings don't move with the market.
+const fixtureLive = (slug: string) => LiveSchema.parse(JSON.parse(fs.readFileSync(path.join(import.meta.dir, "fixtures/live", `${slug}.json`), "utf8")));
+
 describe("committed data", () => {
   const entities = loadEntities();
 
@@ -312,7 +318,7 @@ describe("committed data", () => {
       const r = rateAsset({
         asset: a,
         discovered: loadDiscovered(a).map((s) => s.discovered),
-        live: loadLive(slug),
+        live: fixtureLive(slug),
         measured: loadMeasured(slug),
         entities,
         now: NOW,

@@ -10,7 +10,6 @@ import {
   type DiscoveredMeta,
 } from "./schema/discovered";
 import { EntitySchema, type Entity } from "./schema/entity";
-import { AlertsFileSchema, LiveSchema, type Alert, type Live } from "./schema/live";
 import { MeasuredSchema, type Measured } from "./schema/measured";
 
 const ROOT = process.cwd();
@@ -83,27 +82,8 @@ export function loadDiscovered(asset: Asset): DiscoverySnapshot[] {
   });
 }
 
-export function loadLive(slug: string): Live | undefined {
-  const file = path.join(ROOT, `data/live/${slug}.json`);
-  if (!fs.existsSync(file)) return undefined;
-  return parseOrThrow(LiveSchema, readJson(file), file);
-}
-
 export function loadMeasured(slug: string): Measured | undefined {
   const file = path.join(ROOT, `data/measured/${slug}.json`);
   if (!fs.existsSync(file)) return undefined;
   return parseOrThrow(MeasuredSchema, readJson(file), file);
-}
-
-let alertsCache: { sample: boolean; alerts: Alert[] } | undefined;
-export function loadAlerts(): { sample: boolean; alerts: Alert[] } {
-  if (!alertsCache) {
-    const file = path.join(ROOT, "data/live/alerts.json");
-    const parsed = parseOrThrow(AlertsFileSchema, readJson(file), file);
-    alertsCache = {
-      sample: parsed.sample,
-      alerts: [...parsed.alerts].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
-    };
-  }
-  return alertsCache;
 }

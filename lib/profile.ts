@@ -105,7 +105,7 @@ function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, al
 
   return {
     asset,
-    sample: asset.sample || snapshots.some((s) => s.meta.sample) || Boolean(live?.sample),
+    sample: asset.sample || snapshots.some((s) => s.meta.sample),
     entities: {
       issuer: entities.get(asset.issuer),
       manager: entities.get(asset.manager),
@@ -128,7 +128,7 @@ function buildProfile(asset: Asset, catalog: Catalog, live: Live | undefined, al
 export const getProfiles = cache(async (): Promise<AssetProfile[]> => {
   const catalog = await getSiteCatalog();
   const { assets } = catalog;
-  const [lives, { alerts }] = await Promise.all([Promise.all(assets.map(getLive)), getAlerts()]);
+  const [lives, alerts] = await Promise.all([Promise.all(assets.map(getLive)), getAlerts()]);
   return assets
     .map((asset, i) => buildProfile(asset, catalog, lives[i], alerts))
     .sort((a, b) => (b.stats.aumUsd ?? 0) - (a.stats.aumUsd ?? 0));

@@ -9,7 +9,7 @@ How [framework.md](./framework.md) is turned into ratings. The rules are in `lib
 | `data/assets/<slug>.yaml` | The asset profile: identity and deployments, then one section per category (`underlying`, `counterparties`, `control`, `transparency`, `pricing`, `exit`) plus `legal` facts and the `freshnessClass` | Hand, with a source on every fact; synced with Postgres (`bun rwa import`/`export`) |
 | `data/entities/<slug>.yaml` | Providers. Custodians and administrators carry `regulated`/`regulator`, auditors `auditorTier` | Hand, synced with Postgres |
 | `discovered/<slug>/<chain>.json` | Privileged powers and who holds them, for Control | `bun discover` |
-| `data/live/<slug>.json` | Supply, oracle reading, lending markets | Live jobs |
+| Postgres (`assets_snapshot`, `oracle_reading`, `defi_market`) | Supply, oracle reading, lending markets | Live jobs. The tests use a frozen copy in `lib/framework/fixtures/live/<slug>.json` |
 | `data/measured/<slug>.json` | Top-10 holder share (Blockscout) and DEX sells of $1M / $5M / $10M into USDC (KyberSwap), against NAV | `bun framework:measure` |
 
 Schemas: `lib/schema/asset.ts`, `lib/schema/entity.ts`, `lib/schema/measured.ts`. `bun run validate` parses every file, checks that entity references resolve (issuer, providers, report providers) and warns on sources older than 90 days.

@@ -1,7 +1,10 @@
-import { loadAssets, loadDiscovered, loadEntities, loadLive, loadMeasured } from "@/lib/data";
+import { closeDb } from "@/db/client";
+import { loadAssets, loadDiscovered, loadEntities, loadMeasured } from "@/lib/data";
 import { rateAsset, CATEGORY_LABELS, CATEGORY_ORDER, type FrameworkRating, type Rating } from "@/lib/framework";
+import { getLive } from "@/lib/live-store";
 
 // Rates every asset with the RWAbeat framework (docs/framework.md) and prints the result.
+// Live data comes from Postgres (DATABASE_URL); without it, ratings that need it come out unverified.
 // Usage: bun framework [slug ...] [--json]
 
 const args = process.argv.slice(2);
@@ -10,22 +13,24 @@ const only = args.filter((a) => !a.startsWith("--"));
 
 const SHORT: Record<Rating, string> = { green: "green", yellow: "yellow", red: "red", unverified: "unverified", "not-assessed": "—" };
 
-export function rateAll(): FrameworkRating[] {
+export async function rateAll(): Promise<FrameworkRating[]> {
   const entities = loadEntities();
-  return loadAssets()
-    .filter((a) => only.length === 0 || only.includes(a.slug))
-    .map((asset) =>
+  const assets = loadAssets().filter((a) => only.length === 0 || only.includes(a.slug));
+  return Promise.all(
+    assets.map(async (asset) =>
       rateAsset({
         asset,
         discovered: loadDiscovered(asset).map((s) => s.discovered),
-        live: loadLive(asset.slug),
+        live: await getLive(asset),
         measured: loadMeasured(asset.slug),
         entities,
       }),
-    );
+    ),
+  );
 }
 
-const ratings = rateAll();
+const ratings = await rateAll();
+await closeDb();
 if (json) console.log(JSON.stringify(ratings, null, 2));
 else {
   const cell = (r: FrameworkRating, c: (typeof CATEGORY_ORDER)[number]) => {
