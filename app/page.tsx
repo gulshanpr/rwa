@@ -1,4 +1,3 @@
-import { Download } from "lucide-react";
 import Link from "next/link";
 import { AlertCard } from "@/components/alerts/alert-card";
 import { RelativeTime } from "@/components/data/relative-time";
@@ -53,12 +52,6 @@ export default async function HomePage() {
               Live data updated <RelativeTime iso={asOf} className="text-fg" />
             </span>
           )}
-          <a
-            href="/api/assets.csv"
-            className="inline-flex items-center gap-1.5 rounded-control border border-line bg-surface px-3 py-1.5 text-small text-fg-muted hover:border-line-strong hover:text-fg"
-          >
-            <Download className="size-3.5" /> CSV
-          </a>
         </div>
       </div>
       {(profiles.some((p) => p.sample) || alertsSample) && <SampleBanner />}

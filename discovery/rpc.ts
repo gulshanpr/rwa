@@ -25,7 +25,8 @@ const DEFAULT_RPCS: Record<Chain, string[]> = {
   base: ["https://base-rpc.publicnode.com", "https://base.drpc.org"],
   polygon: ["https://polygon-bor-rpc.publicnode.com", "https://polygon.drpc.org"],
   avalanche: ["https://avalanche-c-chain-rpc.publicnode.com", "https://avalanche.drpc.org"],
-  bsc: ["https://bsc-rpc.publicnode.com", "https://bsc.drpc.org"],
+  // Same for BSC: PublicNode wants a token and dRPC rejects older ranges, so a watcher that falls behind never catches up. 48 Club serves history.
+  bsc: ["https://rpc-bsc.48.club", "https://bsc-rpc.publicnode.com", "https://bsc.drpc.org"],
 };
 
 /** Free public endpoints that serve history. dRPC's free plan rejects eth_getLogs ranges near 10,000 blocks. */

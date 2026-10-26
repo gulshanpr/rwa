@@ -11,7 +11,7 @@ import {
   tableFeatures,
   useTable,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3, Download } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ChartTooltip } from "@/components/charts/chart-tooltip";
@@ -296,9 +296,6 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                 </Popover.Content>
               </Popover.Portal>
             </Popover.Root>
-            <a href="/api/assets.csv" className={cn(selectClass, "inline-flex items-center gap-1.5")}>
-              <Download className="size-3.5" /> Download CSV
-            </a>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
