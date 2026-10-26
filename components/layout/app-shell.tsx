@@ -7,7 +7,6 @@ import { useState } from "react";
 import { SIDEBAR_COLLAPSED_KEY, SIDEBAR_MAX, SIDEBAR_MIN, SIDEBAR_WIDTH_KEY } from "@/lib/sidebar";
 import type { SearchItem } from "@/lib/profile";
 import { SITE } from "@/lib/site";
-import { cn } from "@/lib/ui";
 import { CommandSearch } from "./command-search";
 import { GithubIcon, LogoMark } from "./logo";
 import { SidebarNav } from "./sidebar-nav";

@@ -92,11 +92,6 @@ export function snapshotPaths(slug: string, chain: Chain) {
   return { dir, file: path.join(dir, `${chain}.json`), meta: path.join(dir, `${chain}.meta.json`) };
 }
 
-export function readPrevious(slug: string, chain: Chain): Discovered | undefined {
-  const { file } = snapshotPaths(slug, chain);
-  return fs.existsSync(file) ? DiscoveredSchema.parse(JSON.parse(fs.readFileSync(file, "utf8"))) : undefined;
-}
-
 export function serialize(d: Discovered): string {
   return JSON.stringify(sortDeep(sortPermissions(structuredClone(d))), null, 2) + "\n";
 }
