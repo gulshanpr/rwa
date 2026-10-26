@@ -1,6 +1,6 @@
 {
   "asset": "jaaa",
-  "block": 97523043,
+  "block": 98623704,
   "chain": "avalanche",
   "contracts": {
     "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
@@ -168,45 +168,174 @@
       ],
       "role": "token",
       "verified": true
+    },
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6": {
+      "name": "ProtocolGuardian",
+      "permissions": [
+        {
+          "holder": "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x4d47a7a89478745200Bd51c26bA87664538Df541",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        },
+        {
+          "holder": "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F",
+          "power": "pause",
+          "via": "ProtocolGuardian.pause · onlySafeOrOwner: the Safe or any one of its owners"
+        }
+      ],
+      "role": "other",
+      "verified": true
     }
   },
   "holders": {
+    "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf": {
+      "kind": "eoa"
+    },
+    "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155": {
+      "kind": "eoa"
+    },
     "0x12a110cE5f0FC871cC72Bc7ECaF35cf39DD0f43e": {
       "controllers": [
         "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6",
         "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae"
       ],
       "kind": "contract",
       "name": "BalanceSheet"
     },
+    "0x4d47a7a89478745200Bd51c26bA87664538Df541": {
+      "kind": "eoa"
+    },
+    "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1": {
+      "kind": "eoa"
+    },
+    "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9": {
+      "kind": "eoa"
+    },
     "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC": {
       "kind": "eoa"
     },
     "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f": {
-      "controllers": [],
+      "controllers": [
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
       "kind": "contract",
       "name": "Root"
     },
+    "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a",
+        "0x044671aCf58340Ac9d7AB782D3F93D1943fE24Bf",
+        "0x701Da7A0c8ee46521955CC29D32943d47E2c02b9",
+        "0x5e7A86178252Aeae9cBDa30f9C342c71799A3EE1",
+        "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F",
+        "0x4d47a7a89478745200Bd51c26bA87664538Df541",
+        "0x080001dBE12fA46A1d7C03fa0Cbf1839E367F155",
+        "0xd55114BfE98a2ca16202Aa741BeE571765292616",
+        "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9"
+      ],
+      "threshold": 4
+    },
     "0x97cc7e9Dafdd725Cc23B25eeBC93c4384B4Fe30A": {
       "controllers": [
-        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC"
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
       ],
       "kind": "contract",
       "name": "MessageProcessor"
     },
+    "0x9eDec77dd2651Ce062ab17e941347018AD4eAEA9": {
+      "kind": "eoa"
+    },
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6": {
+      "executors": [],
+      "kind": "timelock",
+      "minDelaySeconds": 172800,
+      "proposers": [
+        "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225"
+      ]
+    },
+    "0xE9441B34f71659cCA2bfE90d98ee0e57D9CAD28F": {
+      "kind": "eoa"
+    },
     "0xEC3582fcDc34078a4B7a8c75a5a3AE46f48525aB": {
-      "kind": "contract-unknown"
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "Spoke"
     },
     "0xF48256AbDDf96EcDDc4B3DbD23E8C1921f9761Ae": {
       "controllers": [
-        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC"
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
       ],
       "kind": "contract",
       "name": "AsyncRequestManager"
     },
+    "0xb307f0b2eDdB84EF63f3F9dc99a3A1a66D68EB3a": {
+      "kind": "safe",
+      "modules": [],
+      "owners": [
+        "0xb193e82774d17301cA34c4f0B70F2f913449baBC",
+        "0xd757D6A02cD5af9AEF163D7eB8034f75ac22B553"
+      ],
+      "threshold": 1
+    },
+    "0xd55114BfE98a2ca16202Aa741BeE571765292616": {
+      "kind": "eoa"
+    },
     "0xf837a22883e004f705E0D7e1deE08e295Df30B27": {
-      "kind": "contract-unknown"
+      "controllers": [
+        "0x7Bf090B97f896fB77e852CC98aa52A8Cb7DC02eC",
+        "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6"
+      ],
+      "kind": "contract",
+      "name": "MessageDispatcher"
     }
   },
-  "timestamp": "2026-10-14T10:58:11Z"
+  "timestamp": "2026-10-26T17:27:27Z"
 }
