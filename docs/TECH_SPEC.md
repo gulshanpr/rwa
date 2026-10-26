@@ -411,7 +411,7 @@ query RwaCollateral($addresses: [String!]!, $chains: [Int!]!) {
 | Timelock `CallScheduled` touching a tracked contract | High (gives advance warning) |
 | `Paused` / `Unpaused` | High |
 | Freeze/blacklist/seize events (handler-specific) | Medium |
-| Mint/burn > 5% of supply or > $10M | Medium |
+| Mint/burn > 1% of supply or > $5M | Medium |
 | Oracle stale > 3× cadence, or price deviation > 2% from cross-check | High |
 
 Every alert also triggers a re-run of discovery for that asset, so the risk page updates.

@@ -193,8 +193,8 @@ const HOLDER_ROLE_RULES: Record<string, Rule> = {
 };
 
 // Every mint and burn is stored in chain_event; only those above this share of supply or USD value alert (spec 8.2).
-const LARGE_SUPPLY_SHARE = 0.05;
-const LARGE_USD = 10_000_000;
+const LARGE_SUPPLY_SHARE = 0.01;
+const LARGE_USD = 5_000_000;
 const AMOUNT_EVENTS: Record<string, { kind: "mint" | "burn"; field: string; verb: string }> = {
   Issue: { kind: "mint", field: "value", verb: "minted" },
   // ERC-4626 vault shares (MaplePool).
