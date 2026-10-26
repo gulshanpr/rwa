@@ -4,6 +4,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Menu, PanelLeft, PanelLeftClose, TriangleAlert, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { SIDEBAR_COLLAPSED_KEY, SIDEBAR_MAX, SIDEBAR_MIN, SIDEBAR_WIDTH_KEY } from "@/lib/sidebar";
 import type { SearchItem } from "@/lib/profile";
 import { SITE } from "@/lib/site";
 import { cn } from "@/lib/ui";
@@ -21,7 +22,6 @@ export function AppShell({
   footer: React.ReactNode;
   searchItems: SearchItem[];
 }) {
-  const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
@@ -78,21 +78,18 @@ export function AppShell({
       </header>
 
       <div className="flex">
-        <aside
-          className={cn(
-            "sticky top-16 hidden h-[calc(100vh-4rem)] shrink-0 flex-col border-r border-line bg-surface lg:flex",
-            collapsed ? "w-16" : "w-16 xl:w-60",
-          )}
-        >
-          <SidebarNav variant={collapsed ? "rail" : "responsive"} />
+        <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-16 shrink-0 flex-col border-r border-line bg-surface lg:flex xl:expanded:w-(--sidebar-w)">
+          <SidebarNav variant="responsive" />
           <button
             type="button"
-            onClick={() => setCollapsed((c) => !c)}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={toggleSidebar}
+            aria-label="Toggle sidebar"
             className="hidden h-10 items-center justify-center border-t border-line text-fg-subtle hover:text-fg xl:flex"
           >
-            {collapsed ? <PanelLeft className="size-4" /> : <PanelLeftClose className="size-4" />}
+            <PanelLeft className="size-4 expanded:hidden" />
+            <PanelLeftClose className="hidden size-4 expanded:block" />
           </button>
+          <SidebarResizeHandle />
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -119,5 +116,75 @@ export function AppShell({
         </Dialog.Portal>
       </Dialog.Root>
     </div>
+  );
+}
+
+function toggleSidebar() {
+  const collapsed = document.documentElement.classList.toggle("sidebar-collapsed");
+  try {
+    localStorage.setItem(SIDEBAR_COLLAPSED_KEY, collapsed ? "1" : "0");
+  } catch {}
+}
+
+function setSidebarWidth(px: number, persist: boolean) {
+  const w = Math.round(Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, px)));
+  document.documentElement.style.setProperty("--sidebar-w", `${w}px`);
+  if (persist) {
+    try {
+      localStorage.setItem(SIDEBAR_WIDTH_KEY, String(w));
+    } catch {}
+  }
+}
+
+function resetSidebarWidth() {
+  document.documentElement.style.removeProperty("--sidebar-w");
+  try {
+    localStorage.removeItem(SIDEBAR_WIDTH_KEY);
+  } catch {}
+}
+
+/** Drag the sidebar's right edge to resize; double-click resets. Width persists in localStorage. */
+function SidebarResizeHandle() {
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const aside = e.currentTarget.parentElement!;
+    const left = aside.getBoundingClientRect().left;
+    const handle = e.currentTarget;
+    handle.setPointerCapture(e.pointerId);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    const onMove = (ev: PointerEvent) => setSidebarWidth(ev.clientX - left, false);
+    const onUp = (ev: PointerEvent) => {
+      setSidebarWidth(ev.clientX - left, true);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      handle.removeEventListener("pointermove", onMove);
+      handle.removeEventListener("pointerup", onUp);
+      handle.removeEventListener("pointercancel", onUp);
+    };
+    handle.addEventListener("pointermove", onMove);
+    handle.addEventListener("pointerup", onUp);
+    handle.addEventListener("pointercancel", onUp);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const current = e.currentTarget.parentElement!.getBoundingClientRect().width;
+    setSidebarWidth(current + (e.key === "ArrowRight" ? 16 : -16), true);
+  };
+
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize sidebar"
+      tabIndex={0}
+      onPointerDown={onPointerDown}
+      onDoubleClick={resetSidebarWidth}
+      onKeyDown={onKeyDown}
+      title="Drag to resize · double-click to reset"
+      className="absolute inset-y-0 -right-1 z-10 hidden w-2 cursor-col-resize touch-none after:absolute after:inset-y-0 after:left-1/2 after:w-px after:-translate-x-1/2 after:bg-transparent after:transition-colors hover:after:bg-accent focus-visible:outline-none focus-visible:after:bg-accent xl:expanded:block"
+    />
   );
 }

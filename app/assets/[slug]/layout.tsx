@@ -87,12 +87,6 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
           >
             <Download className="size-3.5" /> JSON
           </a>
-          <a
-            href={`/api/assets/${asset.slug}.csv`}
-            className="inline-flex items-center gap-1.5 rounded-control border border-line bg-surface px-3 py-1.5 text-small text-fg-muted hover:border-line-strong hover:text-fg"
-          >
-            <Download className="size-3.5" /> CSV
-          </a>
         </div>
       </header>
 

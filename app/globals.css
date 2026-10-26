@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant expanded (&:where(html:not(.sidebar-collapsed) *));
 
 :root {
+  --sidebar-w: 15rem;
   --bg: #f7f8fa;
   --surface: #ffffff;
   --surface-muted: #f2f4f7;
@@ -101,8 +103,8 @@
   --text-micro--font-weight: 500;
   --text-micro--letter-spacing: 0.04em;
 
-  --radius-card: 12px;
-  --radius-control: 8px;
+  --radius-card: 6px;
+  --radius-control: 4px;
 
   --shadow-card: var(--shadow-card);
   --shadow-popover: var(--shadow-popover);

@@ -1,12 +1,12 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
-import { getDb, readsFromDatabase, schema } from "@/db/client";
+import { getDb, hasDatabase, readsFromDatabase, schema } from "@/db/client";
 import { getSiteCatalog } from "./catalog";
 import { loadAlerts, loadLive } from "./data";
 import type { Asset, Chain } from "./schema/asset";
 import { AlertSchema, LiveSchema, type Alert, type DefiMarket, type Live } from "./schema/live";
 
 // Live data and alerts come from Postgres when DATABASE_URL is set (the worker writes there),
-// otherwise from the JSON files in data/live/.
+// otherwise from the JSON files in data/live/. Live data follows readsFromDatabase(); alerts see getAlerts().
 
 const DAY = 86_400_000;
 
@@ -85,8 +85,18 @@ export async function getLive(asset: Asset): Promise<Live | undefined> {
   }
 }
 
-export async function getAlerts(): Promise<{ sample: boolean; alerts: Alert[] }> {
-  if (!readsFromDatabase()) return loadAlerts();
+// Alerts exist only in Postgres (the worker writes them; data/live/alerts.json is an empty fallback),
+// so unlike the catalog they are read from the database during a production build too.
+// The known-slug filter keeps alerts for assets another branch imported off the site.
+let alertsDuringBuild: Promise<{ sample: boolean; alerts: Alert[] }> | undefined;
+export function getAlerts(): Promise<{ sample: boolean; alerts: Alert[] }> {
+  if (!hasDatabase() || process.env.CATALOG_SOURCE === "files") return Promise.resolve(loadAlerts());
+  // One query per build instead of one per prerendered page.
+  if (process.env.NEXT_PHASE === "phase-production-build") return (alertsDuringBuild ??= alertsFromDb());
+  return alertsFromDb();
+}
+
+async function alertsFromDb(): Promise<{ sample: boolean; alerts: Alert[] }> {
   try {
     const known = new Set((await getSiteCatalog()).assets.map((a) => a.slug));
     const rows = await getDb().select().from(schema.alert).orderBy(desc(schema.alert.publishedAt)).limit(500);

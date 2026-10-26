@@ -7,7 +7,8 @@ const SITE_URL = process.env.SITE_URL ?? "";
 export type NewAlert = Omit<Alert, "publishedAt"> & { publishedAt?: string; eventId?: number };
 
 // Returns true if the alert is new. Alert ids are deterministic, so re-runs never duplicate.
-export async function raiseAlert(a: NewAlert): Promise<boolean> {
+// notify: false stores it without Telegram or a discovery run (backfilled history, not news).
+export async function raiseAlert(a: NewAlert, { notify = true } = {}): Promise<boolean> {
   const inserted = await getDb()
     .insert(schema.alert)
     .values({
@@ -31,6 +32,7 @@ export async function raiseAlert(a: NewAlert): Promise<boolean> {
   if (inserted.length === 0) return false;
 
   log("alert", `${a.severity} ${a.asset}: ${a.title}`);
+  if (!notify) return true;
   await Promise.all([publishTelegram(a), dispatchDiscovery(a.asset)]);
   return true;
 }

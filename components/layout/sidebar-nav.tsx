@@ -16,10 +16,10 @@ function isActive(pathname: string, href: string): boolean {
 
 export function SidebarNav({ variant, onNavigate }: { variant: SidebarVariant; onNavigate?: () => void }) {
   const pathname = usePathname();
-  const labelClass = variant === "full" ? "" : variant === "rail" ? "sr-only" : "sr-only xl:not-sr-only";
-  const headingClass = variant === "full" ? "block" : variant === "rail" ? "hidden" : "hidden xl:block";
+  const labelClass = variant === "full" ? "" : variant === "rail" ? "sr-only" : "sr-only xl:expanded:not-sr-only";
+  const headingClass = variant === "full" ? "block" : variant === "rail" ? "hidden" : "hidden xl:expanded:block";
   const itemLayout =
-    variant === "full" ? "px-2.5" : variant === "rail" ? "justify-center px-0" : "justify-center px-0 xl:justify-start xl:px-2.5";
+    variant === "full" ? "px-2.5" : variant === "rail" ? "justify-center px-0" : "justify-center px-0 xl:expanded:justify-start xl:expanded:px-2.5";
 
   return (
     <nav aria-label="Main" className="flex flex-1 flex-col gap-5 overflow-y-auto px-3 py-4">
@@ -39,7 +39,7 @@ export function SidebarNav({ variant, onNavigate }: { variant: SidebarVariant; o
                       className={cn(
                         "rounded px-1 text-[10px] text-fg-subtle ring-1 ring-line",
                         variant === "rail" && "hidden",
-                        variant === "responsive" && "hidden xl:inline",
+                        variant === "responsive" && "hidden xl:expanded:inline",
                       )}
                     >
                       Soon
@@ -77,20 +77,6 @@ export function SidebarNav({ variant, onNavigate }: { variant: SidebarVariant; o
           </ul>
         </div>
       ))}
-      <a
-        href={repoNewIssueUrl("Correction: ")}
-        target="_blank"
-        rel="noreferrer"
-        title="Suggest a correction"
-        className={cn(
-          "mt-auto flex items-center gap-2 rounded-control border border-line px-3 py-2.5 text-small text-fg-muted hover:border-line-strong hover:text-fg",
-          variant !== "full" && "justify-center px-0",
-          variant === "responsive" && "xl:justify-start xl:px-3",
-        )}
-      >
-        <GitPullRequest className="size-4 shrink-0" aria-hidden />
-        <span className={labelClass}>Suggest a correction</span>
-      </a>
     </nav>
   );
 }

@@ -14,6 +14,7 @@ export interface AssetRow {
   ticker: string;
   name: string;
   manager: string;
+  platform: string;
   assetClass: AssetClass;
   assetClassLabel: string;
   aumUsd: number | null;
@@ -36,6 +37,7 @@ export function toRow(p: AssetProfile): AssetRow {
     ticker: p.asset.ticker,
     name: p.asset.name,
     manager: p.entities.manager?.name ?? p.asset.manager,
+    platform: p.entities.platform?.name ?? p.asset.platform,
     assetClass: p.asset.assetClass,
     assetClassLabel: ASSET_CLASSES[p.asset.assetClass].label,
     aumUsd: p.stats.aumUsd ?? null,
@@ -82,49 +84,21 @@ export function categoryDistribution(rows: AssetRow[]): CategoryDistribution[] {
   });
 }
 
-export function rowsToCsv(rows: AssetRow[]): string {
-  const header = [
-    "slug",
-    "ticker",
-    "name",
-    "manager",
-    "asset_class",
-    "aum_usd",
-    "chains",
-    ...CATEGORY_ORDER.map((c) => `${c}_rating`),
-    "stage",
-    "onchain_data",
-    "single_key_powers",
-    "oracle_age_seconds",
-    "defi_collateral_usd",
-    "flags",
-    "top_risk",
-  ];
-  const lines = rows.map((r) =>
-    [
-      r.slug,
-      r.ticker,
-      r.name,
-      r.manager,
-      r.assetClass,
-      r.aumUsd ?? "",
-      r.chains.join(";"),
-      ...CATEGORY_ORDER.map((c) => r.categories[c].rating),
-      r.stage ?? "none",
-      r.onchainData,
-      r.singleKeyPowers,
-      r.oracleAgeSeconds ?? "",
-      r.defiCollateralUsd,
-      r.flags.map((f) => f.label).join(";"),
-      r.topRisk ?? "",
-    ]
-      .map(csvCell)
-      .join(","),
-  );
-  return [header.join(","), ...lines].join("\n") + "\n";
+export interface Share {
+  label: string;
+  value: number;
+  tickers: string[];
 }
 
-export function csvCell(v: unknown): string {
-  const s = String(v);
-  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+/** Tracked value grouped by `key`, largest first. */
+export function valueBy(rows: AssetRow[], key: (r: AssetRow) => string): Share[] {
+  const groups = new Map<string, Share>();
+  for (const r of rows) {
+    const label = key(r);
+    const g = groups.get(label) ?? { label, value: 0, tickers: [] };
+    g.value += r.aumUsd ?? 0;
+    g.tickers.push(r.ticker);
+    groups.set(label, g);
+  }
+  return [...groups.values()].sort((a, b) => b.value - a.value);
 }

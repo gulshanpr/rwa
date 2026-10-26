@@ -34,7 +34,8 @@ export function Card({
           {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
         </header>
       )}
-      <div className={cn("p-4 md:p-5", bodyClassName)}>{children}</div>
+      {/* bodyClassName replaces the default padding: cn() doesn't merge conflicting Tailwind classes. */}
+      <div className={bodyClassName ?? "p-4 md:p-5"}>{children}</div>
     </section>
   );
 }

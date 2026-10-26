@@ -15,15 +15,6 @@ export function Footer() {
           <a href={SITE.repoUrl} target="_blank" rel="noreferrer" className="hover:text-fg">
             GitHub
           </a>
-          <a href="/api/alerts.rss" className="hover:text-fg">
-            RSS
-          </a>
-          <a href="/api/assets" className="hover:text-fg">
-            Open data (JSON)
-          </a>
-          <span className="text-fg-subtle" title="Publishing to X and Telegram starts with the alerts worker">
-            X · Telegram (soon)
-          </span>
         </nav>
         <p className="max-w-4xl text-label font-normal text-fg-subtle">{SITE.disclaimer}</p>
       </div>

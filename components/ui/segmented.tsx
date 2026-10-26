@@ -23,7 +23,7 @@ export function Segmented<T extends string>({
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
           className={cn(
-            "rounded-[6px] px-2.5 py-1 text-label transition-colors focus-visible:outline-2 focus-visible:outline-accent",
+            "rounded-[3px] px-2.5 py-1 text-label transition-colors focus-visible:outline-2 focus-visible:outline-accent",
             value === o.value
               ? "bg-surface text-fg shadow-[0_1px_2px_rgba(16,24,40,0.08)]"
               : "text-fg-muted hover:text-fg",

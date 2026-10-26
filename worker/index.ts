@@ -6,13 +6,16 @@ import { gleifJob } from "./jobs/gleif";
 import { morphoJob } from "./jobs/morpho";
 import { oraclesJob } from "./jobs/oracles";
 import { supplyJob } from "./jobs/supply";
+import { Chain } from "@/lib/schema/asset";
 import { getCursor, log, setCursor } from "./util";
-import { watcherJob } from "./watcher";
+import { backfillChain, watcherJob } from "./watcher";
 
 const USAGE = `Usage:
   bun run worker                 run forever, each job on its schedule
   bun run worker --once          run every job that is due, then exit (cron mode)
-  bun run worker --once oracles  run named job(s) now, ignoring the schedule`;
+  bun run worker --once oracles  run named job(s) now, ignoring the schedule
+  bun run worker --backfill ethereum 26184210 26263965
+                                 rescan a block range for watcher events; stores alerts without notifying`;
 
 const MIN = 60;
 const JOBS: Record<string, { every: number; run: () => Promise<void> }> = {
@@ -52,6 +55,19 @@ if (args.includes("--help")) {
   console.log(USAGE);
   process.exit(0);
 }
+const backfill = args.indexOf("--backfill");
+if (backfill >= 0) {
+  const [chain, start, end] = args.slice(backfill + 1);
+  const parsed = Chain.safeParse(chain);
+  if (!parsed.success || !/^\d+$/.test(start ?? "") || !/^\d+$/.test(end ?? "") || BigInt(start!) > BigInt(end!)) {
+    console.error(USAGE);
+    process.exit(1);
+  }
+  await backfillChain(parsed.data, BigInt(start!), BigInt(end!));
+  await closeDb();
+  process.exit(0);
+}
+
 const once = args.includes("--once");
 const named = args.filter((a) => !a.startsWith("--"));
 const unknown = named.filter((n) => !JOBS[n]);

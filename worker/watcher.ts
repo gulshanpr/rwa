@@ -1,7 +1,10 @@
+import { and, desc, eq, isNotNull } from "drizzle-orm";
 import { decodeEventLog, formatUnits, getAddress, parseAbi, toEventSelector, zeroAddress, type Abi, type AbiEvent, type Address, type Log } from "viem";
 import { getDb, schema } from "@/db/client";
+import { roleHash } from "@/discovery/handlers/mapped";
 import { clientsFor } from "@/discovery/rpc";
 import { verifiedSource } from "@/discovery/sources";
+import { formatUsd } from "@/lib/format";
 import type { Asset, Chain } from "@/lib/schema/asset";
 import type { Alert } from "@/lib/schema/live";
 import { raiseAlert } from "./alerts";
@@ -40,6 +43,24 @@ type Args = Record<string, unknown>;
 const DS_ROLES: Record<number, string> = { 1: "MASTER", 2: "ISSUER", 4: "EXCHANGE", 8: "TRANSFER_AGENT" };
 const fmt = (v: unknown) => (typeof v === "string" && v.startsWith("0x") && v.length === 42 ? `${v.slice(0, 6)}…${v.slice(-4)}` : String(v));
 
+// Midas keeps every product's roles on one shared controller (discovery/handlers/midas.ts). Only the
+// product's own roles and the ones shared by all products concern a given mToken.
+const MIDAS_SHARED_ROLES = ["DEFAULT_ADMIN_ROLE", "DEPOSIT_VAULT_ADMIN_ROLE", "REDEMPTION_VAULT_ADMIN_ROLE", "BLACKLIST_OPERATOR_ROLE", "GREENLIST_OPERATOR_ROLE"];
+const MIDAS_PRODUCT_ROLES = ["MINT_OPERATOR_ROLE", "BURN_OPERATOR_ROLE", "PAUSE_OPERATOR_ROLE", "DEPOSIT_VAULT_ADMIN_ROLE", "REDEMPTION_VAULT_ADMIN_ROLE"];
+// Granting these onboards or blocks one investor: an allowlist entry, not a privileged role.
+const HOLDER_ROLES = ["GREENLISTED_ROLE", "BLACKLISTED_ROLE"];
+
+const ROLE_NAMES = new Map(["MINTER_ROLE", "BURNER_ROLE", "PAUSER_ROLE", "UPGRADER_ROLE", ...MIDAS_SHARED_ROLES, ...HOLDER_ROLES].map((n) => [roleHash(n) as string, n]));
+const roleName = (r: unknown) => ROLE_NAMES.get(String(r).toLowerCase()) ?? `role ${String(r).slice(0, 10)}…`;
+
+/** Role hashes that concern this Midas product (mF-ONE → M_FONE_*), registering their names for titles. */
+function midasRoles(ticker: string): Set<string> {
+  const product = `M_${ticker.slice(1).replace(/[^a-z0-9]/gi, "").toUpperCase()}`;
+  const names = [...MIDAS_SHARED_ROLES, ...HOLDER_ROLES, ...MIDAS_PRODUCT_ROLES.map((r) => `${product}_${r}`)];
+  for (const n of names) ROLE_NAMES.set(roleHash(n), n);
+  return new Set(names.map(roleHash));
+}
+
 const NEW_CODE = "The contract now runs different code. Every power and rule can change with it.";
 const NAV_DOWN = "The NAV the token contract reports can drop. Holders and lending markets that read it absorb the loss.";
 
@@ -56,8 +77,8 @@ const RULES: Record<string, Rule> = {
   AdminChanged: { severity: "critical", kind: "admin-change", title: (c, a) => `${c} upgrade admin changed to ${fmt(a.newAdmin)}`, consequence: "A different key can now replace this contract's code." },
   ProxyOwnerChanged: { severity: "critical", kind: "admin-change", title: (c, a) => `${c} proxy owner changed to ${fmt(a.newOwner)}`, consequence: "A different key can now replace this contract's code." },
   OwnershipTransferred: { severity: "critical", kind: "ownership-transfer", title: (c, a) => `${c} owner changed to ${fmt(a.newOwner)}`, consequence: "A different key now holds the owner powers on this contract." },
-  RoleGranted: { severity: "critical", kind: "role-grant", title: (c, a) => `${c} granted role to ${fmt(a.account)}`, consequence: "A new address holds a privileged role." },
-  RoleRevoked: { severity: "high", kind: "role-revoke", title: (c, a) => `${c} revoked role from ${fmt(a.account)}`, consequence: "An address lost a privileged role." },
+  RoleGranted: { severity: "critical", kind: "role-grant", title: (c, a) => `${c} granted ${roleName(a.role)} to ${fmt(a.account)}`, consequence: "A new address holds a privileged role." },
+  RoleRevoked: { severity: "high", kind: "role-revoke", title: (c, a) => `${c} revoked ${roleName(a.role)} from ${fmt(a.account)}`, consequence: "An address lost a privileged role." },
   DSTrustServiceRoleAdded: { severity: "critical", kind: "role-grant", title: (_c, a) => `${DS_ROLES[Number(a.role)] ?? `Role ${a.role}`} role granted to ${fmt(a.targetAddress)}`, consequence: "A new address holds a DS Protocol role. ISSUER can mint, TRANSFER_AGENT can seize and pause, MASTER can do everything." },
   DSTrustServiceRoleRemoved: { severity: "high", kind: "role-revoke", title: (_c, a) => `${DS_ROLES[Number(a.role)] ?? `Role ${a.role}`} role removed from ${fmt(a.targetAddress)}`, consequence: "An address lost a DS Protocol role." },
   DSServiceSet: { severity: "critical", kind: "service-change", title: (c, a) => `${c} service ${a.serviceId ?? ""} pointed to ${fmt(a.serviceAddress ?? Object.values(a)[1])}`, consequence: "A core DS Protocol service (compliance, registry, trust…) now points to a different contract." },
@@ -163,7 +184,15 @@ const RULES: Record<string, Rule> = {
   RedeemPaused: { severity: "high", kind: "pause", title: (c) => `${c}: redemptions paused`, consequence: "Instant redemptions stop until unpaused." },
 };
 
-// Mint and burn only alert above this share of supply or USD amount (spec 8.2).
+// RoleGranted/RoleRevoked for HOLDER_ROLES, keyed "<role> <event>".
+const HOLDER_ROLE_RULES: Record<string, Rule> = {
+  "GREENLISTED_ROLE RoleGranted": { severity: "low", kind: "compliance-change", title: (c, a) => `${c}: ${fmt(a.account)} greenlisted`, consequence: "Only greenlisted addresses can subscribe and redeem." },
+  "GREENLISTED_ROLE RoleRevoked": { severity: "low", kind: "compliance-change", title: (c, a) => `${c}: ${fmt(a.account)} removed from the greenlist`, consequence: "Only greenlisted addresses can subscribe and redeem." },
+  "BLACKLISTED_ROLE RoleGranted": { severity: "medium", kind: "freeze", title: (c, a) => `${c}: ${fmt(a.account)} blacklisted`, consequence: "That wallet can no longer send or receive the token." },
+  "BLACKLISTED_ROLE RoleRevoked": { severity: "medium", kind: "freeze", title: (c, a) => `${c}: ${fmt(a.account)} unblacklisted`, consequence: "That wallet can move the token again." },
+};
+
+// Every mint and burn is stored in chain_event; only those above this share of supply or USD value alert (spec 8.2).
 const LARGE_SUPPLY_SHARE = 0.05;
 const LARGE_USD = 10_000_000;
 const AMOUNT_EVENTS: Record<string, { kind: "mint" | "burn"; field: string; verb: string }> = {
@@ -185,10 +214,15 @@ interface Watched {
   name: string;
   /** Token with no named mint/burn event: mints and burns are read from Transfer to or from the zero address. */
   transferMints?: boolean;
+  /** Shared access controller: only role events for these role hashes concern the asset. */
+  roles?: Set<string>;
 }
 
-async function watchList(chain: Chain): Promise<{ addresses: Map<string, Watched>; events: Map<string, AbiEvent[]> }> {
-  const addresses = new Map<string, Watched>();
+// One address can serve several assets (Centrifuge's hub and spoke contracts are shared by every pool), so each maps to a list.
+async function watchList(chain: Chain): Promise<{ addresses: Map<string, Watched[]>; events: Map<string, AbiEvent[]> }> {
+  const addresses = new Map<string, Watched[]>();
+  const watch = (addr: string, w: Watched) => addresses.set(addr.toLowerCase(), [...(addresses.get(addr.toLowerCase()) ?? []), w]);
+  const watches = (addr: string, asset: Asset) => addresses.get(addr.toLowerCase())?.some((w) => w.asset.slug === asset.slug);
   const events = new Map<string, AbiEvent[]>();
   const add = (e: AbiEvent) => {
     if (!RULES[e.name] && !AMOUNT_EVENTS[e.name] && e !== ERC20_TRANSFER) return;
@@ -207,7 +241,8 @@ async function watchList(chain: Chain): Promise<{ addresses: Map<string, Watched
       if (s.discovered.chain !== chain) continue;
       for (const [addr, c] of Object.entries(s.discovered.contracts)) {
         const watched: Watched = { asset, name: `${asset.ticker} ${labels[addr.toLowerCase()] ?? c.name}` };
-        addresses.set(addr.toLowerCase(), watched);
+        if (asset.platform === "midas" && c.name === "MidasAccessControl") watched.roles = midasRoles(asset.ticker);
+        watch(addr, watched);
         const abiEvents: AbiEvent[] = [];
         for (const a of new Set([addr, c.proxy?.implementation].filter(Boolean) as string[])) {
           const src = await verifiedSource(chainId, getAddress(a));
@@ -222,9 +257,9 @@ async function watchList(chain: Chain): Promise<{ addresses: Map<string, Watched
         }
       }
       for (const [addr, h] of Object.entries(s.discovered.holders)) {
-        if (h.kind === "eoa" || addresses.has(addr.toLowerCase())) continue;
+        if (h.kind === "eoa" || watches(addr, asset)) continue;
         const name = labels[addr.toLowerCase()] ?? (h.kind === "safe" ? `Safe ${h.threshold}/${h.owners.length}` : h.kind === "contract" ? h.name : h.kind);
-        addresses.set(addr.toLowerCase(), { asset, name: `${asset.ticker} ${name}` });
+        watch(addr, { asset, name: `${asset.ticker} ${name}` });
         // Non-standard timelocks (e.g. Maple's GovernorTimelock) emit events only their own ABI describes.
         if (h.kind === "timelock") ((await verifiedSource(chainId, getAddress(addr))).abi as Abi | undefined)?.forEach((e) => e.type === "event" && add(e));
       }
@@ -246,11 +281,28 @@ function decode(log: Log, events: Map<string, AbiEvent[]>): { name: string; args
 
 const toJson = (args: Args) => JSON.parse(JSON.stringify(args, (_k, v) => (typeof v === "bigint" ? v.toString() : v)));
 
-async function supplyFor(asset: Asset, chain: Chain, token: Address) {
+const SUPPLY_ABI = parseAbi(["function totalSupply() view returns (uint256)", "function decimals() view returns (uint8)"]);
+
+async function supplyFor(chain: Chain, token: Address, blockNumber: bigint) {
   const { client } = clientsFor(chain);
-  const abi = parseAbi(["function totalSupply() view returns (uint256)", "function decimals() view returns (uint8)"]);
-  const [supply, decimals] = await Promise.all([client.readContract({ address: token, abi, functionName: "totalSupply" }), client.readContract({ address: token, abi, functionName: "decimals" })]);
+  // Supply as of the event's block, so backfilled alerts get the share right. Nodes that prune old state only answer for recent blocks.
+  const [supply, decimals] = await Promise.all([
+    client.readContract({ address: token, abi: SUPPLY_ABI, functionName: "totalSupply", blockNumber }).catch(() => client.readContract({ address: token, abi: SUPPLY_ABI, functionName: "totalSupply" })),
+    client.readContract({ address: token, abi: SUPPLY_ABI, functionName: "decimals" }),
+  ]);
   return { supply: Number(formatUnits(supply, decimals)), decimals };
+}
+
+/** Latest USD price per token the supply job recorded. Token units are not dollars: one OUSG is ~$117, one ACRED ~$1,100. */
+async function priceFor(slug: string): Promise<number | undefined> {
+  const s = schema.assetsSnapshot;
+  const [row] = await getDb()
+    .select({ price: s.priceUsd })
+    .from(s)
+    .where(and(eq(s.assetSlug, slug), isNotNull(s.priceUsd)))
+    .orderBy(desc(s.ts))
+    .limit(1);
+  return row?.price ?? undefined;
 }
 
 export async function watcherJob() {
@@ -269,19 +321,38 @@ export async function watcherJob() {
 }
 
 async function watchChain(chain: Chain) {
-  const { client } = clientsFor(chain);
-  const { addresses, events } = await watchList(chain);
-  if (addresses.size === 0) return;
-  const watchedAddresses = [...addresses.keys()].map((a) => getAddress(a));
-  const confirmed = (await client.getBlockNumber()) - CONFIRMATIONS[chain];
+  const confirmed = (await clientsFor(chain).client.getBlockNumber()) - CONFIRMATIONS[chain];
   const end = process.env.WATCH_END_BLOCK ? BigInt(process.env.WATCH_END_BLOCK) : undefined;
   const head = end !== undefined && end < confirmed ? end : confirmed;
   const cursorName = `watcher:${chain}`;
   const saved = await getCursor(cursorName);
-  // First run starts at the confirmed head; set WATCH_START_BLOCK to backfill.
-  let from = saved ? BigInt(saved) + 1n : BigInt(process.env.WATCH_START_BLOCK ?? head);
+  // First run starts at the confirmed head; set WATCH_START_BLOCK, or use backfillChain, to cover the past.
+  const from = saved ? BigInt(saved) + 1n : BigInt(process.env.WATCH_START_BLOCK ?? head);
   if (from > head) return;
+  await scan(chain, from, head, cursorName, true);
+}
+
+/**
+ * Rescans a past block range on its own resumable cursor, leaving the live cursor alone.
+ * The live cursor is shared by every asset on a chain, so blocks it passed while an asset
+ * was not being watched are never revisited without this.
+ */
+export async function backfillChain(chain: Chain, start: bigint, end: bigint) {
+  const cursorName = `watcher-backfill:${chain}:${start}-${end}`;
+  const saved = await getCursor(cursorName);
+  const from = saved ? BigInt(saved) + 1n : start;
+  if (from > end) return log("watcher", `${chain} backfill ${start}-${end} already done`);
+  await scan(chain, from, end, cursorName, false);
+}
+
+async function scan(chain: Chain, start: bigint, head: bigint, cursorName: string, notify: boolean) {
+  const { client } = clientsFor(chain);
+  const { addresses, events } = await watchList(chain);
+  if (addresses.size === 0) return;
+  const watchedAddresses = [...addresses.keys()].map((a) => getAddress(a));
+  let from = start;
   const blockTimes = new Map<bigint, Date>();
+  const prices = new Map<string, Promise<number | undefined>>();
   let matched = 0;
 
   while (from <= head) {
@@ -300,7 +371,10 @@ async function watchChain(chain: Chain) {
       const ev = decoded[i];
       if (!ev) continue;
       if ((ev.name === "Rely" || ev.name === "Deny") && netZero.has(wardKey(l, ev.args.user))) continue;
-      const watched = addresses.get(l.address.toLowerCase())!;
+      // On a shared contract the event's poolId names the asset; events without one go to the first asset watching it.
+      const sharers = addresses.get(l.address.toLowerCase())!;
+      const watched = ev.args.poolId === undefined ? sharers[0]! : sharers.find((w) => w.asset.deployments.find((d) => d.chain === chain)?.discovery.poolId === String(ev.args.poolId)) ?? (sharers.length === 1 ? sharers[0]! : undefined);
+      if (!watched) continue;
       const { asset } = watched;
       let amountRule = AMOUNT_EVENTS[ev.name];
       if (ev.name === "Transfer") {
@@ -311,6 +385,10 @@ async function watchChain(chain: Chain) {
       }
       const poolId = asset.deployments.find((d) => d.chain === chain)?.discovery.poolId;
       if (poolId && ev.args.poolId !== undefined && String(ev.args.poolId) !== poolId) continue;
+      if (watched.roles && ev.args.role !== undefined && !watched.roles.has(String(ev.args.role).toLowerCase())) continue;
+      // Superstate's allowlist is shared by its funds; token 0x0 is a public permission that covers all of them.
+      const token = asset.deployments.find((d) => d.chain === chain)?.token.toLowerCase();
+      if (ev.name === "AllowedSet" && ev.args.token !== undefined && ev.args.token !== zeroAddress && String(ev.args.token).toLowerCase() !== token) continue;
       const block = l.blockNumber!;
       if (!blockTimes.has(block)) blockTimes.set(block, new Date(Number((await client.getBlock({ blockNumber: block })).timestamp) * 1000));
       const ts = blockTimes.get(block)!;
@@ -324,29 +402,36 @@ async function watchChain(chain: Chain) {
       matched++;
 
       const base = { id: `${chain}-${l.transactionHash}-${l.logIndex}`, asset: asset.slug, chain, contract: getAddress(l.address), txHash: l.transactionHash!, block: Number(block), publishedAt: ts.toISOString(), eventId: row.id };
-      const rule = RULES[ev.name];
+      const rule = (ev.args.role !== undefined && HOLDER_ROLE_RULES[`${roleName(ev.args.role)} ${ev.name}`]) || RULES[ev.name];
       if (rule) {
-        await raiseAlert({ ...base, severity: rule.severity, kind: rule.kind, title: rule.title(watched.name, ev.args), consequence: rule.consequence });
+        await raiseAlert({ ...base, severity: rule.severity, kind: rule.kind, title: rule.title(watched.name, ev.args), consequence: rule.consequence }, { notify });
         continue;
       }
       const amount = amountRule;
       const deployment = asset.deployments.find((d) => d.chain === chain && d.token.toLowerCase() === l.address.toLowerCase());
       if (amount && deployment) {
-        const { supply, decimals } = await supplyFor(asset, chain, getAddress(deployment.token));
+        const { supply, decimals } = await supplyFor(chain, getAddress(deployment.token), block);
         const value = Number(formatUnits(BigInt(String(ev.args[amount.field] ?? 0)), decimals));
-        if (value / supply > LARGE_SUPPLY_SHARE || value > LARGE_USD) {
-          await raiseAlert({
-            ...base,
-            severity: "medium",
-            kind: amount.kind,
-            title: `${value.toLocaleString("en-US", { maximumFractionDigits: 0 })} ${asset.ticker} ${amount.verb} on ${chain}`,
-            consequence: `${((value / supply) * 100).toFixed(1)}% of the ${chain} supply. Large mints or burns usually match subscriptions or redemptions; check against reported AUM.`,
-          });
+        if (!prices.has(asset.slug)) prices.set(asset.slug, priceFor(asset.slug));
+        const price = await prices.get(asset.slug)!;
+        const usd = price === undefined ? undefined : value * price;
+        if (price === undefined) log("watcher", `${asset.slug}: no USD price yet, only the supply-share rule applies`);
+        if (value / supply > LARGE_SUPPLY_SHARE || (usd ?? 0) > LARGE_USD) {
+          await raiseAlert(
+            {
+              ...base,
+              severity: "medium",
+              kind: amount.kind,
+              title: `${value.toLocaleString("en-US", { maximumFractionDigits: 0 })} ${asset.ticker} ${amount.verb} on ${chain}${usd === undefined ? "" : ` (${formatUsd(usd)})`}`,
+              consequence: `${((value / supply) * 100).toFixed(1)}% of the ${chain} supply. Large mints or burns usually match subscriptions or redemptions; check against reported AUM.`,
+            },
+            { notify },
+          );
         }
       }
     }
     await setCursor(cursorName, to.toString());
     from = to + 1n;
   }
-  log("watcher", `${chain} ${addresses.size} address(es) up to block ${head}, ${matched} new event(s)`);
+  log("watcher", `${chain} ${addresses.size} address(es) blocks ${start}-${head}, ${matched} new event(s)`);
 }
