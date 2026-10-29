@@ -18,7 +18,15 @@ const ABI = parseAbi([
  * Reviewed and not scored: metadata, chain support for the issuer's own bridge, a one-time initializer,
  * and the RedemptionIdle pointer (informational; the token grants it nothing).
  */
-const TOKEN_NOT_SCORED = ["setName", "setSymbol", "setChainIdSupport", "setIsPublicInstrument", "initializeV1_2_0", "renounceOwnership", "setRedemptionContract"];
+const TOKEN_NOT_SCORED = [
+  "setName",
+  "setSymbol",
+  "setChainIdSupport",
+  "setIsPublicInstrument",
+  "initializeV1_2_0",
+  "renounceOwnership",
+  "setRedemptionContract",
+];
 
 export async function superstate(ctx: Context, token: Address) {
   const warn: string[] = [];
@@ -46,11 +54,33 @@ export async function superstate(ctx: Context, token: Address) {
 
   const oracle = await ctx.read<Address>(token, ABI, "superstateOracle");
   if (oracle && oracle !== zeroAddress)
-    await addMapped(ctx, oracle, { role: "oracle", powers: { addCheckpoint: "set-price", addCheckpoints: "set-price", setMaximumAcceptablePriceDelta: "set-price" }, notScored: ["renounceOwnership"] }, warn);
+    await addMapped(
+      ctx,
+      oracle,
+      {
+        role: "oracle",
+        powers: {
+          addCheckpoint: "set-price",
+          addCheckpoints: "set-price",
+          setMaximumAcceptablePriceDelta: "set-price",
+        },
+        notScored: ["renounceOwnership"],
+      },
+      warn,
+    );
 
   const allowlist = await ctx.read<Address>(token, ABI, "allowlist");
   if (allowlist && allowlist !== zeroAddress)
-    await addMapped(ctx, allowlist, { role: "service", powers: { setAllowed: "freeze", setAllowedBatch: "freeze" }, notScored: ["renounceOwnership"] }, warn);
+    await addMapped(
+      ctx,
+      allowlist,
+      {
+        role: "service",
+        powers: { setAllowed: "freeze", setAllowedBatch: "freeze" },
+        notScored: ["renounceOwnership"],
+      },
+      warn,
+    );
 
   reportWarnings("superstate", warn);
   return { oracle, allowlist, warnings: warn };

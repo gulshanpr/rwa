@@ -42,8 +42,13 @@ export async function pareto(ctx: Context, token: Address) {
 
   const who = (modifier: string) => {
     if (modifier === "_checkOnlyOwner()" || modifier === "onlyOwner") return { holders: [keys.owner], label: "owner" };
-    if (modifier === "_checkOnlyOwnerOrManager()") return { holders: ownerOrOperator, label: "owner or the strategy manager's operator" };
-    if (modifier === "_checkOnlyOwnerOrGuardian()") return { holders: [keys.owner], label: "owner (guardian is an internal variable, initialized to the owner; no public getter)" };
+    if (modifier === "_checkOnlyOwnerOrManager()")
+      return { holders: ownerOrOperator, label: "owner or the strategy manager's operator" };
+    if (modifier === "_checkOnlyOwnerOrGuardian()")
+      return {
+        holders: [keys.owner],
+        label: "owner (guardian is an internal variable, initialized to the owner; no public getter)",
+      };
     return undefined;
   };
 
@@ -78,9 +83,24 @@ export async function pareto(ctx: Context, token: Address) {
         emergencyShutdown: "pause",
       },
       rules: [
-        { power: "set-price", fns: ["startEpoch", "stopEpoch", "stopEpochWithDuration"], holders: ownerOrOperator, via: "owner or the strategy manager's operator. stopEpoch sets the interest and therefore priceAA" },
-        { power: "set-price", fns: ["writeOffDeposit"], holders: [keys.borrower], via: "borrower, and only while an epoch is running" },
-        { power: "pause", fns: ["pause", "unpause", "emergencyShutdown"], holders: [keys.owner], via: "owner. startEpoch also pauses deposits itself" },
+        {
+          power: "set-price",
+          fns: ["startEpoch", "stopEpoch", "stopEpochWithDuration"],
+          holders: ownerOrOperator,
+          via: "owner or the strategy manager's operator. stopEpoch sets the interest and therefore priceAA",
+        },
+        {
+          power: "set-price",
+          fns: ["writeOffDeposit"],
+          holders: [keys.borrower],
+          via: "borrower, and only while an epoch is running",
+        },
+        {
+          power: "pause",
+          fns: ["pause", "unpause", "emergencyShutdown"],
+          holders: [keys.owner],
+          via: "owner. startEpoch also pauses deposits itself",
+        },
         { power: "allocate", fns: ["transferToken"], holders: [keys.owner], via: "owner, no timelock" },
       ],
       notScored: [
@@ -109,15 +129,27 @@ export async function pareto(ctx: Context, token: Address) {
       guards: { onlyOwner: { holders: [keys.owner], label: "owner" }, onlyIdleCDO: null },
       powers: { setBorrower: "allocate", transferToken: "allocate", setManager: "admin" },
       rules: [
-        { power: "allocate", fns: ["setBorrower"], holders: [keys.owner], via: "owner. points the vault's only borrower" },
-        { power: "set-price", fns: ["setApr", "setAprs", "setAprsWithBuffer"], holders: [cdo], via: "only the vault, which the operator drives at epoch stop" },
+        {
+          power: "allocate",
+          fns: ["setBorrower"],
+          holders: [keys.owner],
+          via: "owner. points the vault's only borrower",
+        },
+        {
+          power: "set-price",
+          fns: ["setApr", "setAprs", "setAprsWithBuffer"],
+          holders: [cdo],
+          via: "only the vault, which the operator drives at epoch stop",
+        },
       ],
       notScored: ["deposit", "redeem", "redeemUnderlying", "requestWithdraw", "claimWithdrawRequest", "initialize"],
     },
     warn,
   );
 
-  warn.push("guardian is internal (IdleCDOStorage) and was set to the owner at initialization. setGuardian can change it and there is no getter, so a later change would not show up here.");
+  warn.push(
+    "guardian is internal (IdleCDOStorage) and was set to the owner at initialization. setGuardian can change it and there is no getter, so a later change would not show up here.",
+  );
   reportWarnings("pareto", warn);
   return { cdo, strategy, ...keys, warnings: warn };
 }

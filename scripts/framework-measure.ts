@@ -43,13 +43,23 @@ async function measure(slug: string, token: string, navUsd: number): Promise<Mea
 
   const quotes: Measured["dex"]["quotes"] = [];
   for (const sizeUsd of SIZES) {
-    const amountIn = BigInt(Math.floor((sizeUsd / navUsd) * 10 ** Math.min(decimals, 12))) * 10n ** BigInt(Math.max(0, decimals - 12));
-    const route = await fetchJson<Route>(`${KYBER}?tokenIn=${token}&tokenOut=${USDC}&amountIn=${amountIn}`, { headers: { "x-client-id": "rwabeat" } }, 1).catch(() => undefined);
+    const amountIn =
+      BigInt(Math.floor((sizeUsd / navUsd) * 10 ** Math.min(decimals, 12))) * 10n ** BigInt(Math.max(0, decimals - 12));
+    const route = await fetchJson<Route>(
+      `${KYBER}?tokenIn=${token}&tokenOut=${USDC}&amountIn=${amountIn}`,
+      { headers: { "x-client-id": "rwabeat" } },
+      1,
+    ).catch(() => undefined);
     const out = route?.code === 0 ? route.data?.routeSummary?.amountOut : undefined;
     if (!out) quotes.push({ sizeUsd, routed: false });
     else {
       const outUsd = units(out, 6);
-      quotes.push({ sizeUsd, routed: true, outUsd: Math.round(outUsd), slippagePct: Math.round((1 - outUsd / sizeUsd) * 10000) / 100 });
+      quotes.push({
+        sizeUsd,
+        routed: true,
+        outUsd: Math.round(outUsd),
+        slippagePct: Math.round((1 - outUsd / sizeUsd) * 10000) / 100,
+      });
     }
     await new Promise((r) => setTimeout(r, 1500));
   }
@@ -79,7 +89,9 @@ for (const asset of loadAssets().filter((a) => only.length === 0 || only.include
   }
   const m = await measure(asset.slug, d.token, nav);
   writeFileSync(`data/measured/${asset.slug}.json`, `${JSON.stringify(m, null, 2)}\n`);
-  const q = m.dex.quotes.map((x) => (x.routed ? `$${x.sizeUsd / 1e6}M ${x.slippagePct}%` : `$${x.sizeUsd / 1e6}M no route`)).join(", ");
+  const q = m.dex.quotes
+    .map((x) => (x.routed ? `$${x.sizeUsd / 1e6}M ${x.slippagePct}%` : `$${x.sizeUsd / 1e6}M no route`))
+    .join(", ");
   console.log(`${asset.slug}: top10 ${m.holders?.top10Pct}% · ${q}`);
 }
 await closeDb();

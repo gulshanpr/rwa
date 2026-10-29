@@ -4,7 +4,7 @@ import { log } from "./util";
 
 const SITE_URL = process.env.SITE_URL ?? "";
 
-export type NewAlert = Omit<Alert, "publishedAt"> & { publishedAt?: string; eventId?: number };
+type NewAlert = Omit<Alert, "publishedAt"> & { publishedAt?: string; eventId?: number };
 
 // Returns true if the alert is new. Alert ids are deterministic, so re-runs never duplicate.
 // notify: false stores it without Telegram or a discovery run (backfilled history, not news).

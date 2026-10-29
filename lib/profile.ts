@@ -12,10 +12,11 @@ import type { Entity } from "./schema/entity";
 import type { Alert, Live } from "./schema/live";
 import type { Measured } from "./schema/measured";
 
-export { ASSET_CLASSES, assetClassFromPath } from "./labels";
+export { ASSET_CLASSES } from "./labels";
 
 export interface Flag {
-  id: "eoa-upgrade" | "eoa-critical" | "eoa-high" | "no-upgrade-timelock" | "price-stale" | "defi-fixed" | "unclassified";
+  id:
+    "eoa-upgrade" | "eoa-critical" | "eoa-high" | "no-upgrade-timelock" | "price-stale" | "defi-fixed" | "unclassified";
   label: string;
   color: Tone;
 }
@@ -63,7 +64,11 @@ function computeFlags(powers: PowerRow[], live: Live | undefined, stats: AssetSt
     flags.push({ id: "eoa-critical", label: "Single-key critical power", color: "red" });
   const high = powers.filter((r) => r.criticality === "high" && single(r));
   if (high.length > 0)
-    flags.push({ id: "eoa-high", label: "Single key can freeze/pause", color: high.some((r) => r.power === "freeze") ? "red" : "yellow" });
+    flags.push({
+      id: "eoa-high",
+      label: "Single key can freeze/pause",
+      color: high.some((r) => r.power === "freeze") ? "red" : "yellow",
+    });
   if (powers.some((r) => r.power === "upgrade" && !single(r) && r.holder.delaySeconds === 0))
     flags.push({ id: "no-upgrade-timelock", label: "No upgrade timelock", color: "yellow" });
   if (stats.oracle && stats.oracle.scheduledAgeSeconds > 86400)

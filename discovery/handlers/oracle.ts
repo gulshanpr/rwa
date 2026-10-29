@@ -14,7 +14,8 @@ const ABI = parseAbi([
  */
 export async function oracleFeed(ctx: Context, feed: Address) {
   const chain: Address[] = [getAddress(feed)];
-  const adapter = (await ctx.read<Address>(feed, ABI, "getPriceFeedAdapter")) ?? (await ctx.read<Address>(feed, ABI, "aggregator"));
+  const adapter =
+    (await ctx.read<Address>(feed, ABI, "getPriceFeedAdapter")) ?? (await ctx.read<Address>(feed, ABI, "aggregator"));
   if (adapter) chain.push(getAddress(adapter));
 
   for (const [i, address] of chain.entries()) {

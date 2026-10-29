@@ -12,7 +12,11 @@ import { getProfile } from "@/lib/profile";
 
 export const generateMetadata = tabMetadata("Underlying Asset");
 
-const QUALITY_LABELS = { "investment-grade": "Investment grade", "high-yield": "High yield", unrated: "Unrated" } as const;
+const QUALITY_LABELS = {
+  "investment-grade": "Investment grade",
+  "high-yield": "High yield",
+  unrated: "Unrated",
+} as const;
 
 export default async function UnderlyingPage({ params }: PageProps<"/assets/[slug]/underlying">) {
   const { slug } = await params;
@@ -25,7 +29,9 @@ export default async function UnderlyingPage({ params }: PageProps<"/assets/[slu
     disclosedFact("Weighted average maturity", u.wamDays, (v) => `${v} days`),
     ...(u.creditQuality ? [disclosedFact("Credit quality", u.creditQuality, (v) => QUALITY_LABELS[v])] : []),
     ...(u.securedPct ? [disclosedFact("Senior and secured", u.securedPct, (v) => `${v}%`)] : []),
-    ...(u.largestObligorPct ? [disclosedFact("Largest borrower", u.largestObligorPct, (v) => `${v}% of the pool`)] : []),
+    ...(u.largestObligorPct
+      ? [disclosedFact("Largest borrower", u.largestObligorPct, (v) => `${v}% of the pool`)]
+      : []),
     ...(u.obligors ? [disclosedFact("Borrowers", u.obligors, (v) => String(v))] : []),
   ];
 
@@ -45,7 +51,11 @@ export default async function UnderlyingPage({ params }: PageProps<"/assets/[slu
           }
         >
           {holdings.status !== "public" ? (
-            <EmptyUnknown topic={`${asset.ticker} holdings`} searchedAt={holdings.status === "not_public" ? holdings.searchedAt : undefined} note={holdings.note} />
+            <EmptyUnknown
+              topic={`${asset.ticker} holdings`}
+              searchedAt={holdings.status === "not_public" ? holdings.searchedAt : undefined}
+              note={holdings.note}
+            />
           ) : (
             <>
               <Table>
@@ -94,7 +104,10 @@ export default async function UnderlyingPage({ params }: PageProps<"/assets/[slu
                 { label: "History since", value: formatDate(u.trackRecord.value.since), source: u.trackRecord.source },
                 {
                   label: "Losses to holders",
-                  value: u.trackRecord.value.losses.length === 0 ? "None found" : `${u.trackRecord.value.losses.length} recorded`,
+                  value:
+                    u.trackRecord.value.losses.length === 0
+                      ? "None found"
+                      : `${u.trackRecord.value.losses.length} recorded`,
                   source: u.trackRecord.source,
                 },
               ]}

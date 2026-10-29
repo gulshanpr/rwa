@@ -39,15 +39,34 @@ const IM_POWERS: Record<string, Power> = {
   unpauseRedeem: "pause",
 };
 /** Reviewed and not scored: fee contracts, minimum sizes and rate limits shape exits, not holdings. */
-const IM_NOT_SCORED = ["setOndoRedemptionFees", "setOndoSubscriptionFees", "setMinimumDepositAmount", "setMinimumRedemptionAmount", "setOndoRateLimiter"];
+const IM_NOT_SCORED = [
+  "setOndoRedemptionFees",
+  "setOndoSubscriptionFees",
+  "setMinimumDepositAmount",
+  "setMinimumRedemptionAmount",
+  "setOndoRateLimiter",
+];
 
 export async function ondo(ctx: Context, token: Address) {
   const warn: string[] = [];
-  const t = await addMapped(ctx, token, { role: "token", powers: { setKYCRegistry: "set-compliance", setKYCRequirementGroup: "set-compliance" } }, warn);
+  const t = await addMapped(
+    ctx,
+    token,
+    { role: "token", powers: { setKYCRegistry: "set-compliance", setKYCRequirementGroup: "set-compliance" } },
+    warn,
+  );
 
   const kycView = await ctx.read<Address>(token, ABI, "kycRegistry");
   if (kycView && kycView !== zeroAddress)
-    await addMapped(ctx, kycView, { role: "service", powers: { setOndoRegistry: "set-compliance", setKYCRequirementGroupToRwaToken: "set-compliance" } }, warn);
+    await addMapped(
+      ctx,
+      kycView,
+      {
+        role: "service",
+        powers: { setOndoRegistry: "set-compliance", setKYCRequirementGroupToRwaToken: "set-compliance" },
+      },
+      warn,
+    );
 
   const minters = t.roles.get(roleHash("MINTER_ROLE")) ?? [];
   const managers: Address[] = [];
@@ -66,17 +85,42 @@ export async function ondo(ctx: Context, token: Address) {
         role: "service",
         powers: IM_POWERS,
         notScored: IM_NOT_SCORED,
-        rules: [{ power: "mint", fns: ["adminSubscribe"], holders: adminSubscribers, via: "ADMIN_SUBSCRIPTION_ROLE (capped by AdminSubscriptionChecker allowance)" }],
+        rules: [
+          {
+            power: "mint",
+            fns: ["adminSubscribe"],
+            holders: adminSubscribers,
+            via: "ADMIN_SUBSCRIPTION_ROLE (capped by AdminSubscriptionChecker allowance)",
+          },
+        ],
       },
       warn,
     );
 
     const oracle = await ctx.read<Address>(im, ABI, "ondoOracle");
     if (oracle && oracle !== zeroAddress) {
-      await addMapped(ctx, oracle, { role: "oracle", powers: { setTokenToOracleType: "set-price", setHardcodedPrice: "set-price", setTokenToAggregatorV3Oracle: "set-price", setTokenToRWAOracle: "set-price" } }, warn);
+      await addMapped(
+        ctx,
+        oracle,
+        {
+          role: "oracle",
+          powers: {
+            setTokenToOracleType: "set-price",
+            setHardcodedPrice: "set-price",
+            setTokenToAggregatorV3Oracle: "set-price",
+            setTokenToRWAOracle: "set-price",
+          },
+        },
+        warn,
+      );
       const wrapper = await ctx.read<Address>(oracle, ABI, "tokenToRWAOracle", [token]);
       if (wrapper && wrapper !== zeroAddress) {
-        await addMapped(ctx, wrapper, { role: "oracle", powers: { setRwaOracle: "set-price" }, notScored: ["renounceOwnership"] }, warn);
+        await addMapped(
+          ctx,
+          wrapper,
+          { role: "oracle", powers: { setRwaOracle: "set-price" }, notScored: ["renounceOwnership"] },
+          warn,
+        );
         const source = await ctx.read<Address>(wrapper, ABI, "rwaOracle");
         if (source && source !== zeroAddress) await addMapped(ctx, source, { role: "oracle" }, warn);
       }
@@ -86,7 +130,12 @@ export async function ondo(ctx: Context, token: Address) {
     if (registry && registry !== zeroAddress) {
       const regRoles = await roleMembers(ctx, registry);
       const rwaRole = await ctx.read<`0x${string}`>(registry, ABI, "rwaRole", [token]);
-      const registrars = [...new Set([...(rwaRole ? (regRoles.get(rwaRole) ?? []) : []), ...(regRoles.get(roleHash("MASTER_CONFIGURER_ROLE")) ?? [])])];
+      const registrars = [
+        ...new Set([
+          ...(rwaRole ? (regRoles.get(rwaRole) ?? []) : []),
+          ...(regRoles.get(roleHash("MASTER_CONFIGURER_ROLE")) ?? []),
+        ]),
+      ];
       await addMapped(
         ctx,
         registry,
@@ -94,7 +143,14 @@ export async function ondo(ctx: Context, token: Address) {
           name: "OndoIDRegistry",
           role: "service",
           powers: { setRWARole: "admin" },
-          rules: [{ power: "freeze", fns: ["setUserID", "removeUserAddresses"], holders: registrars, via: `rwaRole(${ctx.asset.ticker}) or MASTER_CONFIGURER_ROLE` }],
+          rules: [
+            {
+              power: "freeze",
+              fns: ["setUserID", "removeUserAddresses"],
+              holders: registrars,
+              via: `rwaRole(${ctx.asset.ticker}) or MASTER_CONFIGURER_ROLE`,
+            },
+          ],
         },
         warn,
       );
@@ -107,7 +163,12 @@ export async function ondo(ctx: Context, token: Address) {
         router,
         {
           role: "service",
-          powers: { setWithdrawTokenSources: "allocate", setUserWithdrawTokenSources: "allocate", setDepositTokenRecipient: "allocate", setMinimumTokenPriceAndOracle: "set-price" },
+          powers: {
+            setWithdrawTokenSources: "allocate",
+            setUserWithdrawTokenSources: "allocate",
+            setDepositTokenRecipient: "allocate",
+            setMinimumTokenPriceAndOracle: "set-price",
+          },
           guards: { "onlyRole(RWA_MANAGER_ROLE)": null },
         },
         warn,

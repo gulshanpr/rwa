@@ -58,12 +58,21 @@ for (const asset of assets) {
       if (result.extra.dsRoles) console.error(`  DS roles: ${JSON.stringify(result.extra.dsRoles)}`);
       if (!dryRun) {
         write(result);
-        if (catalog.source === "db") await saveSnapshot(result.discovered, result.meta, { by: "discovery", extra: result.extra, diffSummary: lines });
+        if (catalog.source === "db")
+          await saveSnapshot(result.discovered, result.meta, {
+            by: "discovery",
+            extra: result.extra,
+            diffSummary: lines,
+          });
       }
     } catch (e) {
       failed++;
       console.error(`  ${label} failed: ${e instanceof Error ? e.message : String(e)}`);
-      summary.push(`### ${label}`, `- Discovery failed: ${e instanceof Error ? e.message.split("\n")[0] : String(e)}`, "");
+      summary.push(
+        `### ${label}`,
+        `- Discovery failed: ${e instanceof Error ? e.message.split("\n")[0] : String(e)}`,
+        "",
+      );
     }
   }
 }
@@ -71,6 +80,8 @@ for (const asset of assets) {
 const out = path.join(process.cwd(), ".cache", "discovery-summary.md");
 fs.mkdirSync(path.dirname(out), { recursive: true });
 fs.writeFileSync(out, summary.length > 0 ? summary.join("\n") : "No changes.\n");
-console.error(`\n${changed} snapshot(s) changed${dryRun ? " (dry run, nothing written)" : ""}, ${failed} failed. Summary: .cache/discovery-summary.md`);
+console.error(
+  `\n${changed} snapshot(s) changed${dryRun ? " (dry run, nothing written)" : ""}, ${failed} failed. Summary: .cache/discovery-summary.md`,
+);
 if (hasDatabase()) await closeDb();
 if (failed > 0) process.exit(1);

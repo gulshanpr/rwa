@@ -31,7 +31,8 @@ function run() {
     for (const [role, item] of Object.entries({ custodian, fundAdministrator, auditor, transferAgent })) {
       if (item.status === "public") refs.push([`counterparties.${role}`, item.value]);
     }
-    if (asset.pricing.reference.type !== "none") refs.push(["pricing.reference.provider", asset.pricing.reference.provider]);
+    if (asset.pricing.reference.type !== "none")
+      refs.push(["pricing.reference.provider", asset.pricing.reference.provider]);
     asset.transparency.reports.forEach((r, i) => refs.push([`transparency.reports[${i}].provider`, r.provider]));
     for (const [field, slug] of refs) {
       if (!entities.has(slug)) errors.push(`${file}: ${field} "${slug}" has no data/entities/${slug}.yaml`);
@@ -39,7 +40,8 @@ function run() {
 
     for (const d of asset.deployments) {
       const rel = `discovered/${asset.slug}/${d.chain}.json`;
-      if (!fs.existsSync(path.join(process.cwd(), rel))) warnings.push(`${file}: no discovery snapshot at ${rel}. Run: bun run discover ${asset.slug}`);
+      if (!fs.existsSync(path.join(process.cwd(), rel)))
+        warnings.push(`${file}: no discovery snapshot at ${rel}. Run: bun run discover ${asset.slug}`);
     }
     loadDiscovered(asset);
     loadMeasured(asset.slug);
@@ -48,7 +50,8 @@ function run() {
     walkDates(asset, asset.slug, dates);
     const cutoff = Date.now() - STALE_DAYS * 86400 * 1000;
     for (const d of dates) {
-      if (new Date(d.date).getTime() < cutoff) warnings.push(`${file}: ${d.path} = ${d.date} is older than ${STALE_DAYS} days. Re-check the source.`);
+      if (new Date(d.date).getTime() < cutoff)
+        warnings.push(`${file}: ${d.path} = ${d.date} is older than ${STALE_DAYS} days. Re-check the source.`);
     }
   }
 
@@ -57,7 +60,10 @@ function run() {
     walkDates(e, e.slug, dates);
     const cutoff = Date.now() - STALE_DAYS * 86400 * 1000;
     for (const d of dates) {
-      if (new Date(d.date).getTime() < cutoff) warnings.push(`data/entities/${e.slug}.yaml: ${d.path} = ${d.date} is older than ${STALE_DAYS} days. Re-check the source.`);
+      if (new Date(d.date).getTime() < cutoff)
+        warnings.push(
+          `data/entities/${e.slug}.yaml: ${d.path} = ${d.date} is older than ${STALE_DAYS} days. Re-check the source.`,
+        );
     }
   }
   return assets.length;

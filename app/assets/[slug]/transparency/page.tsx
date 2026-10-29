@@ -14,12 +14,26 @@ import { getProfile, nameOf } from "@/lib/profile";
 
 export const generateMetadata = tabMetadata("Transparency");
 
-const SOURCE_LABELS = { issuer: "Issuer", "fund-administrator": "Fund administrator", custodian: "Custodian", independent: "Independent firm" } as const;
+const SOURCE_LABELS = {
+  issuer: "Issuer",
+  "fund-administrator": "Fund administrator",
+  custodian: "Custodian",
+  independent: "Independent firm",
+} as const;
 const GRANULARITY_LABELS = { nav: "Single NAV", "asset-class": "By asset class", position: "Every position" } as const;
-const VERIFIABILITY_LABELS = { "self-reported": "Self-reported", attestation: "Attestation", audit: "Audit", cryptographic: "Cryptographic" } as const;
+const VERIFIABILITY_LABELS = {
+  "self-reported": "Self-reported",
+  attestation: "Attestation",
+  audit: "Audit",
+  cryptographic: "Cryptographic",
+} as const;
 
 function Mark({ ok }: { ok: boolean }) {
-  return ok ? <Check className="size-3.5 shrink-0 text-risk-green" aria-label="Passes" /> : <X className="size-3.5 shrink-0 text-risk-red" aria-label="Fails" />;
+  return ok ? (
+    <Check className="size-3.5 shrink-0 text-risk-green" aria-label="Passes" />
+  ) : (
+    <X className="size-3.5 shrink-0 text-risk-red" aria-label="Fails" />
+  );
 }
 
 function Cell({ ok, children }: { ok: boolean; children: React.ReactNode }) {
@@ -104,15 +118,21 @@ export default async function TransparencyPage({ params }: PageProps<"/assets/[s
           </Table>
         )}
         <p className="mt-3 text-small text-fg-muted">
-          Onchain data is a separate badge, not part of the rating: public data that lives offchain is still transparent to a person.
-          Ladders adapted from Chronicle Labs, &quot;The Transparency Gap in Onchain Finance&quot; (Oct 2026).
+          Onchain data is a separate badge, not part of the rating: public data that lives offchain is still transparent
+          to a person. Ladders adapted from Chronicle Labs, &quot;The Transparency Gap in Onchain Finance&quot; (Oct
+          2026).
         </p>
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card title="Event reporting" description="Private credit must report defaults as they happen, not at the next periodic report.">
+        <Card
+          title="Event reporting"
+          description="Private credit must report defaults as they happen, not at the next periodic report."
+        >
           {cls === "private-credit" || t.eventReporting.status === "public" ? (
-            <FactList facts={[disclosedFact("Defaults reported as they happen", t.eventReporting, (v) => (v ? "Yes" : "No"))]} />
+            <FactList
+              facts={[disclosedFact("Defaults reported as they happen", t.eventReporting, (v) => (v ? "Yes" : "No"))]}
+            />
           ) : (
             <p className="text-small text-fg-muted">Only checked for private credit.</p>
           )}

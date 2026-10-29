@@ -61,7 +61,10 @@ export function AppShell({
             </Link>
           </p>
         </div>
-        <header ref={headerRef} className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface px-3 md:gap-4 md:px-5">
+        <header
+          ref={headerRef}
+          className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface px-3 md:gap-4 md:px-5"
+        >
           <button
             type="button"
             onClick={() => setMobileOpen(true)}

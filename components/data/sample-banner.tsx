@@ -10,8 +10,8 @@ export function SampleBanner() {
       <CircleAlert className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
       <p>
         <strong className="font-semibold">Preview data.</strong> Permissions, oracle readings, DeFi markets and alerts
-        on this page are illustrative seed data while the discovery pipeline and live worker are being built.
-        Addresses other than the token contract are placeholders. Don&apos;t rely on them.{" "}
+        on this page are illustrative seed data while the discovery pipeline and live worker are being built. Addresses
+        other than the token contract are placeholders. Don&apos;t rely on them.{" "}
         <Link href="/methodology#data" className="text-accent underline underline-offset-2">
           How data gets here
         </Link>

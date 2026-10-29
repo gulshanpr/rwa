@@ -16,14 +16,21 @@ import { pareto } from "./handlers/pareto";
 import { superstate } from "./handlers/superstate";
 import { clientsFor } from "./rpc";
 
-export const TOOL_VERSION = "discovery-0.2.0";
+const TOOL_VERSION = "discovery-0.2.0";
 
 /** Platforms with their own handler. Each maps the token, its oracle and the contracts they rely on. */
-const PLATFORMS: Record<string, (ctx: Context, token: Address) => Promise<unknown>> = { superstate, ondo, hashnote, centrifuge, pareto, midas };
+const PLATFORMS: Record<string, (ctx: Context, token: Address) => Promise<unknown>> = {
+  superstate,
+  ondo,
+  hashnote,
+  centrifuge,
+  pareto,
+  midas,
+};
 /** Blocks behind head, so a snapshot never lands on a block that later reorgs. */
 const CONFIRMATIONS = 12n;
 
-export interface DiscoveryResult {
+interface DiscoveryResult {
   discovered: Discovered;
   meta: DiscoveredMeta;
   extra: Record<string, unknown>;
@@ -50,11 +57,18 @@ export async function discover(asset: Asset, chain: Chain): Promise<DiscoveryRes
     const proxy = await ctx.detectProxy(token);
     const { src, permissions } = await ozStandard(ctx, token, proxy?.implementation ?? token, "token");
     if (proxy?.admin) ctx.grant(permissions, "upgrade", [proxy.admin], `Proxy upgrade · ${proxy.type} admin`);
-    ctx.addContract(token, { name: src.name ?? asset.ticker, role: "token", ...(proxy ? { proxy } : {}), verified: src.verified, permissions });
+    ctx.addContract(token, {
+      name: src.name ?? asset.ticker,
+      role: "token",
+      ...(proxy ? { proxy } : {}),
+      verified: src.verified,
+      permissions,
+    });
   }
 
   const ref = asset.pricing.reference;
-  if (ref.type === "oracle" && ref.chain === chain && ref.address && !PLATFORMS[asset.platform]) await oracleFeed(ctx, getAddress(ref.address));
+  if (ref.type === "oracle" && ref.chain === chain && ref.address && !PLATFORMS[asset.platform])
+    await oracleFeed(ctx, getAddress(ref.address));
 
   const holders = await ctx.classifyHolders();
   const discovered = DiscoveredSchema.parse({
@@ -75,14 +89,20 @@ export async function discover(asset: Asset, chain: Chain): Promise<DiscoveryRes
 function sortDeep(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(sortDeep);
   if (value && typeof value === "object") {
-    return Object.fromEntries(Object.keys(value).sort().map((k) => [k, sortDeep((value as Record<string, unknown>)[k])]));
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((k) => [k, sortDeep((value as Record<string, unknown>)[k])]),
+    );
   }
   return value;
 }
 
 function sortPermissions(d: Discovered): Discovered {
   for (const c of Object.values(d.contracts)) {
-    c.permissions.sort((a, b) => a.power.localeCompare(b.power) || a.holder.localeCompare(b.holder) || a.via.localeCompare(b.via));
+    c.permissions.sort(
+      (a, b) => a.power.localeCompare(b.power) || a.holder.localeCompare(b.holder) || a.via.localeCompare(b.via),
+    );
   }
   return d;
 }
@@ -107,12 +127,16 @@ const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
 /** Human-readable changes between two snapshots, ignoring block and timestamp. */
 export function diffSummary(prev: Discovered | undefined, next: Discovered): string[] {
-  if (!prev) return [`New snapshot: ${Object.keys(next.contracts).length} contracts, ${Object.keys(next.holders).length} holders.`];
+  if (!prev)
+    return [
+      `New snapshot: ${Object.keys(next.contracts).length} contracts, ${Object.keys(next.holders).length} holders.`,
+    ];
   const lines: string[] = [];
   const key = (c: string, p: { power: string; holder: string }) => `${c}|${p.power}|${getAddress(p.holder)}`;
   const perms = (d: Discovered) => {
     const m = new Map<string, string>();
-    for (const [addr, c] of Object.entries(d.contracts)) for (const p of c.permissions) m.set(key(getAddress(addr), p), `${c.name}: ${p.power} → ${short(p.holder)}`);
+    for (const [addr, c] of Object.entries(d.contracts))
+      for (const p of c.permissions) m.set(key(getAddress(addr), p), `${c.name}: ${p.power} → ${short(p.holder)}`);
     return m;
   };
   const before = perms(prev);
@@ -126,7 +150,9 @@ export function diffSummary(prev: Discovered | undefined, next: Discovered): str
     const old = pc[addr];
     if (!old) lines.push(`New contract: ${c.name} (${short(addr)})`);
     else if (old.proxy?.implementation?.toLowerCase() !== c.proxy?.implementation?.toLowerCase())
-      lines.push(`${c.name} implementation ${short(old.proxy?.implementation ?? "none")} → ${short(c.proxy?.implementation ?? "none")}`);
+      lines.push(
+        `${c.name} implementation ${short(old.proxy?.implementation ?? "none")} → ${short(c.proxy?.implementation ?? "none")}`,
+      );
     else if (old.proxy?.admin?.toLowerCase() !== c.proxy?.admin?.toLowerCase())
       lines.push(`${c.name} proxy admin ${short(old.proxy?.admin ?? "none")} → ${short(c.proxy?.admin ?? "none")}`);
   }
@@ -138,8 +164,11 @@ export function diffSummary(prev: Discovered | undefined, next: Discovered): str
     if (old.kind !== h.kind) lines.push(`Holder ${short(addr)} changed from ${old.kind} to ${h.kind}`);
     else if (old.kind === "safe" && h.kind === "safe") {
       if (old.threshold !== h.threshold || old.owners.length !== h.owners.length)
-        lines.push(`Safe ${short(addr)} threshold ${old.threshold}/${old.owners.length} → ${h.threshold}/${h.owners.length}`);
-      if (old.modules.length !== h.modules.length) lines.push(`Safe ${short(addr)} modules ${old.modules.length} → ${h.modules.length}`);
+        lines.push(
+          `Safe ${short(addr)} threshold ${old.threshold}/${old.owners.length} → ${h.threshold}/${h.owners.length}`,
+        );
+      if (old.modules.length !== h.modules.length)
+        lines.push(`Safe ${short(addr)} modules ${old.modules.length} → ${h.modules.length}`);
     } else if (old.kind === "timelock" && h.kind === "timelock" && old.minDelaySeconds !== h.minDelaySeconds)
       lines.push(`Timelock ${short(addr)} delay ${old.minDelaySeconds}s → ${h.minDelaySeconds}s`);
   }

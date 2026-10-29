@@ -2,9 +2,7 @@ import { z } from "zod";
 
 export const IsoDate = z.iso.date();
 
-export const Address = z
-  .string()
-  .regex(/^0x[0-9a-fA-F]{40}$/, "Expected a 20-byte hex address");
+export const Address = z.string().regex(/^0x[0-9a-fA-F]{40}$/, "Expected a 20-byte hex address");
 
 export const Source = z
   .object({
@@ -15,8 +13,7 @@ export const Source = z
   })
   .refine((s) => s.url || s.tx, "A source needs a url or tx");
 
-export const Sourced = <T extends z.ZodType>(value: T) =>
-  z.object({ value, source: Source });
+export const Sourced = <T extends z.ZodType>(value: T) => z.object({ value, source: Source });
 
 export const Disclosed = <T extends z.ZodType>(value: T) =>
   z.discriminatedUnion("status", [

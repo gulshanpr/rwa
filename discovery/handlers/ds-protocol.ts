@@ -34,9 +34,10 @@ const ROLE_ADDED = parseAbiItem("event DSTrustServiceRoleAdded(address targetAdd
 const ROLE_REMOVED = parseAbiItem("event DSTrustServiceRoleRemoved(address targetAddress, uint8 role, address sender)");
 
 /** Modifiers that only let another contract (or a specific argument) through. Not key-held. */
-const CONTRACT_ONLY = /^(onlyToken|onlyRegistry|onlyOmnibusWalletController|onlyTBEOmnibus|onlyProxy|onlyOperator|onlyNew\w*|onlyExisting\w*|onlySame\w*)$/;
+const CONTRACT_ONLY =
+  /^(onlyToken|onlyRegistry|onlyOmnibusWalletController|onlyTBEOmnibus|onlyProxy|onlyOperator|onlyNew\w*|onlyExisting\w*|onlySame\w*)$/;
 
-export interface DsRoles {
+interface DsRoles {
   byRole: Record<number, Address[]>;
 }
 
@@ -61,7 +62,9 @@ async function replayRoles(ctx: Context, trust: Address, candidates: Address[]):
 }
 
 export async function dsProtocol(ctx: Context, token: Address) {
-  const services: { id: number; name: string; address: Address }[] = [{ id: 2, name: "DSToken", address: getAddress(token) }];
+  const services: { id: number; name: string; address: Address }[] = [
+    { id: 2, name: "DSToken", address: getAddress(token) },
+  ];
   for (const [id, name] of Object.entries(SERVICES)) {
     const a = await ctx.read<Address>(token, ABI, "getDSService", [BigInt(id)]);
     if (a && a !== zeroAddress) services.push({ id: Number(id), name, address: getAddress(a) });
@@ -102,7 +105,9 @@ export async function dsProtocol(ctx: Context, token: Address) {
       switch (base) {
         case "onlyMaster":
         case "onlyMasterOrTBEOmnibus":
-          return isTrust ? { holders: masters, label: label(1) } : { holders: uniq([...masters, ...contractOwner]), label: "MASTER or contract owner" };
+          return isTrust
+            ? { holders: masters, label: label(1) }
+            : { holders: uniq([...masters, ...contractOwner]), label: "MASTER or contract owner" };
         case "onlyMasterOrIssuer":
         case "onlyEntityOwnerOrAbove":
           return { holders: uniq([...masters, ...issuers]), label: label(1, 2) };
@@ -119,11 +124,17 @@ export async function dsProtocol(ctx: Context, token: Address) {
         case "onlyExchangeOrAbove":
           return { holders: uniq([...exchanges, ...issuers, ...agents, ...masters]), label: label(4, 2, 8, 1) };
         case "onlyOwnerOrExchangeOrAbove":
-          return { holders: uniq([...contractOwner, ...exchanges, ...issuers, ...agents, ...masters]), label: "owner, " + label(4, 2, 8, 1) };
+          return {
+            holders: uniq([...contractOwner, ...exchanges, ...issuers, ...agents, ...masters]),
+            label: "owner, " + label(4, 2, 8, 1),
+          };
         case "onlyOwner":
           return { holders: contractOwner, label: "contract owner" };
         default:
-          return { holders: proxy?.admin ? [proxy.admin] : contractOwner, label: "unrecognized modifier, needs review" };
+          return {
+            holders: proxy?.admin ? [proxy.admin] : contractOwner,
+            label: "unrecognized modifier, needs review",
+          };
       }
     };
 

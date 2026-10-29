@@ -45,7 +45,9 @@ export const RISK_WORD: Record<RiskVisual, string> = {
 
 /** "Unverified, at least yellow" when we know the floor. */
 export function ratingWord(r: Pick<CategoryResult, "rating" | "floor">): string {
-  return r.rating === "unverified" && r.floor && r.floor !== "green" ? `Unverified · at least ${r.floor}` : RISK_WORD[r.rating];
+  return r.rating === "unverified" && r.floor && r.floor !== "green"
+    ? `Unverified · at least ${r.floor}`
+    : RISK_WORD[r.rating];
 }
 
 export const SEVERITY_DOT: Record<AlertSeverity, string> = {

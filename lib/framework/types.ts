@@ -3,7 +3,15 @@ import type { Source } from "../schema/sourced";
 export type CategoryId = "underlying" | "legal" | "counterparties" | "control" | "transparency" | "pricing" | "exit";
 
 /** Real asset, then who you trust, then whether you can see trouble coming and get out (framework.md). */
-export const CATEGORY_ORDER: CategoryId[] = ["underlying", "legal", "counterparties", "control", "transparency", "pricing", "exit"];
+export const CATEGORY_ORDER: CategoryId[] = [
+  "underlying",
+  "legal",
+  "counterparties",
+  "control",
+  "transparency",
+  "pricing",
+  "exit",
+];
 
 export const CATEGORY_LABELS: Record<CategoryId, string> = {
   underlying: "Underlying Asset",
@@ -79,7 +87,7 @@ export interface CategoryResult {
 const RANK: Record<Color, number> = { green: 0, yellow: 1, red: 2 };
 const ORDER: Record<Finding["color"], number> = { red: 0, unknown: 1, yellow: 2, green: 3 };
 
-export function worse(a: Color, b: Color): Color {
+function worse(a: Color, b: Color): Color {
   return RANK[b] > RANK[a] ? b : a;
 }
 
@@ -90,14 +98,28 @@ export const RATING_RANK: Record<Rating, number> = { red: 4, unverified: 3, yell
  * Framework rule 5: unknown is its own state. A known red is red. Otherwise, if an unknown check could
  * turn out worse than what we know, the category is `unverified` (and `floor` says how bad it is at least).
  */
-export function rateCategory(category: CategoryId, checks: Check[], context: string[], greenHeadline: string): CategoryResult {
-  const sorted: Finding[] = [...checks].sort((a, b) => ORDER[a.color] - ORDER[b.color]).map((c) => ({ ...c, category }));
+export function rateCategory(
+  category: CategoryId,
+  checks: Check[],
+  context: string[],
+  greenHeadline: string,
+): CategoryResult {
+  const sorted: Finding[] = [...checks]
+    .sort((a, b) => ORDER[a.color] - ORDER[b.color])
+    .map((c) => ({ ...c, category }));
   const known = sorted.reduce<Color>((w, f) => (f.color === "unknown" ? w : worse(w, f.color)), "green");
   const open = sorted.filter((f) => f.color === "unknown" && RANK[f.worstCase ?? "red"] > RANK[known]);
 
   if (known !== "red" && open.length > 0) {
     const checked = sorted.some((f) => f.color !== "unknown");
-    return { category, rating: "unverified", floor: checked ? known : undefined, headline: open[0].text, findings: sorted, context };
+    return {
+      category,
+      rating: "unverified",
+      floor: checked ? known : undefined,
+      headline: open[0].text,
+      findings: sorted,
+      context,
+    };
   }
 
   const lead = sorted.find((f) => f.color === known);
@@ -124,9 +146,16 @@ export function risksOf(categories: CategoryResult[]): Finding[] {
   const order = { red: 0, unknown: 1, yellow: 2, green: 3 };
   const ranked = categories.flatMap((c) => {
     const seen: Partial<Record<Finding["color"], number>> = {};
-    return c.findings.filter((f) => f.color !== "green").map((f) => ({ f, nth: (seen[f.color] = (seen[f.color] ?? -1) + 1) }));
+    return c.findings
+      .filter((f) => f.color !== "green")
+      .map((f) => ({ f, nth: (seen[f.color] = (seen[f.color] ?? -1) + 1) }));
   });
   return ranked
-    .sort((a, b) => order[a.f.color] - order[b.f.color] || a.nth - b.nth || CATEGORY_ORDER.indexOf(a.f.category) - CATEGORY_ORDER.indexOf(b.f.category))
+    .sort(
+      (a, b) =>
+        order[a.f.color] - order[b.f.color] ||
+        a.nth - b.nth ||
+        CATEGORY_ORDER.indexOf(a.f.category) - CATEGORY_ORDER.indexOf(b.f.category),
+    )
     .map((x) => x.f);
 }

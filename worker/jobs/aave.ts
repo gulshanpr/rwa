@@ -18,7 +18,11 @@ const POOL_ABI = parseAbi([
   "function getReserveData(address) view returns ((uint256 configuration, uint128 liquidityIndex, uint128 currentLiquidityRate, uint128 variableBorrowIndex, uint128 currentVariableBorrowRate, uint128 currentStableBorrowRate, uint40 lastUpdateTimestamp, uint16 id, address aTokenAddress, address stableDebtTokenAddress, address variableDebtTokenAddress, address interestRateStrategyAddress, uint128 accruedToTreasury, uint128 unbacked, uint128 isolationModeTotalDebt))",
 ]);
 const PROVIDER_ABI = parseAbi(["function getPriceOracle() view returns (address)"]);
-const ORACLE_ABI = parseAbi(["function getSourceOfAsset(address) view returns (address)", "function getAssetPrice(address) view returns (uint256)", "function BASE_CURRENCY_UNIT() view returns (uint256)"]);
+const ORACLE_ABI = parseAbi([
+  "function getSourceOfAsset(address) view returns (address)",
+  "function getAssetPrice(address) view returns (uint256)",
+  "function BASE_CURRENCY_UNIT() view returns (uint256)",
+]);
 
 export async function aaveJob() {
   const now = new Date();
@@ -32,15 +36,37 @@ export async function aaveJob() {
           log("aave", `${asset.slug}/${d.chain} not listed on ${p.name}`);
           continue;
         }
-        const reserve = await client.readContract({ address: p.pool, abi: POOL_ABI, functionName: "getReserveData", args: [token] });
-        const provider = await client.readContract({ address: p.pool, abi: POOL_ABI, functionName: "ADDRESSES_PROVIDER" });
-        const priceOracle = await client.readContract({ address: provider, abi: PROVIDER_ABI, functionName: "getPriceOracle" });
+        const reserve = await client.readContract({
+          address: p.pool,
+          abi: POOL_ABI,
+          functionName: "getReserveData",
+          args: [token],
+        });
+        const provider = await client.readContract({
+          address: p.pool,
+          abi: POOL_ABI,
+          functionName: "ADDRESSES_PROVIDER",
+        });
+        const priceOracle = await client.readContract({
+          address: provider,
+          abi: PROVIDER_ABI,
+          functionName: "getPriceOracle",
+        });
         const [source, price, unit, aSupply, debt, decimals] = await Promise.all([
-          client.readContract({ address: priceOracle, abi: ORACLE_ABI, functionName: "getSourceOfAsset", args: [token] }),
+          client.readContract({
+            address: priceOracle,
+            abi: ORACLE_ABI,
+            functionName: "getSourceOfAsset",
+            args: [token],
+          }),
           client.readContract({ address: priceOracle, abi: ORACLE_ABI, functionName: "getAssetPrice", args: [token] }),
           client.readContract({ address: priceOracle, abi: ORACLE_ABI, functionName: "BASE_CURRENCY_UNIT" }),
           client.readContract({ address: reserve.aTokenAddress, abi: erc20Abi, functionName: "totalSupply" }),
-          client.readContract({ address: reserve.variableDebtTokenAddress, abi: erc20Abi, functionName: "totalSupply" }),
+          client.readContract({
+            address: reserve.variableDebtTokenAddress,
+            abi: erc20Abi,
+            functionName: "totalSupply",
+          }),
           client.readContract({ address: token, abi: erc20Abi, functionName: "decimals" }),
         ]);
         const usd = Number(price) / Number(unit);
@@ -48,25 +74,30 @@ export async function aaveJob() {
         // Liquidation threshold is bits 16-31 of the reserve configuration, in basis points.
         const lltv = Number((reserve.configuration >> 16n) & 0xffffn) / 10_000;
         const oracle = await classifyFeed(asset, d.chain, source);
-        await getDb().insert(schema.defiMarket).values({
-          assetSlug: asset.slug,
-          marketId: `${p.pool}:${token}`,
-          protocol: "aave",
-          chain: d.chain,
-          name: `${p.name} · ${asset.ticker}`,
-          collateralAsset: token,
-          loanAsset: "pool",
-          lltv,
-          oracleAddress: getAddress(source),
-          oracleType: oracle.type,
-          oracleDescription: oracle.description,
-          url: `https://app.aave.com/reserve-overview/?underlyingAsset=${token.toLowerCase()}&marketName=${p.market}`,
-          collateralUsd: suppliedUsd,
-          borrowUsd: Number(formatUnits(debt, decimals)) * usd,
-          supplyUsd: suppliedUsd,
-          ts: now,
-        });
-        log("aave", `${asset.slug}/${d.chain} listed on ${p.name}, supplied $${Math.round(suppliedUsd).toLocaleString()}`);
+        await getDb()
+          .insert(schema.defiMarket)
+          .values({
+            assetSlug: asset.slug,
+            marketId: `${p.pool}:${token}`,
+            protocol: "aave",
+            chain: d.chain,
+            name: `${p.name} · ${asset.ticker}`,
+            collateralAsset: token,
+            loanAsset: "pool",
+            lltv,
+            oracleAddress: getAddress(source),
+            oracleType: oracle.type,
+            oracleDescription: oracle.description,
+            url: `https://app.aave.com/reserve-overview/?underlyingAsset=${token.toLowerCase()}&marketName=${p.market}`,
+            collateralUsd: suppliedUsd,
+            borrowUsd: Number(formatUnits(debt, decimals)) * usd,
+            supplyUsd: suppliedUsd,
+            ts: now,
+          });
+        log(
+          "aave",
+          `${asset.slug}/${d.chain} listed on ${p.name}, supplied $${Math.round(suppliedUsd).toLocaleString()}`,
+        );
       }
     }
     await setCursor(`defi:aave:${asset.slug}`, now.toISOString());

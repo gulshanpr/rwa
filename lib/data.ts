@@ -3,12 +3,7 @@ import path from "node:path";
 import YAML from "yaml";
 import { z } from "zod";
 import { AssetSchema, type Asset } from "./schema/asset";
-import {
-  DiscoveredMetaSchema,
-  DiscoveredSchema,
-  type Discovered,
-  type DiscoveredMeta,
-} from "./schema/discovered";
+import { DiscoveredMetaSchema, DiscoveredSchema, type Discovered, type DiscoveredMeta } from "./schema/discovered";
 import { EntitySchema, type Entity } from "./schema/entity";
 import { MeasuredSchema, type Measured } from "./schema/measured";
 
@@ -43,9 +38,7 @@ function listFiles(dir: string, ext: string): string[] {
 
 let assetsCache: Asset[] | undefined;
 export function loadAssets(): Asset[] {
-  assetsCache ??= listFiles("data/assets", ".yaml").map((file) =>
-    parseOrThrow(AssetSchema, readYaml(file), file),
-  );
+  assetsCache ??= listFiles("data/assets", ".yaml").map((file) => parseOrThrow(AssetSchema, readYaml(file), file));
   return assetsCache;
 }
 

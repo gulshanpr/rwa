@@ -17,7 +17,12 @@ const redFlags = (r: AssetRow) => r.flags.filter((f) => f.color === "red").lengt
 export function NeedsAttention({ rows }: { rows: AssetRow[] }) {
   const ranked = rows
     .filter((r) => redCategories(r).length > 0 || redFlags(r) > 0)
-    .sort((a, b) => redCategories(b).length - redCategories(a).length || redFlags(b) - redFlags(a) || (b.aumUsd ?? 0) - (a.aumUsd ?? 0))
+    .sort(
+      (a, b) =>
+        redCategories(b).length - redCategories(a).length ||
+        redFlags(b) - redFlags(a) ||
+        (b.aumUsd ?? 0) - (a.aumUsd ?? 0),
+    )
     .slice(0, LIMIT);
 
   return (
@@ -36,7 +41,10 @@ export function NeedsAttention({ rows }: { rows: AssetRow[] }) {
             const finding = r.topRisk ?? (reds[0] ? r.categories[reds[0]].headline : r.flags[0]?.label);
             return (
               <li key={r.slug}>
-                <Link href={`/assets/${r.slug}`} className="group flex items-start gap-3 px-4 py-3 hover:bg-page md:px-5">
+                <Link
+                  href={`/assets/${r.slug}`}
+                  className="group flex items-start gap-3 px-4 py-3 hover:bg-page md:px-5"
+                >
                   <AssetLogo slug={r.slug} ticker={r.ticker} size={32} />
                   <div className="min-w-0 flex-1">
                     <p className="flex flex-wrap items-baseline gap-x-2">

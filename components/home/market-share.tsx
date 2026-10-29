@@ -7,7 +7,7 @@ import { Segmented } from "@/components/ui/segmented";
 import { formatPct, formatUsd, formatUsdFull } from "@/lib/format";
 import type { Share } from "@/lib/rows";
 
-export type ShareDimension = "platform" | "issuer" | "class";
+type ShareDimension = "platform" | "issuer" | "class";
 
 const DESCRIPTIONS: Record<ShareDimension, string> = {
   platform: "Tracked value by tokenization platform.",
@@ -23,7 +23,11 @@ function fold(shares: Share[]): Share[] {
   const tail = shares.slice(MAX_ROWS);
   return [
     ...shares.slice(0, MAX_ROWS),
-    { label: `Other (${tail.length})`, value: tail.reduce((s, x) => s + x.value, 0), tickers: tail.flatMap((x) => x.tickers) },
+    {
+      label: `Other (${tail.length})`,
+      value: tail.reduce((s, x) => s + x.value, 0),
+      tickers: tail.flatMap((x) => x.tickers),
+    },
   ];
 }
 
@@ -71,11 +75,16 @@ export function MarketShare({ data }: { data: Record<ShareDimension, Share[]> })
               >
                 <span className="truncate text-small text-fg">{s.label}</span>
                 <div className="h-2.5">
-                  <div className="h-full rounded-r-[4px] bg-accent transition-opacity group-hover:opacity-80" style={{ width: `${(s.value / max) * 100}%` }} />
+                  <div
+                    className="h-full rounded-r-[4px] bg-accent transition-opacity group-hover:opacity-80"
+                    style={{ width: `${(s.value / max) * 100}%` }}
+                  />
                 </div>
                 <span className="tnum flex items-baseline gap-2 text-small">
                   <span className="text-fg">{formatUsd(s.value)}</span>
-                  <span className="w-8 text-right text-label font-normal text-fg-subtle">{total ? formatPct(s.value / total, 0) : "—"}</span>
+                  <span className="w-8 text-right text-label font-normal text-fg-subtle">
+                    {total ? formatPct(s.value / total, 0) : "—"}
+                  </span>
                 </span>
               </div>
             </ChartTooltip>

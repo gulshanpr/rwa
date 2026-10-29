@@ -6,7 +6,15 @@ import { ratingWord } from "@/lib/ui";
 import { RiskList } from "./risk-list";
 
 /** Top of every category tab: the rating, then every check behind it, then context that doesn't change it. */
-export function CategoryCard({ result, slug, children }: { result: CategoryResult; slug: string; children?: React.ReactNode }) {
+export function CategoryCard({
+  result,
+  slug,
+  children,
+}: {
+  result: CategoryResult;
+  slug: string;
+  children?: React.ReactNode;
+}) {
   return (
     <Card
       title={CATEGORY_LABELS[result.category]}

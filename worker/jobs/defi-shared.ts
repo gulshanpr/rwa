@@ -3,18 +3,20 @@ import { clientsFor } from "@/discovery/rpc";
 import type { Asset, Chain } from "@/lib/schema/asset";
 import { catalog } from "../util";
 
-export type OracleType = "fixed" | "nav-feed" | "market";
+type OracleType = "fixed" | "nav-feed" | "market";
 
 // Feeds that carry the issuer's NAV for this asset: the curated reference, transparency report feeds,
 // and every contract discovery tagged with role "oracle".
-export async function navFeeds(asset: Asset, chain: Chain): Promise<Set<string>> {
+async function navFeeds(asset: Asset, chain: Chain): Promise<Set<string>> {
   const out = new Set<string>();
   const ref = asset.pricing.reference;
-  if ((ref.type === "oracle" || ref.type === "vault") && ref.address && ref.chain === chain) out.add(ref.address.toLowerCase());
+  if ((ref.type === "oracle" || ref.type === "vault") && ref.address && ref.chain === chain)
+    out.add(ref.address.toLowerCase());
   for (const r of asset.transparency.reports) if (r.feed?.chain === chain) out.add(r.feed.address.toLowerCase());
   for (const s of (await catalog()).snapshots.get(asset.slug) ?? []) {
     if (s.discovered.chain !== chain) continue;
-    for (const [addr, c] of Object.entries(s.discovered.contracts)) if (c.role === "oracle") out.add(addr.toLowerCase());
+    for (const [addr, c] of Object.entries(s.discovered.contracts))
+      if (c.role === "oracle") out.add(addr.toLowerCase());
   }
   return out;
 }
@@ -35,38 +37,70 @@ const WRAPPER_ABI = parseAbi([
 ]);
 
 // Classifies a Morpho Chainlink-style oracle by the feeds it composes.
-export async function classifyMorphoOracle(asset: Asset, chain: Chain, oracle: Address): Promise<{ type: OracleType; description: string }> {
+export async function classifyMorphoOracle(
+  asset: Asset,
+  chain: Chain,
+  oracle: Address,
+): Promise<{ type: OracleType; description: string }> {
   const { client } = clientsFor(chain);
   const read = (fn: "BASE_FEED_1" | "BASE_FEED_2" | "QUOTE_FEED_1" | "QUOTE_FEED_2" | "BASE_VAULT") =>
     client.readContract({ address: oracle, abi: MORPHO_ORACLE_ABI, functionName: fn }).catch(() => undefined);
-  const [b1, b2, q1, q2, vault] = await Promise.all([read("BASE_FEED_1"), read("BASE_FEED_2"), read("QUOTE_FEED_1"), read("QUOTE_FEED_2"), read("BASE_VAULT")]);
-  if (b1 === undefined) return { type: "market", description: "Custom oracle, not a standard Morpho Chainlink oracle; needs review." };
+  const [b1, b2, q1, q2, vault] = await Promise.all([
+    read("BASE_FEED_1"),
+    read("BASE_FEED_2"),
+    read("QUOTE_FEED_1"),
+    read("QUOTE_FEED_2"),
+    read("BASE_VAULT"),
+  ]);
+  if (b1 === undefined)
+    return { type: "market", description: "Custom oracle, not a standard Morpho Chainlink oracle; needs review." };
 
   const nav = await navFeeds(asset, chain);
   const base = [b1, b2].filter((a): a is Address => !!a && a !== zeroAddress);
-  if (base.some((a) => nav.has(a.toLowerCase()))) return { type: "nav-feed", description: `Reads the issuer NAV feed ${short(base[0]!)}.` };
+  if (base.some((a) => nav.has(a.toLowerCase())))
+    return { type: "nav-feed", description: `Reads the issuer NAV feed ${short(base[0]!)}.` };
   for (const feed of base) {
     const wrapped = await wrappedNav(client, feed, nav);
     if (wrapped) return { type: "nav-feed", description: wrapped };
   }
-  if (vault && nav.has(vault.toLowerCase())) return { type: "nav-feed", description: `Reads the vault's own exchange rate (BASE_VAULT ${short(vault)}).` };
+  if (vault && nav.has(vault.toLowerCase()))
+    return { type: "nav-feed", description: `Reads the vault's own exchange rate (BASE_VAULT ${short(vault)}).` };
   if (base.length === 0 && (!vault || vault === zeroAddress)) {
     const quote = [q1, q2].filter((a) => a && a !== zeroAddress);
-    return { type: "fixed", description: quote.length ? "No feed for the collateral; priced at a fixed 1:1 against the quote feed." : "No price feeds; hard-coded 1:1 price." };
+    return {
+      type: "fixed",
+      description: quote.length
+        ? "No feed for the collateral; priced at a fixed 1:1 against the quote feed."
+        : "No price feeds; hard-coded 1:1 price.",
+    };
   }
   return { type: "market", description: `Uses feed ${short(base[0] ?? vault!)}, not the issuer NAV feed.` };
 }
 
-export async function classifyFeed(asset: Asset, chain: Chain, feed: Address): Promise<{ type: OracleType; description: string }> {
-  if ((await navFeeds(asset, chain)).has(feed.toLowerCase())) return { type: "nav-feed", description: `Reads the issuer NAV feed ${short(feed)}.` };
+export async function classifyFeed(
+  asset: Asset,
+  chain: Chain,
+  feed: Address,
+): Promise<{ type: OracleType; description: string }> {
+  if ((await navFeeds(asset, chain)).has(feed.toLowerCase()))
+    return { type: "nav-feed", description: `Reads the issuer NAV feed ${short(feed)}.` };
   return { type: "market", description: `Uses price source ${short(feed)}, not the issuer NAV feed; needs review.` };
 }
 
 /** One hop through adapters that still price off the issuer NAV: Idle tranche oracles and discounted Chainlink wrappers. */
-async function wrappedNav(client: ReturnType<typeof clientsFor>["client"], feed: Address, nav: Set<string>): Promise<string | undefined> {
-  const cdo = await client.readContract({ address: feed, abi: WRAPPER_ABI, functionName: "cdo" }).catch(() => undefined);
-  if (cdo && cdo !== zeroAddress && nav.has(cdo.toLowerCase())) return `Reads the issuer NAV (${short(cdo)}) through the tranche adapter ${short(feed)}.`;
-  const underlying = await client.readContract({ address: feed, abi: WRAPPER_ABI, functionName: "underlyingFeed" }).catch(() => undefined);
+async function wrappedNav(
+  client: ReturnType<typeof clientsFor>["client"],
+  feed: Address,
+  nav: Set<string>,
+): Promise<string | undefined> {
+  const cdo = await client
+    .readContract({ address: feed, abi: WRAPPER_ABI, functionName: "cdo" })
+    .catch(() => undefined);
+  if (cdo && cdo !== zeroAddress && nav.has(cdo.toLowerCase()))
+    return `Reads the issuer NAV (${short(cdo)}) through the tranche adapter ${short(feed)}.`;
+  const underlying = await client
+    .readContract({ address: feed, abi: WRAPPER_ABI, functionName: "underlyingFeed" })
+    .catch(() => undefined);
   if (!underlying || underlying === zeroAddress || !nav.has(underlying.toLowerCase())) return undefined;
   const [pct, decimals] = await Promise.all([
     client.readContract({ address: feed, abi: WRAPPER_ABI, functionName: "discountPercentage" }).catch(() => undefined),

@@ -11,14 +11,14 @@ export interface Holders {
   label: string;
 }
 
-export interface Rule {
+interface Rule {
   power: Power;
   fns: string[];
   holders: Address[];
   via: string;
 }
 
-export interface MappedOptions {
+interface MappedOptions {
   name?: string;
   role: DiscoveredContract["role"];
   /**
@@ -39,7 +39,7 @@ export interface MappedOptions {
   rulesOnly?: boolean;
 }
 
-export interface Mapped {
+interface Mapped {
   name: string;
   roles: Map<Hex, Address[]>;
   src: VerifiedSource;
@@ -54,7 +54,8 @@ const DENY = parseAbiItem("event Deny(address indexed user)");
 
 export const roleHash = (name: string): Hex => (name === "DEFAULT_ADMIN_ROLE" ? zeroHash : keccak256(toHex(name)));
 
-export const list = (fns: string[]) => (fns.length > 3 ? `${fns.slice(0, 3).join(", ")} +${fns.length - 3} more` : fns.join(", "));
+const list = (fns: string[]) =>
+  fns.length > 3 ? `${fns.slice(0, 3).join(", ")} +${fns.length - 3} more` : fns.join(", ");
 
 /** Current `wards` of a MakerDAO-style `auth` contract: every Rely/Deny target, confirmed with wards(x) == 1. */
 /** Current wards, from Rely/Deny logs, or only among `known` when logs can't be scanned (a lower bound). */
@@ -62,7 +63,10 @@ export async function wardsOf(ctx: Context, address: Address, known?: Address[])
   let candidates = known;
   if (!candidates) {
     const from = await deploymentBlock(ctx.c, address, ctx.block);
-    const logs = [...(await scanLogs(ctx.c, address, RELY, from, ctx.block)), ...(await scanLogs(ctx.c, address, DENY, from, ctx.block))];
+    const logs = [
+      ...(await scanLogs(ctx.c, address, RELY, from, ctx.block)),
+      ...(await scanLogs(ctx.c, address, DENY, from, ctx.block)),
+    ];
     candidates = [...new Set(logs.map((l) => getAddress(l.args.user as string)))];
   }
   const active = await Promise.all(candidates.map((a) => ctx.readOrThrow<bigint>(address, ABI, "wards", [a])));
@@ -80,7 +84,8 @@ export async function addMapped(ctx: Context, address: Address, opts: MappedOpti
   const src = await ctx.source(proxy?.implementation ?? address);
   const name = opts.name ?? src.name ?? "Contract";
   const owner = hasFunction(src.abi, "owner") ? await ctx.read<Address>(address, ABI, "owner") : undefined;
-  const roles = !opts.rulesOnly && hasFunction(src.abi, "hasRole") ? await roleMembers(ctx, address) : new Map<Hex, Address[]>();
+  const roles =
+    !opts.rulesOnly && hasFunction(src.abi, "hasRole") ? await roleMembers(ctx, address) : new Map<Hex, Address[]>();
   const deployment = ctx.asset.deployments.find((d) => d.chain === ctx.chain);
   const ignore = new Set([...(opts.notScored ?? []), ...(deployment?.discovery.ignoreMethods ?? [])]);
   const abiFns = new Set(src.abi.filter((x) => x.type === "function").map((x) => (x as { name: string }).name));
@@ -90,7 +95,8 @@ export async function addMapped(ctx: Context, address: Address, opts: MappedOpti
     if (custom !== undefined) return custom;
     if (opts.guards && modifier in opts.guards) return opts.guards[modifier];
     if (CONTRACT_ONLY.test(modifier)) return null;
-    if (modifier === "onlyOwner" || modifier === "_assertOwner()") return owner ? { holders: [getAddress(owner)], label: "owner()" } : undefined;
+    if (modifier === "onlyOwner" || modifier === "_assertOwner()")
+      return owner ? { holders: [getAddress(owner)], label: "owner()" } : undefined;
     const role = /^onlyRole\((\w+)\)$/.exec(modifier)?.[1];
     if (role) return { holders: roles.get(roleHash(role)) ?? [], label: role };
     return undefined;
@@ -116,7 +122,10 @@ export async function addMapped(ctx: Context, address: Address, opts: MappedOpti
         warn.push(`${name}.${fn.name} (${modifier}) has a guard no rule resolves; review it.`);
         continue;
       }
-      const same = who.holders.map((h) => h.toLowerCase()).sort().join();
+      const same = who.holders
+        .map((h) => h.toLowerCase())
+        .sort()
+        .join();
       if (seen.has(same)) continue;
       seen.add(same);
       const named = opts.powers?.[fn.name] ?? powerForFunction(fn.name);
@@ -134,7 +143,13 @@ export async function addMapped(ctx: Context, address: Address, opts: MappedOpti
 
   const admins = roles.get(zeroHash) ?? [];
   if (admins.length > 0) ctx.grant(permissions, "admin", admins, `${name}.grantRole, revokeRole · DEFAULT_ADMIN_ROLE`);
-  if (proxy?.admin) ctx.grant(permissions, opts.role === "oracle" ? "set-price" : "upgrade", [proxy.admin], `Proxy upgrade · ${proxy.type} admin`);
+  if (proxy?.admin)
+    ctx.grant(
+      permissions,
+      opts.role === "oracle" ? "set-price" : "upgrade",
+      [proxy.admin],
+      `Proxy upgrade · ${proxy.type} admin`,
+    );
 
   ctx.addContract(address, { name, role: opts.role, ...(proxy ? { proxy } : {}), verified: src.verified, permissions });
   return { name, roles, src, proxy, owner: owner ? getAddress(owner) : undefined };

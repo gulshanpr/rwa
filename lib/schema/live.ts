@@ -77,7 +77,10 @@ export const AlertSchema = z.object({
   // Onchain alerts carry the transaction; offchain ones (filings, LEI, oracle age) carry a source URL.
   chain: Chain.optional(),
   contract: Address.optional(),
-  txHash: z.string().regex(/^0x[0-9a-fA-F]{64}$/).optional(),
+  txHash: z
+    .string()
+    .regex(/^0x[0-9a-fA-F]{64}$/)
+    .optional(),
   block: z.number().int().optional(),
   url: z.url().optional(),
   publishedAt: z.iso.datetime(),

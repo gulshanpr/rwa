@@ -30,7 +30,7 @@ export interface AssetRow {
   topRisk: string | null;
 }
 
-export function toRow(p: AssetProfile): AssetRow {
+function toRow(p: AssetProfile): AssetRow {
   const { rating } = p;
   return {
     slug: p.asset.slug,
@@ -62,7 +62,7 @@ export async function assetRows(): Promise<AssetRow[]> {
   return (await getProfiles()).map(toRow);
 }
 
-export const RATINGS: Rating[] = ["green", "yellow", "red", "unverified", "not-assessed"];
+const RATINGS: Rating[] = ["green", "yellow", "red", "unverified", "not-assessed"];
 
 export interface CategoryDistribution {
   category: CategoryId;

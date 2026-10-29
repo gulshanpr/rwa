@@ -25,7 +25,10 @@ export function readsFromDatabase(): boolean {
 export function getDb(): Db {
   if (!instance) {
     const url = process.env.DATABASE_URL;
-    if (!url) throw new Error("DATABASE_URL is not set. For local use run `bun run db:local` and set DATABASE_URL=postgres://postgres@localhost:5433/postgres");
+    if (!url)
+      throw new Error(
+        "DATABASE_URL is not set. For local use run `bun run db:local` and set DATABASE_URL=postgres://postgres@localhost:5433/postgres",
+      );
     // PGlite's socket server accepts one connection and no prepared statements.
     const local = /localhost|127\.0\.0\.1/.test(url);
     // Neon's pooler (PgBouncer, transaction mode) does not support prepared statements.

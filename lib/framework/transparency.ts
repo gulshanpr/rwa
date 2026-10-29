@@ -16,13 +16,21 @@ export const PROFILE_LABELS: Record<FreshnessClass, string> = {
   "real-estate": "real estate",
 };
 
-const FREQUENCY_RANK: Record<Frequency, number> = { realtime: 0, daily: 1, weekly: 2, monthly: 3, quarterly: 4, annual: 5, unstated: 6 };
+const FREQUENCY_RANK: Record<Frequency, number> = {
+  realtime: 0,
+  daily: 1,
+  weekly: 2,
+  monthly: 3,
+  quarterly: 4,
+  annual: 5,
+  unstated: 6,
+};
 
-export function isFresh(frequency: Frequency, profile: FreshnessClass): boolean {
+function isFresh(frequency: Frequency, profile: FreshnessClass): boolean {
   return FREQUENCY_RANK[frequency] <= FREQUENCY_RANK[FRESHNESS_TARGET[profile]];
 }
 
-export interface ReportTests {
+interface ReportTests {
   independent: boolean;
   position: boolean;
   fresh: boolean;
@@ -76,7 +84,9 @@ export function rateTransparency(asset: Asset): CategoryResult {
   const t = asset.transparency;
   const profile = asset.freshnessClass.value;
   const findings: Check[] = [];
-  const context = t.constraints.map((c) => `Kept private: ${c.what}. Reason: ${c.reason}. Shared with ${c.sharedWith}.`);
+  const context = t.constraints.map(
+    (c) => `Kept private: ${c.what}. Reason: ${c.reason}. Shared with ${c.sharedWith}.`,
+  );
   const add = (id: string, color: Check["color"], text: string, extra: Partial<Check> = {}) =>
     findings.push({ id: `transparency.${id}`, color, text, ...extra });
 
@@ -93,12 +103,22 @@ export function rateTransparency(asset: Asset): CategoryResult {
     return rateCategory("transparency", findings, context, "");
   }
 
-  add("verified", "green", `${best.name}: ${best.verifiability === "cryptographic" ? "cryptographically verifiable" : `a third-party ${best.verifiability}`}.`, { source });
-  if (tests.independent) add("independent", "green", `Data comes from ${SOURCE_TEXT[best.dataSource]}, not the issuer.`, { source });
+  add(
+    "verified",
+    "green",
+    `${best.name}: ${best.verifiability === "cryptographic" ? "cryptographically verifiable" : `a third-party ${best.verifiability}`}.`,
+    { source },
+  );
+  if (tests.independent)
+    add("independent", "green", `Data comes from ${SOURCE_TEXT[best.dataSource]}, not the issuer.`, { source });
   else add("independent", "yellow", "The data comes from the issuer itself, not an independent party.", { source });
   if (tests.position) add("granularity", "green", "Every position is published.", { source });
-  else add("granularity", "yellow", `Only ${GRANULARITY_TEXT[best.granularity]} is published, not every position.`, { source });
-  if (tests.fresh) add("freshness", "green", `Updated ${best.frequency}, fast enough for ${PROFILE_LABELS[profile]}.`, { source });
+  else
+    add("granularity", "yellow", `Only ${GRANULARITY_TEXT[best.granularity]} is published, not every position.`, {
+      source,
+    });
+  if (tests.fresh)
+    add("freshness", "green", `Updated ${best.frequency}, fast enough for ${PROFILE_LABELS[profile]}.`, { source });
   else
     add(
       "freshness",
@@ -111,10 +131,20 @@ export function rateTransparency(asset: Asset): CategoryResult {
 
   if (profile === "private-credit") {
     const e = t.eventReporting;
-    if (e.status === "public" && e.value) add("events", "green", "Defaults and write-downs are reported when they happen.", { source: e.source });
-    else if (e.status === "public") add("events", "yellow", "Defaults only show up in the next periodic report.", { source: e.source });
-    else add("events", "unknown", "There's no stated commitment to report defaults when they happen.", { worstCase: "yellow" });
+    if (e.status === "public" && e.value)
+      add("events", "green", "Defaults and write-downs are reported when they happen.", { source: e.source });
+    else if (e.status === "public")
+      add("events", "yellow", "Defaults only show up in the next periodic report.", { source: e.source });
+    else
+      add("events", "unknown", "There's no stated commitment to report defaults when they happen.", {
+        worstCase: "yellow",
+      });
   }
 
-  return rateCategory("transparency", findings, context, "Independently sourced, position-level data, refreshed at a pace that fits the asset, and verifiable.");
+  return rateCategory(
+    "transparency",
+    findings,
+    context,
+    "Independently sourced, position-level data, refreshed at a pace that fits the asset, and verifiable.",
+  );
 }

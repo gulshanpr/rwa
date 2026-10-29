@@ -14,6 +14,8 @@ jobs:
         with:
           bun-version: 1.4.2
       - run: bun install --frozen-lockfile
+      - name: Format
+        run: bun run format:check
       - name: Validate data (schemas, sources, entity references, staleness)
         run: bun run validate
       - name: Framework tests (rules + expected ratings per asset)

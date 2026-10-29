@@ -12,7 +12,9 @@ export interface VerifiedSource {
 const EMPTY: VerifiedSource = { verified: false, abi: [], sources: {} };
 
 async function fromSourcify(chainId: number, address: Address): Promise<VerifiedSource | undefined> {
-  const res = await fetch(`https://sourcify.dev/server/v2/contract/${chainId}/${address}?fields=abi,sources,compilation`);
+  const res = await fetch(
+    `https://sourcify.dev/server/v2/contract/${chainId}/${address}?fields=abi,sources,compilation`,
+  );
   if (res.status === 404) return undefined;
   if (!res.ok) throw new Error(`Sourcify ${res.status} for ${address}`);
   const d = (await res.json()) as {
@@ -29,9 +31,13 @@ async function fromSourcify(chainId: number, address: Address): Promise<Verified
   };
 }
 
-function fromEtherscanBody(d: { status?: string; result?: { ABI?: string; ContractName?: string; SourceCode?: string }[] }): VerifiedSource | undefined {
+function fromEtherscanBody(d: {
+  status?: string;
+  result?: { ABI?: string; ContractName?: string; SourceCode?: string }[];
+}): VerifiedSource | undefined {
   const r = d.result?.[0];
-  if (d.status !== "1" || !r?.ABI || !r.ContractName || r.ABI.startsWith("Contract source code not verified")) return undefined;
+  if (d.status !== "1" || !r?.ABI || !r.ContractName || r.ABI.startsWith("Contract source code not verified"))
+    return undefined;
   let sources: Record<string, string> = { [`${r.ContractName}.sol`]: r.SourceCode ?? "" };
   if (r.SourceCode?.startsWith("{{")) {
     const json = JSON.parse(r.SourceCode.slice(1, -1)) as { sources: Record<string, { content: string }> };
@@ -110,14 +116,18 @@ export interface PrivilegedFunction {
 }
 
 /** Internal calls at the top of a function body that act as an access check, e.g. `_checkOwner()` or `_requireAuth()`. */
-const INLINE_GUARD = /\b(_(?:check|require|assert|only)\w*(?:Owner|Auth|Admin|Manager|Ward|Minter|Reporter|Guardian|Safe)\w*)\s*\(\s*\)\s*;/g;
-const INLINE_ROLE = /(?:\b_checkRole\s*\(\s*([\w.]+)\s*\)|require\s*\(\s*hasRole\s*\(\s*([\w.]+)\s*,\s*(?:_msgSender\(\)|msg\.sender)\s*\))/g;
+const INLINE_GUARD =
+  /\b(_(?:check|require|assert|only)\w*(?:Owner|Auth|Admin|Manager|Ward|Minter|Reporter|Guardian|Safe)\w*)\s*\(\s*\)\s*;/g;
+const INLINE_ROLE =
+  /(?:\b_checkRole\s*\(\s*([\w.]+)\s*\)|require\s*\(\s*hasRole\s*\(\s*([\w.]+)\s*,\s*(?:_msgSender\(\)|msg\.sender)\s*\))/g;
 /** Only the first statements count; later calls are usually unrelated checks. */
 const GUARD_WINDOW = 400;
 
 function guardsOf(tail: string, body: string): string[] {
   const head = tail.replace(/returns\s*\([^)]*\)/, "");
-  const mods = [...head.matchAll(/\b(only\w+|auth|requiresAuth)\b(\s*\(\s*([\w.]+)\s*\))?/g)].map((x) => (x[3] ? `${x[1]}(${x[3]})` : x[1]));
+  const mods = [...head.matchAll(/\b(only\w+|auth|requiresAuth)\b(\s*\(\s*([\w.]+)\s*\))?/g)].map((x) =>
+    x[3] ? `${x[1]}(${x[3]})` : x[1],
+  );
   const start = body.slice(0, GUARD_WINDOW);
   for (const x of start.matchAll(INLINE_ROLE)) mods.push(`onlyRole(${x[1] ?? x[2]})`);
   for (const x of start.matchAll(INLINE_GUARD)) mods.push(x[1] === "_checkOwner" ? "onlyOwner" : `${x[1]}()`);
@@ -131,7 +141,9 @@ function guardsOf(tail: string, body: string): string[] {
  */
 export function privilegedFunctions(src: VerifiedSource): PrivilegedFunction[] {
   const inAbi = new Set(
-    src.abi.filter((x) => x.type === "function" && x.stateMutability !== "view" && x.stateMutability !== "pure").map((x) => (x as { name: string }).name),
+    src.abi
+      .filter((x) => x.type === "function" && x.stateMutability !== "view" && x.stateMutability !== "pure")
+      .map((x) => (x as { name: string }).name),
   );
   const found = new Map<string, Set<string>>();
   const authorizeUpgrade = new Set<string>();
@@ -150,6 +162,9 @@ export function privilegedFunctions(src: VerifiedSource): PrivilegedFunction[] {
     }
   }
   if (authorizeUpgrade.size > 0)
-    for (const fn of ["upgradeTo", "upgradeToAndCall"]) if (inAbi.has(fn)) found.set(fn, new Set([...(found.get(fn) ?? []), ...authorizeUpgrade]));
-  return [...found.entries()].map(([name, mods]) => ({ name, modifiers: [...mods] })).sort((a, b) => a.name.localeCompare(b.name));
+    for (const fn of ["upgradeTo", "upgradeToAndCall"])
+      if (inAbi.has(fn)) found.set(fn, new Set([...(found.get(fn) ?? []), ...authorizeUpgrade]));
+  return [...found.entries()]
+    .map(([name, mods]) => ({ name, modifiers: [...mods] }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 }

@@ -19,7 +19,9 @@ export function DocsNav({ sections }: { sections: { heading: string; items: { la
                   aria-current={pathname === i.href ? "page" : undefined}
                   className={cn(
                     "block rounded-control px-2 py-1 text-small",
-                    pathname === i.href ? "bg-accent-soft font-medium text-accent" : "text-fg-muted hover:bg-subtle hover:text-fg",
+                    pathname === i.href
+                      ? "bg-accent-soft font-medium text-accent"
+                      : "text-fg-muted hover:bg-subtle hover:text-fg",
                   )}
                 >
                   {i.label}

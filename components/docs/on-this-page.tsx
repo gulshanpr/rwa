@@ -24,7 +24,9 @@ export function OnThisPage() {
         if (visible[0]) setActive(visible[0].target.id);
       },
       // Ignore headings hidden under the pinned top bar.
-      { rootMargin: `-${parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")) + 16 || 80}px 0px -70% 0px` },
+      {
+        rootMargin: `-${parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")) + 16 || 80}px 0px -70% 0px`,
+      },
     );
     els.forEach((el) => observer.observe(el));
 

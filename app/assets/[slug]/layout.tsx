@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: LayoutProps<"/assets/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const p = (await getProfile(slug));
+  const p = await getProfile(slug);
   if (!p) return {};
   return {
     title: `${p.asset.ticker} risk profile`,
@@ -72,7 +72,8 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
                 </Tag>
               )}
               <span className="text-small text-fg-muted">
-                Issued by {entities.manager?.name ?? asset.manager} · Platform {entities.platform?.name ?? asset.platform}
+                Issued by {entities.manager?.name ?? asset.manager} · Platform{" "}
+                {entities.platform?.name ?? asset.platform}
               </span>
             </div>
           </div>
@@ -104,7 +105,12 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
           status={
             stage.stage === null
               ? { color: "red", label: "Below Stage 0: key facts not disclosed" }
-              : { color: "grey", label: stage.pendingLegal ? `${STAGE_NAMES[stage.stage]} · next stage needs legal review` : STAGE_NAMES[stage.stage] }
+              : {
+                  color: "grey",
+                  label: stage.pendingLegal
+                    ? `${STAGE_NAMES[stage.stage]} · next stage needs legal review`
+                    : STAGE_NAMES[stage.stage],
+                }
           }
         />
         <StatCard
@@ -127,7 +133,13 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
           label="Oracle age"
           info="Time since the onchain NAV/price was last updated, compared with its expected cadence."
           infoHref="/methodology#pricing"
-          value={stats.oracle ? formatDuration(stats.oracle.ageSeconds) : asset.pricing.reference.type === "vault" ? "Live" : "—"}
+          value={
+            stats.oracle
+              ? formatDuration(stats.oracle.ageSeconds)
+              : asset.pricing.reference.type === "vault"
+                ? "Live"
+                : "—"
+          }
           status={
             stats.oracle
               ? FRESHNESS[stats.oracle.freshness]

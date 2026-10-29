@@ -36,14 +36,35 @@ function scoreText(text: string, q: string): number {
 
 function search(index: SearchIndex, raw: string): { groups: { heading: string; items: Result[] }[]; more: number } {
   const q = raw.trim().toLowerCase();
-  const assetResult = (a: SearchAsset): Result => ({ kind: "asset", id: `asset-${a.slug}`, href: `/assets/${a.slug}`, asset: a });
-  const pageResult = (p: (typeof PAGES)[number]): Result => ({ kind: "page", id: `page-${p.href}`, href: p.href, title: p.title });
+  const assetResult = (a: SearchAsset): Result => ({
+    kind: "asset",
+    id: `asset-${a.slug}`,
+    href: `/assets/${a.slug}`,
+    asset: a,
+  });
+  const pageResult = (p: (typeof PAGES)[number]): Result => ({
+    kind: "page",
+    id: `page-${p.href}`,
+    href: p.href,
+    title: p.title,
+  });
 
   // Nothing typed: assets by value and the main pages. Addresses only appear once there's something to match.
-  if (!q) return { groups: [{ heading: "Assets", items: index.assets.map(assetResult) }, { heading: "Pages", items: PAGES.map(pageResult) }], more: 0 };
+  if (!q)
+    return {
+      groups: [
+        { heading: "Assets", items: index.assets.map(assetResult) },
+        { heading: "Pages", items: PAGES.map(pageResult) },
+      ],
+      more: 0,
+    };
 
   const assets = index.assets
-    .map((a, i) => ({ a, i, score: Math.max(scoreText(a.ticker, q) * 3, scoreText(a.name, q) * 2, a.terms.includes(q) ? 1 : 0) }))
+    .map((a, i) => ({
+      a,
+      i,
+      score: Math.max(scoreText(a.ticker, q) * 3, scoreText(a.name, q) * 2, a.terms.includes(q) ? 1 : 0),
+    }))
     .filter((x) => x.score > 0)
     .sort((x, y) => y.score - x.score || x.i - y.i)
     .map((x) => assetResult(x.a));
@@ -58,7 +79,9 @@ function search(index: SearchIndex, raw: string): { groups: { heading: string; i
       const own = label?.toLowerCase().startsWith(prefix) ? label.slice(prefix.length) : label;
       const score = hex
         ? needle.length >= 2 && address.toLowerCase().includes(needle)
-          ? address.toLowerCase().startsWith(`0x${needle}`) ? 2 : 1
+          ? address.toLowerCase().startsWith(`0x${needle}`)
+            ? 2
+            : 1
           : 0
         : q.length >= 2
           ? Math.max(own ? scoreText(own, q) : 0, scoreText(role, q))
@@ -102,7 +125,9 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const typing = e.target instanceof HTMLElement && (e.target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName));
+      const typing =
+        e.target instanceof HTMLElement &&
+        (e.target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName));
       if ((e.key.toLowerCase() === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) {
         e.preventDefault();
         setOpen((o) => !o);
@@ -144,7 +169,9 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
           <span className="hidden sm:inline">Search assets or addresses</span>
         </span>
         {mac !== null && (
-          <kbd className="hidden rounded border border-line bg-surface px-1.5 font-sans text-label text-fg-muted sm:inline">{mac ? "⌘K" : "Ctrl K"}</kbd>
+          <kbd className="hidden rounded border border-line bg-surface px-1.5 font-sans text-label text-fg-muted sm:inline">
+            {mac ? "⌘K" : "Ctrl K"}
+          </kbd>
         )}
       </button>
 
@@ -167,13 +194,17 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
             placeholder="Ticker, issuer, or paste an address"
             className="h-12 min-w-0 flex-1 bg-transparent text-body text-fg outline-none placeholder:text-fg-subtle"
           />
-          <kbd className="hidden rounded border border-line px-1.5 font-sans text-label text-fg-subtle sm:inline">esc</kbd>
+          <kbd className="hidden rounded border border-line px-1.5 font-sans text-label text-fg-subtle sm:inline">
+            esc
+          </kbd>
         </div>
         <Command.List className="max-h-[min(60vh,440px)] overflow-y-auto overscroll-contain p-1.5">
           <Command.Empty className="px-3 py-8 text-center text-small text-fg-muted">
             No results for “{query.trim()}”.
             {query.trim().toLowerCase().startsWith("0x") && (
-              <span className="mt-1 block text-label text-fg-subtle">Only addresses that belong to a tracked asset are searchable.</span>
+              <span className="mt-1 block text-label text-fg-subtle">
+                Only addresses that belong to a tracked asset are searchable.
+              </span>
             )}
           </Command.Empty>
           {groups.map((g) => (
@@ -196,7 +227,9 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
                         <span className="font-medium text-fg">{r.asset.ticker}</span>
                         <span className="ml-2 text-small text-fg-muted">{r.asset.name}</span>
                       </p>
-                      {r.asset.aumUsd !== null && <span className="tnum shrink-0 text-small text-fg-subtle">{formatUsd(r.asset.aumUsd)}</span>}
+                      {r.asset.aumUsd !== null && (
+                        <span className="tnum shrink-0 text-small text-fg-subtle">{formatUsd(r.asset.aumUsd)}</span>
+                      )}
                     </>
                   ) : r.kind === "address" ? (
                     <>
@@ -216,12 +249,19 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
                       <p className="min-w-0 flex-1 truncate text-body text-fg">{r.title}</p>
                     </>
                   )}
-                  <CornerDownLeft className="hidden size-3.5 shrink-0 text-fg-subtle sm:group-data-[selected=true]:block" aria-hidden />
+                  <CornerDownLeft
+                    className="hidden size-3.5 shrink-0 text-fg-subtle sm:group-data-[selected=true]:block"
+                    aria-hidden
+                  />
                 </Command.Item>
               ))}
             </Command.Group>
           ))}
-          {more > 0 && <p className="px-2.5 pt-1 pb-2 text-label text-fg-subtle">{more} more addresses match. Type more to narrow it down.</p>}
+          {more > 0 && (
+            <p className="px-2.5 pt-1 pb-2 text-label text-fg-subtle">
+              {more} more addresses match. Type more to narrow it down.
+            </p>
+          )}
         </Command.List>
       </Command.Dialog>
     </>

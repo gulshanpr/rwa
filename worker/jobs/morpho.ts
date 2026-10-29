@@ -30,11 +30,14 @@ export async function morphoJob() {
   for (const asset of await publishedAssets()) {
     for (const d of asset.deployments) {
       const chainId = clientsFor(d.chain).client.chain!.id;
-      const res = await fetchJson<{ data?: { markets: { items: MorphoMarket[] } }; errors?: { message: string }[] }>("https://api.morpho.org/graphql", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ query: QUERY, variables: { addresses: [d.token], chains: [chainId] } }),
-      });
+      const res = await fetchJson<{ data?: { markets: { items: MorphoMarket[] } }; errors?: { message: string }[] }>(
+        "https://api.morpho.org/graphql",
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ query: QUERY, variables: { addresses: [d.token], chains: [chainId] } }),
+        },
+      );
       if (res.errors?.some((e) => /unsupported chainId/i.test(e.message))) {
         log("morpho", `${asset.slug}/${d.chain} skipped: Morpho doesn't index this chain`);
         continue;
@@ -44,24 +47,26 @@ export async function morphoJob() {
       for (const m of markets) {
         const oracleAddress = getAddress(m.oracle?.address ?? "0x0000000000000000000000000000000000000000");
         const oracle = await classifyMorphoOracle(asset, d.chain, oracleAddress);
-        await getDb().insert(schema.defiMarket).values({
-          assetSlug: asset.slug,
-          marketId: m.marketId,
-          protocol: "morpho",
-          chain: d.chain,
-          name: `${m.collateralAsset.symbol} / ${m.loanAsset.symbol}`,
-          collateralAsset: getAddress(d.token),
-          loanAsset: m.loanAsset.symbol,
-          lltv: Number(m.lltv) / 1e18,
-          oracleAddress,
-          oracleType: oracle.type,
-          oracleDescription: oracle.description,
-          url: `https://app.morpho.org/${d.chain}/market/${m.marketId}`,
-          collateralUsd: m.state.collateralAssetsUsd ?? 0,
-          borrowUsd: m.state.borrowAssetsUsd ?? 0,
-          supplyUsd: m.state.supplyAssetsUsd ?? 0,
-          ts: now,
-        });
+        await getDb()
+          .insert(schema.defiMarket)
+          .values({
+            assetSlug: asset.slug,
+            marketId: m.marketId,
+            protocol: "morpho",
+            chain: d.chain,
+            name: `${m.collateralAsset.symbol} / ${m.loanAsset.symbol}`,
+            collateralAsset: getAddress(d.token),
+            loanAsset: m.loanAsset.symbol,
+            lltv: Number(m.lltv) / 1e18,
+            oracleAddress,
+            oracleType: oracle.type,
+            oracleDescription: oracle.description,
+            url: `https://app.morpho.org/${d.chain}/market/${m.marketId}`,
+            collateralUsd: m.state.collateralAssetsUsd ?? 0,
+            borrowUsd: m.state.borrowAssetsUsd ?? 0,
+            supplyUsd: m.state.supplyAssetsUsd ?? 0,
+            ts: now,
+          });
       }
       log("morpho", `${asset.slug}/${d.chain} ${markets.length} market(s)`);
     }

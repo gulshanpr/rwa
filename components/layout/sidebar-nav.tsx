@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/ui";
 import { NAV } from "./nav";
 
-export type SidebarVariant = "full" | "rail" | "responsive";
+type SidebarVariant = "full" | "rail" | "responsive";
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";
@@ -17,7 +17,11 @@ export function SidebarNav({ variant, onNavigate }: { variant: SidebarVariant; o
   const labelClass = variant === "full" ? "" : variant === "rail" ? "sr-only" : "sr-only xl:expanded:not-sr-only";
   const headingClass = variant === "full" ? "block" : variant === "rail" ? "hidden" : "hidden xl:expanded:block";
   const itemLayout =
-    variant === "full" ? "px-2.5" : variant === "rail" ? "justify-center px-0" : "justify-center px-0 xl:expanded:justify-start xl:expanded:px-2.5";
+    variant === "full"
+      ? "px-2.5"
+      : variant === "rail"
+        ? "justify-center px-0"
+        : "justify-center px-0 xl:expanded:justify-start xl:expanded:px-2.5";
 
   return (
     <nav aria-label="Main" className="flex flex-1 flex-col gap-5 overflow-y-auto px-3 py-4">

@@ -40,7 +40,7 @@ export interface FrameworkRating {
   };
 }
 
-export const LEGAL_NOT_ASSESSED = notAssessed(
+const LEGAL_NOT_ASSESSED = notAssessed(
   "legal",
   "Not assessed yet. Bankruptcy remoteness, what the token legally is, and holder rights need a legal review.",
 );

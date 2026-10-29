@@ -26,7 +26,15 @@ import { POPOVER_BOUNDS, Select } from "@/components/ui/select";
 import { Tag } from "@/components/ui/tag";
 import { CHAINS } from "@/lib/chains";
 import { formatDuration, formatUsd } from "@/lib/format";
-import { CATEGORY_LABELS, CATEGORY_ORDER, CATEGORY_SHORT, RATING_RANK, type CategoryId, type Rating, type Tone } from "@/lib/framework/types";
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  CATEGORY_SHORT,
+  RATING_RANK,
+  type CategoryId,
+  type Rating,
+  type Tone,
+} from "@/lib/framework/types";
 import { ASSET_CLASSES, assetClassFromPath, shortEntityName } from "@/lib/labels";
 import type { Flag } from "@/lib/profile";
 import type { AssetRow } from "@/lib/rows";
@@ -39,7 +47,6 @@ const features = tableFeatures({
   sortedRowModel: createSortedRowModel(),
   sortFns: { alphanumeric: sortFn_alphanumeric, text: sortFn_text },
 });
-
 
 const helper = createColumnHelper<typeof features, AssetRow>();
 
@@ -180,7 +187,8 @@ const columns = helper.columns([
     id: "oracleAge",
     header: "Oracle age",
     meta: { align: "right" },
-    cell: (info) => (info.row.original.oracleAgeSeconds !== null ? formatDuration(info.row.original.oracleAgeSeconds) : "None"),
+    cell: (info) =>
+      info.row.original.oracleAgeSeconds !== null ? formatDuration(info.row.original.oracleAgeSeconds) : "None",
   }),
   helper.display({
     id: "flags",
@@ -250,7 +258,15 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
     initialState: {
       sorting: [{ id: "aum", desc: true }],
       // The asset cell already shows issuer and class; the rest are a click away under Columns.
-      columnVisibility: { assetClassLabel: false, manager: false, legal: false, onchainData: false, chains: false, defiCollateralUsd: false, oracleAge: false },
+      columnVisibility: {
+        assetClassLabel: false,
+        manager: false,
+        legal: false,
+        onchainData: false,
+        chains: false,
+        defiCollateralUsd: false,
+        oracleAge: false,
+      },
     },
   });
 
@@ -282,7 +298,10 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
           <Select
             label="Chain"
             value={chain}
-            options={[{ value: "all", label: "All chains" }, ...chains.map((c) => ({ value: c, label: CHAINS[c].name }))]}
+            options={[
+              { value: "all", label: "All chains" },
+              ...chains.map((c) => ({ value: c, label: CHAINS[c].name })),
+            ]}
             onChange={(value) => {
               setChain(value);
               posthog.capture("screener_filter_changed", { filter_type: "chain", filter_value: value });
@@ -304,7 +323,10 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               value={rating}
               options={[
                 { value: "any", label: "any rating" },
-                ...(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => ({ value: r, label: RISK_WORD[r].toLowerCase() })),
+                ...(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => ({
+                  value: r,
+                  label: RISK_WORD[r].toLowerCase(),
+                })),
               ]}
               onChange={(value) => {
                 setRating(value);
@@ -322,13 +344,19 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                   align="end"
                   sideOffset={6}
                   collisionPadding={16}
-                  className={cn("z-50 w-52 overflow-y-auto rounded-control border border-line bg-surface p-2 shadow-popover", POPOVER_BOUNDS)}
+                  className={cn(
+                    "z-50 w-52 overflow-y-auto rounded-control border border-line bg-surface p-2 shadow-popover",
+                    POPOVER_BOUNDS,
+                  )}
                 >
                   {table
                     .getAllLeafColumns()
                     .filter((c) => c.getCanHide())
                     .map((c) => (
-                      <label key={c.id} className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-small hover:bg-subtle">
+                      <label
+                        key={c.id}
+                        className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-small hover:bg-subtle"
+                      >
                         <input
                           type="checkbox"
                           checked={c.getIsVisible()}
@@ -429,7 +457,11 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                       key={cell.id}
                       className={cn(
                         "border-b border-line px-3 py-2.5 first:pl-4 last:pr-4",
-                        meta?.align === "right" ? "tnum text-right whitespace-nowrap" : meta?.align === "center" ? "px-2 text-center" : "",
+                        meta?.align === "right"
+                          ? "tnum text-right whitespace-nowrap"
+                          : meta?.align === "center"
+                            ? "px-2 text-center"
+                            : "",
                         meta?.sticky && "sticky left-0 z-[1] bg-surface transition-colors group-hover/row:bg-page",
                       )}
                     >
@@ -453,7 +485,8 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               <AssetLogo slug={r.slug} ticker={r.ticker} size={28} />
               <div className="min-w-0 flex-1">
                 <p className="text-body">
-                  <span className="font-semibold">{r.ticker}</span> <span className="text-fg-muted">{shortEntityName(r.manager)}</span>
+                  <span className="font-semibold">{r.ticker}</span>{" "}
+                  <span className="text-fg-muted">{shortEntityName(r.manager)}</span>
                 </p>
                 <p className="tnum text-small text-fg-muted">
                   {r.aumUsd !== null ? formatUsd(r.aumUsd) : "—"} · {r.assetClassLabel}
@@ -464,7 +497,12 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
             </Link>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label font-normal text-fg-muted">
               {CATEGORY_ORDER.map((c) => (
-                <RiskDot key={c} color={r.categories[c].rating} label={CATEGORY_SHORT[c]} title={ratingWord(r.categories[c])} />
+                <RiskDot
+                  key={c}
+                  color={r.categories[c].rating}
+                  label={CATEGORY_SHORT[c]}
+                  title={ratingWord(r.categories[c])}
+                />
               ))}
             </div>
             {r.flags.length > 0 && (

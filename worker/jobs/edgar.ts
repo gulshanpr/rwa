@@ -16,7 +16,9 @@ export async function edgarJob() {
     const sec = asset.legal.secFilings;
     if (sec.status !== "public") continue;
     const cik = sec.value.cik.padStart(10, "0");
-    const data = await fetchJson<Submissions>(`https://data.sec.gov/submissions/CIK${cik}.json`, { headers: { "user-agent": userAgent } });
+    const data = await fetchJson<Submissions>(`https://data.sec.gov/submissions/CIK${cik}.json`, {
+      headers: { "user-agent": userAgent },
+    });
     const r = data.filings.recent;
     const filings = r.accessionNumber.map((accession, i) => ({
       accession,
@@ -41,7 +43,10 @@ export async function edgarJob() {
         });
       }
     }
-    await upsertCheck(asset.slug, "edgar", "filings", { accessions: filings.map((f) => f.accession), latest: filings[0] });
+    await upsertCheck(asset.slug, "edgar", "filings", {
+      accessions: filings.map((f) => f.accession),
+      latest: filings[0],
+    });
     log("edgar", `${asset.slug} ${filings.length} filing(s), latest ${filings[0]?.form} ${filings[0]?.date}`);
   }
 }

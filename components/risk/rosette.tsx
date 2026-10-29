@@ -1,4 +1,10 @@
-import { CATEGORY_LABELS, CATEGORY_ORDER, type CategoryId, type CategoryResult, type Color } from "@/lib/framework/types";
+import {
+  CATEGORY_LABELS,
+  CATEGORY_ORDER,
+  type CategoryId,
+  type CategoryResult,
+  type Color,
+} from "@/lib/framework/types";
 import { RISK_FILL, ratingWord } from "@/lib/ui";
 
 type Slice = Pick<CategoryResult, "rating" | "floor" | "headline">;
@@ -14,7 +20,15 @@ const SPAN = 360 / CATEGORY_ORDER.length;
  * Seven wedges, one per category, Underlying Asset at the top and clockwise from there. Unverified
  * wedges are striped in their known floor color; Legal Claim, not assessed, is hatched grey.
  */
-export function Rosette({ slices, size = "lg", ticker }: { slices: Record<CategoryId, Slice>; size?: "sm" | "lg"; ticker?: string }) {
+export function Rosette({
+  slices,
+  size = "lg",
+  ticker,
+}: {
+  slices: Record<CategoryId, Slice>;
+  size?: "sm" | "lg";
+  ticker?: string;
+}) {
   const small = size === "sm";
   const px = small ? 24 : 220;
   const c = px / 2;
@@ -25,7 +39,8 @@ export function Rosette({ slices, size = "lg", ticker }: { slices: Record<Catego
   const stripe = (color: Color | "none") => `rosette-stripe-${color}`;
   const fill = (s: Slice): { fill: string; opacity?: number } => {
     if (s.rating === "unverified") {
-      if (small) return s.floor ? { fill: RISK_FILL[s.floor], opacity: 0.35 } : { fill: "var(--text-subtle)", opacity: 0.45 };
+      if (small)
+        return s.floor ? { fill: RISK_FILL[s.floor], opacity: 0.35 } : { fill: "var(--text-subtle)", opacity: 0.45 };
       return { fill: `url(#${stripe(s.floor ?? "none")})` };
     }
     if (s.rating === "not-assessed") return { fill: small ? "var(--border-strong)" : "url(#rosette-hatch)" };
@@ -33,7 +48,14 @@ export function Rosette({ slices, size = "lg", ticker }: { slices: Record<Catego
   };
 
   return (
-    <svg width={px} height={px} viewBox={`0 0 ${px} ${px}`} role="img" aria-label={`${ticker ? `${ticker} risk rosette. ` : ""}${summary}`} className="shrink-0">
+    <svg
+      width={px}
+      height={px}
+      viewBox={`0 0 ${px} ${px}`}
+      role="img"
+      aria-label={`${ticker ? `${ticker} risk rosette. ` : ""}${summary}`}
+      className="shrink-0"
+    >
       {!small && (
         <defs>
           <pattern id="rosette-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
@@ -41,9 +63,23 @@ export function Rosette({ slices, size = "lg", ticker }: { slices: Record<Catego
             <line x1="0" y1="0" x2="0" y2="6" stroke="var(--border-strong)" strokeWidth="2" />
           </pattern>
           {(["green", "yellow", "red", "none"] as const).map((color) => (
-            <pattern key={color} id={stripe(color)} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <pattern
+              key={color}
+              id={stripe(color)}
+              width="8"
+              height="8"
+              patternUnits="userSpaceOnUse"
+              patternTransform="rotate(45)"
+            >
               <rect width="8" height="8" fill="var(--surface)" />
-              <line x1="0" y1="0" x2="0" y2="8" stroke={color === "none" ? "var(--text-subtle)" : RISK_FILL[color]} strokeWidth="3.5" />
+              <line
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="8"
+                stroke={color === "none" ? "var(--text-subtle)" : RISK_FILL[color]}
+                strokeWidth="3.5"
+              />
             </pattern>
           ))}
         </defs>

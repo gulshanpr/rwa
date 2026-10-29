@@ -16,8 +16,10 @@ const BAR: Record<Rating, string> = {
   green: "bg-risk-green",
   yellow: "bg-risk-yellow",
   red: "bg-risk-red",
-  unverified: "bg-[repeating-linear-gradient(45deg,var(--surface),var(--surface)_3px,var(--text-subtle)_3px,var(--text-subtle)_5px)]",
-  "not-assessed": "bg-[repeating-linear-gradient(45deg,var(--risk-grey-soft),var(--risk-grey-soft)_4px,var(--border-strong)_4px,var(--border-strong)_6px)]",
+  unverified:
+    "bg-[repeating-linear-gradient(45deg,var(--surface),var(--surface)_3px,var(--text-subtle)_3px,var(--text-subtle)_5px)]",
+  "not-assessed":
+    "bg-[repeating-linear-gradient(45deg,var(--risk-grey-soft),var(--risk-grey-soft)_4px,var(--border-strong)_4px,var(--border-strong)_6px)]",
 };
 
 const sum = (values: Record<Rating, number>) => RATINGS.reduce((s, r) => s + values[r], 0);
@@ -34,7 +36,9 @@ function Breakdown({ d, mode }: { d: CategoryDistribution; mode: Mode }) {
           <li key={r} className="flex items-center gap-2">
             <span aria-hidden className={cn("size-2 shrink-0 rounded-full", RISK_DOT[r])} />
             <span className="flex-1 pr-2 text-fg-muted">{RISK_WORD[r]}</span>
-            <span className="tnum font-medium">{mode === "value" ? formatUsd(d.byValue[r]) : assets(d.byCount[r])}</span>
+            <span className="tnum font-medium">
+              {mode === "value" ? formatUsd(d.byValue[r]) : assets(d.byCount[r])}
+            </span>
             <span className="tnum w-9 text-right text-fg-muted">{total ? formatPct(values[r] / total, 0) : "—"}</span>
           </li>
         ))}

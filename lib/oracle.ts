@@ -27,7 +27,11 @@ function weekendSeconds(from: number, to: number): number {
   return total;
 }
 
-export function feedAgeSeconds(ref: { businessDaysOnly: boolean }, updatedAt: Date | string, now: Date | string): number {
+export function feedAgeSeconds(
+  ref: { businessDaysOnly: boolean },
+  updatedAt: Date | string,
+  now: Date | string,
+): number {
   const from = new Date(updatedAt).getTime() / 1000;
   const to = new Date(now).getTime() / 1000;
   return Math.max(0, Math.round(to - from - (ref.businessDaysOnly ? weekendSeconds(from, to) : 0)));
@@ -41,5 +45,12 @@ export function oracleAge(asset: Asset, live: Live | undefined): OracleAge | und
   const scheduledAgeSeconds = feedAgeSeconds(ref, live.oracle.updatedAt, live.asOf);
   const ratio = scheduledAgeSeconds / ref.cadenceSeconds;
   const freshness: OracleFreshness = ratio > 3 ? "stale" : ratio > 1 ? "late" : "on-schedule";
-  return { ageSeconds, scheduledAgeSeconds, cadenceSeconds: ref.cadenceSeconds, businessDaysOnly: ref.businessDaysOnly, ratio, freshness };
+  return {
+    ageSeconds,
+    scheduledAgeSeconds,
+    cadenceSeconds: ref.cadenceSeconds,
+    businessDaysOnly: ref.businessDaysOnly,
+    ratio,
+    freshness,
+  };
 }

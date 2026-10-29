@@ -34,26 +34,71 @@ export function rateStage(asset: Asset, discovered: Discovered[], measured: Meas
 
   const req: [Stage, string, string, boolean | "not-assessed"][] = [
     [0, "holdings", "What the token holds is described publicly", asset.underlying.holdings.status === "public"],
-    [0, "parties", "Issuer, custodian, administrator and auditor are named", [c.custodian, c.fundAdministrator, c.auditor].every((s) => s.status === "public")],
-    [0, "structure", "The legal structure is documented", asset.legal.vehicleType.status === "public" && asset.legal.jurisdiction.status === "public"],
-    [0, "verified", "Smart contracts are verified onchain", discovered.length > 0 && discovered.every((d) => Object.values(d.contracts).every((c) => c.verified))],
+    [
+      0,
+      "parties",
+      "Issuer, custodian, administrator and auditor are named",
+      [c.custodian, c.fundAdministrator, c.auditor].every((s) => s.status === "public"),
+    ],
+    [
+      0,
+      "structure",
+      "The legal structure is documented",
+      asset.legal.vehicleType.status === "public" && asset.legal.jurisdiction.status === "public",
+    ],
+    [
+      0,
+      "verified",
+      "Smart contracts are verified onchain",
+      discovered.length > 0 && discovered.every((d) => Object.values(d.contracts).every((c) => c.verified)),
+    ],
 
     [1, "bankruptcy-remote", "Bankruptcy-remote structure", "not-assessed"],
-    [1, "independent-custody", "Independent custodian and administrator", independentParty("custodian", "custodian") && independentParty("fundAdministrator", "fund-administrator")],
-    [1, "independent-verification", "Holdings independently verified, at a pace that fits the asset", Boolean(tests?.independent && tests.verified && tests.fresh)],
-    [1, "multisig", "Admin powers held by a multisig, with a documented policy", rows.length > 0 && !rows.some((x) => isSingleKey(x.holder)) && asset.control.powersDocumented.value],
+    [
+      1,
+      "independent-custody",
+      "Independent custodian and administrator",
+      independentParty("custodian", "custodian") && independentParty("fundAdministrator", "fund-administrator"),
+    ],
+    [
+      1,
+      "independent-verification",
+      "Holdings independently verified, at a pace that fits the asset",
+      Boolean(tests?.independent && tests.verified && tests.fresh),
+    ],
+    [
+      1,
+      "multisig",
+      "Admin powers held by a multisig, with a documented policy",
+      rows.length > 0 && !rows.some((x) => isSingleKey(x.holder)) && asset.control.powersDocumented.value,
+    ],
     [1, "redemption-path", "A documented redemption path", r.available.value && r.settlement.status === "public"],
 
     [2, "trustee", "An independent trustee who can act for holders", "not-assessed"],
-    [2, "verifiable-holdings", "Holdings data that anyone can verify", asset.transparency.reports.some((x) => x.verifiability === "cryptographic")],
-    [2, "timelock", "Admin changes behind a timelock, so holders can exit first", rows.filter((x) => CRITICAL_POWERS.includes(x.power)).every((x) => x.holder.delaySeconds > 0)],
+    [
+      2,
+      "verifiable-holdings",
+      "Holdings data that anyone can verify",
+      asset.transparency.reports.some((x) => x.verifiability === "cryptographic"),
+    ],
+    [
+      2,
+      "timelock",
+      "Admin changes behind a timelock, so holders can exit first",
+      rows.filter((x) => CRITICAL_POWERS.includes(x.power)).every((x) => x.holder.delaySeconds > 0),
+    ],
     [
       2,
       "exit-without-issuer",
       "An exit that works without the issuer's goodwill, and liquidators can hold the token",
       exitLiquidity(asset, measured).dexUsd >= REAL_LIQUIDITY_USD && asset.exit.liquidators.value === "anyone",
     ],
-    [2, "independent-pricing", "Pricing from an independent source", ref.type !== "none" && ref.dataOrigin !== "issuer" && ref.writer !== "eoa" && ref.writer !== "issuer-multisig"],
+    [
+      2,
+      "independent-pricing",
+      "Pricing from an independent source",
+      ref.type !== "none" && ref.dataOrigin !== "issuer" && ref.writer !== "eoa" && ref.writer !== "issuer-multisig",
+    ],
   ];
 
   const requirements: Requirement[] = req.map(([stage, id, text, ok]) => ({

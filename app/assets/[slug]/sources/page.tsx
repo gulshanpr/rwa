@@ -34,7 +34,8 @@ export default async function SourcesPage({ params }: PageProps<"/assets/[slug]/
   return (
     <div className="grid gap-4">
       <p className="text-small text-fg-muted">
-        {total} sources cited on this page. Every public curated value must have one; schema validation fails the build otherwise.
+        {total} sources cited on this page. Every public curated value must have one; schema validation fails the build
+        otherwise.
       </p>
       {order.map((tab) => (
         <Card key={tab} title={TAB_TITLES[tab]} bodyClassName="p-4 pt-3 md:p-5 md:pt-3">
@@ -83,9 +84,20 @@ export default async function SourcesPage({ params }: PageProps<"/assets/[slug]/
 
 /** One line: the URL without its scheme, cut off with an ellipsis; the full address is in the tooltip and the link. */
 function SourceLink({ url, tx, className }: { url?: string; tx?: string; className?: string }) {
-  if (!url) return <code className={cn("block truncate font-mono text-[12px]", className)} title={tx}>{tx}</code>;
+  if (!url)
+    return (
+      <code className={cn("block truncate font-mono text-[12px]", className)} title={tx}>
+        {tx}
+      </code>
+    );
   return (
-    <a href={url} target="_blank" rel="noreferrer" title={url} className={cn("flex min-w-0 items-center gap-1 text-small text-accent hover:underline", className)}>
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      title={url}
+      className={cn("flex min-w-0 items-center gap-1 text-small text-accent hover:underline", className)}
+    >
       <span className="truncate">{url.replace(/^https?:\/\/(www\.)?/, "")}</span>
       <ExternalLink className="size-3.5 shrink-0" aria-hidden />
     </a>

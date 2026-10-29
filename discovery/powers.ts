@@ -5,14 +5,20 @@ import type { PrivilegedFunction } from "./sources";
 
 const RULES: [RegExp, Power][] = [
   [/^(upgradeTo|upgradeToAndCall|setImplementation|setTarget)$/, "upgrade"],
-  [/^(setDSService|grantRole|revokeRole|renounceRole|setRoles?|addRole|removeRole|setServiceOwner|transferOwnership|renounceOwnership|acceptOwnership|setOwner|setAdmin|changeAdmin)$/, "admin"],
+  [
+    /^(setDSService|grantRole|revokeRole|renounceRole|setRoles?|addRole|removeRole|setServiceOwner|transferOwnership|renounceOwnership|acceptOwnership|setOwner|setAdmin|changeAdmin)$/,
+    "admin",
+  ],
   [/^(mint|issue|bulkIssuance)/i, "mint"],
   [/^(seize|omnibusSeize|forceTransfer|forcedTransfer|clawback|reallocate)/i, "force-transfer"],
   [/^(burn|omnibusBurn|bulkBurn|burnFrom|destroy|redeemFrom)/i, "burn-from"],
   [/^(set|update)(Price|Nav|Rate|ExchangeRate|Oracle)/, "set-price"],
   [/^(pause|unpause)$/, "pause"],
   [/(freeze|unfreeze|blacklist|blocklist|^ban|LockFor|LockRecord|^lockTokens|^unlockTokens)/i, "freeze"],
-  [/(allowlist|whitelist|compliance|Investor|Country|Attribute|Wallet|Limit|Cap$|Feature|^setAll$|Percentage|Period|Holdings|Flowback|Accredited|Securities|BackDating|FullTransfer|MinUSTokens|MinEUTokens)/, "set-compliance"],
+  [
+    /(allowlist|whitelist|compliance|Investor|Country|Attribute|Wallet|Limit|Cap$|Feature|^setAll$|Percentage|Period|Holdings|Flowback|Accredited|Securities|BackDating|FullTransfer|MinUSTokens|MinEUTokens)/,
+    "set-compliance",
+  ],
 ];
 
 export function powerForFunction(name: string): Power {
@@ -46,7 +52,12 @@ export function mapFunctions(
   for (const g of groups.values()) {
     const who = holdersFor(g.modifier)!;
     const names = g.fns.length > 3 ? `${g.fns.slice(0, 3).join(", ")} +${g.fns.length - 3} more` : g.fns.join(", ");
-    ctx.grant(permissions, g.power, who.holders, `${contractName}.${names} · ${g.modifier}${who.label ? ` (${who.label})` : ""}`);
+    ctx.grant(
+      permissions,
+      g.power,
+      who.holders,
+      `${contractName}.${names} · ${g.modifier}${who.label ? ` (${who.label})` : ""}`,
+    );
   }
   return permissions;
 }

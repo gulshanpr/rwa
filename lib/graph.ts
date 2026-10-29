@@ -72,19 +72,43 @@ export function buildControlGraph(profile: AssetProfile, chain: Chain) {
 
     if (holder?.kind === "proxy-admin") {
       const owner = ensureHolder(holder.owner);
-      edges.set(`${key}->${owner}`, { id: `${key}->${owner}`, source: key, target: owner, label: "owner", color: "grey", critical: false, rows: [] });
+      edges.set(`${key}->${owner}`, {
+        id: `${key}->${owner}`,
+        source: key,
+        target: owner,
+        label: "owner",
+        color: "grey",
+        critical: false,
+        rows: [],
+      });
     }
     if (holder?.kind === "timelock") {
       for (const p of holder.proposers) {
         const proposer = ensureHolder(p);
-        edges.set(`${key}->${proposer}`, { id: `${key}->${proposer}`, source: key, target: proposer, label: "proposer", color: "grey", critical: false, rows: [] });
+        edges.set(`${key}->${proposer}`, {
+          id: `${key}->${proposer}`,
+          source: key,
+          target: proposer,
+          label: "proposer",
+          color: "grey",
+          critical: false,
+          rows: [],
+        });
       }
     }
     if (holder?.kind === "contract") {
       for (const c of holder.controllers) {
         if (c.toLowerCase() === address.toLowerCase()) continue;
         const controller = ensureHolder(c);
-        edges.set(`${key}->${controller}`, { id: `${key}->${controller}`, source: key, target: controller, label: "controlled by", color: "grey", critical: false, rows: [] });
+        edges.set(`${key}->${controller}`, {
+          id: `${key}->${controller}`,
+          source: key,
+          target: controller,
+          label: "controlled by",
+          color: "grey",
+          critical: false,
+          rows: [],
+        });
       }
     }
     return key;
@@ -105,7 +129,11 @@ export function buildControlGraph(profile: AssetProfile, chain: Chain) {
       address,
       kind: "contract",
       label: c.role === "token" ? `${profile.asset.ticker} token (${c.name})` : c.name,
-      detail: [proxy, c.proxy ? `impl ${c.proxy.implementation.slice(0, 6)}…${c.proxy.implementation.slice(-4)}` : null, c.verified ? "verified" : "unverified"]
+      detail: [
+        proxy,
+        c.proxy ? `impl ${c.proxy.implementation.slice(0, 6)}…${c.proxy.implementation.slice(-4)}` : null,
+        c.verified ? "verified" : "unverified",
+      ]
         .filter(Boolean)
         .join(" · "),
       powers: [],

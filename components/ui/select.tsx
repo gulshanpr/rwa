@@ -55,7 +55,10 @@ export function Select<T extends string | number>({
             e.preventDefault();
             listRef.current?.querySelector<HTMLElement>("[aria-selected=true]")?.focus();
           }}
-          className={cn("z-50 flex flex-col rounded-control border border-line bg-surface shadow-popover", POPOVER_BOUNDS)}
+          className={cn(
+            "z-50 flex flex-col rounded-control border border-line bg-surface shadow-popover",
+            POPOVER_BOUNDS,
+          )}
         >
           <div ref={listRef} role="listbox" aria-label={label} onKeyDown={onKeyDown} className="overflow-y-auto p-1.5">
             {options.map((o) => (

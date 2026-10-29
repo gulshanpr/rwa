@@ -44,7 +44,12 @@ const DEFAULT_ARCHIVE_RPCS: Record<Chain, string> = {
 
 function envList(name: string): string[] | undefined {
   const v = process.env[name];
-  return v ? v.split(",").map((s) => s.trim()).filter(Boolean) : undefined;
+  return v
+    ? v
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : undefined;
 }
 
 export interface ChainClients {
@@ -79,7 +84,7 @@ export function clientsFor(chain: Chain): ChainClients {
   return result;
 }
 
-export const CACHE_DIR = path.join(process.cwd(), ".cache");
+const CACHE_DIR = path.join(process.cwd(), ".cache");
 
 function readCache<T>(rel: string): T | undefined {
   const file = path.join(CACHE_DIR, rel);
@@ -89,7 +94,10 @@ function readCache<T>(rel: string): T | undefined {
 function writeCache(rel: string, value: unknown) {
   const file = path.join(CACHE_DIR, rel);
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, JSON.stringify(value, (_, v) => (typeof v === "bigint" ? v.toString() : v)));
+  fs.writeFileSync(
+    file,
+    JSON.stringify(value, (_, v) => (typeof v === "bigint" ? v.toString() : v)),
+  );
 }
 
 /** Binary-searches the first block where `address` has code. Cached forever. */
@@ -109,7 +117,7 @@ export async function deploymentBlock(c: ChainClients, address: Address, latest:
   return hi;
 }
 
-export interface CachedLog {
+interface CachedLog {
   blockNumber: string;
   transactionHash: string;
   logIndex: number;
@@ -137,10 +145,22 @@ interface ExplorerLog {
 }
 
 /** Etherscan-compatible `getLogs` (Blockscout without a key, or Etherscan V2 with ETHERSCAN_API_KEY). Pages by block. */
-async function explorerLogs(c: ChainClients, address: Address, event: AbiEvent, fromBlock: bigint, toBlock: bigint): Promise<CachedLog[] | undefined> {
+async function explorerLogs(
+  c: ChainClients,
+  address: Address,
+  event: AbiEvent,
+  fromBlock: bigint,
+  toBlock: bigint,
+): Promise<CachedLog[] | undefined> {
   const custom = process.env[`LOGS_API_${c.chain.toUpperCase()}`];
   const key = NOT_ON_FREE_ETHERSCAN.has(c.chain) ? undefined : process.env.ETHERSCAN_API_KEY;
-  const base = custom ?? (key ? `https://api.etherscan.io/v2/api?chainid=${c.chainId}&apikey=${key}&` : LOG_APIS[c.chain] ? `${LOG_APIS[c.chain]}?` : undefined);
+  const base =
+    custom ??
+    (key
+      ? `https://api.etherscan.io/v2/api?chainid=${c.chainId}&apikey=${key}&`
+      : LOG_APIS[c.chain]
+        ? `${LOG_APIS[c.chain]}?`
+        : undefined);
   if (!base) return undefined;
   const sep = base.endsWith("?") || base.endsWith("&") ? "" : base.includes("?") ? "&" : "?";
   const topic0 = toEventSelector(event);
@@ -152,11 +172,16 @@ async function explorerLogs(c: ChainClients, address: Address, event: AbiEvent, 
       const res = await fetch(url, { headers: { "user-agent": "rwabeat" } });
       if (!res.ok) throw new Error(`log API ${res.status}`);
       const j = (await res.json()) as { status: string; message: string; result: ExplorerLog[] | string };
-      if (j.status !== "1" && !/no records|no logs/i.test(j.message)) throw new Error(`log API: ${j.message} ${typeof j.result === "string" ? j.result : ""}`);
+      if (j.status !== "1" && !/no records|no logs/i.test(j.message))
+        throw new Error(`log API: ${j.message} ${typeof j.result === "string" ? j.result : ""}`);
       return Array.isArray(j.result) ? j.result : [];
     });
     for (const l of d) {
-      const decoded = decodeEventLog({ abi: [event], data: l.data, topics: l.topics.filter((t): t is Hex => Boolean(t)) as [Hex, ...Hex[]] });
+      const decoded = decodeEventLog({
+        abi: [event],
+        data: l.data,
+        topics: l.topics.filter((t): t is Hex => Boolean(t)) as [Hex, ...Hex[]],
+      });
       const log: CachedLog = {
         blockNumber: BigInt(l.blockNumber).toString(),
         transactionHash: l.transactionHash,
@@ -225,11 +250,19 @@ export async function scanLogs(
     }
     const scannedTo = batch[batch.length - 1][1];
     if (ranges.length > 20 && (i / concurrency) % 25 === 0) {
-      process.stderr.write(`  ${event.name} ${address.slice(0, 10)}…: ${Math.min(i + concurrency, ranges.length)}/${ranges.length} chunks\n`);
+      process.stderr.write(
+        `  ${event.name} ${address.slice(0, 10)}…: ${Math.min(i + concurrency, ranges.length)}/${ranges.length} chunks\n`,
+      );
       writeCache(rel, { scannedTo: scannedTo.toString(), logs });
     }
   }
-  logs.sort((a, b) => (BigInt(a.blockNumber) === BigInt(b.blockNumber) ? a.logIndex - b.logIndex : BigInt(a.blockNumber) < BigInt(b.blockNumber) ? -1 : 1));
+  logs.sort((a, b) =>
+    BigInt(a.blockNumber) === BigInt(b.blockNumber)
+      ? a.logIndex - b.logIndex
+      : BigInt(a.blockNumber) < BigInt(b.blockNumber)
+        ? -1
+        : 1,
+  );
   writeCache(rel, { scannedTo: toBlock.toString(), logs });
   return logs;
 }

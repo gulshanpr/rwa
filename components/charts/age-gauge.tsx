@@ -5,10 +5,17 @@ const MAX_RATIO = 4;
 
 export function AgeGauge({ age }: { age: OracleAge }) {
   const pct = (Math.min(age.ratio, MAX_RATIO) / MAX_RATIO) * 100;
-  const zone = (from: number, to: number) => ({ left: `${(from / MAX_RATIO) * 100}%`, width: `${((to - from) / MAX_RATIO) * 100}%` });
+  const zone = (from: number, to: number) => ({
+    left: `${(from / MAX_RATIO) * 100}%`,
+    width: `${((to - from) / MAX_RATIO) * 100}%`,
+  });
   return (
     <div>
-      <div className="relative h-2.5 rounded-full bg-subtle" role="img" aria-label={`Oracle age ${formatDuration(age.ageSeconds)}, ${age.ratio.toFixed(2)} times the expected cadence`}>
+      <div
+        className="relative h-2.5 rounded-full bg-subtle"
+        role="img"
+        aria-label={`Oracle age ${formatDuration(age.ageSeconds)}, ${age.ratio.toFixed(2)} times the expected cadence`}
+      >
         <div className="absolute inset-y-0 rounded-l-full bg-risk-green/70" style={zone(0, 1)} />
         <div className="absolute inset-y-0 bg-risk-yellow/70" style={zone(1, 3)} />
         <div className="absolute inset-y-0 rounded-r-full bg-risk-red/70" style={zone(3, MAX_RATIO)} />

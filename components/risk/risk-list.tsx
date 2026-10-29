@@ -29,7 +29,11 @@ export function RiskList({
     <ol className="divide-y divide-line">
       {shown.map((f) => (
         <li key={f.id} className="flex items-start gap-3 py-2.5 first:pt-0 last:pb-0">
-          <RiskDot color={visual(f)} title={f.color === "unknown" ? `Not public: could be ${f.worstCase ?? "red"}` : undefined} className="mt-1.5" />
+          <RiskDot
+            color={visual(f)}
+            title={f.color === "unknown" ? `Not public: could be ${f.worstCase ?? "red"}` : undefined}
+            className="mt-1.5"
+          />
           <p className="min-w-0 flex-1 text-body text-fg">
             {f.text}
             {!linkCategory && f.source && <SourceMarker source={f.source} />}

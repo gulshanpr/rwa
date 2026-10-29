@@ -1,5 +1,18 @@
 import { sql } from "drizzle-orm";
-import { bigint, boolean, doublePrecision, index, integer, jsonb, pgTable, primaryKey, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  bigint,
+  boolean,
+  doublePrecision,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 const ts = (name: string) => timestamp(name, { withTimezone: true, mode: "date" });
 
@@ -24,9 +37,15 @@ export const asset = pgTable("asset", {
   ticker: text("ticker").notNull(),
   assetClass: text("asset_class").notNull(),
   description: text("description").notNull(),
-  issuer: text("issuer").notNull().references(() => entity.slug),
-  manager: text("manager").notNull().references(() => entity.slug),
-  platform: text("platform").notNull().references(() => entity.slug),
+  issuer: text("issuer")
+    .notNull()
+    .references(() => entity.slug),
+  manager: text("manager")
+    .notNull()
+    .references(() => entity.slug),
+  platform: text("platform")
+    .notNull()
+    .references(() => entity.slug),
   tokenStandard: text("token_standard").notNull(),
   priceModel: text("price_model").notNull(),
   sample: boolean("sample").notNull().default(false),
@@ -39,13 +58,18 @@ export const asset = pgTable("asset", {
 export const deployment = pgTable(
   "deployment",
   {
-    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    assetSlug: text("asset_slug")
+      .notNull()
+      .references(() => asset.slug, { onDelete: "cascade" }),
     chain: text("chain").notNull(),
     position: integer("position").notNull(),
     token: text("token").notNull(),
     /** [address, label] pairs; an array because jsonb does not keep object key order. */
     labels: jsonb("labels").$type<[string, string][]>().notNull().default([]),
-    ignoreMethods: text("ignore_methods").array().notNull().default(sql`'{}'::text[]`),
+    ignoreMethods: text("ignore_methods")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     poolId: text("pool_id"),
   },
   (t) => [primaryKey({ columns: [t.assetSlug, t.chain] })],
@@ -60,7 +84,9 @@ export const fact = pgTable(
   "fact",
   {
     id: serial("id").primaryKey(),
-    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    assetSlug: text("asset_slug")
+      .notNull()
+      .references(() => asset.slug, { onDelete: "cascade" }),
     path: text("path").notNull(),
     body: jsonb("body").notNull(),
     status: text("status").notNull(),
@@ -71,7 +97,9 @@ export const fact = pgTable(
     supersededAt: ts("superseded_at"),
   },
   (t) => [
-    uniqueIndex("fact_current").on(t.assetSlug, t.path).where(sql`superseded_at is null`),
+    uniqueIndex("fact_current")
+      .on(t.assetSlug, t.path)
+      .where(sql`superseded_at is null`),
     index("fact_asset").on(t.assetSlug),
   ],
 );
@@ -80,7 +108,9 @@ export const discoverySnapshot = pgTable(
   "discovery_snapshot",
   {
     id: serial("id").primaryKey(),
-    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    assetSlug: text("asset_slug")
+      .notNull()
+      .references(() => asset.slug, { onDelete: "cascade" }),
     chain: text("chain").notNull(),
     block: bigint("block", { mode: "number" }).notNull(),
     ts: ts("ts").notNull(),
@@ -89,7 +119,10 @@ export const discoverySnapshot = pgTable(
     contracts: jsonb("contracts").notNull(),
     holders: jsonb("holders").notNull(),
     extra: jsonb("extra").notNull().default({}),
-    diffSummary: text("diff_summary").array().notNull().default(sql`'{}'::text[]`),
+    diffSummary: text("diff_summary")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     status: text("status").notNull().default("approved"),
     reviewedBy: text("reviewed_by"),
     createdAt: ts("created_at").notNull().defaultNow(),
@@ -101,7 +134,9 @@ export const researchNote = pgTable(
   "research_note",
   {
     id: serial("id").primaryKey(),
-    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    assetSlug: text("asset_slug")
+      .notNull()
+      .references(() => asset.slug, { onDelete: "cascade" }),
     section: text("section").notNull(),
     bodyMd: text("body_md").notNull(),
     enteredBy: text("entered_by").notNull(),
@@ -113,7 +148,9 @@ export const researchNote = pgTable(
 export const handScore = pgTable(
   "hand_score",
   {
-    assetSlug: text("asset_slug").notNull().references(() => asset.slug, { onDelete: "cascade" }),
+    assetSlug: text("asset_slug")
+      .notNull()
+      .references(() => asset.slug, { onDelete: "cascade" }),
     slice: text("slice").notNull(),
     color: text("color").notNull(),
     reason: text("reason").notNull().default(""),

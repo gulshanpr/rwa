@@ -29,13 +29,18 @@ export default async function LegalPage({ params }: PageProps<"/assets/[slug]/le
       <div className="grid content-start gap-4">
         <CategoryCard result={rating.categories.legal} slug={slug}>
           <div className="text-small text-fg-muted">
-            <p>Until a qualified legal reviewer joins, we show the public records below so you can read them yourself. This category will check:</p>
+            <p>
+              Until a qualified legal reviewer joins, we show the public records below so you can read them yourself.
+              This category will check:
+            </p>
             <ul className="mt-2 list-disc space-y-1 pl-5">
               {QUESTIONS.map((q) => (
                 <li key={q}>{q}</li>
               ))}
             </ul>
-            <p className="mt-2">Bankruptcy remoteness (Stage 1) and an independent trustee (Stage 2) depend on this review.</p>
+            <p className="mt-2">
+              Bankruptcy remoteness (Stage 1) and an independent trustee (Stage 2) depend on this review.
+            </p>
           </div>
         </CategoryCard>
       </div>

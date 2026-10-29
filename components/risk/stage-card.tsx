@@ -6,7 +6,7 @@ import { cn } from "@/lib/ui";
 
 export const STAGE_NAMES = ["Disclosed", "Protected", "Trust-minimized"] as const;
 
-export function stageLabel(stage: StageResult["stage"]): string {
+function stageLabel(stage: StageResult["stage"]): string {
   return stage === null ? "Below Stage 0" : `Stage ${stage} · ${STAGE_NAMES[stage]}`;
 }
 
@@ -63,7 +63,9 @@ export function StageCard({ stage }: { stage: StageResult }) {
       <div className="grid gap-4 sm:grid-cols-3">
         {([0, 1, 2] as const).map((s) => (
           <div key={s}>
-            <p className={cn("text-label", stage.stage !== null && stage.stage >= s ? "text-accent" : "text-fg-subtle")}>
+            <p
+              className={cn("text-label", stage.stage !== null && stage.stage >= s ? "text-accent" : "text-fg-subtle")}
+            >
               Stage {s} · {STAGE_NAMES[s]}
             </p>
             <ul className="mt-1">

@@ -15,7 +15,8 @@ const USAGE = `Usage:
   bun rwa check                  list differences between Postgres and the files; exits 1 if they differ`;
 
 const ROOT = process.cwd();
-const HEADER = "# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.\n";
+const HEADER =
+  "# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.\n";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -43,9 +44,17 @@ function toYaml(value: unknown): string {
       if ((key === "source" || key === "feed") && YAML.isMap(pair.value)) {
         pair.value.flow = true;
         for (const p of pair.value.items)
-          if (YAML.isScalar(p.value) && typeof p.value.value === "string" && YAML.isScalar(p.key) && p.key.value !== "checkedAt" && p.key.value !== "chain") p.value.type = "QUOTE_DOUBLE";
+          if (
+            YAML.isScalar(p.value) &&
+            typeof p.value.value === "string" &&
+            YAML.isScalar(p.key) &&
+            p.key.value !== "checkedAt" &&
+            p.key.value !== "chain"
+          )
+            p.value.type = "QUOTE_DOUBLE";
       }
-      if (key === "value" && YAML.isMap(pair.value) && pair.value.items.every((p) => flat(p.value))) pair.value.flow = true;
+      if (key === "value" && YAML.isMap(pair.value) && pair.value.items.every((p) => flat(p.value)))
+        pair.value.flow = true;
       if (key === "description" && YAML.isScalar(pair.value)) pair.value.type = "BLOCK_FOLDED";
       if (YAML.isSeq(pair.value) && pair.value.items.every((i) => YAML.isScalar(i))) pair.value.flow = true;
     },
@@ -54,7 +63,8 @@ function toYaml(value: unknown): string {
     },
   });
   if (YAML.isMap(doc.contents)) {
-    for (const pair of doc.contents.items.slice(1)) if (YAML.isCollection(pair.value) && !pair.value.flow && YAML.isScalar(pair.key)) pair.key.spaceBefore = true;
+    for (const pair of doc.contents.items.slice(1))
+      if (YAML.isCollection(pair.value) && !pair.value.flow && YAML.isScalar(pair.key)) pair.key.spaceBefore = true;
   }
   return HEADER + doc.toString({ lineWidth: 0 }).replace(/\[ ([^[\]"]*) \]/g, "[$1]");
 }
@@ -65,7 +75,17 @@ function assetForYaml(a: Asset): unknown {
 }
 
 function entityForYaml(e: Entity): unknown {
-  return { slug: e.slug, name: e.name, type: e.type, jurisdiction: e.jurisdiction, lei: e.lei, website: e.website, regulated: e.regulated, regulator: e.regulator, auditorTier: e.auditorTier };
+  return {
+    slug: e.slug,
+    name: e.name,
+    type: e.type,
+    jurisdiction: e.jurisdiction,
+    lei: e.lei,
+    website: e.website,
+    regulated: e.regulated,
+    regulator: e.regulator,
+    auditorTier: e.auditorTier,
+  };
 }
 
 async function runImport() {
@@ -77,14 +97,23 @@ async function runImport() {
 
   for (const asset of files.assets) {
     const r = await saveAsset(asset, by);
-    const parts = [r.created ? "created" : `${r.factsChanged.length} fact(s) changed`, r.factsRemoved.length ? `${r.factsRemoved.length} removed` : ""].filter(Boolean);
-    console.log(`${asset.slug}: ${parts.join(", ")}${r.factsChanged.length && !r.created ? ` (${r.factsChanged.join(", ")})` : ""}`);
+    const parts = [
+      r.created ? "created" : `${r.factsChanged.length} fact(s) changed`,
+      r.factsRemoved.length ? `${r.factsRemoved.length} removed` : "",
+    ].filter(Boolean);
+    console.log(
+      `${asset.slug}: ${parts.join(", ")}${r.factsChanged.length && !r.created ? ` (${r.factsChanged.join(", ")})` : ""}`,
+    );
     for (const snap of files.snapshots.get(asset.slug) ?? []) {
       const added = await saveSnapshot(snap.discovered, snap.meta, { by });
       console.log(`  ${snap.discovered.chain} snapshot at block ${snap.meta.block}: ${added ? "stored" : "unchanged"}`);
     }
     const research = path.join(ROOT, "research", `${asset.slug}.md`);
-    if (fs.existsSync(research) && (await saveResearchNote(asset.slug, "phase-0", fs.readFileSync(research, "utf8"), by))) console.log(`  research note stored`);
+    if (
+      fs.existsSync(research) &&
+      (await saveResearchNote(asset.slug, "phase-0", fs.readFileSync(research, "utf8"), by))
+    )
+      console.log(`  research note stored`);
   }
 }
 
@@ -120,12 +149,22 @@ async function runExport() {
     }
   }
   const existing = ["data/assets", "data/entities"].flatMap((dir) =>
-    fs.existsSync(path.join(ROOT, dir)) ? fs.readdirSync(path.join(ROOT, dir)).filter((f) => f.endsWith(".yaml")).map((f) => `${dir}/${f}`) : [],
+    fs.existsSync(path.join(ROOT, dir))
+      ? fs
+          .readdirSync(path.join(ROOT, dir))
+          .filter((f) => f.endsWith(".yaml"))
+          .map((f) => `${dir}/${f}`)
+      : [],
   );
   const extra = existing.filter((f) => !keep.has(f));
   if (args.includes("--prune")) extra.forEach((f) => fs.rmSync(path.join(ROOT, f)));
-  console.log(written.length ? `wrote ${written.length} file(s):\n  ${written.join("\n  ")}` : "files already match the database");
-  if (extra.length) console.log(`${args.includes("--prune") ? "deleted" : "not in the database (use --prune to delete)"}:\n  ${extra.join("\n  ")}`);
+  console.log(
+    written.length ? `wrote ${written.length} file(s):\n  ${written.join("\n  ")}` : "files already match the database",
+  );
+  if (extra.length)
+    console.log(
+      `${args.includes("--prune") ? "deleted" : "not in the database (use --prune to delete)"}:\n  ${extra.join("\n  ")}`,
+    );
 }
 
 async function runCheck(): Promise<number> {
@@ -136,12 +175,21 @@ async function runCheck(): Promise<number> {
     for (const k of new Set([...a.keys(), ...b.keys()])) {
       if (!a.has(k)) diffs.push(`${kind} ${k}: only in files`);
       else if (!b.has(k)) diffs.push(`${kind} ${k}: only in the database`);
-      else if (stableJson(a.get(k)).toLowerCase() !== stableJson(b.get(k)).toLowerCase()) diffs.push(`${kind} ${k}: differs`);
+      else if (stableJson(a.get(k)).toLowerCase() !== stableJson(b.get(k)).toLowerCase())
+        diffs.push(`${kind} ${k}: differs`);
     }
   };
   compare("asset", new Map(db.assets.map((a) => [a.slug, a])), new Map(files.assets.map((a) => [a.slug, a])));
   compare("entity", db.entities, files.entities);
-  const snaps = (c: Catalog) => new Map([...c.snapshots.values()].flat().map((s) => [`${s.discovered.asset}/${s.discovered.chain}`, { c: s.discovered.contracts, h: s.discovered.holders, block: s.meta.block }]));
+  const snaps = (c: Catalog) =>
+    new Map(
+      [...c.snapshots.values()]
+        .flat()
+        .map((s) => [
+          `${s.discovered.asset}/${s.discovered.chain}`,
+          { c: s.discovered.contracts, h: s.discovered.holders, block: s.meta.block },
+        ]),
+    );
   compare("snapshot", snaps(db), snaps(files));
   console.log(diffs.length ? diffs.join("\n") : "database and files are in sync");
   return diffs.length ? 1 : 0;

@@ -14,7 +14,12 @@ const FEED_ABI = parseAbi([
 
 type OracleRef = Extract<PriceReference, { type: "oracle" }>;
 
-async function call(chain: Chain, address: Address, spec: NonNullable<OracleRef["read"]>["value"], prior: readonly unknown[] = []): Promise<readonly unknown[]> {
+async function call(
+  chain: Chain,
+  address: Address,
+  spec: NonNullable<OracleRef["read"]>["value"],
+  prior: readonly unknown[] = [],
+): Promise<readonly unknown[]> {
   const abi = parseAbi([spec.fn] as [string]) as Abi;
   const fn = abi[0] as AbiFunction;
   const args = spec.args.map((a, i) => {
@@ -33,14 +38,22 @@ export async function readFeed(ref: OracleRef & { address: string }) {
     const value = await call(ref.chain, feed, ref.read.value);
     const updatedAt = await call(ref.chain, feed, ref.read.updatedAt, value);
     const raw = value[ref.read.value.index] as bigint;
-    return { value: Number(raw) / 10 ** ref.read.decimals, updatedAt: new Date(Number(updatedAt[ref.read.updatedAt.index]) * 1000), roundId: undefined };
+    return {
+      value: Number(raw) / 10 ** ref.read.decimals,
+      updatedAt: new Date(Number(updatedAt[ref.read.updatedAt.index]) * 1000),
+      roundId: undefined,
+    };
   }
   const { client } = clientsFor(ref.chain);
   const [[roundId, answer, , updatedAt], decimals] = await Promise.all([
     client.readContract({ address: feed, abi: FEED_ABI, functionName: "latestRoundData" }),
     client.readContract({ address: feed, abi: FEED_ABI, functionName: "decimals" }),
   ]);
-  return { value: Number(answer) / 10 ** decimals, updatedAt: new Date(Number(updatedAt) * 1000), roundId: roundId.toString() };
+  return {
+    value: Number(answer) / 10 ** decimals,
+    updatedAt: new Date(Number(updatedAt) * 1000),
+    roundId: roundId.toString(),
+  };
 }
 
 export async function oraclesJob() {
@@ -50,16 +63,18 @@ export async function oraclesJob() {
     if (ref.type !== "oracle" || !ref.address) continue;
     const r = await readFeed({ ...ref, address: ref.address });
     const ageSeconds = Math.round((now.getTime() - r.updatedAt.getTime()) / 1000);
-    await getDb().insert(schema.oracleReading).values({
-      assetSlug: asset.slug,
-      chain: ref.chain,
-      feed: getAddress(ref.address),
-      ts: now,
-      value: r.value,
-      updatedAtOnchain: r.updatedAt,
-      ageSeconds,
-      roundId: r.roundId,
-    });
+    await getDb()
+      .insert(schema.oracleReading)
+      .values({
+        assetSlug: asset.slug,
+        chain: ref.chain,
+        feed: getAddress(ref.address),
+        ts: now,
+        value: r.value,
+        updatedAtOnchain: r.updatedAt,
+        ageSeconds,
+        roundId: r.roundId,
+      });
     log("oracles", `${asset.slug} value=${r.value} age=${formatDuration(ageSeconds)}`);
 
     if (feedAgeSeconds(ref, r.updatedAt, now) > 3 * ref.cadenceSeconds) {

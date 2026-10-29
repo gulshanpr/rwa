@@ -1,7 +1,7 @@
 import { DocsNav } from "./docs-nav";
 import { OnThisPage } from "./on-this-page";
 
-export const DOCS_NAV = [
+const DOCS_NAV = [
   {
     heading: "Framework",
     items: [

@@ -36,7 +36,10 @@ export default async function CounterpartiesPage({ params }: PageProps<"/assets/
     <div className="grid gap-4">
       <CategoryCard result={rating.categories.counterparties} slug={slug} />
 
-      <Card title="Service providers" description="Who holds, values, audits and registers the assets, and whether they answer to a regulator.">
+      <Card
+        title="Service providers"
+        description="Who holds, values, audits and registers the assets, and whether they answer to a regulator."
+      >
         <Table>
           <thead>
             <tr>
@@ -61,7 +64,11 @@ export default async function CounterpartiesPage({ params }: PageProps<"/assets/
                         <SourceMarker source={item.source} />
                       </>
                     ) : (
-                      <EmptyUnknown topic={`${asset.ticker} ${label.toLowerCase()}`} searchedAt={item.status === "not_public" ? item.searchedAt : undefined} note={item.note} />
+                      <EmptyUnknown
+                        topic={`${asset.ticker} ${label.toLowerCase()}`}
+                        searchedAt={item.status === "not_public" ? item.searchedAt : undefined}
+                        note={item.note}
+                      />
                     )}
                   </Td>
                   <Td>
@@ -100,7 +107,10 @@ export default async function CounterpartiesPage({ params }: PageProps<"/assets/
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card title="Settlement rails" description="How subscription and redemption money moves. One rail is a single point of failure.">
+        <Card
+          title="Settlement rails"
+          description="How subscription and redemption money moves. One rail is a single point of failure."
+        >
           <div className="flex flex-wrap gap-1.5">
             {cp.settlementRails.value.map((r) => (
               <Tag key={r}>{RAIL_LABELS[r]}</Tag>

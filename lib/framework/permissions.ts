@@ -6,14 +6,22 @@ import type { Tone } from "./types";
 // Who holds each privileged power, resolved through proxy admins, timelocks and controlling contracts
 // down to the account that signs. Control (control.ts) rates the result.
 
-export const CRITICAL_POWERS: Power[] = ["upgrade", "mint", "force-transfer", "burn-from", "set-price", "allocate", "admin"];
+export const CRITICAL_POWERS: Power[] = [
+  "upgrade",
+  "mint",
+  "force-transfer",
+  "burn-from",
+  "set-price",
+  "allocate",
+  "admin",
+];
 export const HIGH_POWERS: Power[] = ["freeze", "pause", "set-compliance"];
 /** Red when a single key holds them (framework §4: "a single key can mint, freeze or upgrade"). */
 export const SINGLE_KEY_RED: Power[] = [...CRITICAL_POWERS, "freeze"];
 
 export type Criticality = "critical" | "high" | "unclassified";
 
-export function criticalityOf(power: Power): Criticality {
+function criticalityOf(power: Power): Criticality {
   if (CRITICAL_POWERS.includes(power)) return "critical";
   if (HIGH_POWERS.includes(power)) return "high";
   return "unclassified";
@@ -67,7 +75,7 @@ export interface ResolvedHolder {
 
 const CLASS_RANK: Record<HolderClass, number> = { "strong-safe": 1, "weak-safe": 2, eoa: 3, unknown: 3 };
 
-export function isStrongSafe(threshold: number, owners: number): boolean {
+function isStrongSafe(threshold: number, owners: number): boolean {
   return threshold >= 3 && threshold / owners >= 0.5;
 }
 
@@ -99,7 +107,12 @@ export function lookupHolder(discovered: Discovered, address: string): Holder | 
   return key ? discovered.holders[key] : undefined;
 }
 
-export function resolveHolder(discovered: Discovered, address: string, depth = 0, visited = new Set<string>()): ResolvedHolder {
+function resolveHolder(
+  discovered: Discovered,
+  address: string,
+  depth = 0,
+  visited = new Set<string>(),
+): ResolvedHolder {
   const holder = lookupHolder(discovered, address);
   visited.add(address.toLowerCase());
   const step: HolderStep = { address, kind: holder?.kind ?? "contract-unknown", label: holderLabel(holder) };
@@ -214,6 +227,9 @@ export function analyzePowers(snapshots: Discovered[]): PowerRow[] {
   // Within a power, the weakest holder first, so it leads the findings.
   const issueRank = (k?: PowerIssue) => (k ? ISSUE_RANK[k] : 3);
   return rows.sort(
-    (a, b) => order.indexOf(a.power) - order.indexOf(b.power) || TONE_RANK[a.color] - TONE_RANK[b.color] || issueRank(a.issue) - issueRank(b.issue),
+    (a, b) =>
+      order.indexOf(a.power) - order.indexOf(b.power) ||
+      TONE_RANK[a.color] - TONE_RANK[b.color] ||
+      issueRank(a.issue) - issueRank(b.issue),
   );
 }

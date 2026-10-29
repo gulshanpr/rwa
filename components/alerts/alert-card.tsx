@@ -28,7 +28,9 @@ export const KIND_LABELS: Record<Alert["kind"], string> = {
 
 export function AlertCard({ alert, ticker, compact = false }: { alert: Alert; ticker: string; compact?: boolean }) {
   return (
-    <article className={cn("min-w-0", !compact && "rounded-card border border-line bg-surface p-3.5 shadow-card md:p-4")}>
+    <article
+      className={cn("min-w-0", !compact && "rounded-card border border-line bg-surface p-3.5 shadow-card md:p-4")}
+    >
       <div className="flex items-start gap-2 text-label">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
           <span className="inline-flex items-center gap-1.5 font-semibold tracking-wide text-fg-muted uppercase">
@@ -64,7 +66,12 @@ export function AlertCard({ alert, ticker, compact = false }: { alert: Alert; ti
       {!compact && (
         <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-label">
           {alert.chain && alert.txHash ? (
-            <a href={explorerTx(alert.chain, alert.txHash)} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+            <a
+              href={explorerTx(alert.chain, alert.txHash)}
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent hover:underline"
+            >
               Transaction ↗
             </a>
           ) : alert.url ? (

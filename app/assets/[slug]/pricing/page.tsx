@@ -58,9 +58,19 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
           <FactList
             facts={[
               ...(ref.type === "oracle"
-                ? [{ label: "Staleness visible to consumers", value: p.stalenessDetectable.value ? "Yes" : "No", source: p.stalenessDetectable.source }]
+                ? [
+                    {
+                      label: "Staleness visible to consumers",
+                      value: p.stalenessDetectable.value ? "Yes" : "No",
+                      source: p.stalenessDetectable.source,
+                    },
+                  ]
                 : []),
-              { label: "Write-downs reach the price", value: LOSS_LABELS[p.lossRecognition.value], source: p.lossRecognition.source },
+              {
+                label: "Write-downs reach the price",
+                value: LOSS_LABELS[p.lossRecognition.value],
+                source: p.lossRecognition.source,
+              },
               ...(p.secondaryDiscount
                 ? [disclosedFact("Largest discount to NAV", p.secondaryDiscount, (v) => `${v.maxPct}% (${v.window})`)]
                 : []),
@@ -78,13 +88,24 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
               facts={[
                 {
                   label: "Current value",
-                  value: <span className="tnum text-h2">{live?.supply[0] ? formatUsdFull(live.supply[0].priceUsd) : "—"}</span>,
+                  value: (
+                    <span className="tnum text-h2">
+                      {live?.supply[0] ? formatUsdFull(live.supply[0].priceUsd) : "—"}
+                    </span>
+                  ),
                 },
                 { label: "Price model", value: PRICE_MODEL_LABELS[asset.priceModel] },
                 { label: "Computed by", value: entityName(ref.provider), source: ref.source },
                 {
                   label: "Vault contract",
-                  value: <AddressChip address={ref.address} chain={ref.chain} kind="contract" label={CHAINS[ref.chain].name} />,
+                  value: (
+                    <AddressChip
+                      address={ref.address}
+                      chain={ref.chain}
+                      kind="contract"
+                      label={CHAINS[ref.chain].name}
+                    />
+                  ),
                 },
                 { label: "Method", value: <span className="font-mono text-[12px]">{ref.method}</span> },
                 { label: "Who can change it", value: VAULT_WRITER_LABELS[ref.writer], source: ref.source },
@@ -105,7 +126,12 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
                 {
                   label: "Feed contract",
                   value: ref.address ? (
-                    <AddressChip address={ref.address} chain={ref.chain} kind="contract" label={CHAINS[ref.chain].name} />
+                    <AddressChip
+                      address={ref.address}
+                      chain={ref.chain}
+                      kind="contract"
+                      label={CHAINS[ref.chain].name}
+                    />
                   ) : (
                     <span className="text-fg-muted">Not recorded yet</span>
                   ),
@@ -126,7 +152,11 @@ export default async function PricingPage({ params }: PageProps<"/assets/[slug]/
                 <span className="tnum text-stat text-fg">{formatDuration(age.ageSeconds)}</span>
                 <RiskDot
                   color={age.freshness === "on-schedule" ? "green" : age.freshness === "late" ? "yellow" : "red"}
-                  label={<span className="text-small text-fg-muted">{age.freshness === "on-schedule" ? "On schedule" : age.freshness === "late" ? "Late" : "Stale"}</span>}
+                  label={
+                    <span className="text-small text-fg-muted">
+                      {age.freshness === "on-schedule" ? "On schedule" : age.freshness === "late" ? "Late" : "Stale"}
+                    </span>
+                  }
                 />
               </div>
               <AgeGauge age={age} />

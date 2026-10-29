@@ -1,6 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
-import { getAddress, parseAbi, parseAbiItem, toFunctionSelector, zeroAddress, type AbiFunction, type Address, type Hex } from "viem";
+import {
+  getAddress,
+  parseAbi,
+  parseAbiItem,
+  toFunctionSelector,
+  zeroAddress,
+  type AbiFunction,
+  type Address,
+  type Hex,
+} from "viem";
 import type { Context } from "../context";
 import { deploymentBlock, scanLogs } from "../rpc";
 import { hasFunction, type VerifiedSource } from "../sources";
@@ -29,9 +38,21 @@ const MINTER_CONFIGURED = parseAbiItem("event MinterConfigured(address minter, u
 const FUND_ADMIN = 255;
 
 /** Reviewed and not scored: Teller fees, limits, treasury and after-hours settings shape exits, not holdings; sweeps move tokens sent to the contract by mistake. */
-const TELLER_NOT_SCORED = ["setAfterHourTrading", "setFeeManager", "setFeeRecipient", "setLimits", "setTreasury", "sweep", "renounceOwnership"];
+const TELLER_NOT_SCORED = [
+  "setAfterHourTrading",
+  "setFeeManager",
+  "setFeeRecipient",
+  "setLimits",
+  "setTreasury",
+  "sweep",
+  "renounceOwnership",
+];
 
-async function logsOrUndefined(ctx: Context, address: Address, event: typeof USER_ROLE_UPDATED | typeof MINTER_CONFIGURED) {
+async function logsOrUndefined(
+  ctx: Context,
+  address: Address,
+  event: typeof USER_ROLE_UPDATED | typeof MINTER_CONFIGURED,
+) {
   try {
     const from = await deploymentBlock(ctx.c, address, ctx.block);
     return await scanLogs(ctx.c, address, event, from, ctx.block);
@@ -62,7 +83,9 @@ export async function hashnote(ctx: Context, token: Address) {
   const partial = !roleLogs || !minterLogs;
   const fallback = partial ? ethereumCandidates(ctx.asset.slug) : [];
   if (partial)
-    warn.push(`No log source on ${ctx.chain}: role and minter holders are checked only for ${fallback.length} addresses from the Ethereum snapshot, so this is a lower bound.`);
+    warn.push(
+      `No log source on ${ctx.chain}: role and minter holders are checked only for ${fallback.length} addresses from the Ethereum snapshot, so this is a lower bound.`,
+    );
 
   const roleCandidates = [...new Set([...(roleLogs ?? []).map((l) => getAddress(l.args.user as string)), ...fallback])];
   const rolesOf = new Map<Address, bigint>();
@@ -76,13 +99,19 @@ export async function hashnote(ctx: Context, token: Address) {
 
   const capability = async (target: Address, sig: Hex | undefined): Promise<Holders> => {
     if (!sig) return { holders: [], label: "capability" };
-    if (await ctx.read<boolean>(authority, ABI, "isCapabilityPublic", [target, sig])) warn.push(`${sig} on ${target} is a public capability.`);
+    if (await ctx.read<boolean>(authority, ABI, "isCapabilityPublic", [target, sig]))
+      warn.push(`${sig} on ${target} is a public capability.`);
     const mask = BigInt((await ctx.read<Hex>(authority, ABI, "getRolesWithCapability", [target, sig])) ?? "0x0");
     const roles = [...Array(256).keys()].filter((r) => (mask >> BigInt(r)) & 1n);
-    return { holders: [...rolesOf].filter(([, bits]) => bits & mask).map(([u]) => u), label: `Entitlements capability, role ${roles.join("/") || "none"}` };
+    return {
+      holders: [...rolesOf].filter(([, bits]) => bits & mask).map(([u]) => u),
+      label: `Entitlements capability, role ${roles.join("/") || "none"}`,
+    };
   };
 
-  const minterCandidates = [...new Set([...(minterLogs ?? []).map((l) => getAddress(l.args.minter as string)), ...fallback])];
+  const minterCandidates = [
+    ...new Set([...(minterLogs ?? []).map((l) => getAddress(l.args.minter as string)), ...fallback]),
+  ];
   const minters: Address[] = [];
   for (const m of minterCandidates) {
     if (((await ctx.read<bigint>(token, ABI, "minterAllowance", [m])) ?? 0n) > 0n) minters.push(m);
@@ -90,8 +119,12 @@ export async function hashnote(ctx: Context, token: Address) {
 
   const proxy = await ctx.detectProxy(token);
   const tokenSrc = await ctx.source(proxy?.implementation ?? token);
-  const allowanceByFundAdmin = Object.values(tokenSrc.sources).some((s) => /function setMinterAllowance[\s\S]{0,300}?System_FundAdmin/.test(s));
-  const allowanceSetters = allowanceByFundAdmin ? admin : await capability(token, selectorOf(tokenSrc, "setMinterAllowance"));
+  const allowanceByFundAdmin = Object.values(tokenSrc.sources).some((s) =>
+    /function setMinterAllowance[\s\S]{0,300}?System_FundAdmin/.test(s),
+  );
+  const allowanceSetters = allowanceByFundAdmin
+    ? admin
+    : await capability(token, selectorOf(tokenSrc, "setMinterAllowance"));
   await addMapped(
     ctx,
     token,
@@ -102,8 +135,18 @@ export async function hashnote(ctx: Context, token: Address) {
       rules: [
         { power: "mint", fns: ["mint"], holders: minters, via: "minterAllowance > 0" },
         { power: "burn-from", fns: ["burn", "burnFor"], holders: minters, via: "minterAllowance > 0" },
-        { power: "force-transfer", fns: ["transferFrom"], holders: fundAdmins, via: "fund-admin branch skips allowance and allowlist (role 255)" },
-        { power: "mint", fns: ["setMinterAllowance", "incrementMinterAllowance", "decrementMinterAllowance"], holders: allowanceSetters.holders, via: `creates minters (${allowanceSetters.label})` },
+        {
+          power: "force-transfer",
+          fns: ["transferFrom"],
+          holders: fundAdmins,
+          via: "fund-admin branch skips allowance and allowlist (role 255)",
+        },
+        {
+          power: "mint",
+          fns: ["setMinterAllowance", "incrementMinterAllowance", "decrementMinterAllowance"],
+          holders: allowanceSetters.holders,
+          via: `creates minters (${allowanceSetters.label})`,
+        },
       ],
     },
     warn,
@@ -126,11 +169,26 @@ export async function hashnote(ctx: Context, token: Address) {
       role: "service",
       notScored: ["renounceOwnership"],
       rules: [
-        { power: "admin", fns: ["setUserRole", "setUserRoleBatch", "setRoleCapability"], holders: authOwner ? [getAddress(authOwner)] : [], via: "owner() (role 255 grants)" },
-        { power: "set-compliance", fns: ["setUserRole", "setUserRoleBatch"], holders: setRole.holders, via: setRole.label },
+        {
+          power: "admin",
+          fns: ["setUserRole", "setUserRoleBatch", "setRoleCapability"],
+          holders: authOwner ? [getAddress(authOwner)] : [],
+          via: "owner() (role 255 grants)",
+        },
+        {
+          power: "set-compliance",
+          fns: ["setUserRole", "setUserRoleBatch"],
+          holders: setRole.holders,
+          via: setRole.label,
+        },
         { power: "set-compliance", fns: ["setRoleCapability"], holders: setCap.holders, via: setCap.label },
         { power: "set-compliance", fns: ["setPublicCapability"], holders: setPublic.holders, via: setPublic.label },
-        { power: "pause", fns: ["pause"], holders: pause.holders, via: `${pause.label} (blocks every transfer and redemption)` },
+        {
+          power: "pause",
+          fns: ["pause"],
+          holders: pause.holders,
+          via: `${pause.label} (blocks every transfer and redemption)`,
+        },
         { power: "pause", fns: ["unpause"], holders: authOwner ? [getAddress(authOwner)] : [], via: "owner()" },
       ],
     },
@@ -142,7 +200,17 @@ export async function hashnote(ctx: Context, token: Address) {
     const oracle = await ctx.read<Address>(m, ABI, "oracle");
     if (!oracle || oracle === zeroAddress) continue;
     tellers.push(m);
-    await addMapped(ctx, m, { role: "service", guards: { "_assertFundAdmin()": admin }, powers: { setOracle: "set-price" }, notScored: TELLER_NOT_SCORED }, warn);
+    await addMapped(
+      ctx,
+      m,
+      {
+        role: "service",
+        guards: { "_assertFundAdmin()": admin },
+        powers: { setOracle: "set-price" },
+        notScored: TELLER_NOT_SCORED,
+      },
+      warn,
+    );
   }
 
   const ref = ctx.asset.pricing.reference;
@@ -155,7 +223,14 @@ export async function hashnote(ctx: Context, token: Address) {
       {
         role: "oracle",
         notScored: ["renounceOwnership"],
-        rules: [{ power: "set-price", fns: ["transmit", "setNextPrice"], holders: reporter ? [getAddress(reporter)] : [], via: "msg.sender == reporter()" }],
+        rules: [
+          {
+            power: "set-price",
+            fns: ["transmit", "setNextPrice"],
+            holders: reporter ? [getAddress(reporter)] : [],
+            via: "msg.sender == reporter()",
+          },
+        ],
       },
       warn,
     );
@@ -168,7 +243,13 @@ export async function hashnote(ctx: Context, token: Address) {
           {
             role: "oracle",
             guards: { "_assertFundAdmin()": admin },
-            powers: { transmit: "set-price", transmitCall: "set-price", transmitCallBatch: "set-price", setTokenDetails: "set-price", setFeeSchedule: "set-price" },
+            powers: {
+              transmit: "set-price",
+              transmitCall: "set-price",
+              transmitCallBatch: "set-price",
+              setTokenDetails: "set-price",
+              setFeeSchedule: "set-price",
+            },
             notScored: ["renounceOwnership"],
           },
           warn,

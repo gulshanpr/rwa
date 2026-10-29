@@ -4,7 +4,7 @@ import type { DiscoveredContract, Holder, Permission } from "@/lib/schema/discov
 import { clientsFor, type ChainClients } from "./rpc";
 import { verifiedSource, type VerifiedSource } from "./sources";
 
-export const SLOTS = {
+const SLOTS = {
   implementation: "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
   admin: "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
   beacon: "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50",
@@ -78,7 +78,12 @@ export class Context {
     if (beacon) {
       const implementation = await this.read<Address>(beacon, PROBE, "implementation");
       const admin = await this.read<Address>(beacon, PROBE, "owner");
-      if (implementation) return { type: "beacon", implementation: getAddress(implementation), ...(admin ? { admin: getAddress(admin) } : {}) };
+      if (implementation)
+        return {
+          type: "beacon",
+          implementation: getAddress(implementation),
+          ...(admin ? { admin: getAddress(admin) } : {}),
+        };
     }
     const target = await this.read<Address>(address, PROBE, "target");
     if (target && target !== zeroAddress) {
@@ -102,7 +107,8 @@ export class Context {
     for (const h of holders) {
       const holder = getAddress(h);
       this.pendingHolders.add(holder);
-      if (!permissions.some((p) => p.power === power && p.holder === holder && p.via === via)) permissions.push({ power, holder, via });
+      if (!permissions.some((p) => p.power === power && p.holder === holder && p.via === via))
+        permissions.push({ power, holder, via });
     }
   }
 
@@ -149,7 +155,9 @@ export class Context {
   private trackedContract(address: Address): Holder | undefined {
     const c = this.contracts[getAddress(address)];
     if (!c) return undefined;
-    const others = c.permissions.filter((p) => p.power !== "unclassified" && getAddress(p.holder) !== getAddress(address));
+    const others = c.permissions.filter(
+      (p) => p.power !== "unclassified" && getAddress(p.holder) !== getAddress(address),
+    );
     const steering = others.filter((p) => !STOP_ONLY.has(p.power));
     const controllers = new Set((steering.length > 0 ? steering : others).map((p) => getAddress(p.holder)));
     return { kind: "contract", name: c.name, controllers: [...controllers].sort() };
@@ -160,14 +168,27 @@ export class Context {
     const threshold = await this.read<bigint>(address, PROBE, "getThreshold");
     const owners = await this.read<Address[]>(address, PROBE, "getOwners");
     if (threshold !== undefined && owners) {
-      const modules = await this.read<[Address[], Address]>(address, PROBE, "getModulesPaginated", ["0x0000000000000000000000000000000000000001", 50n]);
-      return { kind: "safe", threshold: Number(threshold), owners: owners.map((o) => getAddress(o)), modules: (modules?.[0] ?? []).map((m) => getAddress(m)) };
+      const modules = await this.read<[Address[], Address]>(address, PROBE, "getModulesPaginated", [
+        "0x0000000000000000000000000000000000000001",
+        50n,
+      ]);
+      return {
+        kind: "safe",
+        threshold: Number(threshold),
+        owners: owners.map((o) => getAddress(o)),
+        modules: (modules?.[0] ?? []).map((m) => getAddress(m)),
+      };
     }
     const minDelay = await this.read<bigint>(address, PROBE, "getMinDelay");
     if (minDelay !== undefined) {
       const { timelockRoles } = await import("./handlers/oz-timelock");
       const roles = await timelockRoles(this, address);
-      return { kind: "timelock", minDelaySeconds: Number(minDelay), proposers: roles.proposers, executors: roles.executors };
+      return {
+        kind: "timelock",
+        minDelaySeconds: Number(minDelay),
+        proposers: roles.proposers,
+        executors: roles.executors,
+      };
     }
     const src = await this.source(address);
     const owner = await this.read<Address>(address, PROBE, "owner");

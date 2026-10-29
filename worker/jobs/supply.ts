@@ -7,12 +7,26 @@ import { readFeed } from "./oracles";
 import { raiseAlert } from "../alerts";
 import { fetchJson, log, publishedAssets } from "../util";
 
-const CHAIN_PREFIX: Record<string, string> = { ethereum: "ethereum", arbitrum: "arbitrum", optimism: "optimism", base: "base", polygon: "polygon", avalanche: "avax", bsc: "bsc" };
-const VAULT_ABI = parseAbi(["function asset() view returns (address)", "function convertToExitAssets(uint256) view returns (uint256)", "function convertToAssets(uint256) view returns (uint256)"]);
+const CHAIN_PREFIX: Record<string, string> = {
+  ethereum: "ethereum",
+  arbitrum: "arbitrum",
+  optimism: "optimism",
+  base: "base",
+  polygon: "polygon",
+  avalanche: "avax",
+  bsc: "bsc",
+};
+const VAULT_ABI = parseAbi([
+  "function asset() view returns (address)",
+  "function convertToExitAssets(uint256) view returns (uint256)",
+  "function convertToAssets(uint256) view returns (uint256)",
+]);
 
 async function llamaPrice(chain: string, token: string): Promise<number | undefined> {
   const key = `${CHAIN_PREFIX[chain]}:${token}`;
-  const res = await fetchJson<{ coins: Record<string, { price: number }> }>(`https://coins.llama.fi/prices/current/${key}`);
+  const res = await fetchJson<{ coins: Record<string, { price: number }> }>(
+    `https://coins.llama.fi/prices/current/${key}`,
+  );
   return res.coins[key]?.price;
 }
 
@@ -22,9 +36,11 @@ async function vaultPrice(chain: Chain, vault: Address, decimals: number): Promi
   const one = 10n ** BigInt(decimals);
   const underlying = await client.readContract({ address: vault, abi: VAULT_ABI, functionName: "asset" });
   const [assets, underlyingDecimals] = await Promise.all([
-    client.readContract({ address: vault, abi: VAULT_ABI, functionName: "convertToExitAssets", args: [one] }).catch(() =>
-      client.readContract({ address: vault, abi: VAULT_ABI, functionName: "convertToAssets", args: [one] }),
-    ),
+    client
+      .readContract({ address: vault, abi: VAULT_ABI, functionName: "convertToExitAssets", args: [one] })
+      .catch(() =>
+        client.readContract({ address: vault, abi: VAULT_ABI, functionName: "convertToAssets", args: [one] }),
+      ),
     client.readContract({ address: underlying, abi: erc20Abi, functionName: "decimals" }),
   ]);
   const rate = Number(formatUnits(assets, underlyingDecimals));
@@ -84,7 +100,16 @@ export async function supplyJob() {
         priceUsd = await llamaPrice(d.chain, token);
       }
 
-      await getDb().insert(schema.assetsSnapshot).values({ assetSlug: asset.slug, chain: d.chain, ts: now, totalSupply, priceUsd, source: `totalSupply() · ${source}` });
+      await getDb()
+        .insert(schema.assetsSnapshot)
+        .values({
+          assetSlug: asset.slug,
+          chain: d.chain,
+          ts: now,
+          totalSupply,
+          priceUsd,
+          source: `totalSupply() · ${source}`,
+        });
       log("supply", `${asset.slug}/${d.chain} supply=${totalSupply.toFixed(2)} price=${priceUsd}`);
     }
   }

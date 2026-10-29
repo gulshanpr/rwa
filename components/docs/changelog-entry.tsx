@@ -43,7 +43,9 @@ export function ChangelogEntry({
         <span
           className={cn(
             "rounded-[3px] border px-1.5 leading-[18px]",
-            kind === "framework" ? "border-accent/30 bg-accent-soft text-accent" : "border-line bg-subtle text-fg-muted",
+            kind === "framework"
+              ? "border-accent/30 bg-accent-soft text-accent"
+              : "border-line bg-subtle text-fg-muted",
           )}
         >
           {KINDS[kind]}

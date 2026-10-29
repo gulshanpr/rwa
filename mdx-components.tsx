@@ -3,7 +3,19 @@ import Link from "next/link";
 import { Callout } from "@/components/docs/callout";
 import { ChangelogEntry } from "@/components/docs/changelog-entry";
 import { ExpandAll } from "@/components/docs/expand-all";
-import { Category, Principle, Principles, RatingStates, RiskGrid, Rule, Rules, Severity, StageStep, Step, Steps } from "@/components/docs/methodology-parts";
+import {
+  Category,
+  Principle,
+  Principles,
+  RatingStates,
+  RiskGrid,
+  Rule,
+  Rules,
+  Severity,
+  StageStep,
+  Step,
+  Steps,
+} from "@/components/docs/methodology-parts";
 
 function text(node: React.ReactNode): string {
   if (typeof node === "string" || typeof node === "number") return String(node);

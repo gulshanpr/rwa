@@ -17,9 +17,23 @@ export interface Catalog {
 }
 
 /** Top-level asset fields stored as columns or in their own table. Everything else is a fact. */
-const COLUMNS = ["slug", "sample", "name", "ticker", "assetClass", "description", "issuer", "manager", "platform", "tokenStandard", "priceModel", "deployments", "externalIds"] as const;
+const COLUMNS = [
+  "slug",
+  "sample",
+  "name",
+  "ticker",
+  "assetClass",
+  "description",
+  "issuer",
+  "manager",
+  "platform",
+  "tokenStandard",
+  "priceModel",
+  "deployments",
+  "externalIds",
+] as const;
 
-export interface FactRow {
+interface FactRow {
   path: string;
   body: unknown;
   status: string;
@@ -28,11 +42,14 @@ export interface FactRow {
 }
 
 const isRecord = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
-const isLeaf = (v: unknown) => Array.isArray(v) || (isRecord(v) && ("source" in v || "status" in v || "searchedAt" in v));
+const isLeaf = (v: unknown) =>
+  Array.isArray(v) || (isRecord(v) && ("source" in v || "status" in v || "searchedAt" in v));
 
 function describe(path: string, body: unknown): FactRow {
   if (Array.isArray(body)) {
-    const dates = body.map((i) => (isRecord(i) && isRecord(i.source) ? (i.source.checkedAt as string) : undefined)).filter(Boolean) as string[];
+    const dates = body
+      .map((i) => (isRecord(i) && isRecord(i.source) ? (i.source.checkedAt as string) : undefined))
+      .filter(Boolean) as string[];
     return { path, body, status: "list", sourceUrl: null, checkedAt: dates.sort()[0] ?? null };
   }
   const b = body as Record<string, unknown>;
@@ -88,7 +105,7 @@ type AssetRow = typeof schema.asset.$inferSelect;
 type DeploymentRow = typeof schema.deployment.$inferSelect;
 
 /** Inverse of assetToRows. Parses with AssetSchema, so a bad row fails loudly with its path. */
-export function rowsToAsset(row: AssetRow, deployments: DeploymentRow[], facts: { path: string; body: unknown }[]): Asset {
+function rowsToAsset(row: AssetRow, deployments: DeploymentRow[], facts: { path: string; body: unknown }[]): Asset {
   const out: Record<string, unknown> = {
     slug: row.slug,
     sample: row.sample,
@@ -106,7 +123,11 @@ export function rowsToAsset(row: AssetRow, deployments: DeploymentRow[], facts: 
       .map((d) => ({
         chain: d.chain,
         token: d.token,
-        discovery: { ignoreMethods: d.ignoreMethods, labels: Object.fromEntries(d.labels), ...(d.poolId ? { poolId: d.poolId } : {}) },
+        discovery: {
+          ignoreMethods: d.ignoreMethods,
+          labels: Object.fromEntries(d.labels),
+          ...(d.poolId ? { poolId: d.poolId } : {}),
+        },
       })),
   };
   for (const f of facts) {
@@ -121,7 +142,7 @@ export function rowsToAsset(row: AssetRow, deployments: DeploymentRow[], facts: 
   return parsed.data;
 }
 
-export function entityFromRow(row: typeof schema.entity.$inferSelect): Entity {
+function entityFromRow(row: typeof schema.entity.$inferSelect): Entity {
   return EntitySchema.parse({
     slug: row.slug,
     name: row.name,
@@ -141,12 +162,21 @@ export async function catalogFromDb(opts: { includeDrafts?: boolean } = {}): Pro
   const [entityRows, deploymentRows, factRows, snapshotRows] = await Promise.all([
     db.select().from(s.entity),
     db.select().from(s.deployment),
-    db.select({ assetSlug: s.fact.assetSlug, path: s.fact.path, body: s.fact.body }).from(s.fact).where(isNull(s.fact.supersededAt)).orderBy(asc(s.fact.id)),
+    db
+      .select({ assetSlug: s.fact.assetSlug, path: s.fact.path, body: s.fact.body })
+      .from(s.fact)
+      .where(isNull(s.fact.supersededAt))
+      .orderBy(asc(s.fact.id)),
     db
       .selectDistinctOn([s.discoverySnapshot.assetSlug, s.discoverySnapshot.chain])
       .from(s.discoverySnapshot)
       .where(eq(s.discoverySnapshot.status, "approved"))
-      .orderBy(s.discoverySnapshot.assetSlug, s.discoverySnapshot.chain, desc(s.discoverySnapshot.block), desc(s.discoverySnapshot.id)),
+      .orderBy(
+        s.discoverySnapshot.assetSlug,
+        s.discoverySnapshot.chain,
+        desc(s.discoverySnapshot.block),
+        desc(s.discoverySnapshot.id),
+      ),
   ]);
 
   const visible = assetRows.filter((a) => a.status === "published" || (opts.includeDrafts && a.status === "draft"));
@@ -167,7 +197,14 @@ export async function catalogFromDb(opts: { includeDrafts?: boolean } = {}): Pro
         const timestamp = r.ts.toISOString().replace(".000Z", "Z");
         return [
           {
-            discovered: DiscoveredSchema.parse({ asset: a.slug, chain: r.chain, block: r.block, timestamp, contracts: r.contracts, holders: r.holders }),
+            discovered: DiscoveredSchema.parse({
+              asset: a.slug,
+              chain: r.chain,
+              block: r.block,
+              timestamp,
+              contracts: r.contracts,
+              holders: r.holders,
+            }),
             meta: { block: r.block, timestamp, toolVersion: r.toolVersion, sample: r.sample },
             path: `discovered/${a.slug}/${r.chain}.json`,
           },
@@ -180,7 +217,12 @@ export async function catalogFromDb(opts: { includeDrafts?: boolean } = {}): Pro
 
 export function catalogFromFiles(): Catalog {
   const assets = loadAssets();
-  return { source: "files", assets, entities: loadEntities(), snapshots: new Map(assets.map((a) => [a.slug, loadDiscovered(a)])) };
+  return {
+    source: "files",
+    assets,
+    entities: loadEntities(),
+    snapshots: new Map(assets.map((a) => [a.slug, loadDiscovered(a)])),
+  };
 }
 
 export async function getCatalog(opts: { includeDrafts?: boolean } = {}): Promise<Catalog> {
@@ -188,7 +230,9 @@ export async function getCatalog(opts: { includeDrafts?: boolean } = {}): Promis
   try {
     const fromDb = await catalogFromDb(opts);
     if (fromDb) return fromDb;
-    console.warn("catalog: DATABASE_URL is set but the catalog tables are empty; reading data/ files. Run `bun rwa import`.");
+    console.warn(
+      "catalog: DATABASE_URL is set but the catalog tables are empty; reading data/ files. Run `bun rwa import`.",
+    );
   } catch (e) {
     console.error(`catalog: falling back to data/ files: ${e instanceof Error ? e.message : e}`);
   }

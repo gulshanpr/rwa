@@ -19,29 +19,67 @@ async function liveFromDb(asset: Asset): Promise<Live | undefined> {
   const supply = (
     await Promise.all(
       asset.deployments.map(async (d) => {
-        const [row] = await db.select().from(s.assetsSnapshot).where(and(eq(s.assetsSnapshot.assetSlug, asset.slug), eq(s.assetsSnapshot.chain, d.chain))).orderBy(desc(s.assetsSnapshot.ts)).limit(1);
-        return row?.totalSupply != null ? { chain: d.chain, totalSupply: row.totalSupply, priceUsd: row.priceUsd ?? 0, source: row.source, ts: row.ts } : undefined;
+        const [row] = await db
+          .select()
+          .from(s.assetsSnapshot)
+          .where(and(eq(s.assetsSnapshot.assetSlug, asset.slug), eq(s.assetsSnapshot.chain, d.chain)))
+          .orderBy(desc(s.assetsSnapshot.ts))
+          .limit(1);
+        return row?.totalSupply != null
+          ? {
+              chain: d.chain,
+              totalSupply: row.totalSupply,
+              priceUsd: row.priceUsd ?? 0,
+              source: row.source,
+              ts: row.ts,
+            }
+          : undefined;
       }),
     )
   ).filter((x) => x !== undefined);
   if (supply.length === 0) return undefined;
 
-  const aumWhere = (extra?: ReturnType<typeof lte>) => and(eq(s.assetsSnapshot.assetSlug, asset.slug), eq(s.assetsSnapshot.chain, "all"), extra);
+  const aumWhere = (extra?: ReturnType<typeof lte>) =>
+    and(eq(s.assetsSnapshot.assetSlug, asset.slug), eq(s.assetsSnapshot.chain, "all"), extra);
   const [aum] = await db.select().from(s.assetsSnapshot).where(aumWhere()).orderBy(desc(s.assetsSnapshot.ts)).limit(1);
-  const [aum30] = aum ? await db.select().from(s.assetsSnapshot).where(aumWhere(lte(s.assetsSnapshot.ts, new Date(aum.ts.getTime() - 30 * DAY)))).orderBy(desc(s.assetsSnapshot.ts)).limit(1) : [];
+  const [aum30] = aum
+    ? await db
+        .select()
+        .from(s.assetsSnapshot)
+        .where(aumWhere(lte(s.assetsSnapshot.ts, new Date(aum.ts.getTime() - 30 * DAY))))
+        .orderBy(desc(s.assetsSnapshot.ts))
+        .limit(1)
+    : [];
   const onchainAum = supply.reduce((sum, r) => sum + r.totalSupply * r.priceUsd, 0);
 
   const ref = asset.pricing.reference;
   const [reading] =
     ref.type === "oracle" && ref.address
-      ? await db.select().from(s.oracleReading).where(eq(s.oracleReading.assetSlug, asset.slug)).orderBy(desc(s.oracleReading.ts)).limit(1)
+      ? await db
+          .select()
+          .from(s.oracleReading)
+          .where(eq(s.oracleReading.assetSlug, asset.slug))
+          .orderBy(desc(s.oracleReading.ts))
+          .limit(1)
       : [];
 
   const markets: DefiMarket[] = [];
   for (const protocol of ["morpho", "aave"] as const) {
-    const [run] = await db.select().from(s.cursor).where(eq(s.cursor.name, `defi:${protocol}:${asset.slug}`));
+    const [run] = await db
+      .select()
+      .from(s.cursor)
+      .where(eq(s.cursor.name, `defi:${protocol}:${asset.slug}`));
     if (!run) continue;
-    const rows = await db.select().from(s.defiMarket).where(and(eq(s.defiMarket.assetSlug, asset.slug), eq(s.defiMarket.protocol, protocol), gte(s.defiMarket.ts, new Date(run.value))));
+    const rows = await db
+      .select()
+      .from(s.defiMarket)
+      .where(
+        and(
+          eq(s.defiMarket.assetSlug, asset.slug),
+          eq(s.defiMarket.protocol, protocol),
+          gte(s.defiMarket.ts, new Date(run.value)),
+        ),
+      );
     for (const m of rows) {
       // Markets with nothing supplied or posted as collateral carry no exposure.
       if (m.collateralUsd === 0 && m.supplyUsd === 0 && m.borrowUsd === 0) continue;
@@ -52,7 +90,11 @@ async function liveFromDb(asset: Asset): Promise<Live | undefined> {
         chain: m.chain as Chain,
         loanAsset: m.loanAsset,
         lltv: m.lltv,
-        oracle: { address: m.oracleAddress, type: m.oracleType as DefiMarket["oracle"]["type"], description: m.oracleDescription },
+        oracle: {
+          address: m.oracleAddress,
+          type: m.oracleType as DefiMarket["oracle"]["type"],
+          description: m.oracleDescription,
+        },
         collateralUsd: m.collateralUsd,
         borrowUsd: m.borrowUsd,
         supplyUsd: m.supplyUsd,
@@ -67,10 +109,22 @@ async function liveFromDb(asset: Asset): Promise<Live | undefined> {
     asOf: asOf.toISOString(),
     supply: supply.map(({ ts: _ts, ...r }) => r),
     aum: aum?.aumUsd
-      ? { usd: aum.aumUsd, usd30dAgo: aum30?.aumUsd ?? undefined, source: { name: aum.source, url: aum.sourceUrl ?? "https://defillama.com" } }
-      : { usd: onchainAum, source: { name: "Onchain supply × price (tracked chains only)", url: "https://defillama.com" } },
+      ? {
+          usd: aum.aumUsd,
+          usd30dAgo: aum30?.aumUsd ?? undefined,
+          source: { name: aum.source, url: aum.sourceUrl ?? "https://defillama.com" },
+        }
+      : {
+          usd: onchainAum,
+          source: { name: "Onchain supply × price (tracked chains only)", url: "https://defillama.com" },
+        },
     oracle: reading
-      ? { chain: reading.chain, address: reading.feed, value: reading.value, updatedAt: reading.updatedAtOnchain.toISOString() }
+      ? {
+          chain: reading.chain,
+          address: reading.feed,
+          value: reading.value,
+          updatedAt: reading.updatedAtOnchain.toISOString(),
+        }
       : undefined,
     defiMarkets: markets,
     defiSource: { name: "Morpho API, Aave pools onchain", url: "https://app.morpho.org" },

@@ -1,4 +1,16 @@
-import { ArrowRight, Building2, ChevronDown, DoorOpen, Eye, Gauge, KeyRound, Landmark, Layers, Scale, type LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  Building2,
+  ChevronDown,
+  DoorOpen,
+  Eye,
+  Gauge,
+  KeyRound,
+  Landmark,
+  Layers,
+  Scale,
+  type LucideIcon,
+} from "lucide-react";
 import { CATEGORY_LABELS, CATEGORY_ORDER, CATEGORY_QUESTIONS, type CategoryId } from "@/lib/framework/types";
 import type { AlertSeverity } from "@/lib/schema/live";
 import { cn, RISK_DOT, RISK_WORD, SEVERITY_DOT, type RiskVisual } from "@/lib/ui";
@@ -25,14 +37,35 @@ export function Steps({ children }: { children: React.ReactNode }) {
   return <ol className="my-5! grid list-none! gap-3 pl-0! sm:grid-cols-2">{children}</ol>;
 }
 
-export function Step({ n, title, href, children }: { n: number; title: string; href: string; children: React.ReactNode }) {
+export function Step({
+  n,
+  title,
+  href,
+  children,
+}: {
+  n: number;
+  title: string;
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
     <li className="m-0!">
-      <a href={href} className={cn(box, "group flex h-full flex-col gap-1.5 p-4 no-underline! transition-colors hover:border-accent/40")}>
+      <a
+        href={href}
+        className={cn(
+          box,
+          "group flex h-full flex-col gap-1.5 p-4 no-underline! transition-colors hover:border-accent/40",
+        )}
+      >
         <span className="flex items-center gap-2.5">
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[12px] font-semibold text-accent">{n}</span>
+          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[12px] font-semibold text-accent">
+            {n}
+          </span>
           <span className="font-semibold text-fg">{title}</span>
-          <ArrowRight className="ml-auto size-4 text-fg-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-accent" aria-hidden />
+          <ArrowRight
+            className="ml-auto size-4 text-fg-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-accent"
+            aria-hidden
+          />
         </span>
         <span className="text-[14px] leading-6 text-fg-muted">{children}</span>
       </a>
@@ -47,7 +80,11 @@ export function RiskGrid() {
       {CATEGORY_ORDER.map((id) => {
         const Icon = CATEGORY_ICONS[id];
         return (
-          <a key={id} href={`#${anchor(id)}`} className={cn(box, "flex gap-3 p-3.5 no-underline! transition-colors hover:border-accent/40")}>
+          <a
+            key={id}
+            href={`#${anchor(id)}`}
+            className={cn(box, "flex gap-3 p-3.5 no-underline! transition-colors hover:border-accent/40")}
+          >
             <span className="flex size-8 shrink-0 items-center justify-center rounded-control bg-subtle text-fg-muted">
               <Icon className="size-4" aria-hidden />
             </span>
@@ -61,13 +98,18 @@ export function RiskGrid() {
           </a>
         );
       })}
-      <a href="#stages" className="flex gap-3 rounded-control border border-dashed border-accent/40 bg-accent-soft p-3.5 no-underline! hover:border-accent">
+      <a
+        href="#stages"
+        className="flex gap-3 rounded-control border border-dashed border-accent/40 bg-accent-soft p-3.5 no-underline! hover:border-accent"
+      >
         <span className="flex size-8 shrink-0 items-center justify-center rounded-control bg-surface text-accent">
           <Layers className="size-4" aria-hidden />
         </span>
         <span className="min-w-0">
           <span className="block font-semibold text-fg">Stages 0 to 2</span>
-          <span className="block text-[13px] leading-5 text-fg-muted">Across all seven: how much do you have to trust the issuer?</span>
+          <span className="block text-[13px] leading-5 text-fg-muted">
+            Across all seven: how much do you have to trust the issuer?
+          </span>
         </span>
       </a>
     </div>
@@ -78,7 +120,10 @@ const STATES: { rating: RiskVisual; meaning: string }[] = [
   { rating: "green", meaning: "No known problem in this category." },
   { rating: "yellow", meaning: "A weakness worth knowing about." },
   { rating: "red", meaning: "A serious problem: it can cause a loss or stop holders getting out." },
-  { rating: "unverified", meaning: "A fact isn't public and could make things worse. Shown with the worst color we could confirm." },
+  {
+    rating: "unverified",
+    meaning: "A fact isn't public and could make things worse. Shown with the worst color we could confirm.",
+  },
   { rating: "not-assessed", meaning: "Not rated yet. Only Legal Claim, until a legal reviewer joins." },
 ];
 
@@ -113,10 +158,15 @@ export function Category({ id, children }: { id: CategoryId; children: React.Rea
         <h3 id={anchor(id)} className="m-0! text-[15px]! leading-6!">
           {CATEGORY_LABELS[id]}
         </h3>
-        <ChevronDown className="row-span-2 size-4 text-fg-subtle transition-transform group-open:rotate-180" aria-hidden />
+        <ChevronDown
+          className="row-span-2 size-4 text-fg-subtle transition-transform group-open:rotate-180"
+          aria-hidden
+        />
         <span className="text-[13px] leading-5 text-fg-muted">{CATEGORY_QUESTIONS[id]}</span>
       </summary>
-      <div className="border-t border-line px-4 pt-4 text-[14px] leading-6 [&>*:last-child]:mb-4! [&>p]:mb-3! [&>ul]:mb-3! [&>ul>li]:my-1!">{children}</div>
+      <div className="border-t border-line px-4 pt-4 text-[14px] leading-6 [&>*:last-child]:mb-4! [&>p]:mb-3! [&>ul]:mb-3! [&>ul>li]:my-1!">
+        {children}
+      </div>
     </details>
   );
 }
@@ -124,7 +174,10 @@ export function Category({ id, children }: { id: CategoryId; children: React.Rea
 /** A category's rules, always listed green, yellow, red. */
 export function Rules({ children }: { children: React.ReactNode }) {
   return (
-    <div role="list" className="my-4 divide-y divide-line rounded-control border border-line bg-page/50 text-[14px] leading-6">
+    <div
+      role="list"
+      className="my-4 divide-y divide-line rounded-control border border-line bg-page/50 text-[14px] leading-6"
+    >
       {children}
     </div>
   );
@@ -177,7 +230,9 @@ export function Principles({ children }: { children: React.ReactNode }) {
 export function Principle({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
     <li className="m-0! flex gap-3 text-[14px] leading-6">
-      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-line text-[11px] font-semibold text-fg-muted">{n}</span>
+      <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-line text-[11px] font-semibold text-fg-muted">
+        {n}
+      </span>
       <span>
         <span className="block font-semibold text-fg">{title}</span>
         <span className="text-fg-muted">{children}</span>

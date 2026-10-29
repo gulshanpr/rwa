@@ -19,7 +19,7 @@ export function stableJson(value: unknown): string {
   return JSON.stringify(value);
 }
 
-export interface SaveResult {
+interface SaveResult {
   created: boolean;
   factsChanged: string[];
   factsRemoved: string[];
@@ -31,9 +31,18 @@ function entityFacts(e: Entity): Record<string, unknown> | null {
 }
 
 export async function saveEntity(e: Entity): Promise<boolean> {
-  const row = { slug: e.slug, name: e.name, types: e.type, jurisdiction: e.jurisdiction ?? null, lei: e.lei ?? null, website: e.website ?? null, facts: entityFacts(e) };
+  const row = {
+    slug: e.slug,
+    name: e.name,
+    types: e.type,
+    jurisdiction: e.jurisdiction ?? null,
+    lei: e.lei ?? null,
+    website: e.website ?? null,
+    facts: entityFacts(e),
+  };
   const [old] = await getDb().select().from(s.entity).where(eq(s.entity.slug, e.slug));
-  if (old && stableJson({ ...old, createdAt: 0, updatedAt: 0 }) === stableJson({ ...row, createdAt: 0, updatedAt: 0 })) return false;
+  if (old && stableJson({ ...old, createdAt: 0, updatedAt: 0 }) === stableJson({ ...row, createdAt: 0, updatedAt: 0 }))
+    return false;
   await getDb()
     .insert(s.entity)
     .values(row)
@@ -46,7 +55,11 @@ export async function saveEntity(e: Entity): Promise<boolean> {
  * left alone; a changed one supersedes the current row; a field no longer present is superseded with no
  * replacement.
  */
-export async function saveAsset(asset: Asset, by: string, status: "draft" | "published" = "published"): Promise<SaveResult> {
+export async function saveAsset(
+  asset: Asset,
+  by: string,
+  status: "draft" | "published" = "published",
+): Promise<SaveResult> {
   const rows = assetToRows(asset);
   return getDb().transaction(async (tx) => {
     const [existing] = await tx.select({ slug: s.asset.slug }).from(s.asset).where(eq(s.asset.slug, asset.slug));
@@ -58,7 +71,10 @@ export async function saveAsset(asset: Asset, by: string, status: "draft" | "pub
     await tx.delete(s.deployment).where(eq(s.deployment.assetSlug, asset.slug));
     if (rows.deployments.length) await tx.insert(s.deployment).values(rows.deployments);
 
-    const current = await tx.select().from(s.fact).where(and(eq(s.fact.assetSlug, asset.slug), isNull(s.fact.supersededAt)));
+    const current = await tx
+      .select()
+      .from(s.fact)
+      .where(and(eq(s.fact.assetSlug, asset.slug), isNull(s.fact.supersededAt)));
     const byPath = new Map(current.map((f) => [f.path, f]));
     const now = new Date();
     const changed: string[] = [];
@@ -83,12 +99,17 @@ export async function saveSnapshot(
 ): Promise<boolean> {
   const db = getDb();
   const [latest] = await db
-    .select({ contracts: s.discoverySnapshot.contracts, holders: s.discoverySnapshot.holders, block: s.discoverySnapshot.block })
+    .select({
+      contracts: s.discoverySnapshot.contracts,
+      holders: s.discoverySnapshot.holders,
+      block: s.discoverySnapshot.block,
+    })
     .from(s.discoverySnapshot)
     .where(and(eq(s.discoverySnapshot.assetSlug, d.asset), eq(s.discoverySnapshot.chain, d.chain)))
     .orderBy(desc(s.discoverySnapshot.block), desc(s.discoverySnapshot.id))
     .limit(1);
-  const content = (x: { contracts: unknown; holders: unknown }) => stableJson({ c: x.contracts, h: x.holders }).toLowerCase();
+  const content = (x: { contracts: unknown; holders: unknown }) =>
+    stableJson({ c: x.contracts, h: x.holders }).toLowerCase();
   if (latest && (latest.block === d.block || content(latest) === content(d))) return false;
   await db.insert(s.discoverySnapshot).values({
     assetSlug: d.asset,
@@ -116,6 +137,9 @@ export async function saveResearchNote(slug: string, section: string, bodyMd: st
   await getDb()
     .insert(s.researchNote)
     .values({ assetSlug: slug, section, bodyMd, enteredBy: by })
-    .onConflictDoUpdate({ target: [s.researchNote.assetSlug, s.researchNote.section], set: { bodyMd, enteredBy: by, createdAt: sql`now()` } });
+    .onConflictDoUpdate({
+      target: [s.researchNote.assetSlug, s.researchNote.section],
+      set: { bodyMd, enteredBy: by, createdAt: sql`now()` },
+    });
   return true;
 }

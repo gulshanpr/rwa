@@ -19,7 +19,13 @@ const GATE_LABELS = {
   "issuer-discretion": "Can be suspended at issuer discretion",
 } as const;
 
-const DEALING_LABELS = { continuous: "Any time", daily: "Daily", weekly: "Weekly", monthly: "Monthly", quarterly: "Quarterly" } as const;
+const DEALING_LABELS = {
+  continuous: "Any time",
+  daily: "Daily",
+  weekly: "Weekly",
+  monthly: "Monthly",
+  quarterly: "Quarterly",
+} as const;
 const LIQUIDATOR_LABELS = { anyone: "Anyone", allowlisted: "Allowlisted wallets only", none: "No" } as const;
 
 export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exit">) {
@@ -38,7 +44,11 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
           <FactList
             facts={[
               { label: "Redemption available", value: r.available.value ? "Yes" : "No", source: r.available.source },
-              { label: "Who can redeem", value: WHO_CAN_REDEEM_LABELS[r.whoCanRedeem.value], source: r.whoCanRedeem.source },
+              {
+                label: "Who can redeem",
+                value: WHO_CAN_REDEEM_LABELS[r.whoCanRedeem.value],
+                source: r.whoCanRedeem.source,
+              },
               { label: "Dealing", value: DEALING_LABELS[x.dealing.value], source: x.dealing.source },
               disclosedFact("Settlement", r.settlement),
               disclosedFact("Notice period", x.noticeDays, (v) => (v === 0 ? "None" : `${v} days`)),
@@ -52,20 +62,38 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
         </Card>
 
         <div className="grid content-start gap-4">
-          <Card title="Liquidators" description="In a lending market, the real exit window is how fast a liquidator can get out.">
-            <FactList facts={[{ label: "Can hold the token", value: LIQUIDATOR_LABELS[x.liquidators.value], source: x.liquidators.source }]} />
+          <Card
+            title="Liquidators"
+            description="In a lending market, the real exit window is how fast a liquidator can get out."
+          >
+            <FactList
+              facts={[
+                {
+                  label: "Can hold the token",
+                  value: LIQUIDATOR_LABELS[x.liquidators.value],
+                  source: x.liquidators.source,
+                },
+              ]}
+            />
           </Card>
           <Card title="Holder concentration">
             {measured?.holders ? (
               <>
                 <p className="text-small text-fg-muted">
-                  The top 10 wallets on Ethereum hold <span className="tnum font-medium text-fg">{measured.holders.top10Pct.toFixed(1)}%</span> of supply
+                  The top 10 wallets on Ethereum hold{" "}
+                  <span className="tnum font-medium text-fg">{measured.holders.top10Pct.toFixed(1)}%</span> of supply
                   {measured.holders.count ? ` (${measured.holders.count} holders)` : ""}.
                 </p>
                 <ul className="mt-3 divide-y divide-line">
                   {measured.holders.top.slice(0, 5).map((h) => (
                     <li key={h.address} className="flex items-center justify-between gap-3 py-1.5">
-                      <AddressChip address={h.address} chain={measured.holders!.chain} kind={h.isContract ? "contract" : "eoa"} label={h.name} className="min-w-0" />
+                      <AddressChip
+                        address={h.address}
+                        chain={measured.holders!.chain}
+                        kind={h.isContract ? "contract" : "eoa"}
+                        label={h.name}
+                        className="min-w-0"
+                      />
                       <span className="tnum shrink-0 text-small text-fg-muted">{h.pct.toFixed(2)}%</span>
                     </li>
                   ))}
@@ -78,7 +106,10 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
         </div>
       </div>
 
-      <Card title="Instant exits" description={`Ways out that don't wait for redemption. Real liquidity means ${formatUsd(REAL_LIQUIDITY_USD)} out at once.`}>
+      <Card
+        title="Instant exits"
+        description={`Ways out that don't wait for redemption. Real liquidity means ${formatUsd(REAL_LIQUIDITY_USD)} out at once.`}
+      >
         <p className="mb-2 text-label text-fg-subtle">Instant redemption facilities</p>
         {x.instant.length === 0 ? (
           <p className="text-small text-fg-muted">None found.</p>
@@ -97,7 +128,13 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
               {x.instant.map((f) => (
                 <Tr key={f.label}>
                   <Td className="font-medium">{f.label}</Td>
-                  <Td>{f.address && f.chain ? <AddressChip address={f.address} chain={f.chain} kind="contract" /> : <span className="text-fg-subtle">—</span>}</Td>
+                  <Td>
+                    {f.address && f.chain ? (
+                      <AddressChip address={f.address} chain={f.chain} kind="contract" />
+                    ) : (
+                      <span className="text-fg-subtle">—</span>
+                    )}
+                  </Td>
                   <Td align="right">
                     {f.dailyCapUsd.status === "public" ? (
                       <>
@@ -149,7 +186,9 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
                           {q.slippagePct.toFixed(2)}% ({hasMarket(measured) ? "not enough depth" : "dust pools only"})
                         </span>
                       ) : (
-                        <span className={q.slippagePct <= MAX_SLIPPAGE_PCT ? "text-fg" : "text-fg-muted"}>{q.slippagePct.toFixed(2)}%</span>
+                        <span className={q.slippagePct <= MAX_SLIPPAGE_PCT ? "text-fg" : "text-fg-muted"}>
+                          {q.slippagePct.toFixed(2)}%
+                        </span>
                       )}
                     </Td>
                   </Tr>

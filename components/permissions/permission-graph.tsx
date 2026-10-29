@@ -33,7 +33,9 @@ const ICONS = {
 };
 
 function nodeHeight(n: GraphNode): number {
-  const signerLines = n.signers ? Math.min(n.signers.length, MAX_SIGNERS) + (n.signers.length > MAX_SIGNERS ? 1 : 0) : 0;
+  const signerLines = n.signers
+    ? Math.min(n.signers.length, MAX_SIGNERS) + (n.signers.length > MAX_SIGNERS ? 1 : 0)
+    : 0;
   return 62 + (n.subtitle ? 0 : -2) + signerLines * 16 + (signerLines ? 8 : 0);
 }
 
@@ -49,7 +51,10 @@ function AccountNode({ data }: NodeProps<FlowNode>) {
     >
       <Handle type="target" position={Position.Left} className="!size-1.5 !border-0 !bg-line-strong" />
       <div className="flex items-start gap-2">
-        <Icon className={`mt-0.5 size-4 shrink-0 ${data.kind === "eoa" ? "text-risk-red" : "text-fg-muted"}`} aria-hidden />
+        <Icon
+          className={`mt-0.5 size-4 shrink-0 ${data.kind === "eoa" ? "text-risk-red" : "text-fg-muted"}`}
+          aria-hidden
+        />
         <div className="min-w-0">
           <p className="truncate text-small font-medium text-fg">{data.title}</p>
           {data.subtitle && <p className="truncate text-label font-normal text-fg-muted">{data.subtitle}</p>}

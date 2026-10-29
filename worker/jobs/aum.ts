@@ -15,10 +15,23 @@ export async function aumJob() {
     const url = `https://defillama.com/stablecoin/${id}`;
     const rows = data.tokens
       .filter((t) => t.circulating.peggedUSD !== undefined)
-      .map((t) => ({ assetSlug: asset.slug, chain: "all", ts: new Date(t.date * 1000), aumUsd: t.circulating.peggedUSD!, source: "DefiLlama", sourceUrl: url }));
+      .map((t) => ({
+        assetSlug: asset.slug,
+        chain: "all",
+        ts: new Date(t.date * 1000),
+        aumUsd: t.circulating.peggedUSD!,
+        source: "DefiLlama",
+        sourceUrl: url,
+      }));
     for (let i = 0; i < rows.length; i += 500) {
-      await getDb().insert(schema.assetsSnapshot).values(rows.slice(i, i + 500)).onConflictDoNothing();
+      await getDb()
+        .insert(schema.assetsSnapshot)
+        .values(rows.slice(i, i + 500))
+        .onConflictDoNothing();
     }
-    log("aum", `${asset.slug} ${rows.length} daily points, latest $${Math.round(rows.at(-1)?.aumUsd ?? 0).toLocaleString()}`);
+    log(
+      "aum",
+      `${asset.slug} ${rows.length} daily points, latest $${Math.round(rows.at(-1)?.aumUsd ?? 0).toLocaleString()}`,
+    );
   }
 }

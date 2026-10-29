@@ -19,7 +19,11 @@ import { RISK_WORD } from "@/lib/ui";
 
 export const generateMetadata = tabMetadata("Control");
 
-const MECHANISM = { native: "Issued natively", "native+bridge": "Native, and a bridge can mint", bridged: "Bridged copy" } as const;
+const MECHANISM = {
+  native: "Issued natively",
+  "native+bridge": "Native, and a bridge can mint",
+  bridged: "Bridged copy",
+} as const;
 
 export default async function ControlPage({ params }: PageProps<"/assets/[slug]/control">) {
   const { slug } = await params;
@@ -40,7 +44,10 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
               {[...c.audits]
                 .sort((a, b) => b.date.localeCompare(a.date))
                 .map((a) => (
-                  <li key={`${a.auditor}-${a.date}`} className="flex items-start justify-between gap-3 py-2 first:pt-0 last:pb-0">
+                  <li
+                    key={`${a.auditor}-${a.date}`}
+                    className="flex items-start justify-between gap-3 py-2 first:pt-0 last:pb-0"
+                  >
                     <span className="text-small text-fg">
                       <span className="font-medium">{a.auditor}</span> · {a.scope}
                       <SourceMarker source={a.source} />
@@ -109,7 +116,11 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
                         <RiskDot
                           color={r.color}
                           className="ml-auto text-small"
-                          label={<span className="text-fg-muted">{r.color === "grey" ? "Needs review" : RISK_WORD[r.color]}</span>}
+                          label={
+                            <span className="text-fg-muted">
+                              {r.color === "grey" ? "Needs review" : RISK_WORD[r.color]}
+                            </span>
+                          }
                         />
                       </div>
                       <AddressChip
@@ -121,7 +132,11 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
                       />
                       {r.holder.path.length > 1 && (
                         <p className="text-label font-normal text-fg-muted">
-                          → {r.holder.path.slice(1).map((s) => s.label).join(" → ")}
+                          →{" "}
+                          {r.holder.path
+                            .slice(1)
+                            .map((s) => s.label)
+                            .join(" → ")}
                         </p>
                       )}
                       <p className="text-label font-normal text-fg-muted">
@@ -168,7 +183,11 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
                             />
                             {r.holder.path.length > 1 && (
                               <span className="text-label font-normal text-fg-muted">
-                                → {r.holder.path.slice(1).map((s) => s.label).join(" → ")}
+                                →{" "}
+                                {r.holder.path
+                                  .slice(1)
+                                  .map((s) => s.label)
+                                  .join(" → ")}
                               </span>
                             )}
                           </div>
@@ -177,7 +196,11 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
                         <Td>
                           <RiskDot
                             color={r.color}
-                            label={<span className="text-fg-muted">{r.color === "grey" ? "Needs review" : RISK_WORD[r.color]}</span>}
+                            label={
+                              <span className="text-fg-muted">
+                                {r.color === "grey" ? "Needs review" : RISK_WORD[r.color]}
+                              </span>
+                            }
                           />
                         </Td>
                         <Td>
@@ -191,13 +214,18 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
               <p className="mt-3 flex items-start gap-2 text-small text-fg-muted">
                 <Info className="mt-0.5 size-4 shrink-0 text-fg-subtle" aria-hidden />
                 For regulated securities, freeze and force-transfer powers are often legally required. Control rates who
-                holds them and what checks exist, not whether they exist. A single key holding a critical power or freeze is
-                red; a multisig with no timelock is yellow.
+                holds them and what checks exist, not whether they exist. A single key holding a critical power or
+                freeze is red; a multisig with no timelock is yellow.
               </p>
               <p className="mt-2 text-label font-normal text-fg-subtle">
-                Discovered at block {formatNumber(snapshot.discovered.block)} · {formatDate(snapshot.discovered.timestamp)} ·
-                tool {snapshot.meta.toolVersion} ·{" "}
-                <a href={repoFileUrl(snapshot.path)} target="_blank" rel="noreferrer" className="text-accent hover:underline">
+                Discovered at block {formatNumber(snapshot.discovered.block)} ·{" "}
+                {formatDate(snapshot.discovered.timestamp)} · tool {snapshot.meta.toolVersion} ·{" "}
+                <a
+                  href={repoFileUrl(snapshot.path)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent hover:underline"
+                >
                   View raw JSON on GitHub ↗
                 </a>
               </p>

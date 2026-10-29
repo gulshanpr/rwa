@@ -11,7 +11,9 @@ export const MeasuredSchema = z.object({
       chain: Chain,
       count: z.number().int().optional(),
       top10Pct: z.number(),
-      top: z.array(z.object({ address: Address, name: z.string().optional(), isContract: z.boolean(), pct: z.number() })),
+      top: z.array(
+        z.object({ address: Address, name: z.string().optional(), isContract: z.boolean(), pct: z.number() }),
+      ),
       source: z.url(),
     })
     .optional(),

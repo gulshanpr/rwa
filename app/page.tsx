@@ -20,7 +20,7 @@ export const revalidate = 300;
 const SEVERITIES: AlertSeverity[] = ["critical", "high", "medium", "low"];
 
 export default async function HomePage() {
-  const profiles = (await getProfiles());
+  const profiles = await getProfiles();
   const rows = await assetRows();
   const alerts = await getAlerts();
   const tickers = new Map(profiles.map((p) => [p.asset.slug, p.asset.ticker]));
@@ -29,12 +29,18 @@ export default async function HomePage() {
   const has30d = profiles.length > 0 && profiles.every((p) => p.live?.aum.usd30dAgo !== undefined);
   const total30d = profiles.reduce((s, p) => s + (p.live?.aum.usd30dAgo ?? 0), 0);
   const eoaValue = profiles.filter((p) => p.stats.singleKeyPowers > 0).reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
-  const stagedValue = profiles.filter((p) => p.rating.stage.stage !== null).reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
+  const stagedValue = profiles
+    .filter((p) => p.rating.stage.stage !== null)
+    .reduce((s, p) => s + (p.stats.aumUsd ?? 0), 0);
   const weekAgo = Date.now() - 7 * 86400 * 1000;
   const alerts7d = alerts.filter((a) => new Date(a.publishedAt).getTime() >= weekAgo);
   const delta = total30d ? total / total30d - 1 : 0;
   const ratio = (v: number) => (total ? v / total : 0);
-  const asOf = profiles.map((p) => p.live?.asOf).filter((t): t is string => Boolean(t)).sort().at(-1);
+  const asOf = profiles
+    .map((p) => p.live?.asOf)
+    .filter((t): t is string => Boolean(t))
+    .sort()
+    .at(-1);
   const classCounts = Object.entries(ASSET_CLASSES)
     .map(([id, c]) => ({ label: c.short.toLowerCase(), n: rows.filter((r) => r.assetClass === id).length }))
     .filter((c) => c.n > 0);
@@ -43,7 +49,9 @@ export default async function HomePage() {
     <>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
-          <h1 className="text-[26px] leading-9 font-semibold text-fg md:text-display">Tokenized assets, risk-checked.</h1>
+          <h1 className="text-[26px] leading-9 font-semibold text-fg md:text-display">
+            Tokenized assets, risk-checked.
+          </h1>
           <p className="mt-1.5 max-w-2xl text-body text-fg-muted">{SITE.description}</p>
         </div>
         <div className="flex items-center gap-3 text-small text-fg-muted">
@@ -64,7 +72,11 @@ export default async function HomePage() {
           infoHref="/methodology#data"
           value={formatUsd(total)}
           valueTitle={formatUsdFull(total)}
-          delta={has30d ? { value: formatPct(Math.abs(delta), 1), direction: delta >= 0 ? "up" : "down", suffix: "30d" } : undefined}
+          delta={
+            has30d
+              ? { value: formatPct(Math.abs(delta), 1), direction: delta >= 0 ? "up" : "down", suffix: "30d" }
+              : undefined
+          }
           note={`${profiles.length} assets · ${classCounts.map((c) => `${c.n} ${c.label}`).join(", ")}`}
         />
         <StatCard
@@ -125,7 +137,9 @@ export default async function HomePage() {
             }
           >
             {alerts.length === 0 && (
-              <p className="text-small text-fg-muted">No alerts yet. The event watcher checks every tracked contract for upgrades, role changes and pauses.</p>
+              <p className="text-small text-fg-muted">
+                No alerts yet. The event watcher checks every tracked contract for upgrades, role changes and pauses.
+              </p>
             )}
             <ul className="divide-y divide-line">
               {alerts.slice(0, 5).map((a) => (

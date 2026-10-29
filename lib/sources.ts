@@ -1,7 +1,7 @@
 import { explorerAddress } from "./chains";
 import type { AssetProfile } from "./profile";
 
-export interface CitedSource {
+interface CitedSource {
   field: string;
   url?: string;
   tx?: string;
@@ -70,13 +70,34 @@ export function collectSources(profile: AssetProfile): Partial<Record<TabId, Cit
   for (const c of curated) push(SECTION_TABS[c.path[0]] ?? "overview", c.source);
 
   if (profile.live) {
-    push("overview", { field: "value (AUM)", url: profile.live.aum.source.url, note: profile.live.aum.source.name, checkedAt: profile.live.asOf.slice(0, 10) });
-    push("defi", { field: "lending markets", url: profile.live.defiSource.url, note: profile.live.defiSource.name, checkedAt: profile.live.asOf.slice(0, 10) });
+    push("overview", {
+      field: "value (AUM)",
+      url: profile.live.aum.source.url,
+      note: profile.live.aum.source.name,
+      checkedAt: profile.live.asOf.slice(0, 10),
+    });
+    push("defi", {
+      field: "lending markets",
+      url: profile.live.defiSource.url,
+      note: profile.live.defiSource.name,
+      checkedAt: profile.live.asOf.slice(0, 10),
+    });
   }
   if (profile.measured) {
     const asOf = profile.measured.asOf.slice(0, 10);
-    if (profile.measured.holders) push("exit", { field: "top holders", url: profile.measured.holders.source, note: "Top 10 wallets on Ethereum", checkedAt: asOf });
-    push("exit", { field: "DEX sell quotes", url: profile.measured.dex.source, note: "$1M, $5M and $10M sells into USDC, against NAV", checkedAt: asOf });
+    if (profile.measured.holders)
+      push("exit", {
+        field: "top holders",
+        url: profile.measured.holders.source,
+        note: "Top 10 wallets on Ethereum",
+        checkedAt: asOf,
+      });
+    push("exit", {
+      field: "DEX sell quotes",
+      url: profile.measured.dex.source,
+      note: "$1M, $5M and $10M sells into USDC, against NAV",
+      checkedAt: asOf,
+    });
   }
   for (const s of profile.snapshots) {
     for (const [address, c] of Object.entries(s.discovered.contracts)) {

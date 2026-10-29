@@ -47,11 +47,13 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
         >
           <RiskList findings={top} slug={slug} linkCategory />
           {rating.risks.length > top.length && (
-            <p className="mt-3 text-small text-fg-muted">+{rating.risks.length - top.length} more in the category tabs.</p>
+            <p className="mt-3 text-small text-fg-muted">
+              +{rating.risks.length - top.length} more in the category tabs.
+            </p>
           )}
           <p className="mt-4 rounded-control bg-subtle px-3 py-2.5 text-small text-fg-muted">
-            <strong className="font-medium text-fg">Legal Claim: not assessed yet.</strong> We don&apos;t yet judge bankruptcy
-            remoteness or what the token legally gives holders.{" "}
+            <strong className="font-medium text-fg">Legal Claim: not assessed yet.</strong> We don&apos;t yet judge
+            bankruptcy remoteness or what the token legally gives holders.{" "}
             <Link href={`/assets/${slug}/legal`} className="text-accent hover:underline">
               What we know →
             </Link>
@@ -72,9 +74,19 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
                   {v} <span className="font-sans text-risk-green">✓ GLEIF</span>
                 </span>
               )),
-              disclosedFact("Min. investment", access.minimumInvestment, (v) => <span className="tnum">{formatUsdFull(v)}</span>),
-              { label: "Who can hold", value: INVESTOR_LABELS[access.investorType.value], source: access.investorType.source },
-              { label: "Rated as", value: FRESHNESS_LABELS[asset.freshnessClass.value], source: asset.freshnessClass.source },
+              disclosedFact("Min. investment", access.minimumInvestment, (v) => (
+                <span className="tnum">{formatUsdFull(v)}</span>
+              )),
+              {
+                label: "Who can hold",
+                value: INVESTOR_LABELS[access.investorType.value],
+                source: access.investorType.source,
+              },
+              {
+                label: "Rated as",
+                value: FRESHNESS_LABELS[asset.freshnessClass.value],
+                source: asset.freshnessClass.source,
+              },
               { label: "Token standard", value: TOKEN_STANDARD_LABELS[asset.tokenStandard] },
             ]}
           />
@@ -87,7 +99,11 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
               disclosedFact("Auditor", cp.auditor, entityName),
               disclosedFact("Transfer agent", cp.transferAgent, entityName),
               best
-                ? { label: "Holdings reporting", value: `${best.name} (${entityName(best.provider)})`, source: best.source }
+                ? {
+                    label: "Holdings reporting",
+                    value: `${best.name} (${entityName(best.provider)})`,
+                    source: best.source,
+                  }
                 : { label: "Holdings reporting", value: "None found" },
             ]}
           />
@@ -110,7 +126,9 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
               const supply = live?.supply.find((s) => s.chain === d.chain);
               const rows = powers.filter((r) => r.chain === d.chain);
               const upgrade = rows.find((r) => r.power === "upgrade");
-              const color = rows.map((r) => r.color).reduce<Tone>((w, t) => (TONE_RANK[t] > TONE_RANK[w] ? t : w), "grey");
+              const color = rows
+                .map((r) => r.color)
+                .reduce<Tone>((w, t) => (TONE_RANK[t] > TONE_RANK[w] ? t : w), "grey");
               return (
                 <Tr key={d.chain}>
                   <Td className="font-medium">{CHAINS[d.chain].name}</Td>
@@ -118,13 +136,21 @@ export default async function OverviewPage({ params }: PageProps<"/assets/[slug]
                     <AddressChip address={d.token} chain={d.chain} />
                   </Td>
                   <Td align="right">
-                    {supply ? <span title={formatUsdFull(supply.totalSupply * supply.priceUsd)}>{formatUsd(supply.totalSupply * supply.priceUsd)}</span> : "—"}
+                    {supply ? (
+                      <span title={formatUsdFull(supply.totalSupply * supply.priceUsd)}>
+                        {formatUsd(supply.totalSupply * supply.priceUsd)}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
                   </Td>
                   <Td>
                     <RiskDot color={color} label={<span className="text-fg-muted">{RISK_WORD[color]}</span>} />
                   </Td>
                   <Td className="text-fg-muted">
-                    {upgrade ? `${upgrade.holder.path.map((s) => s.label).join(" → ")} · ${upgrade.checks.toLowerCase()}` : "Not upgradeable"}
+                    {upgrade
+                      ? `${upgrade.holder.path.map((s) => s.label).join(" → ")} · ${upgrade.checks.toLowerCase()}`
+                      : "Not upgradeable"}
                   </Td>
                 </Tr>
               );

@@ -66,7 +66,9 @@ const Loss = z.object({
 
 const Underlying = z.object({
   /** `mandate`: only the investment mandate is public, not a dated holdings report. */
-  holdings: Disclosed(z.object({ asOf: IsoDate, basis: z.enum(["report", "mandate"]).default("report"), items: z.array(Holding).min(1) })),
+  holdings: Disclosed(
+    z.object({ asOf: IsoDate, basis: z.enum(["report", "mandate"]).default("report"), items: z.array(Holding).min(1) }),
+  ),
   /** Weighted average maturity in days. For floating-rate credit, the weighted average life. */
   wamDays: Disclosed(z.number().nonnegative()),
   // Credit only: left out for government funds.
@@ -147,7 +149,9 @@ const Transparency = z.object({
   /** Defaults, restructurings and write-downs are reported when they happen, not at the next periodic report. */
   eventReporting: Disclosed(z.boolean()),
   /** Data kept private for a legal or privacy reason. Shown as context, never as a penalty. */
-  constraints: z.array(z.object({ what: z.string(), reason: z.string(), sharedWith: z.string(), source: Source })).default([]),
+  constraints: z
+    .array(z.object({ what: z.string(), reason: z.string(), sharedWith: z.string(), source: Source }))
+    .default([]),
 });
 
 // Pricing

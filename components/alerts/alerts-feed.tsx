@@ -38,9 +38,16 @@ function MultiSelect<T extends string>({
   if (options.length === 0) return null;
   return (
     <Popover.Root>
-      <Popover.Trigger className={cn(controlClass, selected.size > 0 && "border-accent/40 bg-accent-soft text-accent hover:text-accent")}>
+      <Popover.Trigger
+        className={cn(
+          controlClass,
+          selected.size > 0 && "border-accent/40 bg-accent-soft text-accent hover:text-accent",
+        )}
+      >
         {label}
-        {selected.size > 0 && <span className="rounded-full bg-accent px-1.5 text-[11px] leading-4 text-white">{selected.size}</span>}
+        {selected.size > 0 && (
+          <span className="rounded-full bg-accent px-1.5 text-[11px] leading-4 text-white">{selected.size}</span>
+        )}
         <ChevronDown className="size-3.5" aria-hidden />
       </Popover.Trigger>
       <Popover.Portal>
@@ -48,18 +55,33 @@ function MultiSelect<T extends string>({
           align="start"
           sideOffset={6}
           collisionPadding={16}
-          className={cn("z-50 flex w-56 flex-col rounded-control border border-line bg-surface shadow-popover", POPOVER_BOUNDS)}
+          className={cn(
+            "z-50 flex w-56 flex-col rounded-control border border-line bg-surface shadow-popover",
+            POPOVER_BOUNDS,
+          )}
         >
           <div className="overflow-y-auto p-1.5">
             {options.map((o) => (
-              <label key={o} className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-small text-fg hover:bg-subtle">
-                <input type="checkbox" checked={selected.has(o)} onChange={() => onToggle(o)} className="accent-[var(--accent)]" />
+              <label
+                key={o}
+                className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-small text-fg hover:bg-subtle"
+              >
+                <input
+                  type="checkbox"
+                  checked={selected.has(o)}
+                  onChange={() => onToggle(o)}
+                  className="accent-[var(--accent)]"
+                />
                 {render(o)}
               </label>
             ))}
           </div>
           {selected.size > 0 && (
-            <button type="button" onClick={onClear} className="border-t border-line px-3.5 py-2 text-left text-small text-fg-muted hover:text-fg">
+            <button
+              type="button"
+              onClick={onClear}
+              className="border-t border-line px-3.5 py-2 text-left text-small text-fg-muted hover:text-fg"
+            >
               Clear {label.toLowerCase()}
             </button>
           )}
@@ -110,7 +132,10 @@ function Pagination({ page, pages, onChange }: { page: number; pages: number; on
                 onClick={() => onChange(p)}
                 aria-current={p === page ? "page" : undefined}
                 aria-label={`Page ${p}`}
-                className={cn(step, p === page ? "bg-accent-soft font-medium text-accent" : "text-fg-muted hover:bg-subtle hover:text-fg")}
+                className={cn(
+                  step,
+                  p === page ? "bg-accent-soft font-medium text-accent" : "text-fg-muted hover:bg-subtle hover:text-fg",
+                )}
               >
                 {p}
               </button>
@@ -174,9 +199,14 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
   const match = <T,>(set: Set<T>, v: T | undefined) => set.size === 0 || (v !== undefined && set.has(v));
   const q = query.trim().toLowerCase();
   const matchesQuery = (a: Alert) =>
-    !q || a.title.toLowerCase().includes(q) || a.consequence.toLowerCase().includes(q) || ticker(a.asset).toLowerCase().includes(q);
+    !q ||
+    a.title.toLowerCase().includes(q) ||
+    a.consequence.toLowerCase().includes(q) ||
+    ticker(a.asset).toLowerCase().includes(q);
   // Severity counts ignore the severity filter itself, so the chips show what each one would add.
-  const base = alerts.filter((a) => matchesQuery(a) && match(asset, a.asset) && match(chain, a.chain) && match(kind, a.kind));
+  const base = alerts.filter(
+    (a) => matchesQuery(a) && match(asset, a.asset) && match(chain, a.chain) && match(kind, a.kind),
+  );
   const shown = base.filter((a) => match(severity, a.severity));
 
   const pages = Math.max(1, Math.ceil(shown.length / pageSize));
@@ -209,7 +239,10 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <label className="relative block lg:w-72">
             <span className="sr-only">Search alerts</span>
-            <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-fg-subtle" aria-hidden />
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-fg-subtle"
+              aria-hidden
+            />
             <input
               type="search"
               value={query}
@@ -234,19 +267,30 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
                   onClick={() => toggler(setSeverity, "severity")(s)}
                   className={cn(
                     "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-small capitalize transition-colors",
-                    on ? "border-accent/40 bg-accent-soft text-accent" : "border-line text-fg-muted hover:border-line-strong hover:text-fg",
+                    on
+                      ? "border-accent/40 bg-accent-soft text-accent"
+                      : "border-line text-fg-muted hover:border-line-strong hover:text-fg",
                   )}
                 >
                   <span className={cn("size-2 rounded-full", SEVERITY_DOT[s])} aria-hidden />
                   {s}
-                  <span className={cn("tnum text-label font-normal", on ? "text-accent" : "text-fg-subtle")}>{count}</span>
+                  <span className={cn("tnum text-label font-normal", on ? "text-accent" : "text-fg-subtle")}>
+                    {count}
+                  </span>
                 </button>
               );
             })}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <MultiSelect label="Asset" options={assets} selected={asset} onToggle={toggler(setAsset, "asset")} onClear={clearer(setAsset, "asset")} render={ticker} />
+          <MultiSelect
+            label="Asset"
+            options={assets}
+            selected={asset}
+            onToggle={toggler(setAsset, "asset")}
+            onClear={clearer(setAsset, "asset")}
+            render={ticker}
+          />
           <MultiSelect
             label="Chain"
             options={chains}
@@ -264,14 +308,21 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
             render={(k) => KIND_LABELS[k]}
           />
           {active > 0 && (
-            <button type="button" onClick={clearAll} className="inline-flex h-8 items-center gap-1 px-1.5 text-small text-fg-muted hover:text-fg">
+            <button
+              type="button"
+              onClick={clearAll}
+              className="inline-flex h-8 items-center gap-1 px-1.5 text-small text-fg-muted hover:text-fg"
+            >
               <X className="size-3.5" aria-hidden /> Clear all
             </button>
           )}
         </div>
       </div>
 
-      <div ref={listRef} className="flex scroll-mt-[calc(var(--topbar-h)+2rem)] items-center justify-between gap-3 text-small text-fg-muted">
+      <div
+        ref={listRef}
+        className="flex scroll-mt-[calc(var(--topbar-h)+2rem)] items-center justify-between gap-3 text-small text-fg-muted"
+      >
         <p aria-live="polite">
           {shown.length === 0 ? (
             "No alerts"
@@ -281,7 +332,9 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
                 {start + 1}–{start + pageItems.length}
               </span>{" "}
               of <span className="tnum text-fg">{shown.length}</span> alerts
-              {shown.length !== alerts.length && <span className="hidden sm:inline"> (filtered from {alerts.length})</span>}
+              {shown.length !== alerts.length && (
+                <span className="hidden sm:inline"> (filtered from {alerts.length})</span>
+              )}
             </>
           )}
         </p>

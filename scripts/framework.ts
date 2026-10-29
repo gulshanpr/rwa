@@ -11,7 +11,13 @@ const args = process.argv.slice(2);
 const json = args.includes("--json");
 const only = args.filter((a) => !a.startsWith("--"));
 
-const SHORT: Record<Rating, string> = { green: "green", yellow: "yellow", red: "red", unverified: "unverified", "not-assessed": "—" };
+const SHORT: Record<Rating, string> = {
+  green: "green",
+  yellow: "yellow",
+  red: "red",
+  unverified: "unverified",
+  "not-assessed": "—",
+};
 
 export async function rateAll(): Promise<FrameworkRating[]> {
   const entities = loadEntities();
@@ -55,7 +61,12 @@ else {
       const x = r.categories[c];
       console.log(`  ${CATEGORY_LABELS[c]}: ${cell(r, c)} · ${x.headline}`);
     }
-    const next = r.stage.requirements.filter((q) => q.stage === (r.stage.stage === null ? 0 : r.stage.stage + 1) && q.status !== "met");
-    if (next.length) console.log(`  Next stage needs: ${next.map((q) => `${q.text}${q.status === "not-assessed" ? " (legal, not assessed)" : ""}`).join("; ")}`);
+    const next = r.stage.requirements.filter(
+      (q) => q.stage === (r.stage.stage === null ? 0 : r.stage.stage + 1) && q.status !== "met",
+    );
+    if (next.length)
+      console.log(
+        `  Next stage needs: ${next.map((q) => `${q.text}${q.status === "not-assessed" ? " (legal, not assessed)" : ""}`).join("; ")}`,
+      );
   }
 }
