@@ -10,7 +10,6 @@ import { SITE } from "@/lib/site";
 import { CommandSearch } from "./command-search";
 import { GithubIcon, LogoMark } from "./logo";
 import { SidebarNav } from "./sidebar-nav";
-import { ThemeToggle } from "./theme-toggle";
 
 export function AppShell({
   children,
@@ -96,7 +95,6 @@ export function AppShell({
               <GithubIcon className="size-4" />
               <span className="hidden md:inline">GitHub</span>
             </a>
-            <ThemeToggle />
           </nav>
         </header>
       </div>

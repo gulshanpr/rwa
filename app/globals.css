@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
 @custom-variant expanded (&:where(html:not(.sidebar-collapsed) *));
 
 :root {
@@ -39,29 +38,6 @@
   :root {
     --topbar-h: 6.375rem;
   }
-}
-
-.dark {
-  --bg: #0b0d12;
-  --surface: #12151c;
-  --surface-muted: #1a1e27;
-  --border: #232836;
-  --border-strong: #2f3545;
-  --text: #f2f4f7;
-  --text-muted: #a0a8b8;
-  --text-subtle: #6b7385;
-
-  --accent: #7b7bff;
-  --accent-soft: rgba(123, 123, 255, 0.14);
-
-  --risk-green-soft: rgba(18, 183, 106, 0.12);
-  --risk-yellow-soft: rgba(247, 144, 9, 0.12);
-  --risk-red-soft: rgba(240, 68, 56, 0.12);
-  --risk-grey-soft: rgba(152, 162, 179, 0.12);
-
-  --shadow-card: none;
-  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.5);
-  color-scheme: dark;
 }
 
 @theme inline {
