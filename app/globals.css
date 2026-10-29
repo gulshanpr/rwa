@@ -127,7 +127,7 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* MDX content for methodology and learn pages */
+/* MDX content for methodology and changelog pages */
 .prose {
   max-width: 720px;
   color: var(--text);

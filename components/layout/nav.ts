@@ -1,6 +1,5 @@
 import {
   Bell,
-  BookOpen,
   History,
   House,
   Ruler,
@@ -27,7 +26,6 @@ export const NAV: { heading: string; items: NavItem[] }[] = [
     heading: "Research",
     items: [
       { label: "Methodology", href: "/methodology", icon: Ruler },
-      { label: "Learn", href: "/learn", icon: BookOpen },
       { label: "Changelog", href: "/changelog", icon: History },
     ],
   },

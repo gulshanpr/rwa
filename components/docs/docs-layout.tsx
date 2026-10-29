@@ -9,18 +9,6 @@ export const DOCS_NAV = [
       { label: "Changelog", href: "/changelog" },
     ],
   },
-  {
-    heading: "Learn",
-    items: [
-      { label: "Glossary", href: "/learn" },
-      { label: "What is an EOA?", href: "/learn/eoa" },
-      { label: "What is a multisig?", href: "/learn/multisig" },
-      { label: "What is a timelock?", href: "/learn/timelock" },
-      { label: "What is a proxy upgrade?", href: "/learn/proxy-upgrade" },
-      { label: "What is a NAV oracle?", href: "/learn/nav-oracle" },
-      { label: "What is an SPV?", href: "/learn/spv" },
-    ],
-  },
 ];
 
 export function DocsLayout({ children }: { children: React.ReactNode }) {

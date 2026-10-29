@@ -10,7 +10,6 @@ const PAGES: SearchItem[] = [
   { id: "p-screener", kind: "page", title: "Risk screener", subtitle: "All assets", href: "/screener", keywords: "screener table filter" },
   { id: "p-alerts", kind: "page", title: "Alerts", subtitle: "Onchain changes", href: "/alerts", keywords: "alerts feed changes" },
   { id: "p-method", kind: "page", title: "Methodology", subtitle: "How we score", href: "/methodology", keywords: "methodology scoring rules framework" },
-  { id: "p-learn", kind: "page", title: "Learn", subtitle: "Glossary", href: "/learn", keywords: "glossary learn spv timelock multisig" },
 ];
 
 const ICON = { asset: Hexagon, address: KeyRound, page: FileText };
