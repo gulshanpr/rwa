@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import type { CategoryResult, Rating, Tone } from "./framework/types";
+import type { AlertSeverity } from "./schema/live";
 
 export function cn(...inputs: ClassValue[]): string {
   return clsx(inputs);
@@ -47,9 +48,9 @@ export function ratingWord(r: Pick<CategoryResult, "rating" | "floor">): string 
   return r.rating === "unverified" && r.floor && r.floor !== "green" ? `Unverified · at least ${r.floor}` : RISK_WORD[r.rating];
 }
 
-export const SEVERITY_COLOR = {
-  critical: "red",
-  high: "yellow",
-  medium: "grey",
-  low: "grey",
-} as const satisfies Record<string, Tone>;
+export const SEVERITY_DOT: Record<AlertSeverity, string> = {
+  critical: "bg-risk-red",
+  high: "bg-risk-yellow",
+  medium: "bg-severity-medium",
+  low: "bg-severity-low",
+};

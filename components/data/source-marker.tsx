@@ -39,9 +39,10 @@ export function SourceMarker({ source, chain = "ethereum" }: { source: Source; c
           side="top"
           align="end"
           sideOffset={6}
+          collisionPadding={16}
           onMouseEnter={show}
           onMouseLeave={hide}
-          className="z-50 w-72 rounded-control border border-line bg-surface p-3 text-small shadow-popover"
+          className="z-50 w-72 max-w-[calc(100vw-2rem)] rounded-control border border-line bg-surface p-3 text-small shadow-popover"
         >
           {href && (
             <a

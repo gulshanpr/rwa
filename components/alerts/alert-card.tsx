@@ -3,7 +3,7 @@ import { AssetLogo } from "@/components/asset/asset-logo";
 import { RelativeTime } from "@/components/data/relative-time";
 import { CHAINS, explorerTx } from "@/lib/chains";
 import type { Alert } from "@/lib/schema/live";
-import { cn, RISK_DOT, SEVERITY_COLOR } from "@/lib/ui";
+import { cn, SEVERITY_DOT } from "@/lib/ui";
 
 export const KIND_LABELS: Record<Alert["kind"], string> = {
   upgrade: "Upgrade",
@@ -32,7 +32,7 @@ export function AlertCard({ alert, ticker, compact = false }: { alert: Alert; ti
       <div className="flex items-start gap-2 text-label">
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
           <span className="inline-flex items-center gap-1.5 font-semibold tracking-wide text-fg-muted uppercase">
-            <span className={cn("size-2 rounded-full", RISK_DOT[SEVERITY_COLOR[alert.severity]])} aria-hidden />
+            <span className={cn("size-2 rounded-full", SEVERITY_DOT[alert.severity])} aria-hidden />
             {alert.severity}
           </span>
           <span className="text-fg-subtle" aria-hidden>

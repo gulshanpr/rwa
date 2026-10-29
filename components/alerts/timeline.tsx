@@ -1,11 +1,11 @@
 import { RelativeTime } from "@/components/data/relative-time";
-import type { Tone } from "@/lib/framework/types";
-import { cn, RISK_DOT } from "@/lib/ui";
+import { cn } from "@/lib/ui";
 
 export interface TimelineItem {
   id: string;
   date: string;
-  color: Tone;
+  /** Classes for the dot, e.g. from SEVERITY_DOT or RISK_DOT. */
+  dot: string;
   badge: string;
   title: string;
   body?: string;
@@ -19,7 +19,7 @@ export function Timeline({ items }: { items: TimelineItem[] }) {
         <li key={item.id} className="relative pb-6 pl-6 last:pb-0">
           <span
             aria-hidden
-            className={cn("absolute top-1.5 -left-[5px] size-2.5 rounded-full ring-4 ring-surface", RISK_DOT[item.color])}
+            className={cn("absolute top-1.5 -left-[5px] size-2.5 rounded-full ring-4 ring-surface", item.dot)}
           />
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-label">
             <span className="font-semibold tracking-wide text-fg-muted uppercase">{item.badge}</span>

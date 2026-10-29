@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AssetLogo } from "@/components/asset/asset-logo";
 import { AssetTabs } from "@/components/asset/asset-tabs";
+import { ScrollToTop } from "@/components/asset/scroll-to-top";
 import { SampleBanner } from "@/components/data/sample-banner";
 import { StatCard } from "@/components/data/stat-card";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -45,6 +46,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
 
   return (
     <>
+      <ScrollToTop slug={asset.slug} />
       <Breadcrumb
         items={[
           { label: "Home", href: "/" },
@@ -65,7 +67,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
               <Tag>{INVESTOR_LABELS[asset.access.investorType.value]} only</Tag>
               {asset.access.transferRestricted.value && <Tag>Transfer-restricted</Tag>}
               {rating.onchainData && (
-                <Tag variant="accent" title="Holdings or reserve data is published onchain. Shown as a badge, not part of any rating.">
+                <Tag title="Holdings or reserve data is published onchain. Shown as a badge, not part of any rating.">
                   Onchain data
                 </Tag>
               )}

@@ -1,7 +1,7 @@
 import { ArrowRight, Building2, ChevronDown, DoorOpen, Eye, Gauge, KeyRound, Landmark, Layers, Scale, type LucideIcon } from "lucide-react";
 import { CATEGORY_LABELS, CATEGORY_ORDER, CATEGORY_QUESTIONS, type CategoryId } from "@/lib/framework/types";
 import type { AlertSeverity } from "@/lib/schema/live";
-import { cn, RISK_DOT, RISK_WORD, SEVERITY_COLOR, type RiskVisual } from "@/lib/ui";
+import { cn, RISK_DOT, RISK_WORD, SEVERITY_DOT, type RiskVisual } from "@/lib/ui";
 
 // Building blocks for app/methodology/page.mdx. Plain divs with list roles, so the prose list styles don't apply.
 
@@ -164,7 +164,7 @@ export function StageStep({ stage, name, children }: { stage: 0 | 1 | 2; name: s
 export function Severity({ level }: { level: AlertSeverity }) {
   return (
     <span className="inline-flex items-center gap-1.5 font-medium whitespace-nowrap capitalize">
-      <span aria-hidden className={cn("size-2 rounded-full", RISK_DOT[SEVERITY_COLOR[level]])} />
+      <span aria-hidden className={cn("size-2 rounded-full", SEVERITY_DOT[level])} />
       {level}
     </span>
   );

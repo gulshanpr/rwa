@@ -6,7 +6,7 @@ import { explorerTx } from "@/lib/chains";
 import { formatNumber } from "@/lib/format";
 import { getProfile } from "@/lib/profile";
 import { repoFileUrl } from "@/lib/site";
-import { SEVERITY_COLOR } from "@/lib/ui";
+import { RISK_DOT, SEVERITY_DOT } from "@/lib/ui";
 
 export const generateMetadata = tabMetadata("History");
 
@@ -18,7 +18,7 @@ export default async function HistoryPage({ params }: PageProps<"/assets/[slug]/
     ...profile.alerts.map((a) => ({
       id: a.id,
       date: a.publishedAt,
-      color: SEVERITY_COLOR[a.severity],
+      dot: SEVERITY_DOT[a.severity],
       badge: a.severity,
       title: a.title,
       body: a.consequence,
@@ -32,7 +32,7 @@ export default async function HistoryPage({ params }: PageProps<"/assets/[slug]/
     ...profile.snapshots.map((s) => ({
       id: `discovery-${s.discovered.chain}-${s.discovered.block}`,
       date: s.discovered.timestamp,
-      color: "grey" as const,
+      dot: RISK_DOT.grey,
       badge: "Discovery",
       title: `Discovery snapshot at block ${formatNumber(s.discovered.block)}`,
       body: "Permissions re-read from chain. Changes since the last snapshot open a pull request for review.",

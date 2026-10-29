@@ -27,6 +27,10 @@
   --risk-grey: #98a2b3;
   --risk-grey-soft: #f2f4f7;
 
+  /* Alert severities below high; critical and high use risk red and yellow. */
+  --severity-medium: #fac515;
+  --severity-low: #2e90fa;
+
   --up: #12b76a;
   --down: #f04438;
 
@@ -60,6 +64,8 @@
   --color-risk-red-soft: var(--risk-red-soft);
   --color-risk-grey: var(--risk-grey);
   --color-risk-grey-soft: var(--risk-grey-soft);
+  --color-severity-medium: var(--severity-medium);
+  --color-severity-low: var(--severity-low);
   --color-up: var(--up);
   --color-down: var(--down);
 

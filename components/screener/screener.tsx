@@ -22,6 +22,7 @@ import { RiskDot } from "@/components/risk/risk-dot";
 import { Rosette } from "@/components/risk/rosette";
 import { StageBadge } from "@/components/risk/stage-card";
 import { Segmented } from "@/components/ui/segmented";
+import { POPOVER_BOUNDS, Select } from "@/components/ui/select";
 import { Tag } from "@/components/ui/tag";
 import { CHAINS } from "@/lib/chains";
 import { formatDuration, formatUsd } from "@/lib/format";
@@ -278,58 +279,38 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               { value: "private-credit", label: "Credit" },
             ]}
           />
-          <select
-            aria-label="Chain"
-            className={selectClass}
+          <Select
+            label="Chain"
             value={chain}
-            onChange={(e) => {
-              const value = e.target.value as Chain | "all";
+            options={[{ value: "all", label: "All chains" }, ...chains.map((c) => ({ value: c, label: CHAINS[c].name }))]}
+            onChange={(value) => {
               setChain(value);
               posthog.capture("screener_filter_changed", { filter_type: "chain", filter_value: value });
             }}
-          >
-            <option value="all">All chains</option>
-            {chains.map((c) => (
-              <option key={c} value={c}>
-                {CHAINS[c].name}
-              </option>
-            ))}
-          </select>
+          />
           <div className="flex items-center gap-1">
-            <select
-              aria-label="Risk category"
-              className={selectClass}
+            <Select
+              label="Risk category"
               value={category}
-              onChange={(e) => {
-                const value = e.target.value as CategoryId;
+              options={CATEGORY_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+              onChange={(value) => {
                 setCategory(value);
                 posthog.capture("screener_filter_changed", { filter_type: "risk_category", filter_value: value });
               }}
-            >
-              {CATEGORY_ORDER.map((c) => (
-                <option key={c} value={c}>
-                  {CATEGORY_LABELS[c]}
-                </option>
-              ))}
-            </select>
+            />
             <span className="text-small text-fg-subtle">is</span>
-            <select
-              aria-label="Rating"
-              className={selectClass}
+            <Select
+              label="Rating"
               value={rating}
-              onChange={(e) => {
-                const value = e.target.value as Rating | "any";
+              options={[
+                { value: "any", label: "any rating" },
+                ...(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => ({ value: r, label: RISK_WORD[r].toLowerCase() })),
+              ]}
+              onChange={(value) => {
                 setRating(value);
                 posthog.capture("screener_filter_changed", { filter_type: "rating", filter_value: value });
               }}
-            >
-              <option value="any">any rating</option>
-              {(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => (
-                <option key={r} value={r}>
-                  {RISK_WORD[r].toLowerCase()}
-                </option>
-              ))}
-            </select>
+            />
           </div>
           <div className="ml-auto flex items-center gap-2">
             <Popover.Root>
@@ -340,7 +321,8 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                 <Popover.Content
                   align="end"
                   sideOffset={6}
-                  className="z-50 w-52 rounded-control border border-line bg-surface p-2 shadow-popover"
+                  collisionPadding={16}
+                  className={cn("z-50 w-52 overflow-y-auto rounded-control border border-line bg-surface p-2 shadow-popover", POPOVER_BOUNDS)}
                 >
                   {table
                     .getAllLeafColumns()

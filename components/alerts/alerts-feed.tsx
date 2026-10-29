@@ -7,7 +7,8 @@ import posthog from "posthog-js";
 import { CHAINS } from "@/lib/chains";
 import { formatDate } from "@/lib/format";
 import type { Alert } from "@/lib/schema/live";
-import { cn, RISK_DOT, SEVERITY_COLOR } from "@/lib/ui";
+import { POPOVER_BOUNDS, Select } from "@/components/ui/select";
+import { cn, SEVERITY_DOT } from "@/lib/ui";
 import { AlertCard, KIND_LABELS } from "./alert-card";
 
 const SEVERITIES: Alert["severity"][] = ["critical", "high", "medium", "low"];
@@ -47,7 +48,7 @@ function MultiSelect<T extends string>({
           align="start"
           sideOffset={6}
           collisionPadding={16}
-          className="z-50 flex max-h-80 w-56 flex-col rounded-control border border-line bg-surface shadow-popover"
+          className={cn("z-50 flex w-56 flex-col rounded-control border border-line bg-surface shadow-popover", POPOVER_BOUNDS)}
         >
           <div className="overflow-y-auto p-1.5">
             {options.map((o) => (
@@ -236,7 +237,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
                     on ? "border-accent/40 bg-accent-soft text-accent" : "border-line text-fg-muted hover:border-line-strong hover:text-fg",
                   )}
                 >
-                  <span className={cn("size-2 rounded-full", RISK_DOT[SEVERITY_COLOR[s]])} aria-hidden />
+                  <span className={cn("size-2 rounded-full", SEVERITY_DOT[s])} aria-hidden />
                   {s}
                   <span className={cn("tnum text-label font-normal", on ? "text-accent" : "text-fg-subtle")}>{count}</span>
                 </button>
@@ -286,23 +287,16 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
         </p>
         <label className="flex items-center gap-1.5">
           <span className="hidden sm:inline">Per page</span>
-          <select
-            aria-label="Alerts per page"
+          <Select
+            label="Alerts per page"
             value={pageSize}
-            onChange={(e) => {
-              const value = Number(e.target.value);
+            options={PAGE_SIZES.map((n) => ({ value: n, label: String(n) }))}
+            onChange={(value) => {
               setPageSize(value);
               setPage(1);
               posthog.capture("alerts_page_changed", { page_size: value });
             }}
-            className="h-8 rounded-control border border-line bg-surface px-2 text-small text-fg-muted hover:border-line-strong"
-          >
-            {PAGE_SIZES.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
+          />
         </label>
       </div>
 
