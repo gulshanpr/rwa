@@ -3,6 +3,7 @@
 import * as Popover from "@radix-ui/react-popover";
 import { ChevronDown, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { useRef, useState } from "react";
+import posthog from "posthog-js";
 import { CHAINS } from "@/lib/chains";
 import { formatDate } from "@/lib/format";
 import type { Alert } from "@/lib/schema/live";
@@ -140,7 +141,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
 
   // Any filter change goes back to the first page.
   const toggler =
-    <T,>(set: React.Dispatch<React.SetStateAction<Set<T>>>) =>
+    <T,>(set: React.Dispatch<React.SetStateAction<Set<T>>>, filterType: "severity" | "asset" | "chain" | "kind") =>
     (v: T) => {
       set((prev) => {
         const next = new Set(prev);
@@ -149,12 +150,14 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
         return next;
       });
       setPage(1);
+      posthog.capture("alerts_filter_changed", { filter_type: filterType });
     };
   const clearer =
-    <T,>(set: React.Dispatch<React.SetStateAction<Set<T>>>) =>
+    <T,>(set: React.Dispatch<React.SetStateAction<Set<T>>>, filterType: "asset" | "chain" | "kind") =>
     () => {
       set(new Set());
       setPage(1);
+      posthog.capture("alerts_filter_changed", { filter_type: filterType, action: "cleared" });
     };
   const clearAll = () => {
     setQuery("");
@@ -163,6 +166,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
     setChain(new Set());
     setKind(new Set());
     setPage(1);
+    posthog.capture("alerts_filter_changed", { filter_type: "all", action: "cleared" });
   };
 
   const ticker = (slug: string) => tickers[slug] ?? slug.toUpperCase();
@@ -194,6 +198,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
 
   const goTo = (p: number) => {
     setPage(p);
+    posthog.capture("alerts_page_changed", { page: p });
     listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -225,7 +230,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
                   key={s}
                   type="button"
                   aria-pressed={on}
-                  onClick={() => toggler(setSeverity)(s)}
+                  onClick={() => toggler(setSeverity, "severity")(s)}
                   className={cn(
                     "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-small capitalize transition-colors",
                     on ? "border-accent/40 bg-accent-soft text-accent" : "border-line text-fg-muted hover:border-line-strong hover:text-fg",
@@ -240,21 +245,21 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <MultiSelect label="Asset" options={assets} selected={asset} onToggle={toggler(setAsset)} onClear={clearer(setAsset)} render={ticker} />
+          <MultiSelect label="Asset" options={assets} selected={asset} onToggle={toggler(setAsset, "asset")} onClear={clearer(setAsset, "asset")} render={ticker} />
           <MultiSelect
             label="Chain"
             options={chains}
             selected={chain}
-            onToggle={toggler(setChain)}
-            onClear={clearer(setChain)}
+            onToggle={toggler(setChain, "chain")}
+            onClear={clearer(setChain, "chain")}
             render={(c) => CHAINS[c].name}
           />
           <MultiSelect
             label="Kind"
             options={kinds}
             selected={kind}
-            onToggle={toggler(setKind)}
-            onClear={clearer(setKind)}
+            onToggle={toggler(setKind, "kind")}
+            onClear={clearer(setKind, "kind")}
             render={(k) => KIND_LABELS[k]}
           />
           {active > 0 && (
@@ -285,8 +290,10 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
             aria-label="Alerts per page"
             value={pageSize}
             onChange={(e) => {
-              setPageSize(Number(e.target.value));
+              const value = Number(e.target.value);
+              setPageSize(value);
               setPage(1);
+              posthog.capture("alerts_page_changed", { page_size: value });
             }}
             className="h-8 rounded-control border border-line bg-surface px-2 text-small text-fg-muted hover:border-line-strong"
           >

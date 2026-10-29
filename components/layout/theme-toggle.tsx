@@ -1,11 +1,13 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
+import posthog from "posthog-js";
 
 export function ThemeToggle() {
   const toggle = () => {
     const dark = document.documentElement.classList.toggle("dark");
     localStorage.setItem("theme", dark ? "dark" : "light");
+    posthog.capture("theme_changed", { theme: dark ? "dark" : "light" });
   };
   return (
     <button

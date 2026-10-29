@@ -14,6 +14,7 @@ import {
 import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 import { useMemo, useState } from "react";
 import { AssetLogo } from "@/components/asset/asset-logo";
 import { ChartTooltip } from "@/components/charts/chart-tooltip";
@@ -217,6 +218,7 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
   }
   const changeClass = (c: ClassFilter) => {
     setAssetClass(c);
+    posthog.capture("screener_filter_changed", { filter_type: "asset_class", filter_value: c });
     const url = new URL(window.location.href);
     if (c === "all") url.searchParams.delete("class");
     else url.searchParams.set("class", ASSET_CLASSES[c].path);
@@ -251,13 +253,16 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
     },
   });
 
-  const flip = (id: Toggle) =>
+  const flip = (id: Toggle) => {
+    const enabled = !toggles.has(id);
     setToggles((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (enabled) next.add(id);
+      else next.delete(id);
       return next;
     });
+    posthog.capture("screener_filter_changed", { filter_type: "quick_filter", filter_value: id, enabled });
+  };
 
   return (
     <div className="rounded-card border border-line bg-surface shadow-card">
@@ -273,7 +278,16 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               { value: "private-credit", label: "Credit" },
             ]}
           />
-          <select aria-label="Chain" className={selectClass} value={chain} onChange={(e) => setChain(e.target.value as Chain | "all")}>
+          <select
+            aria-label="Chain"
+            className={selectClass}
+            value={chain}
+            onChange={(e) => {
+              const value = e.target.value as Chain | "all";
+              setChain(value);
+              posthog.capture("screener_filter_changed", { filter_type: "chain", filter_value: value });
+            }}
+          >
             <option value="all">All chains</option>
             {chains.map((c) => (
               <option key={c} value={c}>
@@ -282,7 +296,16 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
             ))}
           </select>
           <div className="flex items-center gap-1">
-            <select aria-label="Risk category" className={selectClass} value={category} onChange={(e) => setCategory(e.target.value as CategoryId)}>
+            <select
+              aria-label="Risk category"
+              className={selectClass}
+              value={category}
+              onChange={(e) => {
+                const value = e.target.value as CategoryId;
+                setCategory(value);
+                posthog.capture("screener_filter_changed", { filter_type: "risk_category", filter_value: value });
+              }}
+            >
               {CATEGORY_ORDER.map((c) => (
                 <option key={c} value={c}>
                   {CATEGORY_LABELS[c]}
@@ -290,7 +313,16 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               ))}
             </select>
             <span className="text-small text-fg-subtle">is</span>
-            <select aria-label="Rating" className={selectClass} value={rating} onChange={(e) => setRating(e.target.value as Rating | "any")}>
+            <select
+              aria-label="Rating"
+              className={selectClass}
+              value={rating}
+              onChange={(e) => {
+                const value = e.target.value as Rating | "any";
+                setRating(value);
+                posthog.capture("screener_filter_changed", { filter_type: "rating", filter_value: value });
+              }}
+            >
               <option value="any">any rating</option>
               {(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => (
                 <option key={r} value={r}>
@@ -374,7 +406,10 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                       {canSort ? (
                         <button
                           type="button"
-                          onClick={header.column.getToggleSortingHandler()}
+                          onClick={(event) => {
+                            header.column.getToggleSortingHandler()?.(event);
+                            posthog.capture("screener_sort_changed", { sort_column: header.column.id });
+                          }}
                           className="inline-flex items-center gap-1 hover:text-fg"
                         >
                           <table.FlexRender header={header} />

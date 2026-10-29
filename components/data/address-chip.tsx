@@ -2,6 +2,7 @@
 
 import { Check, Clock, Copy, ExternalLink, FileCode2, KeyRound, Lock, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import posthog from "posthog-js";
 import { explorerAddress } from "@/lib/chains";
 import { shortAddress } from "@/lib/format";
 import type { Chain } from "@/lib/schema/asset";
@@ -50,6 +51,7 @@ export function AddressChip({
   const copy = async () => {
     await navigator.clipboard.writeText(address);
     setCopied(true);
+    posthog.capture("address_copied", { chain, address_kind: kind });
     setTimeout(() => setCopied(false), 1200);
   };
 
