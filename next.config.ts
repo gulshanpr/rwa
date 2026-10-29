@@ -16,6 +16,17 @@ const nextConfig: NextConfig = {
       { source: "/asset-classes/:class", destination: "/screener?class=:class", permanent: true },
     ];
   },
+  // PostHog proxied through our own domain; the path matches api_host in instrumentation-client.ts.
+  // A neutral name, since blockers match paths like /analytics or /posthog.
+  rewrites() {
+    return [
+      { source: "/rbx/static/:path*", destination: "https://us-assets.i.posthog.com/static/:path*" },
+      { source: "/rbx/array/:path*", destination: "https://us-assets.i.posthog.com/array/:path*" },
+      { source: "/rbx/:path*", destination: "https://us.i.posthog.com/:path*" },
+    ];
+  },
+  // PostHog endpoints end in a slash (/e/, /flags/); without this each request takes a 308 first.
+  skipTrailingSlashRedirect: true,
 };
 
 const withMDX = createMDX({

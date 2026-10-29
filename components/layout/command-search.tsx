@@ -3,6 +3,7 @@
 import { Command } from "cmdk";
 import { CornerDownLeft, FileText, KeyRound, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { AssetLogo } from "@/components/asset/asset-logo";
 import { formatUsd, shortAddress } from "@/lib/format";
@@ -117,11 +118,15 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
   const active = ids.includes(selected) ? selected : (ids[0] ?? "");
 
   const changeOpen = (next: boolean) => {
+    // Closed with a query and no pick: what people looked for and didn't find.
+    if (!next && query.trim()) posthog.capture("command_search_abandoned", { query: query.trim() });
     setOpen(next);
     if (!next) setQuery("");
   };
-  const go = (href: string) => {
-    changeOpen(false);
+  const go = (href: string, resultType: Result["kind"]) => {
+    posthog.capture("command_search_result_selected", { result_type: resultType, query: query.trim() });
+    setOpen(false);
+    setQuery("");
     router.push(href);
   };
 
@@ -181,7 +186,7 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
                 <Command.Item
                   key={r.id}
                   value={r.id}
-                  onSelect={() => go(r.href)}
+                  onSelect={() => go(r.href, r.kind)}
                   className="group flex cursor-pointer items-center gap-3 rounded-control px-2.5 py-2 data-[selected=true]:bg-accent-soft"
                 >
                   {r.kind === "asset" ? (
