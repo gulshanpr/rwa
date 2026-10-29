@@ -1,6 +1,7 @@
 import { Download } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { AssetLogo } from "@/components/asset/asset-logo";
 import { AssetTabs } from "@/components/asset/asset-tabs";
 import { SampleBanner } from "@/components/data/sample-banner";
 import { StatCard } from "@/components/data/stat-card";
@@ -56,12 +57,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
 
       <header className="mb-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex min-w-0 gap-4">
-          <div
-            aria-hidden
-            className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-semibold tracking-tight text-accent"
-          >
-            {asset.ticker.slice(0, 5)}
-          </div>
+          <AssetLogo slug={asset.slug} ticker={asset.ticker} />
           <div className="min-w-0">
             <h1 className="text-[24px] leading-8 font-semibold text-fg md:text-display">{asset.name}</h1>
             <p className="mt-1 text-body text-fg-muted">{asset.description}</p>
