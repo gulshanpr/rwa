@@ -14,6 +14,7 @@ import {
 import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { AssetLogo } from "@/components/asset/asset-logo";
 import { ChartTooltip } from "@/components/charts/chart-tooltip";
 import { RiskDot } from "@/components/risk/risk-dot";
 import { Rosette } from "@/components/risk/rosette";
@@ -83,7 +84,7 @@ const columns = helper.columns([
       const r = info.row.original;
       return (
         <Link href={`/assets/${r.slug}`} title={r.name} className="group flex min-w-44 items-center gap-3">
-          <Rosette slices={r.categories} size="sm" ticker={r.ticker} />
+          <AssetLogo slug={r.slug} ticker={r.ticker} size={28} />
           <span className="min-w-0">
             <span className="flex items-baseline gap-1.5">
               <span className="font-semibold text-fg group-hover:text-accent">{r.ticker}</span>
@@ -108,6 +109,16 @@ const columns = helper.columns([
     header: "Value",
     meta: { align: "right" },
     cell: (info) => (info.row.original.aumUsd !== null ? formatUsd(info.row.original.aumUsd) : "—"),
+  }),
+  helper.display({
+    id: "rosette",
+    header: "Risk",
+    meta: { align: "center", title: "Risk rosette: every category at a glance" },
+    cell: (info) => (
+      <span className="inline-flex align-middle">
+        <Rosette slices={info.row.original.categories} size="sm" ticker={info.row.original.ticker} />
+      </span>
+    ),
   }),
   ...CATEGORY_ORDER.map((category) =>
     helper.accessor((r) => RATING_RANK[r.categories[category].rating], {
@@ -402,7 +413,7 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
         {table.getRowModel().rows.map(({ original: r }) => (
           <li key={r.slug} className="p-4">
             <Link href={`/assets/${r.slug}`} className="flex items-start gap-3">
-              <Rosette slices={r.categories} size="sm" ticker={r.ticker} />
+              <AssetLogo slug={r.slug} ticker={r.ticker} size={28} />
               <div className="min-w-0 flex-1">
                 <p className="text-body">
                   <span className="font-semibold">{r.ticker}</span> <span className="text-fg-muted">{shortEntityName(r.manager)}</span>
@@ -411,6 +422,7 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
                   {r.aumUsd !== null ? formatUsd(r.aumUsd) : "—"} · {r.assetClassLabel}
                 </p>
               </div>
+              <Rosette slices={r.categories} size="sm" ticker={r.ticker} />
               <StageBadge stage={r.stage} />
             </Link>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label font-normal text-fg-muted">

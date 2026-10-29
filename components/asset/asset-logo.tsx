@@ -22,7 +22,7 @@ export function AssetLogo({ slug, ticker, size = 48 }: { slug: string; ticker: s
       <div
         aria-hidden
         style={{ width: size, height: size }}
-        className="flex shrink-0 self-start items-center justify-center rounded-full bg-accent-soft text-[13px] font-semibold tracking-tight text-accent"
+        className="flex shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-semibold tracking-tight text-accent"
       >
         {ticker.slice(0, 5)}
       </div>
@@ -30,7 +30,7 @@ export function AssetLogo({ slug, ticker, size = 48 }: { slug: string; ticker: s
   }
   // Fixed box so a stretching flex parent can't distort it; clips square marks to a circle.
   return (
-    <div style={{ width: size, height: size }} className="shrink-0 self-start overflow-hidden rounded-full">
+    <div style={{ width: size, height: size }} className="shrink-0 overflow-hidden rounded-full">
       <Image src={src} alt="" width={size} height={size} className="size-full object-cover" />
     </div>
   );
