@@ -1,13 +1,17 @@
 "use client";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { useTapTooltip } from "@/components/ui/use-tap-tooltip";
 
 /** Hover card for chart marks and table cells. The child must accept a ref (a DOM element). */
 export function ChartTooltip({ content, children }: { content: React.ReactNode; children: React.ReactElement }) {
+  const tap = useTapTooltip();
   return (
     <Tooltip.Provider delayDuration={0} disableHoverableContent>
-      <Tooltip.Root>
-        <Tooltip.Trigger asChild>{children}</Tooltip.Trigger>
+      <Tooltip.Root {...tap.root}>
+        <Tooltip.Trigger asChild {...tap.trigger}>
+          {children}
+        </Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
             side="top"
