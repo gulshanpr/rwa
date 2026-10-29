@@ -3,7 +3,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Menu, PanelLeft, PanelLeftClose, TriangleAlert, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SIDEBAR_COLLAPSED_KEY, SIDEBAR_MAX, SIDEBAR_MIN, SIDEBAR_WIDTH_KEY } from "@/lib/sidebar";
 import type { SearchIndex } from "@/lib/profile";
 import { SITE } from "@/lib/site";
@@ -22,62 +22,87 @@ export function AppShell({
   searchItems: SearchIndex;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const bannerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+
+  // --topbar-h is everything pinned at the top: the header, plus the banner from md up.
+  // The sidebar, docs menus and scroll targets offset by it, so it tracks the banner wrapping.
+  useEffect(() => {
+    const md = window.matchMedia("(min-width: 48rem)");
+    const update = () => {
+      const h = (headerRef.current?.offsetHeight ?? 0) + (md.matches ? (bannerRef.current?.offsetHeight ?? 0) : 0);
+      document.documentElement.style.setProperty("--topbar-h", `${h}px`);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    if (bannerRef.current) observer.observe(bannerRef.current);
+    if (headerRef.current) observer.observe(headerRef.current);
+    md.addEventListener("change", update);
+    return () => {
+      observer.disconnect();
+      md.removeEventListener("change", update);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen">
-      <div
-        role="note"
-        className="flex items-start justify-center gap-2 border-b border-accent/25 bg-accent-soft px-4 py-2 text-small text-fg"
-      >
-        <TriangleAlert className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
-        <p>
-          <strong className="font-semibold">Under active development.</strong> We&apos;re continuously fixing and
-          improving the metrics and parameters, so scores and ratings may change.{" "}
-          <Link href="/changelog" className="text-accent underline underline-offset-2">
-            See changelog
-          </Link>
-        </p>
-      </div>
-      <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface px-3 md:gap-4 md:px-5">
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Open navigation"
-          className="inline-flex size-8 items-center justify-center rounded-control text-fg-muted hover:bg-subtle lg:hidden"
+      {/* On phones the banner scrolls away and only the header sticks; from md up both stay pinned. */}
+      <div className="contents md:sticky md:top-0 md:z-40 md:block">
+        <div
+          ref={bannerRef}
+          role="note"
+          className="flex items-start justify-center gap-2 border-b border-accent/25 bg-accent-soft px-4 py-2 text-small text-fg"
         >
-          <Menu className="size-5" />
-        </button>
-        <Link href="/" className="flex shrink-0 items-center gap-2">
-          <LogoMark className="size-6" />
-          <span className="text-[16px] font-semibold tracking-tight text-fg">{SITE.name}</span>
-        </Link>
-        <span className="hidden h-5 w-px bg-line md:block" aria-hidden />
-        <span className="hidden shrink-0 text-small text-fg-muted md:block">{SITE.tagline}</span>
-        <div className="flex min-w-0 flex-1 justify-center">
-          <CommandSearch items={searchItems} />
+          <TriangleAlert className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden />
+          <p>
+            <strong className="font-semibold">Under active development.</strong> We&apos;re continuously fixing and
+            improving the metrics and parameters, so scores and ratings may change.{" "}
+            <Link href="/changelog" className="text-accent underline underline-offset-2">
+              See changelog
+            </Link>
+          </p>
         </div>
-        <nav className="flex shrink-0 items-center gap-1">
-          <Link
-            href="/methodology"
-            className="hidden rounded-control px-2.5 py-1.5 text-body text-fg-muted hover:bg-subtle hover:text-fg sm:block"
+        <header ref={headerRef} className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-line bg-surface px-3 md:gap-4 md:px-5">
+          <button
+            type="button"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open navigation"
+            className="inline-flex size-8 items-center justify-center rounded-control text-fg-muted hover:bg-subtle lg:hidden"
           >
-            Methodology
+            <Menu className="size-5" />
+          </button>
+          <Link href="/" className="flex shrink-0 items-center gap-2">
+            <LogoMark className="size-6" />
+            <span className="text-[16px] font-semibold tracking-tight text-fg">{SITE.name}</span>
           </Link>
-          <a
-            href={SITE.repoUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-control px-2.5 py-1.5 text-body text-fg-muted hover:bg-subtle hover:text-fg"
-          >
-            <GithubIcon className="size-4" />
-            <span className="hidden md:inline">GitHub</span>
-          </a>
-          <ThemeToggle />
-        </nav>
-      </header>
+          <span className="hidden h-5 w-px bg-line md:block" aria-hidden />
+          <span className="hidden shrink-0 text-small text-fg-muted md:block">{SITE.tagline}</span>
+          <div className="flex min-w-0 flex-1 justify-center">
+            <CommandSearch items={searchItems} />
+          </div>
+          <nav className="flex shrink-0 items-center gap-1">
+            <Link
+              href="/methodology"
+              className="hidden rounded-control px-2.5 py-1.5 text-body text-fg-muted hover:bg-subtle hover:text-fg sm:block"
+            >
+              Methodology
+            </Link>
+            <a
+              href={SITE.repoUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-control px-2.5 py-1.5 text-body text-fg-muted hover:bg-subtle hover:text-fg"
+            >
+              <GithubIcon className="size-4" />
+              <span className="hidden md:inline">GitHub</span>
+            </a>
+            <ThemeToggle />
+          </nav>
+        </header>
+      </div>
 
       <div className="flex">
-        <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-16 shrink-0 flex-col border-r border-line bg-surface lg:flex xl:expanded:w-(--sidebar-w)">
+        <aside className="sticky top-(--topbar-h) hidden h-[calc(100dvh-var(--topbar-h))] w-16 shrink-0 flex-col border-r border-line bg-surface lg:flex xl:expanded:w-(--sidebar-w)">
           <SidebarNav variant="responsive" />
           <button
             type="button"

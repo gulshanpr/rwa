@@ -80,7 +80,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5 [&>*]:min-w-0 max-md:[&>*:last-child]:col-span-2">
         <StatCard
           label="Value"
-          info={`Assets under management across all chains, from ${profile.live?.aum.source.name ?? "DefiLlama"}. Cross-checked against totalSupply × price.`}
+          info={`Assets under management across all chains, from ${profile.live?.aum.source.name ?? "DefiLlama"}.`}
           infoHref="/methodology#data"
           value={stats.aumUsd !== undefined ? formatUsd(stats.aumUsd) : "—"}
           valueTitle={stats.aumUsd !== undefined ? formatUsdFull(stats.aumUsd) : undefined}

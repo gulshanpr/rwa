@@ -134,7 +134,10 @@ export function CommandSearch({ items }: { items: SearchIndex }) {
         className="flex h-9 w-full max-w-md items-center gap-2 rounded-control border border-line bg-page px-3 text-body text-fg-subtle transition-colors hover:border-line-strong hover:text-fg-muted"
       >
         <Search className="size-4 shrink-0" aria-hidden />
-        <span className="flex-1 truncate text-left">Search assets or addresses</span>
+        <span className="flex-1 truncate text-left">
+          <span className="sm:hidden">Search</span>
+          <span className="hidden sm:inline">Search assets or addresses</span>
+        </span>
         {mac !== null && (
           <kbd className="hidden rounded border border-line bg-surface px-1.5 font-sans text-label text-fg-muted sm:inline">{mac ? "⌘K" : "Ctrl K"}</kbd>
         )}

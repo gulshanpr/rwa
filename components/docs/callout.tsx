@@ -12,7 +12,7 @@ export function Callout({
   return (
     <aside
       className={cn(
-        "my-5 rounded-control border px-4 py-3 text-[14px] leading-6 [&>p:last-child]:mb-0",
+        "my-5 rounded-control border px-4 py-3 text-[14px] leading-6 [&>p:last-child]:mb-0!",
         tone === "accent" ? "border-accent/25 bg-accent-soft" : "border-line bg-subtle",
       )}
     >

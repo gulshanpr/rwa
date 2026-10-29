@@ -265,7 +265,7 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
         </div>
       </div>
 
-      <div ref={listRef} className="flex scroll-mt-24 items-center justify-between gap-3 text-small text-fg-muted">
+      <div ref={listRef} className="flex scroll-mt-[calc(var(--topbar-h)+2rem)] items-center justify-between gap-3 text-small text-fg-muted">
         <p aria-live="polite">
           {shown.length === 0 ? (
             "No alerts"

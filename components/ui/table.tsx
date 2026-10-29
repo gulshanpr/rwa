@@ -58,7 +58,7 @@ export function Td({
 
 export function Tr({ children, className, id }: { children: React.ReactNode; className?: string; id?: string }) {
   return (
-    <tr id={id} className={cn("group/row scroll-mt-24 transition-colors hover:bg-page target:bg-accent-soft", className)}>
+    <tr id={id} className={cn("group/row scroll-mt-[calc(var(--topbar-h)+2rem)] transition-colors hover:bg-page target:bg-accent-soft", className)}>
       {children}
     </tr>
   );

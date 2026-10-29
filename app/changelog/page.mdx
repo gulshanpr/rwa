@@ -2,29 +2,58 @@ export const metadata = { title: "Changelog" };
 
 # Changelog
 
-Changes to the framework, scoring rules and data. Every entry links to the pull request that made it once the repository is public.
+Changes to the framework, scoring rules, data and site, newest first. The full history is on [GitHub](https://github.com/gulshanpr/rwa/commits/main).
 
-## Framework v1.0, 25 Oct 2026
+<ChangelogEntry date="2026-10-30" kind="site" title="A simpler site">
 
-- Replaced the six-slice rosette with the RWAbeat framework: seven risk categories (Underlying Asset, Legal Claim, Counterparties, Control, Transparency, Pricing, Exit) and Stages 0 to 2. See the [methodology](/methodology).
-- New rating state: **unverified**, when a fact isn't public and could make the rating worse. Legal Claim stays not assessed until a legal reviewer joins, so no asset can pass Stage 0 yet.
+- The asset-class pages are now a filter in the screener. Old `/asset-classes/…` links redirect to `/screener?class=…`.
+- The home page shows the assets that need attention, with their worst findings. The screener is the one full list.
+- Alerts: filters moved above the feed, with search, severity counts and pages.
+- Search ranks tickers first, and addresses appear once you start typing.
+- Asset logos appear across the site. Light mode is the default.
+- Removed: the JSON download, the `/api/assets` and `/api/alerts` endpoints, and the Learn pages.
+
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-26" kind="alerts" title="Lower threshold for large mints and burns">
+
+- Mints and burns now alert above 1% of supply or $5M, down from 5% or $10M.
+- The RSS feed and the "suggest a correction" link were removed.
+
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-25" kind="framework" version="v1.0" title="Seven risk categories and stages">
+
+- Replaced the six-slice rosette with the RWABeat framework: seven risk categories (Underlying Asset, Legal Claim, Counterparties, Control, Transparency, Pricing, Exit) and Stages 0 to 2. See the [methodology](/methodology).
+- New rating state: **unverified**, when a fact isn't public and could make the rating worse. Legal Claim stays not assessed until a legal reviewer joins, so no asset can reach Stage 1 yet.
 - Verification became Transparency: graded ladders instead of five pass/fail tests, freshness that depends on the asset type, and onchain data shown as a separate badge.
 - Disclosure became Counterparties: providers are rated on independence and regulation, not just on being named. Settlement rails and other critical dependencies count too.
 - Control: freeze held by a single key is now red, a 1-of-n multisig counts as a single key, and audits, documented powers and bridges are checked.
-- Exit: whitelisted-only redemption, daily caps, notice periods and liquidator access are rated. DEX depth is measured for $1M, $5M and $10M sells, with top-10 holder concentration alongside.
+- Exit: allowlist-only redemption, daily caps, notice periods and liquidator access are rated. DEX depth is measured for $1M, $5M and $10M sells, with top-10 holder concentration alongside.
 - Data: every asset profile gained holdings, maturity and credit facts, audits and bug bounties, transparency reports, and exit terms. Service-provider regulation and auditor tier live on the entity files. Old fields only the rosette used were removed.
 
-## Framework v0.3, 13 Oct 2026
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-14" kind="data" title="Four private-credit assets">
+
+- Added ACRED (Apollo Diversified Credit Securitize Fund, on Securitize), JAAA (Janus Henderson Anemoy AAA CLO Fund, on Centrifuge), mF-ONE (Midas Fasanara ONE, on Midas) and AA_FalconXUSDC (the senior tranche of the FalconX Credit Vault, on Pareto).
+- Their issuers, managers and service providers were added to `data/entities`, with discovered permissions and live data for each.
+
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-13" kind="framework" version="v0.3" title="Business-day pricing and new discovery handlers">
 
 - Pricing: feeds that only update on business days (fund NAVs) don't count weekends towards their age, for both the freshness check and the stale-price alert.
 - Pricing: a price reference can name the exact calls that return the value and its update time, for NAV contracts that aren't Chainlink-style feeds (Superstate checkpoints, Ondo `getPriceData`, Centrifuge share prices). The NAV is the same on every chain, so it now prices all of a fund's deployments.
 - Control: when several holders share a power, the weakest one (a single key before a multisig) leads the reasons.
 - Control: a contract that only holds stop powers (pause, freeze, compliance) over another contract no longer inherits that contract's minting or pricing powers. Previously a 1-of-9 pauser on OUSG showed up as able to mint.
-- Discovery: new handlers for Superstate, Ondo, Hashnote and Centrifuge V3. Guards written inline (`_requireAuth()`, `_assertOwner()`) are recognised, and modifiers left in comments are ignored. Centrifuge's shared Hub and BalanceSheet are filtered to the asset's pool.
+- Discovery: new handlers for Superstate, Ondo, Hashnote and Centrifuge V3. Guards written inline (`_requireAuth()`, `_assertOwner()`) are recognized, and modifiers left in comments are ignored. Centrifuge's shared Hub and BalanceSheet are filtered to the asset's pool.
 - Discovery: BNB Chain is supported. Where a chain's logs can't be scanned (BNB Chain, and Centrifuge's spoke chains), holders are only checked among the addresses already found on Ethereum, so those reviews are a lower bound. Discovery prints a warning when this happens.
 - Alerts: the watcher reads Centrifuge (wards, pool managers, hook and request manager changes, freezes), Hashnote (roles, capabilities, minters, oracle and teller changes), Superstate (oracle, allowlist, accounting pause, mints and burns) and Ondo (oracles, KYC registry, compliance, router, pauses) events. Tokens with no named mint event alert on large mints and burns from `Transfer`.
 
-## Data, 13 Oct 2026
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-13" kind="data" title="USTB, OUSG, USYC and JTRSY">
 
 - Added USTB (Superstate), OUSG (Ondo), USYC (Circle, formerly Hashnote) and JTRSY (Janus Henderson Anemoy, on Centrifuge). Phase 0 reviews are in `research/`; permissions come from the new handlers.
 - USTB, Ethereum, block 26,183,258 (3 contracts, 5 holders): one key owns the token and its proxy admin, so it can upgrade, mint, burn from any wallet and swap the price oracle. A second single key writes the NAV checkpoints. $11.7M of USTB is supplied on Aave Horizon.
@@ -33,39 +62,53 @@ Changes to the framework, scoring rules and data. Every entry links to the pull 
 - JTRSY, on Ethereum, Base, Arbitrum and BNB Chain: one pool manager key writes the NAV and controls minting through the Hub. Balance-sheet managers, including a 2-of-6 Safe, can mint, burn and move shares directly. Protocol-wide changes go through a 48-hour delay held by a 4-of-9 Safe.
 - Live data for all four comes from onchain supply × NAV. DefiLlama counts USYC tokens at $1 each, so it isn't used. Morpho doesn't index BNB Chain.
 
-## Framework v0.2, 12 Oct 2026
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-12" kind="framework" version="v0.2" title="Allocate power and vault pricing">
 
 - Control: new critical power `allocate` (lend out or move the assets backing the token). Marking a vault's loans or strategies impaired counts as `set-price`.
 - Pricing: vault tokens (ERC-4626) are scored on who can move the contract's own NAV, not on feed freshness.
 - Verification: a report with no stated cadence fails the "at least daily" test.
 
-## Data, 12 Oct 2026
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-12" kind="data" title="syrupUSDC">
 
 - Added syrupUSDC (Maple), Ethereum deployment. Phase 0 review in `research/syrupusdc.md`; permissions from the new Maple discovery handler at block 26,176,587 (10 contracts, 13 holders).
-- syrupUSDC: the pool delegate is a single wallet that can fund loans, mark them impaired and change who can deposit, redeem and transfer. Its manager contracts can be upgraded with no delay by a 3-of-6 Safe.
-- syrupUSDC: 4 funded Morpho markets ($64M collateral) price it from the vault's own exchange rate. It is not listed on Aave's Ethereum pools.
+- The pool delegate is a single wallet that can fund loans, mark them impaired and change who can deposit, redeem and transfer. Its manager contracts can be upgraded with no delay by a 3-of-6 Safe.
+- 4 funded Morpho markets ($64M collateral) price it from the vault's own exchange rate. It is not listed on Aave's Ethereum pools.
 - Alerts: the watcher now reads Maple events (version upgrades, pauses, admin and pool delegate changes, permission changes, impairments, defaults) and the supply job alerts when a vault's NAV per share falls.
 
-## Framework v0.1, 6 Oct 2026
+</ChangelogEntry>
 
-- First public draft of the six-slice rosette: Control, Pricing, Verification, Exit, Disclosure, and Legal & insolvency (not assessed).
-- Exit: suspension or gating terms that are not public cap the slice at yellow.
-- Control: privileged functions no handler recognizes are listed as "unclassified" and don't change the color.
-
-## Data, 11 Oct 2026 (automation)
+<ChangelogEntry date="2026-10-11" kind="data" title="BUIDL discovery runs automatically">
 
 - BUIDL: permissions now come from the discovery tool at block 26,168,531 (14 contracts, 240 permissions). It runs nightly and opens a pull request when anything changes.
 - BUIDL: role-holding DS Protocol services and owned contracts are scored through the keys that control them.
 - BUIDL: AUM now comes from DefiLlama (all chains). Supply, oracle age, Morpho and Aave exposure update on a schedule.
 - Alerts: the event watcher reports upgrades, owner and role changes, pauses, seizures, large mints and burns, new SEC filings and LEI changes.
 
-## Data, 11 Oct 2026
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-11" kind="data" title="BUIDL Phase 0 review">
 
 - BUIDL: replaced all seed data with the Phase 0 review. Profile facts are sourced from Securitize, SEC EDGAR, GLEIF and the BVI FSC.
 - BUIDL: permissions are a manual onchain snapshot at block 26,168,303. One EOA can upgrade the token and its services, and holds the MASTER role.
 - BUIDL: the price source is the RedStone BUIDL_FUNDAMENTAL feed. Morpho has no funded BUIDL markets. Alerts are empty until the event watcher runs.
 
-## Data, 6 Oct 2026
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-06" kind="framework" version="v0.1" title="First public draft">
+
+- First public draft of the six-slice rosette: Control, Pricing, Verification, Exit, Disclosure, and Legal & insolvency (not assessed).
+- Exit: suspension or gating terms that are not public cap the slice at yellow.
+- Control: privileged functions no handler recognizes are listed as "unclassified" and don't change the color.
+
+</ChangelogEntry>
+
+<ChangelogEntry date="2026-10-06" kind="data" title="BUIDL, the first profile">
 
 - Added BUIDL (BlackRock USD Institutional Digital Liquidity Fund) as the first profile, Ethereum deployment only.
 - Permissions, oracle readings, DeFi markets and alerts for BUIDL are seed data until the discovery tool and live worker run.
+
+</ChangelogEntry>

@@ -23,15 +23,30 @@ export function OnThisPage() {
         const visible = entries.filter((e) => e.isIntersecting);
         if (visible[0]) setActive(visible[0].target.id);
       },
-      { rootMargin: "-80px 0px -70% 0px" },
+      // Ignore headings hidden under the pinned top bar.
+      { rootMargin: `-${parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")) + 16 || 80}px 0px -70% 0px` },
     );
     els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+
+    // A link to a heading inside a folded section opens it first (not every browser does this itself).
+    const reveal = () => {
+      const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+      const details = target?.closest("details");
+      if (!target || !details || details.open) return;
+      details.open = true;
+      target.scrollIntoView();
+    };
+    reveal();
+    window.addEventListener("hashchange", reveal);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("hashchange", reveal);
+    };
   }, [pathname]);
 
   if (headings.length < 2) return null;
   return (
-    <nav aria-label="On this page" className="sticky top-24">
+    <nav aria-label="On this page" className="sticky top-[calc(var(--topbar-h)+2rem)]">
       <p className="mb-2 text-micro text-fg-subtle uppercase">On this page</p>
       <ul className="space-y-1 border-l border-line text-small">
         {headings.map((h) => (

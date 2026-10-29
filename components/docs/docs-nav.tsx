@@ -7,7 +7,7 @@ import { cn } from "@/lib/ui";
 export function DocsNav({ sections }: { sections: { heading: string; items: { label: string; href: string }[] }[] }) {
   const pathname = usePathname();
   return (
-    <nav aria-label="Docs" className="sticky top-24 space-y-5">
+    <nav aria-label="Docs" className="sticky top-[calc(var(--topbar-h)+2rem)] space-y-5">
       {sections.map((s) => (
         <div key={s.heading}>
           <p className="mb-1.5 text-micro text-fg-subtle uppercase">{s.heading}</p>

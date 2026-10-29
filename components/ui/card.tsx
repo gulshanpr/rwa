@@ -21,7 +21,7 @@ export function Card({
     <section
       id={id}
       className={cn(
-        "min-w-0 scroll-mt-24 rounded-card border border-line bg-surface shadow-card",
+        "min-w-0 scroll-mt-[calc(var(--topbar-h)+2rem)] rounded-card border border-line bg-surface shadow-card",
         className,
       )}
     >
