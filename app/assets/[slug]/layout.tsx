@@ -1,4 +1,3 @@
-import { Download } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AssetLogo } from "@/components/asset/asset-logo";
@@ -55,7 +54,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
       />
       {profile.sample && <SampleBanner />}
 
-      <header className="mb-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <header className="mb-5">
         <div className="flex min-w-0 gap-4">
           <AssetLogo slug={asset.slug} ticker={asset.ticker} />
           <div className="min-w-0">
@@ -75,14 +74,6 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
               </span>
             </div>
           </div>
-        </div>
-        <div className="flex shrink-0 gap-2">
-          <a
-            href={`/api/assets/${asset.slug}`}
-            className="inline-flex items-center gap-1.5 rounded-control border border-line bg-surface px-3 py-1.5 text-small text-fg-muted hover:border-line-strong hover:text-fg"
-          >
-            <Download className="size-3.5" /> JSON
-          </a>
         </div>
       </header>
 

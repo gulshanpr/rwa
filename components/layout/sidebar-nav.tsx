@@ -27,48 +27,23 @@ export function SidebarNav({ variant, onNavigate }: { variant: SidebarVariant; o
           <ul className="flex flex-col gap-0.5">
             {group.items.map((item) => {
               const Icon = item.icon;
-              const active = item.href ? isActive(pathname, item.href) : false;
-              const inner = (
-                <>
-                  <Icon className="size-4 shrink-0" aria-hidden />
-                  <span className={cn("flex-1 truncate", labelClass)}>{item.label}</span>
-                  {item.soon && (
-                    <span
-                      className={cn(
-                        "rounded px-1 text-[10px] text-fg-subtle ring-1 ring-line",
-                        variant === "rail" && "hidden",
-                        variant === "responsive" && "hidden xl:expanded:inline",
-                      )}
-                    >
-                      Soon
-                    </span>
-                  )}
-                </>
-              );
-              const base = cn(
-                "flex h-8 items-center gap-2.5 rounded-control text-body",
-                itemLayout,
-              );
+              const active = isActive(pathname, item.href);
               return (
                 <li key={item.label}>
-                  {item.href ? (
-                    <Link
-                      href={item.href}
-                      onClick={onNavigate}
-                      title={item.label}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        base,
-                        active ? "bg-accent-soft font-medium text-accent" : "text-fg-muted hover:bg-subtle hover:text-fg",
-                      )}
-                    >
-                      {inner}
-                    </Link>
-                  ) : (
-                    <span title={`${item.label} (coming in v2)`} aria-disabled className={cn(base, "cursor-default text-fg-subtle")}>
-                      {inner}
-                    </span>
-                  )}
+                  <Link
+                    href={item.href}
+                    onClick={onNavigate}
+                    title={item.label}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex h-8 items-center gap-2.5 rounded-control text-body",
+                      itemLayout,
+                      active ? "bg-accent-soft font-medium text-accent" : "text-fg-muted hover:bg-subtle hover:text-fg",
+                    )}
+                  >
+                    <Icon className="size-4 shrink-0" aria-hidden />
+                    <span className={cn("flex-1 truncate", labelClass)}>{item.label}</span>
+                  </Link>
                 </li>
               );
             })}
