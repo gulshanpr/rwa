@@ -21,8 +21,8 @@ export function AssetLogo({ slug, ticker, size = 48 }: { slug: string; ticker: s
     return (
       <div
         aria-hidden
-        style={{ width: size, height: size }}
-        className="flex shrink-0 items-center justify-center rounded-full bg-accent-soft text-[13px] font-semibold tracking-tight text-accent"
+        style={{ width: size, height: size, fontSize: Math.round(size * 0.27) }}
+        className="flex shrink-0 items-center justify-center rounded-full bg-accent-soft font-semibold tracking-tight text-accent"
       >
         {ticker.slice(0, 5)}
       </div>

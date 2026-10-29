@@ -3,8 +3,8 @@ import { AlertCard } from "@/components/alerts/alert-card";
 import { RelativeTime } from "@/components/data/relative-time";
 import { SampleBanner } from "@/components/data/sample-banner";
 import { StatCard } from "@/components/data/stat-card";
-import { AssetsTable } from "@/components/home/assets-table";
 import { MarketShare } from "@/components/home/market-share";
+import { NeedsAttention } from "@/components/home/needs-attention";
 import { RiskOverview } from "@/components/home/risk-overview";
 import { Card } from "@/components/ui/card";
 import { getAlerts } from "@/lib/live-store";
@@ -113,27 +113,29 @@ export default async function HomePage() {
             }}
           />
         </div>
-        <AssetsTable rows={rows} />
-        <Card
-          title="Latest alerts"
-          description="Onchain and filing changes on tracked contracts, newest first."
-          actions={
-            <Link href="/alerts" className="text-small text-accent hover:underline">
-              View all
-            </Link>
-          }
-        >
-          {alerts.length === 0 && (
-            <p className="text-small text-fg-muted">No alerts yet. The event watcher checks every tracked contract for upgrades, role changes and pauses.</p>
-          )}
-          <ul className="grid gap-x-10 gap-y-5 lg:grid-cols-2">
-            {alerts.slice(0, 4).map((a) => (
-              <li key={a.id}>
-                <AlertCard alert={a} ticker={tickers.get(a.asset) ?? a.asset.toUpperCase()} compact />
-              </li>
-            ))}
-          </ul>
-        </Card>
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+          <NeedsAttention rows={rows} />
+          <Card
+            title="Latest alerts"
+            description="Onchain and filing changes on tracked contracts, newest first."
+            actions={
+              <Link href="/alerts" className="text-small text-accent hover:underline">
+                View all
+              </Link>
+            }
+          >
+            {alerts.length === 0 && (
+              <p className="text-small text-fg-muted">No alerts yet. The event watcher checks every tracked contract for upgrades, role changes and pauses.</p>
+            )}
+            <ul className="divide-y divide-line">
+              {alerts.slice(0, 5).map((a) => (
+                <li key={a.id} className="py-3.5 first:pt-0 last:pb-0">
+                  <AlertCard alert={a} ticker={tickers.get(a.asset) ?? a.asset.toUpperCase()} compact />
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </div>
       </div>
     </>
   );

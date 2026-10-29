@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3 } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AssetLogo } from "@/components/asset/asset-logo";
 import { ChartTooltip } from "@/components/charts/chart-tooltip";
@@ -24,7 +25,7 @@ import { Tag } from "@/components/ui/tag";
 import { CHAINS } from "@/lib/chains";
 import { formatDuration, formatUsd } from "@/lib/format";
 import { CATEGORY_LABELS, CATEGORY_ORDER, CATEGORY_SHORT, RATING_RANK, type CategoryId, type Rating, type Tone } from "@/lib/framework/types";
-import { shortEntityName } from "@/lib/labels";
+import { ASSET_CLASSES, assetClassFromPath, shortEntityName } from "@/lib/labels";
 import type { Flag } from "@/lib/profile";
 import type { AssetRow } from "@/lib/rows";
 import type { Chain } from "@/lib/schema/asset";
@@ -200,8 +201,27 @@ const TOGGLES: { id: Toggle; label: string; test: (r: AssetRow) => boolean }[] =
 const selectClass =
   "h-8 rounded-control border border-line bg-surface px-2 text-small text-fg-muted hover:border-line-strong focus-visible:outline-2 focus-visible:outline-accent";
 
+/** The screener filtered by ?class=, so other pages can link to one asset class. Render it inside <Suspense>. */
+export function ScreenerFromUrl({ rows }: { rows: AssetRow[] }) {
+  const cls = assetClassFromPath(useSearchParams().get("class") ?? "");
+  return <Screener rows={rows} defaultClass={cls ?? "all"} />;
+}
+
 export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; defaultClass?: ClassFilter }) {
   const [assetClass, setAssetClass] = useState<ClassFilter>(defaultClass);
+  // Follow the URL when a link changes ?class= on this same page.
+  const [urlClass, setUrlClass] = useState(defaultClass);
+  if (defaultClass !== urlClass) {
+    setUrlClass(defaultClass);
+    setAssetClass(defaultClass);
+  }
+  const changeClass = (c: ClassFilter) => {
+    setAssetClass(c);
+    const url = new URL(window.location.href);
+    if (c === "all") url.searchParams.delete("class");
+    else url.searchParams.set("class", ASSET_CLASSES[c].path);
+    window.history.replaceState(null, "", url);
+  };
   const [chain, setChain] = useState<Chain | "all">("all");
   const [category, setCategory] = useState<CategoryId>("control");
   const [rating, setRating] = useState<Rating | "any">("any");
@@ -246,7 +266,7 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
           <Segmented
             label="Asset class"
             value={assetClass}
-            onChange={setAssetClass}
+            onChange={changeClass}
             options={[
               { value: "all", label: "All" },
               { value: "us-treasuries", label: "Treasuries" },

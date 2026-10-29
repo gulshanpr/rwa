@@ -1,4 +1,4 @@
-import type { Asset } from "./schema/asset";
+import type { Asset, AssetClass } from "./schema/asset";
 
 export const INVESTOR_LABELS: Record<Asset["access"]["investorType"]["value"], string> = {
   "qualified-purchaser": "Qualified purchasers",
@@ -44,3 +44,12 @@ export const FRESHNESS_LABELS: Record<Asset["freshnessClass"]["value"], string> 
   "private-credit": "Private credit",
   "real-estate": "Real estate",
 };
+
+export const ASSET_CLASSES: Record<AssetClass, { label: string; short: string; path: string }> = {
+  "us-treasuries": { label: "U.S. Treasuries", short: "Treasuries", path: "treasuries" },
+  "private-credit": { label: "Private credit", short: "Private credit", path: "private-credit" },
+};
+
+export function assetClassFromPath(p: string): AssetClass | undefined {
+  return (Object.keys(ASSET_CLASSES) as AssetClass[]).find((k) => ASSET_CLASSES[k].path === p);
+}

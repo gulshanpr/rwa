@@ -6,21 +6,14 @@ import { rateAsset, type FrameworkRating, type Tone } from "./framework";
 import { analyzePowers, holderLabel, isSingleKey, lookupHolder, type PowerRow } from "./framework/permissions";
 import { getAlerts, getLive } from "./live-store";
 import { oracleAge, type OracleAge } from "./oracle";
-import type { Asset, AssetClass } from "./schema/asset";
+import type { Asset } from "./schema/asset";
 import type { Power } from "./schema/discovered";
 import type { Entity } from "./schema/entity";
 import type { Alert, Live } from "./schema/live";
 import type { Measured } from "./schema/measured";
 import { formatUsd, shortAddress } from "./format";
 
-export const ASSET_CLASSES: Record<AssetClass, { label: string; short: string; path: string }> = {
-  "us-treasuries": { label: "U.S. Treasuries", short: "Treasuries", path: "treasuries" },
-  "private-credit": { label: "Private credit", short: "Private credit", path: "private-credit" },
-};
-
-export function assetClassFromPath(p: string): AssetClass | undefined {
-  return (Object.keys(ASSET_CLASSES) as AssetClass[]).find((k) => ASSET_CLASSES[k].path === p);
-}
+export { ASSET_CLASSES, assetClassFromPath } from "./labels";
 
 export interface Flag {
   id: "eoa-upgrade" | "eoa-critical" | "eoa-high" | "no-upgrade-timelock" | "price-stale" | "defi-fixed" | "unclassified";

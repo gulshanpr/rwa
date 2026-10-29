@@ -48,7 +48,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
       <Breadcrumb
         items={[
           { label: "Home", href: "/" },
-          { label: cls.short, href: `/asset-classes/${cls.path}` },
+          { label: cls.short, href: `/screener?class=${cls.path}` },
           { label: asset.ticker },
         ]}
       />

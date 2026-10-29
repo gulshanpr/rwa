@@ -1,10 +1,8 @@
 import {
   Bell,
   BookOpen,
-  CreditCard,
   History,
   House,
-  Landmark,
   Ruler,
   Search,
   type LucideIcon,
@@ -23,13 +21,6 @@ export const NAV: { heading: string; items: NavItem[] }[] = [
       { label: "Home", href: "/", icon: House },
       { label: "Screener", href: "/screener", icon: Search },
       { label: "Alerts", href: "/alerts", icon: Bell },
-    ],
-  },
-  {
-    heading: "Asset classes",
-    items: [
-      { label: "Treasuries", href: "/asset-classes/treasuries", icon: Landmark },
-      { label: "Private credit", href: "/asset-classes/private-credit", icon: CreditCard },
     ],
   },
   {

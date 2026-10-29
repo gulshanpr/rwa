@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
     return [
       { source: "/assets/:slug/verification", destination: "/assets/:slug/transparency", permanent: true },
       { source: "/assets/:slug/disclosure", destination: "/assets/:slug/counterparties", permanent: true },
+      // Asset-class pages folded into the screener's class filter.
+      { source: "/asset-classes/:class", destination: "/screener?class=:class", permanent: true },
     ];
   },
 };

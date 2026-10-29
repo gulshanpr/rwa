@@ -1,4 +1,5 @@
 import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { cache } from "react";
 import { getDb, hasDatabase, schema } from "@/db/client";
 import { getSiteCatalog } from "./catalog";
 import type { Asset, Chain } from "./schema/asset";
@@ -96,11 +97,12 @@ async function liveOrNone(asset: Asset): Promise<Live | undefined> {
 
 // The known-slug filter keeps alerts for assets another branch imported off the site.
 let alertsDuringBuild: Promise<Alert[]> | undefined;
-export function getAlerts(): Promise<Alert[]> {
+// Deduplicated per request: the alerts page reads them directly and again through getProfiles.
+export const getAlerts = cache((): Promise<Alert[]> => {
   if (!hasDatabase()) return Promise.resolve([]);
   if (building()) return (alertsDuringBuild ??= alertsFromDb());
   return alertsFromDb();
-}
+});
 
 async function alertsFromDb(): Promise<Alert[]> {
   try {

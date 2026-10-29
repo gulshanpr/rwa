@@ -1,11 +1,13 @@
+import { Suspense } from "react";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-import { Screener } from "@/components/screener/screener";
+import { Screener, ScreenerFromUrl } from "@/components/screener/screener";
 import { assetRows } from "@/lib/rows";
 
 export const metadata = { title: "Risk screener" };
 export const revalidate = 3600;
 
 export default async function ScreenerPage() {
+  const rows = await assetRows();
   return (
     <>
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Screener" }]} />
@@ -15,7 +17,10 @@ export default async function ScreenerPage() {
           Every tracked asset with its seven risk ratings, stage and key flags. Sort and filter to compare them.
         </p>
       </div>
-      <Screener rows={await assetRows()} />
+      {/* The page stays static; ?class= is applied in the browser. */}
+      <Suspense fallback={<Screener rows={rows} />}>
+        <ScreenerFromUrl rows={rows} />
+      </Suspense>
     </>
   );
 }
