@@ -11,7 +11,6 @@ import type { Power } from "./schema/discovered";
 import type { Entity } from "./schema/entity";
 import type { Alert, Live } from "./schema/live";
 import type { Measured } from "./schema/measured";
-import { formatUsd, shortAddress } from "./format";
 
 export { ASSET_CLASSES, assetClassFromPath } from "./labels";
 
@@ -143,43 +142,51 @@ export function addressLabel(profile: AssetProfile, address: string): string | u
   return undefined;
 }
 
-export interface SearchItem {
-  id: string;
-  kind: "asset" | "address" | "page";
-  title: string;
-  subtitle: string;
-  href: string;
-  keywords: string;
+export interface SearchAsset {
+  slug: string;
+  ticker: string;
+  name: string;
+  issuer: string;
+  aumUsd: number | null;
+  /** Lowercased name, issuer and platform, matched by substring. */
+  terms: string;
 }
 
-export async function searchIndex(): Promise<SearchItem[]> {
-  const items: SearchItem[] = [];
-  for (const p of await getProfiles()) {
-    const { asset } = p;
-    items.push({
-      id: `asset-${asset.slug}`,
-      kind: "asset",
-      title: `${asset.ticker} · ${asset.name}`,
-      subtitle: `${p.entities.manager?.name ?? asset.manager} · ${p.stats.aumUsd ? formatUsd(p.stats.aumUsd) : ""}`,
-      href: `/assets/${asset.slug}`,
-      keywords: [asset.ticker, asset.name, asset.issuer, asset.manager, asset.platform].join(" "),
-    });
+/** Tuples keep the index small: it ships with every page. `asset` indexes SearchIndex.assets. */
+export type SearchAddress = [address: string, label: string | null, role: string, asset: number];
+
+export interface SearchIndex {
+  assets: SearchAsset[];
+  addresses: SearchAddress[];
+}
+
+export async function searchIndex(): Promise<SearchIndex> {
+  const profiles = await getProfiles();
+  const assets: SearchAsset[] = profiles.map((p) => {
+    const issuer = p.entities.manager?.name ?? p.asset.manager;
+    return {
+      slug: p.asset.slug,
+      ticker: p.asset.ticker,
+      name: p.asset.name,
+      issuer,
+      aumUsd: p.stats.aumUsd ?? null,
+      terms: [p.asset.name, issuer, p.entities.platform?.name ?? p.asset.platform].join(" ").toLowerCase(),
+    };
+  });
+  const addresses: SearchAddress[] = [];
+  profiles.forEach((p, i) => {
+    // One entry per address per asset: snapshots list the same address in checksum and lower case, and on several chains.
+    const seen = new Set<string>();
     for (const s of p.snapshots) {
-      const addresses = new Set([...Object.keys(s.discovered.contracts), ...Object.keys(s.discovered.holders)]);
-      for (const address of addresses) {
+      for (const address of [...Object.keys(s.discovered.contracts), ...Object.keys(s.discovered.holders)]) {
+        if (seen.has(address.toLowerCase())) continue;
+        seen.add(address.toLowerCase());
         const holder = lookupHolder(s.discovered, address);
         const contract = s.discovered.contracts[address];
-        const label = addressLabel(p, address) ?? contract?.name ?? holderLabel(holder);
-        items.push({
-          id: `addr-${s.discovered.chain}-${address}`,
-          kind: "address",
-          title: `${label}`,
-          subtitle: `${shortAddress(address)} · ${holder ? holderLabel(holder) : contract?.name} · ${asset.ticker}`,
-          href: `/assets/${asset.slug}/control#addr-${address.toLowerCase()}`,
-          keywords: `${address} ${address.toLowerCase()} ${label}`,
-        });
+        const label = addressLabel(p, address) ?? contract?.name ?? null;
+        addresses.push([address, label, holder ? holderLabel(holder) : "Contract", i]);
       }
     }
-  }
-  return items;
+  });
+  return { assets, addresses };
 }

@@ -5,7 +5,7 @@ import { Menu, PanelLeft, PanelLeftClose, TriangleAlert, X } from "lucide-react"
 import Link from "next/link";
 import { useState } from "react";
 import { SIDEBAR_COLLAPSED_KEY, SIDEBAR_MAX, SIDEBAR_MIN, SIDEBAR_WIDTH_KEY } from "@/lib/sidebar";
-import type { SearchItem } from "@/lib/profile";
+import type { SearchIndex } from "@/lib/profile";
 import { SITE } from "@/lib/site";
 import { CommandSearch } from "./command-search";
 import { GithubIcon, LogoMark } from "./logo";
@@ -19,7 +19,7 @@ export function AppShell({
 }: {
   children: React.ReactNode;
   footer: React.ReactNode;
-  searchItems: SearchItem[];
+  searchItems: SearchIndex;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
