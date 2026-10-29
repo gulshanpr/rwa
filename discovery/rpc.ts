@@ -36,7 +36,9 @@ const DEFAULT_ARCHIVE_RPCS: Record<Chain, string> = {
   optimism: "https://optimism.drpc.org",
   base: "https://base.drpc.org",
   polygon: "https://polygon.drpc.org",
-  avalanche: "https://avalanche.drpc.org",
+  // dRPC and PublicNode prune Avalanche state ("block not found" on old eth_getCode); the official RPC keeps it.
+  // It caps eth_getLogs at 100 blocks, so Avalanche logs come from LOG_APIS instead.
+  avalanche: "https://api.avax.network/ext/bc/C/rpc",
   bsc: "https://bsc.drpc.org",
 };
 
@@ -120,7 +122,11 @@ const LOG_APIS: Partial<Record<Chain, string>> = {
   optimism: "https://optimism.blockscout.com/api",
   base: "https://base.blockscout.com/api",
   polygon: "https://polygon.blockscout.com/api",
+  avalanche: "https://api.routescan.io/v2/network/mainnet/evm/43114/etherscan/api",
 };
+
+/** Etherscan's free plan answers "Free API access is not supported for this chain"; use LOG_APIS even with a key. */
+const NOT_ON_FREE_ETHERSCAN = new Set<Chain>(["avalanche"]);
 
 interface ExplorerLog {
   blockNumber: string;
@@ -133,7 +139,7 @@ interface ExplorerLog {
 /** Etherscan-compatible `getLogs` (Blockscout without a key, or Etherscan V2 with ETHERSCAN_API_KEY). Pages by block. */
 async function explorerLogs(c: ChainClients, address: Address, event: AbiEvent, fromBlock: bigint, toBlock: bigint): Promise<CachedLog[] | undefined> {
   const custom = process.env[`LOGS_API_${c.chain.toUpperCase()}`];
-  const key = process.env.ETHERSCAN_API_KEY;
+  const key = NOT_ON_FREE_ETHERSCAN.has(c.chain) ? undefined : process.env.ETHERSCAN_API_KEY;
   const base = custom ?? (key ? `https://api.etherscan.io/v2/api?chainid=${c.chainId}&apikey=${key}&` : LOG_APIS[c.chain] ? `${LOG_APIS[c.chain]}?` : undefined);
   if (!base) return undefined;
   const sep = base.endsWith("?") || base.endsWith("&") ? "" : base.includes("?") ? "&" : "?";

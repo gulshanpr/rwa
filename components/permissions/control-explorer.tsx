@@ -26,6 +26,8 @@ export function ControlExplorer({
   const [view, setView] = useState<View>("graph");
 
   useEffect(() => {
+    // The graph is too dense to read on a phone; start there on the table instead.
+    if (window.matchMedia("(max-width: 767px)").matches) setView("table");
     const sync = () => {
       const hash = window.location.hash.slice(1);
       if (!hash.startsWith("addr-")) return;
@@ -72,7 +74,7 @@ export function ControlExplorer({
                   <AddressChip address={a.address} kind={a.kind} label={a.label} />
                 </Td>
                 <Td className="text-fg-muted">{a.detail}</Td>
-                <Td className="text-fg-muted">{a.powers.length ? [...new Set(a.powers)].join(", ") : "—"}</Td>
+                <Td className="min-w-48 text-fg-muted">{a.powers.length ? [...new Set(a.powers)].join(", ") : "—"}</Td>
                 <Td>
                   {a.signers.length ? (
                     <details>

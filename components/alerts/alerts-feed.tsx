@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { CHAINS } from "@/lib/chains";
 import type { Alert } from "@/lib/schema/live";
@@ -79,6 +80,8 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
   const [asset, toggleAsset] = useSet<string>();
   const [chain, toggleChain] = useSet<AlertChain>();
   const [kind, toggleKind] = useSet<Alert["kind"]>();
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const active = severity.size + asset.size + chain.size + kind.size;
 
   const match = <T,>(set: Set<T>, v: T | undefined) => set.size === 0 || (v !== undefined && set.has(v));
   const shown = alerts.filter(
@@ -88,39 +91,56 @@ export function AlertsFeed({ alerts, tickers }: { alerts: Alert[]; tickers: Reco
 
   return (
     <div className="grid gap-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <aside className="flex flex-col gap-4 rounded-card border border-line bg-surface p-4 shadow-card lg:sticky lg:top-24 lg:self-start">
-        <FilterGroup
-          title="Severity"
-          options={SEVERITIES.filter((s) => alerts.some((a) => a.severity === s))}
-          selected={severity}
-          onToggle={toggleSeverity}
-          render={(s) => (
-            <span className="inline-flex items-center gap-1.5 capitalize">
-              <span className={cn("size-2 rounded-full", RISK_DOT[SEVERITY_COLOR[s]])} /> {s}
-            </span>
-          )}
-        />
-        <FilterGroup
-          title="Asset"
-          options={uniq(alerts.map((a) => a.asset))}
-          selected={asset}
-          onToggle={toggleAsset}
-          render={(s) => tickers[s] ?? s}
-        />
-        <FilterGroup
-          title="Chain"
-          options={uniq(alerts.flatMap((a) => (a.chain ? [a.chain] : [])))}
-          selected={chain}
-          onToggle={toggleChain}
-          render={(c) => CHAINS[c].name}
-        />
-        <FilterGroup
-          title="Kind"
-          options={uniq(alerts.map((a) => a.kind))}
-          selected={kind}
-          onToggle={toggleKind}
-          render={(k) => KIND_LABELS[k]}
-        />
+      <aside className="rounded-card border border-line bg-surface shadow-card lg:sticky lg:top-24 lg:self-start">
+        {/* Below lg the filters fold away so the feed starts on the first screen. */}
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((o) => !o)}
+          aria-expanded={filtersOpen}
+          className="flex w-full items-center gap-2 px-4 py-3 text-small text-fg lg:hidden"
+        >
+          <SlidersHorizontal className="size-4 text-fg-muted" aria-hidden />
+          Filters
+          {active > 0 && <span className="rounded-full bg-accent-soft px-1.5 text-label text-accent">{active}</span>}
+          <span className="ml-auto text-label font-normal text-fg-subtle">
+            {shown.length} of {alerts.length}
+          </span>
+          <ChevronDown className={cn("size-4 text-fg-muted transition-transform", filtersOpen && "rotate-180")} aria-hidden />
+        </button>
+        <div className={cn("flex-col gap-4 border-t border-line p-4 lg:flex lg:border-t-0", filtersOpen ? "flex" : "hidden")}>
+          <FilterGroup
+            title="Severity"
+            options={SEVERITIES.filter((s) => alerts.some((a) => a.severity === s))}
+            selected={severity}
+            onToggle={toggleSeverity}
+            render={(s) => (
+              <span className="inline-flex items-center gap-1.5 capitalize">
+                <span className={cn("size-2 rounded-full", RISK_DOT[SEVERITY_COLOR[s]])} /> {s}
+              </span>
+            )}
+          />
+          <FilterGroup
+            title="Asset"
+            options={uniq(alerts.map((a) => a.asset))}
+            selected={asset}
+            onToggle={toggleAsset}
+            render={(s) => tickers[s] ?? s}
+          />
+          <FilterGroup
+            title="Chain"
+            options={uniq(alerts.flatMap((a) => (a.chain ? [a.chain] : [])))}
+            selected={chain}
+            onToggle={toggleChain}
+            render={(c) => CHAINS[c].name}
+          />
+          <FilterGroup
+            title="Kind"
+            options={uniq(alerts.map((a) => a.kind))}
+            selected={kind}
+            onToggle={toggleKind}
+            render={(k) => KIND_LABELS[k]}
+          />
+        </div>
       </aside>
       <div className="flex flex-col gap-3">
         {shown.length === 0 && (

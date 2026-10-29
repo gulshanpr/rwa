@@ -65,15 +65,15 @@ export function AddressChip({
         className={cn("size-3.5 shrink-0", kind === "eoa" ? "text-risk-red" : "text-fg-muted")}
       />
       {label && <span className="truncate text-small text-fg">{label}</span>}
-      {detail && <span className="text-label whitespace-nowrap text-fg-muted">{detail}</span>}
-      <span title={address} className="font-mono text-[12px] whitespace-nowrap text-fg-muted">
+      {detail && <span className="truncate text-label text-fg-muted">{detail}</span>}
+      <span title={address} className="shrink-0 font-mono text-[12px] whitespace-nowrap text-fg-muted">
         {shortAddress(address)}
       </span>
       <button
         type="button"
         onClick={copy}
         aria-label={copied ? "Copied" : "Copy address"}
-        className="rounded p-0.5 text-fg-subtle hover:bg-subtle hover:text-fg"
+        className="shrink-0 rounded p-0.5 text-fg-subtle hover:bg-subtle hover:text-fg"
       >
         {copied ? <Check className="size-3" /> : <Copy className="size-3" />}
       </button>
@@ -82,7 +82,7 @@ export function AddressChip({
         target="_blank"
         rel="noreferrer"
         aria-label="Open in block explorer"
-        className="rounded p-0.5 text-fg-subtle hover:bg-subtle hover:text-fg"
+        className="shrink-0 rounded p-0.5 text-fg-subtle hover:bg-subtle hover:text-fg"
       >
         <ExternalLink className="size-3" />
       </a>

@@ -90,7 +90,7 @@ export default async function AssetLayout({ children, params }: LayoutProps<"/as
         </div>
       </header>
 
-      <div className="-mx-4 mb-6 flex gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0 lg:grid lg:grid-cols-5 lg:overflow-visible">
+      <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5 [&>*]:min-w-0 max-md:[&>*:last-child]:col-span-2">
         <StatCard
           label="Value"
           info={`Assets under management across all chains, from ${profile.live?.aum.source.name ?? "DefiLlama"}. Cross-checked against totalSupply × price.`}

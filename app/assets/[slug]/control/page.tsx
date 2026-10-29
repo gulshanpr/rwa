@@ -94,7 +94,44 @@ export default async function ControlPage({ params }: PageProps<"/assets/[slug]/
             />
 
             <Card title="Powers" description="Every privileged power we found, normalized to canonical power types.">
-              <Table>
+              <ul className="divide-y divide-line rounded-control border border-line md:hidden">
+                {rows.map((r) => {
+                  const direct = r.holder.path[0];
+                  return (
+                    <li key={r.id} className="space-y-2 p-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-small font-medium text-fg">{POWER_LABELS[r.power]}</span>
+                        {r.criticality !== "unclassified" && (
+                          <Tag variant={r.criticality === "critical" ? "accent" : "neutral"}>
+                            {r.criticality === "critical" ? "Critical" : "High"}
+                          </Tag>
+                        )}
+                        <RiskDot
+                          color={r.color}
+                          className="ml-auto text-small"
+                          label={<span className="text-fg-muted">{r.color === "grey" ? "Needs review" : RISK_WORD[r.color]}</span>}
+                        />
+                      </div>
+                      <AddressChip
+                        address={direct.address}
+                        chain={chain}
+                        kind={direct.kind as AddressKind}
+                        label={addressLabel(profile, direct.address) ?? direct.label}
+                        detail={addressLabel(profile, direct.address) ? direct.label : undefined}
+                      />
+                      {r.holder.path.length > 1 && (
+                        <p className="text-label font-normal text-fg-muted">
+                          → {r.holder.path.slice(1).map((s) => s.label).join(" → ")}
+                        </p>
+                      )}
+                      <p className="text-label font-normal text-fg-muted">
+                        {r.checks} · via <code className="font-mono text-[11px] break-all">{r.via}</code>
+                      </p>
+                    </li>
+                  );
+                })}
+              </ul>
+              <Table className="hidden md:block">
                 <thead>
                   <tr>
                     <Th>Power</Th>

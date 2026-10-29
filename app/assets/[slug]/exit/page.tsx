@@ -65,8 +65,8 @@ export default async function ExitPage({ params }: PageProps<"/assets/[slug]/exi
                 <ul className="mt-3 divide-y divide-line">
                   {measured.holders.top.slice(0, 5).map((h) => (
                     <li key={h.address} className="flex items-center justify-between gap-3 py-1.5">
-                      <AddressChip address={h.address} chain={measured.holders!.chain} kind={h.isContract ? "contract" : "eoa"} label={h.name} />
-                      <span className="tnum text-small text-fg-muted">{h.pct.toFixed(2)}%</span>
+                      <AddressChip address={h.address} chain={measured.holders!.chain} kind={h.isContract ? "contract" : "eoa"} label={h.name} className="min-w-0" />
+                      <span className="tnum shrink-0 text-small text-fg-muted">{h.pct.toFixed(2)}%</span>
                     </li>
                   ))}
                 </ul>

@@ -218,6 +218,16 @@ body {
 .prose tr:last-child td {
   border-bottom: 0;
 }
+/* On phones, wide tables scroll inside their own box instead of widening the page. */
+@media (max-width: 767px) {
+  .prose table {
+    display: block;
+    overflow-x: auto;
+  }
+  .prose code {
+    overflow-wrap: anywhere;
+  }
+}
 
 /* React Flow theming */
 .react-flow {
