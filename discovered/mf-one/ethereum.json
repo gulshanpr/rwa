@@ -1,6 +1,6 @@
 {
   "asset": "mf-one",
-  "block": 26190122,
+  "block": 26308273,
   "chain": "ethereum",
   "contracts": {
     "0x0312A9D1Ff2372DDEdCBB21e4B6389aFc919aC4B": {
@@ -179,6 +179,11 @@
           "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
         },
         {
+          "holder": "0x6F96C7948845CfadB75c79Ef72421D2a546ff210",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
           "holder": "0x7191b6F35f9c8f5b66d0c92450b5dc3BeA29024D",
           "power": "freeze",
           "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
@@ -320,6 +325,11 @@
         },
         {
           "holder": "0xE10aBe1aF40afa411190cF776EAD838F8D70D9D3",
+          "power": "freeze",
+          "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
+        },
+        {
+          "holder": "0xE1e1AC3BdD329ddD6Af7Ee240d7ca7f0e1215b25",
           "power": "freeze",
           "via": "BLACKLIST_OPERATOR_ROLE on the shared controller. One blacklisted address cannot send or receive"
         },
@@ -484,6 +494,11 @@
           "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
         },
         {
+          "holder": "0x6F96C7948845CfadB75c79Ef72421D2a546ff210",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
           "holder": "0x7191b6F35f9c8f5b66d0c92450b5dc3BeA29024D",
           "power": "set-compliance",
           "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
@@ -630,6 +645,11 @@
         },
         {
           "holder": "0xE10aBe1aF40afa411190cF776EAD838F8D70D9D3",
+          "power": "set-compliance",
+          "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
+        },
+        {
+          "holder": "0xE1e1AC3BdD329ddD6Af7Ee240d7ca7f0e1215b25",
           "power": "set-compliance",
           "via": "GREENLIST_OPERATOR_ROLE. Deposit and redemption vaults reject addresses that are not greenlisted"
         },
@@ -884,6 +904,9 @@
     "0x683949B2b4F988628b2845C4E1b75Ea16A0fAfb4": {
       "kind": "eoa"
     },
+    "0x6F96C7948845CfadB75c79Ef72421D2a546ff210": {
+      "kind": "eoa"
+    },
     "0x6cf7C5e83fC4Ce7928839805a2e64b169263eDc5": {
       "kind": "eoa"
     },
@@ -972,6 +995,9 @@
     "0xE10aBe1aF40afa411190cF776EAD838F8D70D9D3": {
       "kind": "eoa"
     },
+    "0xE1e1AC3BdD329ddD6Af7Ee240d7ca7f0e1215b25": {
+      "kind": "eoa"
+    },
     "0xE3EEe3e0D2398799C884a47FC40C029C8e241852": {
       "executors": [
         "0xB60842E9DaBCd1C52e354ac30E82a97661cB7E89"
@@ -1017,5 +1043,5 @@
       "kind": "eoa"
     }
   },
-  "timestamp": "2026-10-14T10:24:11Z"
+  "timestamp": "2026-10-30T21:30:23Z"
 }
