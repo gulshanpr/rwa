@@ -1,6 +1,6 @@
 {
   "asset": "buidl",
-  "block": 26168531,
+  "block": 26311930,
   "chain": "ethereum",
   "contracts": {
     "0x008075B22bEc05C7D0fb789e3420b76056D76cab": {
@@ -1097,57 +1097,57 @@
         {
           "holder": "0x008075B22bEc05C7D0fb789e3420b76056D76cab",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0x090F220fa6BAA22bE107971acf8963546C4Da366",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0x103b907c2278CC0a51Ac5e700b84Da9bFd65B1D1",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0x1E5d83Ff1a6d32C53F25937664c53E9B57E37021",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0x5072Ed40EBa6bE38C2370cAD1Cb1df0202924e53",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0x59a100BCc70649485422670dC697B64BD1c6e6c1",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0xB14A49978Cb3AD7903208F67a0bC9b9b93AC2fA1",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0xD75c86c3e3761e2B2A7960aFb670850923899473",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0xe01605f6b6dC593b7d2917F4a0940db2A625b09e",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0xE9d419D61935bB511DD6b59c495CA16d5E084E76",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0xFC4392dA2C4A3090431Fb87F4F7De63BC6885644",
           "power": "mint",
-          "via": "DSToken.issueTokensCustom, issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
+          "via": "DSToken.issueTokensWithMultipleLocks, issueTokensWithNoCompliance · onlyIssuerOrAbove (ISSUER, MASTER)"
         },
         {
           "holder": "0xA9994621F1c3EE59846Df756488229E8efDCB8bf",
@@ -1504,5 +1504,5 @@
       "name": "TokenReallocator (service 8192)"
     }
   },
-  "timestamp": "2026-10-11T10:12:35Z"
+  "timestamp": "2026-10-31T09:44:35Z"
 }
