@@ -1,6 +1,6 @@
 {
   "asset": "acred",
-  "block": 95513856,
+  "block": 97069575,
   "chain": "polygon",
   "contracts": {
     "0x07e84805C8dEB29eB15eEdB29623e9a6E3A52BC4": {
@@ -1572,7 +1572,7 @@
     },
     "0x6aF53990F053fD3Fc818Db67aE5b4064E3B7539e": {
       "controllers": [
-        "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78"
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
       ],
       "kind": "contract",
       "name": "SecuritizeBridge"
@@ -1612,10 +1612,7 @@
       ],
       "kind": "contract",
       "name": "MintingAssetProvider"
-    },
-    "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78": {
-      "kind": "eoa"
     }
   },
-  "timestamp": "2026-10-14T11:08:17Z"
+  "timestamp": "2026-11-10T11:23:39Z"
 }
