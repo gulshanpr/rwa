@@ -1,6 +1,6 @@
 {
   "asset": "acred",
-  "block": 26190152,
+  "block": 26387977,
   "chain": "ethereum",
   "contracts": {
     "0x17418038ecF73BA4026c4f428547BF099706F27B": {
@@ -1571,7 +1571,7 @@
     },
     "0x43b93eD4C13fDB342D17CcBcA67f1Cc765947845": {
       "controllers": [
-        "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78"
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
       ],
       "kind": "contract",
       "name": "SecuritizeBridge"
@@ -1662,9 +1662,6 @@
       "kind": "contract",
       "name": "IssuerMulticall"
     },
-    "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78": {
-      "kind": "eoa"
-    },
     "0xf639f1EB33EE3c3d5D69649E017b607d6b4AB0fF": {
       "controllers": [
         "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
@@ -1673,5 +1670,5 @@
       "name": "BulkOperator"
     }
   },
-  "timestamp": "2026-10-14T10:30:11Z"
+  "timestamp": "2026-11-11T00:04:11Z"
 }
