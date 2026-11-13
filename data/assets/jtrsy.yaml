@@ -102,7 +102,7 @@ underlying:
     source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "'Weighted Average Maturity of around 45 days' (June 2026).", checkedAt: 2026-10-25 }
   trackRecord:
     value: { since: 2023-12-01, losses: [] }
-    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "Inception December 2023. S&P fund rating AAA+ (as shown on the factsheet). No suspension or NAV drop found.", checkedAt: 2026-10-25 }
+    source: { url: "https://centrifuge-files.mypinata.cloud/ipfs/bafybeicdzle2bgqekmvnfqcxjhimnzlfrg7mkfvngxtmfvjzldmtoubneq", note: "Inception December 2023. The factsheet shows 'S&P Fund Rating AAA+', but S&P's own release (2025-03-11) assigned 'AA+f/S1+'. No suspension or NAV drop found.", checkedAt: 2026-10-25 }
 
 counterparties:
   custodian:
@@ -230,9 +230,9 @@ exit:
     value: null
     source: { url: "https://app.vaultstreet.com/research/jtrsy", note: "No queues or gates.", checkedAt: 2026-10-25 }
   minimumUsd:
-    status: public
-    value: 0
-    source: { url: "https://app.rwa.xyz/assets/JTRSY", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: The factsheet gives a 500,000 USDC investment minimum but no redemption minimum.
   feeBps:
     status: public
     value: 0

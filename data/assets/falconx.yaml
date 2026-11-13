@@ -4,7 +4,7 @@ name: FalconX Credit Vault
 ticker: AA_FalconXUSDC
 assetClass: private-credit
 description: >
-  Senior tranche of the FalconX credit vault on Pareto. USDC is lent to one FalconX borrower wallet, which funds prime-brokerage credit lines. Collateral sits offchain. The junior tranche has no tokens outstanding, so there is no onchain first-loss buffer. This is the vault FalconX announced and that rwa.xyz lists as AA_FalconXUSDC, not Plume's NFALCON or Sygnum's Desygnate. A deprecated Pareto deployment on Optimism is not tracked.
+  Senior tranche of the FalconX credit vault on Pareto. USDC is lent to one FalconX borrower wallet, which funds prime-brokerage credit lines. Collateral sits offchain. The junior tranche has no tokens outstanding, so there is no onchain first-loss buffer. This is the vault FalconX announced (token AA_FalconXUSDC), not Plume's NFALCON or Sygnum's Desygnate. A deprecated Pareto deployment on Optimism and the Base expansion FalconX announced on 2026-10-29 are not tracked.
 issuer: falconx-credit-vault
 manager: m11-credit
 platform: pareto
@@ -29,11 +29,11 @@ deployments:
 access:
   investorType:
     value: non-us-professional
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Non-US professional investors. Onchain allowlist is KeyringIdleWhitelist policy 18.", checkedAt: 2026-10-14 }
+    source: { url: "https://blog.redstone.finance/2026/09/09/the-data-layer-for-paretos-credit-vaults/", note: "RedStone, the vault's oracle provider: 'non-U.S. accredited depositors'. Onchain allowlist is KeyringIdleWhitelist policy 18.", checkedAt: 2026-10-31 }
   minimumInvestment:
     status: public
     value: 250000
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "'Min. investment: 250,000 USDC'. Redemptions have the same 250,000 USDC minimum.", checkedAt: 2026-10-24 }
+    source: { url: "https://blog.redstone.finance/2026/09/09/the-data-layer-for-paretos-credit-vaults/", note: "'250,000 USDC minimum'. RockawayX's Morpho listing gives the same $250,000 minimum.", checkedAt: 2026-10-31 }
   transferRestricted:
     value: true
     source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", note: "Keyring whitelist. isWalletAllowed must pass before a deposit.", checkedAt: 2026-10-14 }
@@ -42,11 +42,11 @@ legal:
   vehicleType:
     status: not_public
     searchedAt: 2026-10-14
-    note: The lending entity's legal name was not found. rwa.xyz gives a domicile only.
+    note: The lending entity's legal name was not found.
   jurisdiction:
-    status: public
-    value: Republic of the Marshall Islands
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Disputes are listed as United Kingdom. The legal entity name is not public, so the legal-entity disclosure check still fails.", checkedAt: 2026-10-14 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: No Pareto, M11 Credit or FalconX document names the vehicle or its domicile. Only third-party aggregators list one.
   lei:
     status: not_public
     searchedAt: 2026-10-14
@@ -65,7 +65,7 @@ legal:
 
 freshnessClass:
   value: private-credit
-  source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Monthly-epoch credit facility to FalconX.", checkedAt: 2026-10-25 }
+  source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "Credit facility to FalconX with one-month lending cycles.", checkedAt: 2026-10-31 }
 
 underlying:
   holdings:
@@ -90,14 +90,14 @@ underlying:
   largestObligorPct:
     status: public
     value: 100
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "'Institutional credit lines managed by FalconX': one borrower.", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "'Borrower: FalconX': a single borrower.", checkedAt: 2026-10-31 }
   obligors:
     status: public
     value: 1
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "'Borrower: FalconX'.", checkedAt: 2026-10-31 }
   trackRecord:
-    value: { since: 2025-07-10, losses: [] }
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Inception 2025-07-10. No write-off found; a negative 7-day APY seen on 2026-10-14 is unexplained.", checkedAt: 2026-10-25 }
+    value: { since: 2025-06-18, losses: [] }
+    source: { url: "https://etherscan.io/tx/0x7cbac84c44b856a06810d7918ab0c5cb13e569eeb86274875d28feed8538a39b", note: "First AA tranche mint on Ethereum, 2025-06-18. The earlier Optimism vault went live in March 2025 and is deprecated. No write-off found; a negative 7-day APY seen on 2026-10-14 is unexplained.", checkedAt: 2026-10-31 }
 
 counterparties:
   custodian:
@@ -114,17 +114,17 @@ counterparties:
     searchedAt: 2026-10-14
   affiliated:
     value: []
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "No providers are named.", checkedAt: 2026-10-25 }
+    source: { url: "https://www.falconx.io/newsroom/falconx-launches-the-first-tokenized-structured-credit-facility-in-digital-assets", note: "No custodian, administrator or auditor is named.", checkedAt: 2026-10-31 }
   settlementRails:
     value: [usdc]
     source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", checkedAt: 2026-10-25 }
   operators:
     - role: Curator
       name: M11 Credit
-      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 }
+      source: { url: "https://www.falconx.io/newsroom/falconx-launches-the-first-tokenized-structured-credit-facility-in-digital-assets", note: "'M11 Credit, the credit investment arm of digital asset investment firm Maven 11, serves as the vault curator.'", checkedAt: 2026-10-31 }
     - role: Platform
       name: Pareto
-      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 }
+      source: { url: "https://www.falconx.io/newsroom/falconx-launches-the-first-tokenized-structured-credit-facility-in-digital-assets", note: "'a private credit vault launched by Pareto'.", checkedAt: 2026-10-31 }
   dependencies:
     - name: FalconX
       what: FalconX is the only borrower and also holds the collateral.
@@ -161,7 +161,7 @@ transparency:
       frequency: monthly
       verifiability: self-reported
       onchain: true
-      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Interest reported by the borrower and set at each epoch; no independent attestation found.", checkedAt: 2026-10-25 }
+      source: { url: "https://docs.pareto.credit/product/credit-vaults", note: "The borrower repays interest at the end of each lending cycle and the tranche price is set then; no independent attestation found.", checkedAt: 2026-10-31 }
       feed: { chain: ethereum, address: "0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d" }
   eventReporting:
     status: not_public
@@ -182,7 +182,7 @@ pricing:
       updatedAt:
         fn: function latestHarvestBlock() view returns (uint256)
     historyOnchain: false
-    source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", note: "priceAA is USDC per token (6 decimals), set when the operator stops the epoch from interest the borrower pays. latestHarvestBlock stores a timestamp despite the name. The contract management fee is 200 / 100000 = 0.20% per year. The performance fee in the contract was 0; rwa.xyz says 10%. Morpho's funded USDC market reads that same price through TranchesChainlinkOracle 0x50449B3D1f5931d568A1951Ee506A9534e7f7dFf (cdo() is this vault).", checkedAt: 2026-10-14 }
+    source: { url: "https://docs.pareto.credit/developers/addresses/product/credit-vaults", note: "priceAA is USDC per token (6 decimals), set when the operator stops the epoch from interest the borrower pays. latestHarvestBlock stores a timestamp despite the name. The contract management fee is 200 / 100000 = 0.20% per year. The performance fee in the contract was 0; Pareto's docs list 10%. Morpho's funded USDC market reads that same price through TranchesChainlinkOracle 0x50449B3D1f5931d568A1951Ee506A9534e7f7dFf (cdo() is this vault).", checkedAt: 2026-10-14 }
   stalenessDetectable:
     value: false
     source: { url: "https://etherscan.io/address/0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d", note: "The tranche price getter carries no timestamp; it only changes at epoch end.", checkedAt: 2026-10-25 }
@@ -194,25 +194,25 @@ exit:
   redemption:
     available:
       value: true
-      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Monthly, with 31 days' notice. Fee 0. An instant-withdraw window exists in the contract (3-day delay) but it is limited and was closed at review (deadline 2026-10-04).", checkedAt: 2026-10-14 }
+      source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "'Redemptions: Monthly, 1-month notice', with early exit when the next cycle's rate drops by more than 1%. An instant-withdraw window exists in the contract (3-day delay) but it is limited and was closed at review (deadline 2026-10-04).", checkedAt: 2026-10-31 }
     whoCanRedeem:
       value: whitelisted-holders
-      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-14 }
+      source: { url: "https://docs.pareto.credit/product/credit-vaults", note: "'only registered users who complete verification through Keyring can provide liquidity'.", checkedAt: 2026-10-31 }
     settlement:
       status: public
       value: T+31
-      source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "31-day notice, then the monthly epoch. epochDuration is 2,721,600 seconds (31.5 days).", checkedAt: 2026-10-14 }
+      source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "'Monthly, 1-month notice', then the monthly cycle. epochDuration is 2,721,600 seconds (31.5 days).", checkedAt: 2026-10-31 }
     gatesOrSuspension:
       status: public
       value: issuer-discretion
       source: { url: "https://etherscan.io/address/0x433D5B175148dA32Ffe1e1A37a939E1b7e79be4d#code", note: "The owner Safe can pause or call emergencyShutdown with no published limit. Separately, startEpoch pauses deposits and turns withdrawal requests off until the epoch stops. That is why the vault reads as paused while an epoch is running. Legal suspension terms were not found.", checkedAt: 2026-10-14 }
   dealing:
     value: monthly
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "Monthly (calendar).", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "'Cycle length: One month'.", checkedAt: 2026-10-31 }
   noticeDays:
     status: public
     value: 31
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", note: "'31-day notice period for redemptions applies. Early exit available (when applicable).'", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.pareto.credit/product/credit-vaults/live-vaults", note: "'Monthly, 1-month notice'. Early exit within 72 hours when the next cycle's rate drops by 1% or more.", checkedAt: 2026-10-31 }
   lockupDays:
     status: not_public
     searchedAt: 2026-10-25
@@ -220,13 +220,13 @@ exit:
     status: not_public
     searchedAt: 2026-10-25
   minimumUsd:
-    status: public
-    value: 250000
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: Pareto and FalconX publish a deposit minimum only, no redemption minimum.
   feeBps:
-    status: public
-    value: 0
-    source: { url: "https://app.rwa.xyz/assets/AA_FalconXUSDC", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: Pareto lists only a 10% performance fee; no redemption fee is stated.
   liquidators:
     value: anyone
     source: { url: "https://eth.blockscout.com/address/0xC26A6Fa2C37b38E549a4a1807543801Db684f99C?tab=contract", note: "IdleCDOTranche is a plain ERC-20 with no transfer hook; only deposits are KYC-gated. Morpho holds 9.5% of supply.", checkedAt: 2026-10-25 }

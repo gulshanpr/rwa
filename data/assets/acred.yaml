@@ -6,7 +6,7 @@ assetClass: private-credit
 description: >
   Tokenized feeder into Apollo Diversified Credit Fund, a 1940 Act closed-end interval fund. The token is Securitize DS Protocol on a standard upgradeable proxy, with a different owner wallet from BUIDL. One wallet can upgrade, mint and seize, with no timelock. The Apollo fund offers to buy back at least 5% of shares each quarter. Also deployed on Ink, Sei, Solana and Aptos, which this version does not read.
 issuer: acred-fund
-manager: apollo
+manager: securitize-capital
 platform: securitize
 tokenStandard: ds-protocol
 priceModel: accumulating-nav
@@ -74,7 +74,7 @@ legal:
 
 freshnessClass:
   value: private-credit
-  source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Feeder into Apollo Diversified Credit Fund (direct lending, performing credit, asset-backed).", checkedAt: 2026-10-25 }
+  source: { url: "https://www.sec.gov/Archives/edgar/data/0001676197/000139834426016399/fp0100670-1_ncsrs.htm", note: "Feeder into Apollo Diversified Credit Fund: direct lending 68%, performing credit 27%, asset-backed 5% at 2026-06-30.", checkedAt: 2026-10-31 }
 
 underlying:
   holdings:
@@ -113,32 +113,32 @@ counterparties:
   custodian:
     status: public
     value: first-citizens
-    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "rwa.xyz: Silicon Valley Bank (a division of First Citizens). Form ADV: First Citizens Bank & Trust.", checkedAt: 2026-10-25 }
+    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Securitize Capital LLC Form ADV (2026-07-16), Schedule D 7.B.(1), fund 805-2083739898: custodians First-Citizens Bank & Trust Company (Silicon Valley Bank, a division of First Citizens Bank) and Paxos Trust Company, LLC.", checkedAt: 2026-10-31 }
   fundAdministrator:
     status: public
     value: securitize-fund-services
-    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Fund administrator: Securitize Fund Services", checkedAt: 2026-10-25 }
+    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Form ADV Schedule D 7.B.(1): administrator Securitize Fund Services, LLC (Miami).", checkedAt: 2026-10-31 }
   auditor:
     status: public
     value: withum
-    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Auditor: WithumSmith+Brown", checkedAt: 2026-10-25 }
+    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Form ADV Schedule D 7.B.(1): auditor Withum Smith+Brown, PC (Princeton), PCAOB ID 1362.", checkedAt: 2026-10-31 }
   transferAgent:
     status: public
     value: securitize
     source: { url: "https://tokenterminal.com/explorer/projects/securitize/acred", checkedAt: 2026-10-14 }
   affiliated:
     value: [fund-administrator, transfer-agent]
-    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Asset manager Securitize Capital; administrator Securitize Fund Services; transfer agent Securitize. Same group.", checkedAt: 2026-10-25 }
+    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Adviser and manager Securitize Capital LLC; administrator Securitize Fund Services, LLC; marketer Securitize Markets, LLC; transfer agent Securitize. Same group.", checkedAt: 2026-10-31 }
   settlementRails:
     value: [usdc]
     source: { url: "https://etherscan.io/address/0x368e7478fF8c88C9002c32E1F576fAbe2E9Ddf7B", note: "Subscriptions through the SecuritizeOnRamp in USDC. No other rail documented.", checkedAt: 2026-10-14 }
   operators:
     - role: Underlying manager
       name: Apollo (Apollo Diversified Credit Fund)
-      source: { url: "https://app.rwa.xyz/assets/ACRED", checkedAt: 2026-10-25 }
+      source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Form ADV Schedule D 7.B.(1), question 6: feeder into master fund Apollo Diversified Credit Fund.", checkedAt: 2026-10-31 }
     - role: Prime broker
       name: Coinbase Prime
-      source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Form ADV via privatefunddata.com (research notes); not shown on rwa.xyz", checkedAt: 2026-10-14 }
+      source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/315859/PDF/315859.pdf", note: "Form ADV Schedule D 7.B.(1), question 24: prime broker Coinbase Prime (New York).", checkedAt: 2026-10-31 }
   dependencies:
     - name: Apollo Diversified Credit Fund
       what: Everything sits in one master fund; ACRED can only pay out what Apollo's quarterly repurchase offers return.
@@ -231,7 +231,7 @@ exit:
       source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "Repurchase offers are at least 5% of shares and can be prorated. No separate suspension clause was read in a public offering memorandum.", checkedAt: 2026-10-14 }
   dealing:
     value: quarterly
-    source: { url: "https://app.rwa.xyz/assets/ACRED", note: "Redemption time: Quarterly. The master fund offers to repurchase at least 5% of shares a quarter and may prorate.", checkedAt: 2026-10-25 }
+    source: { url: "https://www.sec.gov/Archives/edgar/data/1676197/000139834426004660/fp0097839-1_ncsr.htm", note: "Master fund annual report: 'quarterly repurchase offers for no less than 5% of the Fund's shares outstanding at net asset value'. Offers may be prorated.", checkedAt: 2026-10-31 }
   noticeDays:
     status: not_public
     searchedAt: 2026-10-25
@@ -246,9 +246,9 @@ exit:
     status: not_public
     searchedAt: 2026-10-25
   feeBps:
-    status: public
-    value: 0
-    source: { url: "https://app.rwa.xyz/assets/ACRED", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: No redemption fee is stated in the Form ADV or the master fund reports. Feeder terms are in the non-public memorandum.
   liquidators:
     value: allowlisted
     source: { url: "https://etherscan.io/address/0x17418038ecF73BA4026c4f428547BF099706F27B", note: "DS Protocol compliance service: only registered wallets can receive ACRED.", checkedAt: 2026-10-25 }

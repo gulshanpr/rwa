@@ -4,7 +4,7 @@ name: BlackRock USD Institutional Digital Liquidity Fund
 ticker: BUIDL
 assetClass: us-treasuries
 description: >
-  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash, US Treasury bills, notes and repurchase agreements. Yield is paid monthly as new tokens.
+  Tokenized BVI fund that seeks a stable $1.00 NAV and invests 100% of its assets in cash, US Treasury bills, notes and repurchase agreements. Dividends accrue daily and are paid the next business day as new tokens.
 issuer: blackrock-buidl-fund-ltd
 manager: blackrock
 platform: securitize
@@ -35,7 +35,7 @@ access:
   minimumInvestment:
     status: public
     value: 5000000
-    source: { url: "https://cranedata.com/archives/all-articles/10236/", note: "Launch release: 'The Fund's initial investment minimum is $5 million.' Every Form D (2024-03-18, 2025-07-18, 2026-07-27) enters $100,000 as the minimum accepted from an outside investor, so the fund can accept less than the stated minimum.", checkedAt: 2026-10-24 }
+    source: { url: "https://cranedata.com/archives/all-articles/10236/", note: "Launch release: 'The Fund's initial investment minimum is $5 million.' Every Form D (2024-03-18, 2025-07-18, 2026-07-27) enters $100,000 as the minimum accepted from an outside investor, so the fund can accept less than the stated minimum. Securitize's page (2026-10-31) shows $5M for the Ethereum Qualified Purchaser class and a second table with $1M on Ethereum and $100k on Avalanche, BNB Chain and Solana.", checkedAt: 2026-10-31 }
   transferRestricted:
     value: true
     source: { url: "https://securitize.io/blackrock/buidl", note: "Disclaimer: transfer of shares is subject to limitations in the fund's Articles", checkedAt: 2026-10-11 }
@@ -94,29 +94,29 @@ counterparties:
   custodian:
     status: public
     value: bny
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Custodian: The Bank of New York Mellon", checkedAt: 2026-10-25 }
+    source: { url: "https://www.businesswire.com/news/home/20240320771318/en/BlackRock-Launches-Its-First-Tokenized-Fund-BUIDL-on-the-Ethereum-Network", note: "BlackRock launch release: 'Bank of New York Mellon will serve as the custodian of the Fund's assets and its administrator.'", checkedAt: 2026-10-31 }
   fundAdministrator:
     status: public
     value: bny
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Fund administrator: The Bank of New York Mellon", checkedAt: 2026-10-25 }
+    source: { url: "https://www.businesswire.com/news/home/20240320771318/en/BlackRock-Launches-Its-First-Tokenized-Fund-BUIDL-on-the-Ethereum-Network", note: "BlackRock launch release: BNY Mellon is custodian and administrator.", checkedAt: 2026-10-31 }
   auditor:
     status: public
     value: pwc
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Auditor: PricewaterhouseCoopers", checkedAt: 2026-10-25 }
+    source: { url: "https://www.businesswire.com/news/home/20240320771318/en/BlackRock-Launches-Its-First-Tokenized-Fund-BUIDL-on-the-Ethereum-Network", note: "'PricewaterhouseCoopers LLP has been appointed as the Fund's auditor for the period ending December 31, 2024.' No later auditor statement found.", checkedAt: 2026-10-31 }
   transferAgent:
     status: public
     value: securitize
     source: { url: "https://securitize.io/blackrock/buidl", checkedAt: 2026-10-11 }
   affiliated:
     value: []
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "BNY and PwC are independent of BlackRock and Securitize.", checkedAt: 2026-10-25 }
+    source: { url: "https://www.businesswire.com/news/home/20240320771318/en/BlackRock-Launches-Its-First-Tokenized-Fund-BUIDL-on-the-Ethereum-Network", note: "BNY and PwC are independent of BlackRock and Securitize. BlackRock made a strategic investment in Securitize and holds a board seat, but Securitize is not part of BlackRock's group.", checkedAt: 2026-10-31 }
   settlementRails:
     value: [usd-wire, usdc]
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Subscriptions by USD wire; USDC through the Circle facility and Grove Basin.", checkedAt: 2026-10-25 }
+    source: { url: "https://www.circle.com/en/pressroom/circle-announces-usdc-smart-contract-for-transfers-by-blackrocks-buidl-fund-investors", note: "USD is the base currency (Securitize share class table). USDC: Circle's smart contract (2024-04-11) lets holders transfer BUIDL to Circle for USDC; Grove Basin is a second USDC route.", checkedAt: 2026-10-31 }
   operators:
     - role: Transfer agent and tokenization platform
       name: Securitize
-      source: { url: "https://app.rwa.xyz/assets/BUIDL", checkedAt: 2026-10-25 }
+      source: { url: "https://www.businesswire.com/news/home/20240320771318/en/BlackRock-Launches-Its-First-Tokenized-Fund-BUIDL-on-the-Ethereum-Network", note: "'Securitize will act as a transfer agent and tokenization platform'; Securitize Markets is placement agent.", checkedAt: 2026-10-31 }
 
 control:
   audits:
@@ -195,11 +195,11 @@ exit:
       note: Expected in the offering memorandum, which is not public
   dealing:
     value: daily
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Redemption time: Daily. Tokens must reach the transfer agent's redemption wallet before 3:00 PM ET.", checkedAt: 2026-10-25 }
+    source: { url: "https://securitize.io/blackrock/buidl", note: "'The ability to convert BUIDL into USD every business day'. Requests must reach the Transfer Agent between 8:00 AM and 3:00 PM ET on the redemption date.", checkedAt: 2026-10-31 }
   noticeDays:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Same-day cut-off, no notice period.", checkedAt: 2026-10-25 }
+    source: { url: "https://securitize.io/blackrock/buidl", note: "Same-day window (8:00 AM to 3:00 PM ET); no notice period stated.", checkedAt: 2026-10-31 }
   lockupDays:
     status: not_public
     searchedAt: 2026-10-25
@@ -208,13 +208,13 @@ exit:
     status: not_public
     searchedAt: 2026-10-25
   minimumUsd:
-    status: public
-    value: 250000
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", note: "Minimum redemption 250,000 USDC", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: Securitize lists a $250k subsequent-investment minimum, not a redemption minimum. No redemption minimum is published.
   feeBps:
-    status: public
-    value: 0
-    source: { url: "https://app.rwa.xyz/assets/BUIDL", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: Securitize lists only management fees (Ethereum 50 bps); no redemption fee is stated.
   liquidators:
     value: allowlisted
     source: { url: "https://etherscan.io/address/0x7712c34205737192402172409a8F7ccef8aA2AEc", note: "DS Protocol compliance service: only registered wallets can receive BUIDL.", checkedAt: 2026-10-25 }

@@ -93,7 +93,7 @@ counterparties:
   custodian:
     status: public
     value: bny
-    source: { url: "https://superstate.com/assets/ustb", note: "Custodian: The Bank of New York Mellon (replaced UMB Bank in March 2026; rwa.xyz still shows UMB).", checkedAt: 2026-10-25 }
+    source: { url: "https://superstate.com/assets/ustb", note: "Custodian: The Bank of New York Mellon (replaced UMB Bank in March 2026).", checkedAt: 2026-10-25 }
   fundAdministrator:
     status: public
     value: nav-fund-services

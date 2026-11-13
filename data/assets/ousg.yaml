@@ -77,24 +77,27 @@ underlying:
   holdings:
     status: public
     value:
-      asOf: 2026-09-30
+      asOf: 2026-10-29
       items:
         - type: government-mmf
-          pct: 47.33
+          pct: 47.34
           label: State Street SWEEP
         - type: government-mmf
-          pct: 31.85
+          pct: 31.86
           label: BlackRock BUIDL
         - type: government-mmf
-          pct: 12.92
+          pct: 12.14
           label: Franklin BENJI
         - type: government-mmf
-          pct: 6.91
+          pct: 7.35
           label: Fidelity FYOXX
         - type: stablecoin
-          pct: 0.94
-          label: USDC
-    source: { url: "https://10k.nyxshcon.org/risk/ondo-ousg", note: "Holdings table from ondo.finance/ousg, around 2026-09-30 / 10-01. The product page FAQ still says 'mostly BUIDL'.", checkedAt: 2026-10-25 }
+          pct: 1.25
+          label: USDC (Coinbase)
+        - type: cash
+          pct: 0.06
+          label: Bank deposits (Silicon Valley Bank) and other assets
+    source: { url: "https://ondo.finance/ousg", note: "Portfolio overview 'As of October 29, 2026': $320.54M of underlying assets. The same page still lists BUIDL as the 'Primary Assets'.", checkedAt: 2026-10-31 }
   wamDays:
     status: not_public
     searchedAt: 2026-10-25
@@ -106,16 +109,16 @@ underlying:
 counterparties:
   custodian:
     status: public
-    value: clear-street
-    source: { url: "https://app.rwa.xyz/assets/OUSG", note: "Custodian: Clear Street LLC. Crypto custodian: Coinbase Custody. Not stated on Ondo's own pages.", checkedAt: 2026-10-25 }
+    value: jpmorgan
+    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/325197/PDF/325197.pdf", note: "Ondo Capital Management Form ADV (2026-05-13), Schedule D 7.B.(1) for Ondo I LP lists five custodians: BitGo Trust Company, Circle Internet Financial, Coinbase Trust Company, JPMorgan Chase Bank, N.A. and Silicon Valley Bank (First Citizens). Clear Street is not listed. JPMorgan is shown here because only one custodian fits this field.", checkedAt: 2026-10-31 }
   fundAdministrator:
     status: public
     value: nav-fund-services
-    source: { url: "https://app.rwa.xyz/assets/OUSG", note: "Fund administrator: NAV Fund Services", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/trust-and-transparency", note: "Ondo: 'our fund administrator (NAV Consulting)'. Form ADV Schedule D 7.B.(1) lists NAV Consulting, Inc.", checkedAt: 2026-10-31 }
   auditor:
-    status: not_public
-    searchedAt: 2026-10-25
-    note: Ondo says financial audits are 'shared with authorized requesting parties' and doesn't name the firm.
+    status: public
+    value: bpm
+    source: { url: "https://reports.adviserinfo.sec.gov/reports/ADV/325197/PDF/325197.pdf", note: "Form ADV Schedule D 7.B.(1) for Ondo I LP: auditor BPM LLP. Ondo audits the fund annually and gives the results to investors only.", checkedAt: 2026-10-31 }
   transferAgent:
     status: not_public
     searchedAt: 2026-10-13
@@ -133,7 +136,7 @@ counterparties:
   dependencies:
     - name: Underlying tokenized funds
       what: Almost everything sits in four other tokenized funds (SWEEP, BUIDL, BENJI, FYOXX), each with its own custodian and admin keys.
-      source: { url: "https://10k.nyxshcon.org/risk/ondo-ousg", checkedAt: 2026-10-25 }
+      source: { url: "https://ondo.finance/ousg", checkedAt: 2026-10-31 }
 
 control:
   audits:
@@ -166,7 +169,7 @@ transparency:
       frequency: daily
       verifiability: self-reported
       onchain: false
-      source: { url: "https://ondo.finance/ousg", note: "Holdings by underlying fund, 'As of' the prior business day. No third-party attestation found.", checkedAt: 2026-10-25 }
+      source: { url: "https://ondo.finance/ousg", note: "Holdings by underlying fund, 'As of' the prior business day. Separately, Ondo says it publishes NAV Consulting's full daily financials (up to 3 days behind); those reports were not reviewed here.", checkedAt: 2026-10-31 }
   eventReporting:
     status: unknown
     note: Only asked for private credit.
@@ -207,7 +210,7 @@ exit:
     settlement:
       status: public
       value: T+0
-      source: { url: "https://ondo.finance/ousg", note: "Instant, 24/7, 0% fee. Non-instant timing is not public.", checkedAt: 2026-10-13 }
+      source: { url: "https://ondo.finance/ousg", note: "Instant, 24/7, 0% fee. Non-instant redemptions sent before 4pm ET typically pay out the next business day (docs.ondo.finance, Redeeming).", checkedAt: 2026-10-31 }
     gatesOrSuspension:
       status: public
       value: stated-limits
@@ -234,7 +237,7 @@ exit:
   feeBps:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/OUSG", checkedAt: 2026-10-25 }
+    source: { url: "https://ondo.finance/ousg", note: "'Minimum Redemption $5K, Instant Redemption, 0% Fee'.", checkedAt: 2026-10-31 }
   liquidators:
     value: allowlisted
     source: { url: "https://docs.ondo.finance/qualified-access-products/ousg/overview", note: "Only onboarded investors can redeem, transfer or receive OUSG.", checkedAt: 2026-10-25 }

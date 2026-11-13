@@ -30,7 +30,7 @@ deployments:
 access:
   investorType:
     value: non-us-professional
-    source: { url: "https://midas.app/mfone", note: "KYC'd eligible investors. The offering document is not public, so the exact legal category is not confirmed. Prohibited persons can be excluded at Midas's discretion. Unresolved: rwa.xyz (2026-10-24) also lists 'U.S. Accredited Investor' as eligible.", checkedAt: 2026-10-14 }
+    source: { url: "https://midas.app/mfone", note: "KYC'd eligible investors. The offering document is not public, so the exact legal category is not confirmed. Prohibited persons can be excluded at Midas's discretion. Steakhouse's launch review (June 2025) says it is offered to 'eligible professionals and qualified investors through a Private Placement Memorandum'.", checkedAt: 2026-10-14 }
   minimumInvestment:
     status: unknown
     note: Deposit vault minMTokenAmountForFirstDeposit() returned 148000 (18-decimal raw units) at review. That is not a confirmed currency minimum. Fiat redemption minimum is 1,000.
@@ -92,8 +92,8 @@ underlying:
     status: not_public
     searchedAt: 2026-10-25
   trackRecord:
-    value: { since: 2025-06-20, losses: [] }
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Inception 2025-06-20. No loss event found.", checkedAt: 2026-10-25 }
+    value: { since: 2025-06-11, losses: [] }
+    source: { url: "https://etherscan.io/tx/0x321a4b09ad8a78966d304e02f334b89a8af3d9a3e4b8ee142883ac371f5d6f1a", note: "First mint (100 mF-ONE) on 2025-06-11; launch announced 2025-06-27. No loss event found.", checkedAt: 2026-10-31 }
 
 counterparties:
   custodian:
@@ -111,14 +111,14 @@ counterparties:
     searchedAt: 2026-10-14
   affiliated:
     value: []
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "No providers are named.", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.midas.app/resources/legal-product-documentation", note: "Midas publishes no mF-ONE product documents and names no custodian, administrator or auditor for it.", checkedAt: 2026-10-31 }
   settlementRails:
     value: [usdc, usd-wire]
     source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "USDC vaults; fiat redemption with an extra 0.1% fee.", checkedAt: 2026-10-14 }
   operators:
     - role: Strategy manager
       name: Fasanara Capital
-      source: { url: "https://app.rwa.xyz/assets/mF-ONE", checkedAt: 2026-10-25 }
+      source: { url: "https://midas.app/mfone", note: "Midas Fasanara ONE gives exposure to Fasanara's F-ONE strategy.", checkedAt: 2026-10-14 }
     - role: Portfolio monitoring
       name: 1Token
       source: { url: "https://docs.midas.app/transparency/oracle-architecture", checkedAt: 2026-10-25 }
@@ -187,41 +187,41 @@ exit:
   redemption:
     available:
       value: true
-      source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard redemption on vault 0x44b0440e35c596e858cEA433D0d82F5a985fD19C is fee-free after the next NAV. rwa.xyz says 2 business days. midas.app says 1–7 business days.", checkedAt: 2026-10-14 }
+      source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Standard redemption requests on this vault are fee-free (tokensConfig fee 0) and settle after the next NAV; instant redemption costs 1% (instantFee 100). midas.app says standard redemptions take 1 to 7 business days.", checkedAt: 2026-10-31 }
     whoCanRedeem:
       value: whitelisted-holders
       source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "Redemption vault greenlistEnabled is true. The token itself is transferable without the greenlist.", checkedAt: 2026-10-14 }
     settlement:
       status: public
-      value: T+2
-      source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard path is T+2 or longer. Instant redemption is separate. Unresolved: The Block's launch coverage (2025-06-27) describes a quarterly liquidity framework alongside instant redemption; the offering terms were not available to confirm which applies.", checkedAt: 2026-10-14 }
+      value: T+7
+      source: { url: "https://midas.app/mfone", note: "midas.app: standard redemptions in 1 to 7 business days; scored at the upper bound. Instant redemption is separate. Unresolved: Steakhouse's launch review (June 2025) describes a rolling 30-day redemption backed by quarterly liquidity in the underlying F-ONE fund, and The Block's launch coverage a quarterly liquidity framework; the offering terms were not available to confirm which applies.", checkedAt: 2026-10-14 }
     gatesOrSuspension:
       status: not_public
       searchedAt: 2026-10-14
       note: The vault admin can pause any vault function and the token pauser can freeze transfers. The legal suspension wording is not public. Docs say pauses are multisig-authorised; onchain, a single wallet holds the pause role.
   dealing:
     value: continuous
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Instant redemption (1% fee); standard fee-free redemption in 2 business days (1 to 7 per Midas).", checkedAt: 2026-10-25 }
+    source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Instant redemption (1% fee) at any time; standard fee-free requests settle after the next NAV, in 1 to 7 business days per midas.app.", checkedAt: 2026-10-31 }
   noticeDays:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", checkedAt: 2026-10-25 }
+    source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Instant redemption needs no notice. Steakhouse (June 2025) described 30 days' notice at the F-ONE level, which Midas carries, not the holder.", checkedAt: 2026-10-31 }
   lockupDays:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Instant redemption is available; no lock-up stated.", checkedAt: 2026-10-25 }
+    source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "The vault enforces no lock-up and Midas states none.", checkedAt: 2026-10-31 }
   dailyCapUsd:
     status: not_public
     searchedAt: 2026-10-25
     note: Legal suspension wording isn't public.
   minimumUsd:
     status: public
-    value: 0
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", checkedAt: 2026-10-25 }
+    value: 1.13
+    source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "minAmount() = 1 mF-ONE (about $1.13). Fiat redemptions need 1,000 (minFiatRedeemAmount).", checkedAt: 2026-10-31 }
   feeBps:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/mF-ONE", note: "Standard redemption is fee-free; instant costs 1%.", checkedAt: 2026-10-25 }
+    source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Standard redemption: tokensConfig(USDC).fee = 0. Instant redemption: instantFee = 100 bps.", checkedAt: 2026-10-31 }
   liquidators:
     value: anyone
     source: { url: "https://docs.midas.app/resources/smart-contracts-registry", note: "The token only blocks blacklisted addresses. Morpho holds 47% of supply as collateral.", checkedAt: 2026-10-25 }
@@ -231,12 +231,12 @@ exit:
       address: "0x44b0440e35c596e858cEA433D0d82F5a985fD19C"
       dailyCapUsd:
         status: public
-        value: 33900000
-        source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "Daily limit 30,000,000 mF-ONE at a 1.1296 NAV.", checkedAt: 2026-10-14 }
+        value: 226700
+        source: { url: "https://etherscan.io/address/0x44b0440e35c596e858cEA433D0d82F5a985fD19C", note: "instantDailyLimit() = 200,000 mF-ONE at a 1.1334 NAV. The 2026-10-14 review recorded 30,000,000 mF-ONE.", checkedAt: 2026-10-31 }
       fundedUsd:
         status: public
-        value: 6490000
-        source: { url: "https://etherscan.io/address/0x569D7dccBF6923350521ecBC28A555A500c4f0Ec", note: "6,028,048.85 mTBILL held by the mTBILL redemption vault (2026-10-14), at $1.076 per mTBILL (CoinGecko, 2026-10-25).", checkedAt: 2026-10-25 }
+        value: 687900
+        source: { url: "https://etherscan.io/address/0x569D7dccBF6923350521ecBC28A555A500c4f0Ec", note: "638,894.53 mTBILL held by the mTBILL redemption vault at $1.0768 per mTBILL (onchain feed). It held 6,028,048.85 mTBILL on 2026-10-14.", checkedAt: 2026-10-31 }
       feeBps: 100
 
 externalIds:

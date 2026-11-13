@@ -93,16 +93,16 @@ underlying:
       asOf: 2026-10-25
       basis: mandate
       items:
-        - type: government-bills
+        - type: government-repo
           pct: 100
-          label: T-bills and Treasury reverse repo
-    source: { url: "https://app.rwa.xyz/assets/USYC", note: "'USYC provides exposure to short duration US Treasuries and Reverse Repo on US Treasuries.' The issuer's price reports give only fund-level principal and interest; no holdings list or weights are public.", checkedAt: 2026-10-25 }
+          label: Mostly reverse repo backed by US government securities
+    source: { url: "https://developers.circle.com/tokenized/usyc/overview", note: "'SDYF invests primarily in reverse repurchase agreements (reverse repo) backed by U.S. government securities.' The price reports give only fund-level principal and interest; no holdings list or weights are public.", checkedAt: 2026-10-31 }
   wamDays:
     status: not_public
     searchedAt: 2026-10-25
   trackRecord:
-    value: { since: 2023-03-17, losses: [] }
-    source: { url: "https://usyc.hashnote.com/api/price-reports", note: "Fund incorporated 2023-03-17. Price reports rise steadily; no drop found.", checkedAt: 2026-10-25 }
+    value: { since: 2023-06-13, losses: [] }
+    source: { url: "https://etherscan.io/tx/0x158c31f964c8fed6497f3fdcafa255d4912a2778124e3583207e27019e3734ee", note: "First USYC mint, 2023-06-13 (the token contract dates from 2023-05-31). GLEIF gives the fund's formation date as 2023-07-10, and Hashnote dates its performance tracking from 2023-07-10. Price reports rise steadily; no drop found.", checkedAt: 2026-10-31 }
 
 counterparties:
   custodian:
@@ -116,7 +116,7 @@ counterparties:
   auditor:
     status: public
     value: cohen-and-co
-    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "Auditor: Cohen and Company. rwa.xyz lists Valaston International instead.", checkedAt: 2026-10-25 }
+    source: { url: "https://usyc.docs.hashnote.com/overview/service-providers", note: "Auditor: Cohen and Company.", checkedAt: 2026-10-25 }
   transferAgent:
     status: public
     value: nav-fund-services
@@ -228,11 +228,11 @@ exit:
   minimumUsd:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/USYC", checkedAt: 2026-10-25 }
+    source: { url: "https://forum.arbitrum.foundation/t/hashnote-usyc-step-application/23587", note: "Hashnote (2024): 'The minimum initial subscription amount is $100,000, thereafter you can have transaction sizes of any amount.'", checkedAt: 2026-10-31 }
   feeBps:
     status: public
     value: 0
-    source: { url: "https://usyc.docs.hashnote.com/overview/fees", note: "3 bps on redemptions above $1M a day.", checkedAt: 2026-10-25 }
+    source: { url: "https://etherscan.io/tx/0x8e3c50660256d14402bb72973eeb0a016032259d7312b81a4cad901c23c2074a", note: "The fees page lists a flat 3 bps redemption fee, but the Teller charges it only above $1M a day: this $3.71M redemption (2026-10-30) paid 811.59 USDC, 3 bps of the excess, and a $741k one the same day paid nothing.", checkedAt: 2026-10-31 }
   liquidators:
     value: allowlisted
     source: { url: "https://developers.circle.com/tokenized/usyc/overview", note: "Transfers check the Entitlements allowlist on both sides. Aave Horizon's aUSYC holds the custodian role.", checkedAt: 2026-10-25 }

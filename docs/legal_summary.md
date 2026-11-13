@@ -7,5 +7,5 @@ JTRSY, JAAA	Shares of a BVI segregated portfolio, licensed fund	Yellow-green; co
 OUSG	Limited partnership interests in a private Delaware fund that Ondo runs	Yellow; the documents are public, so a lawyer could check this quickly
 ACRED	Shares of a BVI feeder into a registered US fund	Yellow
 syrupUSDC	A deposit claim on a Cayman segregated portfolio; no offering memorandum	Yellow
-FalconX	Senior tranche of a Marshall Islands vehicle whose name isn't public	Red/unverified
+FalconX	Senior tranche of a vehicle whose name and domicile aren't public	Red/unverified
 mF-ONE	A subordinated German debt certificate; holders own nothing underneath it	Red: "just the issuer's promise"

@@ -235,14 +235,14 @@ exit:
     settlement:
       status: public
       value: T+1
-      source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: daily dealing, T+0 (10am ET cut-off) or T+1 (3pm ET). Vault Street quotes the Portfolio Supplement as contractual T+3. The public factsheet is what is scored. A $318.6M redemption on 2026-03-11 was paid.", checkedAt: 2026-10-14 }
+      source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'Daily subscriptions and redemptions, settlement usually T+1'. Vault Street quotes the Portfolio Supplement as contractual T+3. The public factsheet is what is scored. A $318.6M redemption on 2026-03-11 was paid.", checkedAt: 2026-10-14 }
     gatesOrSuspension:
       status: public
       value: issuer-discretion
       source: { url: "https://app.vaultstreet.com/research/jaaa", note: "Portfolio Supplement as quoted by Vault Street (not seen first-hand): the board may suspend redemptions in its sole discretion. No instant redemption buffer was found.", checkedAt: 2026-10-14 }
   dealing:
     value: daily
-    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Daily subscriptions and redemptions; contractual settlement is three business days.", checkedAt: 2026-10-25 }
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'Daily subscriptions and redemptions'. Vault Street quotes contractual settlement of three business days.", checkedAt: 2026-10-31 }
   noticeDays:
     status: public
     value: 0
@@ -256,13 +256,13 @@ exit:
     value: null
     source: { url: "https://app.vaultstreet.com/research/jaaa", note: "'No formal daily limits, gates, or swing pricing.'", checkedAt: 2026-10-25 }
   minimumUsd:
-    status: public
-    value: 0
-    source: { url: "https://app.rwa.xyz/assets/JAAA", checkedAt: 2026-10-25 }
+    status: not_public
+    searchedAt: 2026-10-31
+    note: The factsheet gives a 500,000 USDC investment minimum but no redemption minimum.
   feeBps:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/JAAA", checkedAt: 2026-10-25 }
+    source: { url: "https://ipfs.centrifuge.io/ipfs/bafybeid4o4lmkh3hg6cxuzomjkkbyepl2sylmy3o2ojxcmoidhvkofo3le", note: "Factsheet: 'Entry fee $0'; no exit fee is listed. Vault Street's summary of the April 2026 memorandum: 'Entry / exit fees None'.", checkedAt: 2026-10-31 }
   liquidators:
     value: allowlisted
     source: { url: "https://etherscan.io/token/0x5a0F93D040De44e78F251b03c43be9CF317Dcf64", note: "FullRestrictions hook blocks non-members. Aave Horizon holds JAAA; a permissionless deJAAA wrapper exists separately.", checkedAt: 2026-10-25 }

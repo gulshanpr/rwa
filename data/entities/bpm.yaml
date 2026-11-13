@@ -1,0 +1,10 @@
+# Synced with Postgres. Edit in /admin and run `bun rwa export`, or edit here and run `bun rwa import`.
+slug: bpm
+name: BPM LLP
+type: [auditor]
+jurisdiction: US
+website: https://www.bpm.com
+
+auditorTier:
+  value: pcaob-registered
+  source: { url: "https://assets.pcaobus.org/pcaob-dev/docs/default-source/inspections/reports/documents/104-2021-164a-bpm.pdf", note: "PCAOB inspection report on BPM LLP (released 2021-09-09), so the firm is PCAOB-registered and inspected.", checkedAt: 2026-10-31 }

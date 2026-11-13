@@ -135,7 +135,7 @@ counterparties:
     note: Not applicable. syrupUSDC is a plain ERC-20 with no transfer agent.
   affiliated:
     value: []
-    source: { url: "https://app.rwa.xyz/assets/syrupUSDC", note: "No providers are named.", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.maple.finance/legal/syrupusdc-and-syrupusdt-risks", note: "Maple names no custodian, administrator or auditor for the pool.", checkedAt: 2026-10-31 }
   settlementRails:
     value: [usdc]
     source: { url: "https://docs.maple.finance/legal/syrupusdc-and-syrupusdt-risks", note: "A USDC lending pool.", checkedAt: 2026-10-25 }
@@ -229,22 +229,22 @@ exit:
     settlement:
       status: not_public
       searchedAt: 2026-10-12
-      note: "'Currently processed on average in less than 24 hours, this is not guaranteed'"
+      note: "'Currently processed on average in less than 24 hours, this is not guaranteed'. The lender FAQ instead gives 'the maximum possible time being 30 days'."
     gatesOrSuspension:
       status: public
       value: issuer-discretion
       source: { url: "https://docs.maple.finance/legal/syrupusdc-and-syrupusdt-risks", note: "'There is no guaranteed maximum withdrawal period.' Requests only settle when the pool delegate, OperationalAdmin or a Maple-registered redeemer calls processRedemptions (WithdrawalManagerQueue source).", checkedAt: 2026-10-12 }
   dealing:
     value: continuous
-    source: { url: "https://app.rwa.xyz/assets/syrupUSDC", note: "FIFO queue: 'Most withdrawals are processed in under 24 hours, but could take up to 30 days.'", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.maple.finance/syrupusdc-usdt-usdg-for-lenders/risk", note: "FIFO queue: 'Most withdrawals are processed in under 24 hours, but could take up to 30 days.'", checkedAt: 2026-10-31 }
   noticeDays:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/syrupUSDC", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.maple.finance/syrupusdc-usdt-usdg-for-lenders/risk", note: "A request joins the queue at once; no notice period.", checkedAt: 2026-10-31 }
   lockupDays:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/syrupUSDC", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.maple.finance/syrupusdc-usdt-usdg-for-lenders/risk", note: "No lock-up stated.", checkedAt: 2026-10-31 }
   dailyCapUsd:
     status: public
     value: null
@@ -252,11 +252,11 @@ exit:
   minimumUsd:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/syrupUSDC", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.maple.finance/technical-resources/pools/withdrawal-manager", note: "The queue processes any number of shares; no minimum is stated.", checkedAt: 2026-10-31 }
   feeBps:
     status: public
     value: 0
-    source: { url: "https://app.rwa.xyz/assets/syrupUSDC", checkedAt: 2026-10-25 }
+    source: { url: "https://docs.maple.finance/technical-resources/pools/withdrawal-manager", note: "Queued shares are exchanged 'for assets at the current exit rate'; no withdrawal fee.", checkedAt: 2026-10-31 }
   liquidators:
     value: anyone
     source: { url: "https://etherscan.io/address/0xbe10adce8b6e3e02db384e7fada5395dd113d8b3#readProxyContract", note: "Transfers are open today (bitmap 0); the pool delegate could restrict them.", checkedAt: 2026-10-25 }
