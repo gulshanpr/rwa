@@ -1,6 +1,6 @@
 {
   "asset": "acred",
-  "block": 97523338,
+  "block": 100291660,
   "chain": "avalanche",
   "contracts": {
     "0x29DeCD395561E4e2B9c494b1F5311242af21b6Bc": {
@@ -442,7 +442,7 @@
         }
       ],
       "proxy": {
-        "implementation": "0xD1454944E948A05f9242798096e2D00Ac18c94BF",
+        "implementation": "0x5CfeD3Cf53b10A8940C29cF864aa885A439ae493",
         "type": "eip1967"
       },
       "role": "service",
@@ -1591,7 +1591,7 @@
     },
     "0xB1b147bf1F8c7FdBDe9ebB2Eb557A0c8Ea9aBBef": {
       "controllers": [
-        "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78"
+        "0x59c1eAcEc450c57Dcb9b8725d0F96635C2b676Ee"
       ],
       "kind": "contract",
       "name": "SecuritizeBridge"
@@ -1612,10 +1612,7 @@
       ],
       "kind": "contract",
       "name": "BulkOperator"
-    },
-    "0xd69FefE5Df62373DCBdE3e1F9625Cf334a2Dae78": {
-      "kind": "eoa"
     }
   },
-  "timestamp": "2026-10-14T11:03:04Z"
+  "timestamp": "2026-11-14T10:38:06Z"
 }
