@@ -11,16 +11,16 @@ import {
   tableFeatures,
   useTable,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3 } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, Columns3, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
 import { useMemo, useState } from "react";
 import { AssetLogo } from "@/components/asset/asset-logo";
 import { ChartTooltip } from "@/components/charts/chart-tooltip";
-import { RiskDot } from "@/components/risk/risk-dot";
 import { Rosette } from "@/components/risk/rosette";
 import { StageBadge } from "@/components/risk/stage-card";
+import { ScreenerCards } from "@/components/screener/screener-cards";
 import { Segmented } from "@/components/ui/segmented";
 import { POPOVER_BOUNDS, Select } from "@/components/ui/select";
 import { Tag } from "@/components/ui/tag";
@@ -281,9 +281,28 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
     posthog.capture("screener_filter_changed", { filter_type: "quick_filter", filter_value: id, enabled });
   };
 
+  // On phones, everything but the asset class folds behind a Filters button that counts what's on.
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const activeFilters = (chain !== "all" ? 1 : 0) + (rating !== "any" ? 1 : 0) + toggles.size;
+  const clearFilters = () => {
+    setChain("all");
+    setRating("any");
+    setToggles(new Set());
+    posthog.capture("screener_filters_cleared");
+  };
+
+  // The cards say how they're ordered. Phones can't sort, but a tablet sorted in landscape keeps that order
+  // in portrait. With no sort the rows keep assetRows' order, which is also largest value first.
+  const sort = table.state.sorting[0];
+  const isDefaultOrder = !sort || (sort.id === "aum" && sort.desc);
+  const order = isDefaultOrder
+    ? "largest value first"
+    : `sorted by ${CATEGORY_LABELS[sort.id as CategoryId] ?? String(table.getColumn(sort.id)?.columnDef.header ?? sort.id)}`;
+
   return (
     <div className="rounded-card border border-line bg-surface shadow-card">
-      <div className="space-y-3 border-b border-line p-3 md:p-4">
+      {/* A gap, not space-y: the second row is hidden on phones and must not leave a margin behind. */}
+      <div className="flex flex-col gap-3 border-b border-line p-3 md:p-4">
         <div className="flex flex-wrap items-center gap-2">
           <Segmented
             label="Asset class"
@@ -295,46 +314,67 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               { value: "private-credit", label: "Credit" },
             ]}
           />
-          <Select
-            label="Chain"
-            value={chain}
-            options={[
-              { value: "all", label: "All chains" },
-              ...chains.map((c) => ({ value: c, label: CHAINS[c].name })),
-            ]}
-            onChange={(value) => {
-              setChain(value);
-              posthog.capture("screener_filter_changed", { filter_type: "chain", filter_value: value });
-            }}
-          />
-          <div className="flex items-center gap-1">
+          <button
+            type="button"
+            aria-expanded={filtersOpen}
+            aria-controls="screener-filters screener-quick-filters"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className={cn(selectClass, "ml-auto inline-flex items-center gap-1.5 md:hidden")}
+          >
+            <SlidersHorizontal className="size-3.5" aria-hidden />
+            Filters
+            {activeFilters > 0 && (
+              <span className="tnum rounded-full bg-accent px-1.5 text-label leading-4 text-white">
+                {activeFilters}
+              </span>
+            )}
+          </button>
+          <div
+            id="screener-filters"
+            className={cn("w-full flex-wrap items-center gap-2 md:flex md:w-auto", filtersOpen ? "flex" : "hidden")}
+          >
             <Select
-              label="Risk category"
-              value={category}
-              options={CATEGORY_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
-              onChange={(value) => {
-                setCategory(value);
-                posthog.capture("screener_filter_changed", { filter_type: "risk_category", filter_value: value });
-              }}
-            />
-            <span className="text-small text-fg-subtle">is</span>
-            <Select
-              label="Rating"
-              value={rating}
+              label="Chain"
+              value={chain}
               options={[
-                { value: "any", label: "any rating" },
-                ...(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => ({
-                  value: r,
-                  label: RISK_WORD[r].toLowerCase(),
-                })),
+                { value: "all", label: "All chains" },
+                ...chains.map((c) => ({ value: c, label: CHAINS[c].name })),
               ]}
               onChange={(value) => {
-                setRating(value);
-                posthog.capture("screener_filter_changed", { filter_type: "rating", filter_value: value });
+                setChain(value);
+                posthog.capture("screener_filter_changed", { filter_type: "chain", filter_value: value });
               }}
             />
+            <div className="flex items-center gap-1">
+              <Select
+                label="Risk category"
+                value={category}
+                options={CATEGORY_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+                onChange={(value) => {
+                  setCategory(value);
+                  posthog.capture("screener_filter_changed", { filter_type: "risk_category", filter_value: value });
+                }}
+              />
+              <span className="text-small text-fg-subtle">is</span>
+              <Select
+                label="Rating"
+                value={rating}
+                options={[
+                  { value: "any", label: "any rating" },
+                  ...(["green", "yellow", "red", "unverified", "not-assessed"] as const).map((r) => ({
+                    value: r,
+                    label: RISK_WORD[r].toLowerCase(),
+                  })),
+                ]}
+                onChange={(value) => {
+                  setRating(value);
+                  posthog.capture("screener_filter_changed", { filter_type: "rating", filter_value: value });
+                }}
+              />
+            </div>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+          {/* Columns only changes the table, which phones don't show. */}
+          <div className="ml-auto hidden items-center gap-2 md:flex">
             <Popover.Root>
               <Popover.Trigger className={cn(selectClass, "inline-flex items-center gap-1.5")}>
                 <Columns3 className="size-3.5" /> Columns
@@ -371,7 +411,10 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
             </Popover.Root>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div
+          id="screener-quick-filters"
+          className={cn("flex-wrap items-center gap-2 md:flex", filtersOpen ? "flex" : "hidden")}
+        >
           <span className="mr-1 text-label font-normal text-fg-subtle">Only show</span>
           {TOGGLES.map((t) => (
             <button
@@ -389,6 +432,11 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
               {t.label}
             </button>
           ))}
+          {activeFilters > 0 && (
+            <button type="button" onClick={clearFilters} className="h-7 px-1 text-small text-accent md:hidden">
+              Clear all
+            </button>
+          )}
         </div>
       </div>
 
@@ -475,48 +523,13 @@ export function Screener({ rows, defaultClass = "all" }: { rows: AssetRow[]; def
         </table>
       </div>
 
-      <ul className="divide-y divide-line md:hidden">
-        {table.getRowModel().rows.length === 0 && (
-          <li className="px-4 py-10 text-center text-small text-fg-muted">No assets match these filters.</li>
-        )}
-        {table.getRowModel().rows.map(({ original: r }) => (
-          <li key={r.slug} className="p-4">
-            <Link href={`/assets/${r.slug}`} className="flex items-start gap-3">
-              <AssetLogo slug={r.slug} ticker={r.ticker} size={28} />
-              <div className="min-w-0 flex-1">
-                <p className="text-body">
-                  <span className="font-semibold">{r.ticker}</span>{" "}
-                  <span className="text-fg-muted">{shortEntityName(r.manager)}</span>
-                </p>
-                <p className="tnum text-small text-fg-muted">
-                  {r.aumUsd !== null ? formatUsd(r.aumUsd) : "—"} · {r.assetClassLabel}
-                </p>
-              </div>
-              <Rosette slices={r.categories} size="sm" ticker={r.ticker} />
-              <StageBadge stage={r.stage} />
-            </Link>
-            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label font-normal text-fg-muted">
-              {CATEGORY_ORDER.map((c) => (
-                <RiskDot
-                  key={c}
-                  color={r.categories[c].rating}
-                  label={CATEGORY_SHORT[c]}
-                  title={ratingWord(r.categories[c])}
-                />
-              ))}
-            </div>
-            {r.flags.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {r.flags.map((f) => (
-                  <Tag key={f.id} variant={`risk-${f.color}`}>
-                    {f.label}
-                  </Tag>
-                ))}
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
+      <ScreenerCards
+        rows={table.getRowModel().rows.map((row) => row.original)}
+        allRows={rows}
+        order={order}
+        isDefaultOrder={isDefaultOrder}
+        onClear={activeFilters > 0 ? clearFilters : undefined}
+      />
     </div>
   );
 }
