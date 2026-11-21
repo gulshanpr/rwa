@@ -1,6 +1,6 @@
 {
   "asset": "falconx",
-  "block": 26190113,
+  "block": 26463143,
   "chain": "ethereum",
   "contracts": {
     "0x17E9Ab2992dfecBe779a06A92a6cDB9fE6aEeEf3": {
@@ -69,14 +69,14 @@
           "via": "IdleCDOEpochVariant._setLimit · _checkOnlyOwner() (owner)"
         },
         {
+          "holder": "0x05f1Ccbfc74Af90723b5bf326e12A45678d7547F",
+          "power": "set-price",
+          "via": "IdleCDOEpochVariant.writeOffDeposit · borrower, and only while an epoch is running"
+        },
+        {
           "holder": "0x1fb0f3602F52e2420aCff5CF04DBfDE96378Df58",
           "power": "set-price",
           "via": "IdleCDOEpochVariant.startEpoch, stopEpoch, stopEpochWithDuration · owner or the strategy manager's operator. stopEpoch sets the interest and therefore priceAA"
-        },
-        {
-          "holder": "0xc08f538b079BE6EdFb6594985e8b93784f41A2C6",
-          "power": "set-price",
-          "via": "IdleCDOEpochVariant.writeOffDeposit · borrower, and only while an epoch is running"
         },
         {
           "holder": "0xFb3bD022D5DAcF95eE28a6B07825D4Ff9C5b3814",
@@ -158,6 +158,9 @@
     }
   },
   "holders": {
+    "0x05f1Ccbfc74Af90723b5bf326e12A45678d7547F": {
+      "kind": "eoa"
+    },
     "0x1fb0f3602F52e2420aCff5CF04DBfDE96378Df58": {
       "kind": "eoa"
     },
@@ -199,10 +202,7 @@
         "0x1504d6b71321E628516C4c7f3FD5f6c3F4BF67B7"
       ],
       "threshold": 3
-    },
-    "0xc08f538b079BE6EdFb6594985e8b93784f41A2C6": {
-      "kind": "eoa"
     }
   },
-  "timestamp": "2026-10-14T10:22:23Z"
+  "timestamp": "2026-11-21T11:20:47Z"
 }
